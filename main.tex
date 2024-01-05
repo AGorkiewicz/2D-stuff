@@ -1,56 +1,201 @@
-\documentclass[a4paper]{article}
+\documentclass[11pt]{article}
+\pdfoutput=1
+\usepackage[margin=1in,a4paper]{geometry}
+\usepackage{amsthm,amssymb,amsmath}  
+\usepackage{xspace,enumerate}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
+\usepackage[capitalise]{cleveref}
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-%\usepackage[polish]{babel}
-\usepackage{amsmath, amsfonts}
-\usepackage{hyperref}
-\usepackage{pdfpages}
-\usepackage[nofoot,hdivide={2cm,*,2cm},vdivide={2cm,*,2cm}]{geometry}
-\usepackage{comment}
-\usepackage{enumerate}
-\usepackage{multirow}
-\usepackage{listings}
-\usepackage{tikz}
-\usepackage{amsthm}
-
-\pagestyle{myheadings}
+\usepackage{thmtools}
+\usepackage{thm-restate}
+\usepackage{authblk}
 
 
-\frenchspacing
-\date{\today}
-
-
+\def\dd{\mathinner{.\,.}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
 \renewcommand{\O}{\mathcal{O}}
 \newcommand{\tO}{\tilde{\mathcal{O}}}
 \renewcommand{\phi}{\varphi}
-\newcommand{\pmat}[1]{\small{\begin{pmatrix} #1 \end{pmatrix}}}
-\newcommand{\bmat}[1]{\begin{bmatrix} #1 \end{bmatrix}}
 \newcommand{\set}[1]{\lbrace #1 \rbrace}
 \newcommand{\bigset}[1]{\big \lbrace #1 \big \rbrace}
 \newcommand{\Bigset}[1]{\Big \lbrace #1 \Big \rbrace}
 \newcommand{\eq}[1]{\begin{align*} #1 \end{align*}}
+\DeclareMathOperator*{\Ham}{Ham}
 
 
+\usepackage{microtype} %if unwanted, comment out or use option "draft"
+\usepackage{amsmath,amsfonts}
+\usepackage[cmbtt]{bold-extra}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{thm-restate}
+\usepackage{comment}
+\usepackage{forest}
+\usepackage{xspace}
+\usepackage{enumerate}
+\usepackage{makecell}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{diagbox}
+\usepackage{todonotes}
+\usepackage{thmtools}
+\usepackage[ruled,noline,noend]{algorithm2e}
+\usepackage[capitalise]{cleveref}
+\usepackage{graphics,adjustbox}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{verbatim}
+\usepackage{braket}
+\usepackage[noadjust]{cite}
+\usepackage{xspace}
+\usepackage{bold-extra}
+\usepackage[margin=1in]{geometry}
+
+\pagestyle{myheadings}
+
+\title{Fast algorithm for two-dimensional pattern matching with $k$ mismatches}
+\author[1]{Adam Górkiewicz}
+\author[2]{Paweł Gawrychowski}
+\author[3]{Tatiana Starikovskaya}
+\author[4]{Jonas Ellert}
+\affil[1]{?}
+\affil[2]{?}
+\affil[3]{?}
+\affil[4]{?}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}  
+\newtheorem{corollary}[theorem]{Corollary}  
+\newtheorem{fact}{Fact}
+\newtheorem{observation}{Observation}
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}
-\newtheorem{algorithm}{Algorithm}
-\newtheorem{lemma}{Lemma}[definition]
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{example}{Example}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{conjecture}{Conjecture} 
+\newtheorem*{claim}{Claim}
+\newtheorem{problem}{Problem}
+%\newcommand{\defproblem}[4]{\begin{center}\vspace{2mm}\noindent\fbox{\begin{minipage}{0.96\textwidth} \begin{problem}[#2] \label{#1} \ \\ {\bf{Input:}} #3 \\ {\bf{Output:}} #4 \end{problem} \end{minipage}} \vspace{2mm}\end{center}}
+\newcommand{\defproblem}[3]{\begin{center}\vspace{2mm}\noindent\fbox{\begin{minipage}{0.96\textwidth} #1 \\ {\bf{INPUT:}} #2 \\ {\bf{OUTPUT:}} #3 \end{minipage}} \vspace{2mm}\end{center}}
 
 
-\author{Adam Górkiewicz}
-\title{2D Hamming distance}
-
-
-\lstset{language=C++}
+\sloppy
 
 
 \begin{document}
 
+\date{}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+%\thispagestyle{empty}
+%\clearpage
+%\setcounter{page}{1}
+
 
 \section{Introduction}
 
+%\paragraph{bullshit}
+%\paragraph{related work}
+%\paragraph{our result}
+
+
+\newcommand{\hd}{\textsc{1DASHD}\xspace}
+\defproblem
+{\textsc{All-substring Hamming distance (\hd)}}
+{String $T$ of length $n$ and string $P$ of length $m \le n$.}
+{The Hamming distance between $P$ and every substring of $T$ that has length $m$.}
+
+
+\renewcommand{\pm}{\textsc{1DPMWM}\xspace}
+\defproblem
+{\textsc{Pattern matching with $k$ mismatches (\pm)}}
+{String $T$ of length $n$, string $P$ of length $m \le n$, integer $k \ge 0$.}
+{The same as for \hd, but if any distance is larger than $k$, the result for that substring should equal $\infty$.}
+
+
+\begin{fact}
+	Pattern matching with $k$ mismatches can be solved in $\tO((m + k \sqrt{m})n / m)$ time.
+\end{fact}
+
+
+\newcommand{\HD}{\textsc{2DASHD}\xspace}
+\defproblem
+{\textsc{Two-dimensional all-substring Hamming distance (2DASHD)}}
+{2D string $T$ of size $n \times n$, 2D string $P$ of size $m \times m$ where $m \le n$.}
+{The Hamming distance between $P$ and every $m \times m$ substring of $T$.}
+
+
+\newcommand{\PM}{\textsc{2DPMWM}\xspace}
+\defproblem
+{\textsc{Two-dimensional pattern matching with $k$ mismatches (2DPMWM)}}
+{2D string $T$ of size $n \times n$, 2D string $P$ of size $m \times m$ where $m \le n$, integer $k \ge 0$.}
+{The same as for \HD, but if any distance is larger than $k$, the result for that substring should equal $\infty$.}
+
+
+\begin{theorem}
+	\label{main result}
+	Two-dimensional pattern matching with $k$ mismatches can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+\end{theorem}
+
+
+\section{One-dimensional generalizations}
+In this section we explore some of the methods used for one-dimensional strings.
+Specifically, as our goal is to generalise the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques used to solve the one-dimensional case.
+We consider two simple reduction methods.
+
+\paragraph{Wildcard padding}
+Consider the input strings for the two aforementioned two-dimensional problems -- an $n \times n$ text $T$ and $m \times m$ pattern $P$.
+We construct one-dimensional strings $T'$ and $P'$ by ''flattening'' $T$ and $P$ with some extra padding characters.
+Specifically:
+\eq{
+	T' &= T[0] \ \texttt{?}^{m} \ T[1] \ \texttt{?}^{m} \ \dots \ \texttt{?}^{m} \ T[n - 1] \ \texttt{?}^{m}, \\
+	P' &= P[0] \ \texttt{?}^{n} \ P[1] \ \texttt{?}^{n} \ \dots \ \texttt{?}^{n} \ P[m - 1] \ \texttt{?}^{n}
+}                                                                          
+where $T[0], \dots, T[n - 1]$ and $P[0], \dots, P[m - 1]$ represent subsequent rows of $T$ and $P$ and \texttt{?} is the \textbf{wildcard} symbol that matches with every single character.
+
+\begin{observation}\label{wildcard reduction}
+	The Hamming distance between $T[i \dd i + m - 1, j \dd j + m - 1]$ and $P$ is equal to the Hamming distance between $T'[i(n + m) + j \dd (i + m)(n + m) + j - 1]$ and $P'$.
+	As a result, any solution for \hd \ / \pm, which allows the text and pattern to contain wildcard symbols, can be easily generalized to solve \HD \ / \PM, respectively.
+\end{observation}
+
+Unfortunately, the most effective known algorithms for \pm rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and do not allow wildcard symbols, thus, they cannot be easily generalized.
+There are however two useful solutions for the \hd problem, which can.
+
+\begin{fact}\label{sigman}
+	There exists an algorithm which solves \hd in $\tO(n|\Sigma|)$ time.
+	[maybe a reference?]
+	It allows wildcard symbols in $T$ and $P$. 
+\end{fact}
+
+\begin{fact}\label{approx}
+	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd in $\tO(n)$ time.
+	It was first introduced in \cite{Karloff1993}.
+	It allows wildcard symbols in $T$ and $P$.
+\end{fact}
+
+\begin{corollary}
+	By Observation \ref{wildcard reduction}. and Fact \ref{sigman}., there exists an algorithm which solves \HD in $\tO(n^2|\Sigma|)$ time.
+\end{corollary}
+
+
+\begin{corollary}
+	By Observation \ref{wildcard reduction}. and Fact \ref{approx}., there exists a $(1 + \varepsilon)$-algorithm which solves \HD in $\tO(n^2)$ time.
+\end{corollary}
+
+\paragraph{Column compression}
+Kangaroo jumps go here.
+
+
+
+\section{Preliminaries}
 
 \renewcommand{\d}[1]{#1^\mathbf{d}}
 \newcommand{\f}[1]{#1^\mathbf{f}}
@@ -77,55 +222,18 @@
 
 \begin{definition}[Hamming distance]
 	Consider two strings $S, R$. We define
-	$$ Ham(S, R) = |\set{u : u \in S, u \in R, S(u) \neq R(u)}|.$$
+	$$ \Ham(S, R) = |\set{u : u \in S, u \in R, S(u) \neq R(u)}|.$$
 \end{definition}
 
+Consider a text string $T$ and a pattern string $P$ where
+\eq{
+	\d{T} &= \set{0, \dots, \frac{3}{2}n - 1}^2 \\
+	\d{P} &= \set{0, \dots, n - 1}^2
+}
+for some integer $n$ such that $4|n$.
+There exists an algorithm which for a given integer $k$ calculates
+$ \Ham(P + q, T) $
 
-\begin{algorithm}[Main result]
-	\label{main_algo}
-	Consider a text string $T$ and a pattern string $P$ where
-	\eq{
-		\d{T} &= \set{0, \dots, \frac{3}{2}n - 1}^2 \\
-		\d{P} &= \set{0, \dots, n - 1}^2
-	}
-	for some integer $n$ sych that $4|n$.
-	There exists an algorithm which for a given integer $k$ calculates
-	$ Ham(P + q, T) $
-	for such $q \in \set{0, \dots, \frac{1}{2}n}^2$ for which the result is at most $k$ and returns $\infty$ for the rest.
-	The time complexity of the algorithm is $\tO(n^2 + nk^{5/4})$.
-\end{algorithm}
-
-
-\section{Description of Algorithm \ref{main_algo}.}
-Firstly, we run a two-dimensional variant of Karloff's $(1 + \varepsilon)$-algorithm with $\varepsilon = 1$ matching the pattern with the text.
-We find the set $Q$ of vectors $q$ for which the estimated value of $Ham(P + q, T)$ is at most $2k$.
-We return $\infty$ for $q \not \in Q$ and to calculate the exact result for $q \in Q$ we distinguish two cases depending on the size of $Q$.
-
-
-\subsection{Solution for few queries}
-Assume that $|Q| \le 2n + n^2/k$.
-For every $q \in Q$ we explicitly detect all mismatches using the ''kangaroo jumps'' technique in $\O(k)$ operations.
-In total, the algorithm takes $\tO(n^2 + nk)$ time.
-
-
-\subsection{Solution for many queries}
-Assume that $|Q| > 2n + n^2/k$.
-We take advantage of the fact that some occurrences of the pattern in the text must have a large overlap, and thus the pattern must be periodic.
-Consequently, it can be decomposed into some regularly structured monochromatic substrings.
-We employ a similar decomposition approach for the text and then calculate the result by summing the contributions of every pair of pattern and text substrings.
-
-We start by defining two-dimensional periodicity and finding suitable periods of the pattern.
-
-
-\begin{definition}[Periodicity]
-	Consider any vector $\delta \in \Z^2$.
-	We say that a string $S$ has an $\ell$-period $\delta$ if $$ Ham(S + \delta, S) \le \ell. $$
-\end{definition}
-
-
-\begin{lemma} \label{periodicity_lemma}
-	For every $u, v \in Q$, a vector $u - v$ is an $8k$-period of $P$.
-\end{lemma}
 
 
 \begin{definition}[Vector operators]
@@ -148,7 +256,64 @@ We start by defining two-dimensional periodicity and finding suitable periods of
 \end{definition}
 
 
-\begin{algorithm}
+
+
+\section{Main Algorithm}
+
+Consider a text string $T$ and a pattern string $P$ where
+\eq{
+	\d{T} &= \set{0, \dots, \frac{3}{2}n - 1}^2 \\
+	\d{P} &= \set{0, \dots, n - 1}^2
+}
+for some integer $n$ such that $4|n$.
+There exists an algorithm which for a given integer $k$ calculates
+$ \Ham(P + q, T) $
+
+
+
+
+\begin{theorem}[Main result]
+	\label{main_algo}
+	for such $q \in \set{0, \dots, \frac{1}{2}n}^2$ for which the result is at most $k$ and returns $\infty$ for the rest.
+	The time complexity of the algorithm is $\tO(n^2 + nk^{5/4})$.
+\end{theorem}
+
+
+\section{Description of Algorithm \ref{main_algo}.}
+Firstly, we run a two-dimensional variant of Karloff's $(1 + \varepsilon)$-algorithm with $\varepsilon = 1$ matching the pattern with the text.
+We find the set $Q$ of vectors $q$ for which the estimated value of $\Ham(P + q, T)$ is at most $2k$.
+We return $\infty$ for $q \not \in Q$ and to calculate the exact result for $q \in Q$ we distinguish two cases depending on the size of $Q$.
+
+
+\subsection{Solution for few queries}
+Assume that $|Q| \le 2n + n^2/k$.
+For every $q \in Q$ we explicitly detect all mismatches using the ''kangaroo jumps'' technique in $\O(k)$ operations.
+In total, the algorithm takes $\tO(n^2 + nk)$ time.
+
+
+\subsection{Solution for many queries}
+Assume that $|Q| > 2n + n^2/k$.
+We take advantage of the fact that some occurrences of the pattern in the text must have a large overlap, and thus the pattern must be periodic.
+Consequently, it can be decomposed into some regularly structured monochromatic substrings.
+We employ a similar decomposition approach for the text and then calculate the result by summing the contributions of every pair of pattern and text substrings.
+
+We start by defining two-dimensional periodicity and finding suitable periods of the pattern.
+
+
+\begin{definition}[Periodicity]
+	Consider any vector $\delta \in \Z^2$.
+	We say that a string $S$ has an $\ell$-period $\delta$ if $$ \Ham(S + \delta, S) \le \ell. $$
+\end{definition}
+
+
+\begin{lemma} \label{periodicity_lemma}
+	For every $u, v \in Q$, a vector $u - v$ is an $8k$-period of $P$.
+\end{lemma}
+
+
+
+
+\begin{theorem}
 	\label{get_periods}
 	For an integer $\ell > 0$ and a set of vectors $U \subseteq \set{0, \dots, \ell}^2 $ such that $|U| > 4\ell$ there exist $s, t, s', t' \in U$ such that $w = t - s$ and $w' = t' - s'$ hold the following conditions:
 	\begin{itemize}
@@ -158,7 +323,7 @@ We start by defining two-dimensional periodicity and finding suitable periods of
 		\item $w, w', -w, -w'$ are all contained in different quadrants.
 	\end{itemize}
 	There exists an algorithm which finds such $w, w'$ in $\tO(|U|)$ operations.
-\end{algorithm}
+\end{theorem}
 
 
 By running Algorithm \ref{get_periods}. on the set $Q$ we obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$ which by Lemma \ref{periodicity_lemma}. are $\O(k)$-periods of $P$.
@@ -223,16 +388,16 @@ We will now show how to decompose the pattern and the text and how to calculate 
 
 \begin{lemma}
 	For every $q \in Q$ we have
-	$$Ham(P + q, T) = Ham(P + q, \Ta).$$
+	$$ \Ham(P + q, T) = \Ham(P + q, \Ta).$$
 \end{lemma}
 
 
-\begin{algorithm}[Periodic parquet decomposition]
+\begin{theorem}[Periodic parquet decomposition]
 	\label{parquet_decomposition}
 	Consider a spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$.
 	It can be partitioned into $\O(k)$ monochromatic spacious/simple subparquet substrings, correspondingly.
 	There exists an algorithm which finds those partitionings in $\tO(|\d{R}|)$ operations.
-\end{algorithm}
+\end{theorem}
 
 
 \newcommand{\T}{\mathcal{T}}
@@ -242,33 +407,33 @@ We will now show how to decompose the pattern and the text and how to calculate 
 \newcommand{\V}{\mathcal{V}}
 \newcommand{\F}{\mathcal{F}}
 
-\begin{algorithm}[Active text decomposition]
+\begin{theorem}[Active text decomposition]
 	\label{text_decomposition}
 	There exists an algorithm which for any $\ell = \O(n)$ partitions $\Ta$ into a set of monochromatic simple subparquet substrings $\U$ and a substring $F$,
 	such that $|\U| = \O(\min\set{n^2, \ell k})$ and for every $u \in F$ its border distance is $\O(n / \ell)$.
 	It does so in $\tO(n^2)$ operations.
-\end{algorithm}
+\end{theorem}
 
 
-\begin{algorithm}[Sparse Hamming]
+\begin{theorem}[Sparse Hamming]
 	\label{sparse_algo}
 	There exists an algorithm which for a set of monochromatic simple subparquet strings $\U$ and a set of monochromatic subparquet strings $\V$ calculates 
-	$$ \sum_{U \in \U}\sum_{V \in \V} Ham(U + q, V) $$
+	$$ \sum_{U \in \U}\sum_{V \in \V} \Ham(U + q, V) $$
 	for any $q \in \Z^2 $ in $\tO(1)$ operations after $\tO(\ell^2 + |\U||\V|)$ preprocessing time assuming that all strings are defined for vectors with coordinate values from $\set{0, \dots, \ell}$.
-\end{algorithm}
+\end{theorem}
 
 
-\begin{algorithm}[Dense Hamming]
+\begin{theorem}[Dense Hamming]
 	\label{dense_algo}
 	Consider a substring $F$ of $\Ta$ such that for every $u \in F$ its border distance is less than $\ell$ for some integer $\ell$.
-	There exists an algorithm which calculates $Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(n^2 + n \ell k^{1/2})$.
-\end{algorithm}
+	There exists an algorithm which calculates $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(n^2 + n \ell k^{1/2})$.
+\end{theorem}
 
 
 As $P$ is a spacious parquet string, we partition it using Algorithm \ref{parquet_decomposition}. into a set of subparquet substrings $\V$.
 Subsequently we partition $\Ta$ using Algorithm \ref{text_decomposition}. with $\ell = nk^{-3/4}$ into a set of simple subparquet substrings $\U$ and a substring $F$.
 For every $q \in Q$ we then have
-$$ Ham(P + q, T) = Ham(P + q, \Ta) = Ham(P + q, F) + \sum_{U \in \U}\sum_{V \in \V} Ham(U - q, V) $$
+$$ \Ham(P + q, T) = \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{U \in \U}\sum_{V \in \V} \Ham(U - q, V) $$
 which we calculate by summing the results of Algorithm \ref{dense_algo} and Algorithm \ref{sparse_algo}
 
 
@@ -346,9 +511,9 @@ and we further partition it using Algorithm \ref{parquet_decomposition}., thus c
 \section{Description of Algorithm \ref{sparse_algo}.}
 
 
-For $U \in \U$, $V \in \V$, the value $Ham(U + q, V)$ either equals $|(\d{U} + q) \cap \d{V}|$ if $U[\d{U}] \neq V[\d{V}]$ or $0$ otherwise.
+For $U \in \U$, $V \in \V$, the value $ \Ham(U + q, V)$ either equals $|(\d{U} + q) \cap \d{V}|$ if $U[\d{U}] \neq V[\d{V}]$ or $0$ otherwise.
 We have
-$$ \sum_{U \in \U} \sum_{V \in \V} Ham(U + q, V) = \sum_{(A, B) \in \F} |(A + q) \cap B| $$
+$$ \sum_{U \in \U} \sum_{V \in \V} \Ham(U + q, V) = \sum_{(A, B) \in \F} |(A + q) \cap B| $$
 where $ \F = \set{(\d{U}, \d{V}) : U \in \U, V \in \V, U[\d{U}] \neq V[\d{V}]} $. 
 For every $(A, B) \in \F$ we can find primitive subparquets $A_1, \dots, A_4$ such that for every $q$ we have
 $$ |(A + q) \cap B| = |(A_1 + q) \cap B| - |(A_2 + q) \cap B| - |(A_3 + q) \cap B| + |(A_4 + q) \cap B| $$
@@ -357,18 +522,18 @@ thus we will consider four instances of a problem of calculating $\sum_{(A, B) \
 We will write $u \le_{\phi\psi} v$ to denote that $\phi(u) \le \phi(v) \wedge \psi(u) \le \psi(v)$ for some $u, v \in \Z^2$.
 
 
-\begin{algorithm}
+\begin{theorem}
 	\label{sweeper}
 	There exists a data structure which for a given set of vectors $U$ and a set of parquets $\S$ calculates
-	$$ \sum_{v \in V} |\set{S : v \in S, S \in \S}| $$
+	$$ \sum_{v \in V} |\set{S : S \in \S, v \in S}| $$
 	for a given query vector $q$ where $V = \set{v : v \in U, v \le_{\phi\psi} q}$.
 	It requires $\tO(|U| + |\S|)$ preprocessing time and $\tO(1)$ query time.
-\end{algorithm}
+\end{theorem}
 
 
 We consider an array of data structures $J_1, \dots, J_m$ described in Algorithm \ref{sweeper}.
 We construct $J_\gamma$ for a set of points $U_\gamma = \set{u : u \in \Z^2, |x(u)| \le \ell, |y(u)| \le \ell, \L(u) = \gamma}$ and set of parquets $\S_\gamma$.
-To construct $S_\gamma$ we consider every pair $(A, B) \in \F'$ and find a vector $w$ and a parquet $V$ such that 
+To construct $\S_\gamma$ we consider every pair $(A, B) \in \F'$ and find a vector $w$ and a parquet $V$ such that 
 $$ A = \set{u : u \le_{\phi\psi} w, \L(u) = \L(w)},$$
 $$ B = \set{u : u \in (V + w), \L(u) = \L(B)}.$$
 The set $\S_\gamma$ contains the parquets $V$ obtained for pairs $(A, B)$ such that $\L(B - w) = \gamma$.
@@ -389,39 +554,43 @@ To be done.
 %		\item $F_3 = (\set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \times \set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \cap \d{F}, \f{F})$
 %		\item $F_4 = (\set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \times \set{0, \dots, \frac{3}{4}n - 1} \cap \d{F}, \f{F})$
 %	\end{itemize}
-%	We then independently calculate $Ham(P + q, F_i)$ for each $i$ and sum the results.
+%	We then independently calculate $\Ham(P + q, F_i)$ for each $i$ and sum the results.
 %	
-%	To calculate the solution for $Ham(P + q, F_1)$, let's consider substrings of $P$:
+%	To calculate the solution for $\Ham(P + q, F_1)$, let's consider substrings of $P$:
 %	$$ P_1 = (\set{0, \dots, l - 1} \times \set{0, \dots, n - 1}, \f{P}) $$
 %	$$ P_2 = (\set{l, \dots, n - 1} \times \set{0, \dots, l - 1}, \f{P}) $$
 %	\begin{lemma}
 %		For $q \in Q$ we have
-%		$$ Ham(P + q, F_1) = Ham(P_1 + q, F_1) + Ham(P_2 + q, F_2) $$
+%		$$ \Ham(P + q, F_1) = \Ham(P_1 + q, F_1) + \Ham(P_2 + q, F_2) $$
 %	\end{lemma}
-%	To calculate $Ham(P_1 + q, F_1)$ let's partition $F_1$ into substrings $\S = \set{S_i}$, where
+%	To calculate $\Ham(P_1 + q, F_1)$ let's partition $F_1$ into substrings $\S = \set{S_i}$, where
 %	$$ S_i = ((il + \set{0, \dots, l - 1}) \times \Z \cap \d{F_1}, \f{F_1}) $$
 %	For every non-empty string $S_i$ let's define $h_i = \max\set{y(u) : u \in S_i} - \min\set{y(u) : u \in S_i}$.
 %	\begin{lemma}
 %		For every $S_i$ we have
-%		$$ Ham(P_1 + q, S_i) = Ham(B_i + q, S_i) $$
+%		$$ \Ham(P_1 + q, S_i) = \Ham(B_i + q, S_i) $$
 %		where $B_i = (\Z \times \set{0, \dots, h_i} \cap \d{P_1}, \f{P_1}) $ for non-empty $S_i$, otherwise $B_i$ is empty.
 %	\end{lemma}
 %	\begin{lemma}
 %		The sum of $h_i$ for non-empty sets $S_i$ is $\O(n)$.
 %	\end{lemma}
-%	\begin{algorithm}
+%	\begin{theorem}
 %		\label{2dfft}
 %		Consider two parquet strings $U$, $V$ such that
 %		$$ \max\set{x(u) - x(v) : u, v \in U}, \max\set{x(u) - x(v) : u, v \in V} \le \delta_x $$
 %		$$ \max\set{y(u) - y(v) : u, v \in U}, \max\set{y(u) - y(v) : u, v \in V} \le \delta_y $$
 %		for some $\delta_x, \delta_y$
 %		[TODO what the other conditions have to be, but it's clearly possible for our case].
-%		There exists an algorithm which calculates $Ham(U + q, V)$ for every $q \in \Z^2$ for which it is non-zero (maybe less than $k$).
+%		There exists an algorithm which calculates $\Ham(U + q, V)$ for every $q \in \Z^2$ for which it is non-zero (maybe less than $k$).
 %		There are $O(\delta_x\delta_y)$ such vectors $q$ and the algorithm takes $\tO(\delta_x\delta_yk^{1/2})$ time.
-%	\end{algorithm}
+%	\end{theorem}
 %	We have 
-%	$$ Ham(P_1 + q, F_1) = \sum_i Ham(B_i + q, S_i) $$
+%	$$ \Ham(P_1 + q, F_1) = \sum_i \Ham(B_i + q, S_i) $$
 %	By using Algorithm \ref{2dfft}. for every non-empty pair $B_i, S_i$, we obtain the total complexity $\tO(nlk^{1/2})$.
 %	
-%	For $Ham(P_2 + q, F_1)$ we use the same approach, as well as in the case of $Ham(P + q, F_2)$, etc.
+%	For $\Ham(P_2 + q, F_1)$ we use the same approach, as well as in the case of $\Ham(P + q, F_2)$, etc.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
 \end{document}
