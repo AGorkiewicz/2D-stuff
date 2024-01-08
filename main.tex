@@ -18,7 +18,8 @@
 \renewcommand{\O}{\mathcal{O}}
 \newcommand{\tO}{\tilde{\mathcal{O}}}
 \renewcommand{\phi}{\varphi}
-\newcommand{\set}[1]{\lbrace #1 \rbrace}
+\newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
 \newcommand{\bigset}[1]{\big \lbrace #1 \big \rbrace}
 \newcommand{\Bigset}[1]{\Big \lbrace #1 \Big \rbrace}
 \newcommand{\eq}[1]{\begin{align*} #1 \end{align*}}
@@ -56,11 +57,12 @@
 
 \pagestyle{myheadings}
 
+
 \title{Fast algorithm for two-dimensional pattern matching with $k$ mismatches}
-\author[1]{Adam Górkiewicz}
+\author[1]{Jonas Ellert}
 \author[2]{Paweł Gawrychowski}
-\author[3]{Tatiana Starikovskaya}
-\author[4]{Jonas Ellert}
+\author[3]{Adam Górkiewicz}
+\author[4]{Tatiana Starikovskaya}
 \affil[1]{?}
 \affil[2]{?}
 \affil[3]{?}
@@ -70,8 +72,8 @@
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}  
-\newtheorem{corollary}[theorem]{Corollary}  
 \newtheorem{fact}{Fact}
+\newtheorem{corollary}[fact]{Corollary}  
 \newtheorem{observation}{Observation}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
@@ -86,7 +88,10 @@
 
 \sloppy
 
+\renewcommand{\vector}[2]{\begin{pmatrix} #1 \\ #2 \end{pmatrix}}
+\DeclareMathOperator*{\ID}{Id}
 
+% BEGIN DOCUMENT
 \begin{document}
 
 \date{}
@@ -100,101 +105,35 @@
 %\setcounter{page}{1}
 
 
+% INTRODUCTION
 \section{Introduction}
+
 
 %\paragraph{bullshit}
 %\paragraph{related work}
 %\paragraph{our result}
 
+\newcommand{\hd}{\textsc{HD1D}\xspace}
+\newcommand{\HD}{\textsc{HD2D}\xspace}
 
-\newcommand{\hd}{\textsc{1DASHD}\xspace}
-\defproblem
-{\textsc{All-substring Hamming distance (\hd)}}
-{String $T$ of length $n$ and string $P$ of length $m \le n$.}
-{The Hamming distance between $P$ and every substring of $T$ that has length $m$.}
+We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m \le n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
 
+We consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m \le n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
 
-\renewcommand{\pm}{\textsc{1DPMWM}\xspace}
-\defproblem
-{\textsc{Pattern matching with $k$ mismatches (\pm)}}
-{String $T$ of length $n$, string $P$ of length $m \le n$, integer $k \ge 0$.}
-{The same as for \hd, but if any distance is larger than $k$, the result for that substring should equal $\infty$.}
-
+We also consider the bounded variants of \hd and \HD, where we are only required to calculate the distances which are not greater than $k$, for some parameter $k \in \Z^+$.
 
 \begin{fact}
-	Pattern matching with $k$ mismatches can be solved in $\tO((m + k \sqrt{m})n / m)$ time.
+	Bounded \hd can be solved in $\tO((m + k \sqrt{m})n / m)$ time.
 \end{fact}
-
-
-\newcommand{\HD}{\textsc{2DASHD}\xspace}
-\defproblem
-{\textsc{Two-dimensional all-substring Hamming distance (2DASHD)}}
-{2D string $T$ of size $n \times n$, 2D string $P$ of size $m \times m$ where $m \le n$.}
-{The Hamming distance between $P$ and every $m \times m$ substring of $T$.}
-
-
-\newcommand{\PM}{\textsc{2DPMWM}\xspace}
-\defproblem
-{\textsc{Two-dimensional pattern matching with $k$ mismatches (2DPMWM)}}
-{2D string $T$ of size $n \times n$, 2D string $P$ of size $m \times m$ where $m \le n$, integer $k \ge 0$.}
-{The same as for \HD, but if any distance is larger than $k$, the result for that substring should equal $\infty$.}
 
 
 \begin{theorem}
 	\label{main result}
-	Two-dimensional pattern matching with $k$ mismatches can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{theorem}
 
 
-\section{One-dimensional generalizations}
-In this section we explore some of the methods used for one-dimensional strings.
-Specifically, as our goal is to generalise the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques used to solve the one-dimensional case.
-We consider two simple reduction methods.
-
-\paragraph{Wildcard padding}
-Consider the input strings for the two aforementioned two-dimensional problems -- an $n \times n$ text $T$ and $m \times m$ pattern $P$.
-We construct one-dimensional strings $T'$ and $P'$ by ''flattening'' $T$ and $P$ with some extra padding characters.
-Specifically:
-\eq{
-	T' &= T[0] \ \texttt{?}^{m} \ T[1] \ \texttt{?}^{m} \ \dots \ \texttt{?}^{m} \ T[n - 1] \ \texttt{?}^{m}, \\
-	P' &= P[0] \ \texttt{?}^{n} \ P[1] \ \texttt{?}^{n} \ \dots \ \texttt{?}^{n} \ P[m - 1] \ \texttt{?}^{n}
-}                                                                          
-where $T[0], \dots, T[n - 1]$ and $P[0], \dots, P[m - 1]$ represent subsequent rows of $T$ and $P$ and \texttt{?} is the \textbf{wildcard} symbol that matches with every single character.
-
-\begin{observation}\label{wildcard reduction}
-	The Hamming distance between $T[i \dd i + m - 1, j \dd j + m - 1]$ and $P$ is equal to the Hamming distance between $T'[i(n + m) + j \dd (i + m)(n + m) + j - 1]$ and $P'$.
-	As a result, any solution for \hd \ / \pm, which allows the text and pattern to contain wildcard symbols, can be easily generalized to solve \HD \ / \PM, respectively.
-\end{observation}
-
-Unfortunately, the most effective known algorithms for \pm rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and do not allow wildcard symbols, thus, they cannot be easily generalized.
-There are however two useful solutions for the \hd problem, which can.
-
-\begin{fact}\label{sigman}
-	There exists an algorithm which solves \hd in $\tO(n|\Sigma|)$ time.
-	[maybe a reference?]
-	It allows wildcard symbols in $T$ and $P$. 
-\end{fact}
-
-\begin{fact}\label{approx}
-	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd in $\tO(n)$ time.
-	It was first introduced in \cite{Karloff1993}.
-	It allows wildcard symbols in $T$ and $P$.
-\end{fact}
-
-\begin{corollary}
-	By Observation \ref{wildcard reduction}. and Fact \ref{sigman}., there exists an algorithm which solves \HD in $\tO(n^2|\Sigma|)$ time.
-\end{corollary}
-
-
-\begin{corollary}
-	By Observation \ref{wildcard reduction}. and Fact \ref{approx}., there exists a $(1 + \varepsilon)$-algorithm which solves \HD in $\tO(n^2)$ time.
-\end{corollary}
-
-\paragraph{Column compression}
-Kangaroo jumps go here.
-
-
-
+% PRELIMINARIES
 \section{Preliminaries}
 
 \renewcommand{\d}[1]{#1^\mathbf{d}}
@@ -207,9 +146,8 @@ Kangaroo jumps go here.
 	We define a \textbf{substring} of $S$ as a string $R$ such that $\d{R} \subseteq \d{S}$ and $R(u) = S(u)$ for all $u \in R$.
 	We say that a string $S$ is \textbf{partitioned} into its substrings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$.
 	We call a string $S$ \textbf{monochromatic} if $\f{S}[\d{S}] = \set{\alpha}$ for some $\alpha \in \Sigma$.
+	We say that $S$ is $n \times m$ for some integers $n, m > 0$ when $\d{S} = \set{0, \dots, n - 1} \times \set{0, \dots, m - 1}$.
 \end{definition}
-
-
 
 
 \begin{definition}[Shifting]
@@ -224,16 +162,6 @@ Kangaroo jumps go here.
 	Consider two strings $S, R$. We define
 	$$ \Ham(S, R) = |\set{u : u \in S, u \in R, S(u) \neq R(u)}|.$$
 \end{definition}
-
-Consider a text string $T$ and a pattern string $P$ where
-\eq{
-	\d{T} &= \set{0, \dots, \frac{3}{2}n - 1}^2 \\
-	\d{P} &= \set{0, \dots, n - 1}^2
-}
-for some integer $n$ such that $4|n$.
-There exists an algorithm which for a given integer $k$ calculates
-$ \Ham(P + q, T) $
-
 
 
 \begin{definition}[Vector operators]
@@ -256,30 +184,94 @@ $ \Ham(P + q, T) $
 \end{definition}
 
 
+\section{One-dimensional generalizations}
+In this section we explore some of the methods used for one-dimensional strings.
+Specifically, as our goal is to generalise the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
 
 
-\section{Main Algorithm}
-
-Consider a text string $T$ and a pattern string $P$ where
-\eq{
-	\d{T} &= \set{0, \dots, \frac{3}{2}n - 1}^2 \\
-	\d{P} &= \set{0, \dots, n - 1}^2
-}
-for some integer $n$ such that $4|n$.
-There exists an algorithm which for a given integer $k$ calculates
-$ \Ham(P + q, T) $
-
-
-
-
-\begin{theorem}[Main result]
-	\label{main_algo}
-	for such $q \in \set{0, \dots, \frac{1}{2}n}^2$ for which the result is at most $k$ and returns $\infty$ for the rest.
-	The time complexity of the algorithm is $\tO(n^2 + nk^{5/4})$.
+\begin{theorem}
+	Consider an algorithm $\mathcal{A}$ which solves \HD (bounded or unbounded), but only when $2|n$ and $n \le \frac{3}{2}m$.
+	If its running time is $\mathcal{T}(m)$, then there exists an algorithm which solves the general case in $\O(\mathcal{T}(m) n^2 / m^2)$.
+	\begin{proof}
+		Let $r = \floor{m / 2}$ and let $n' = r + m - 1$ or $r + m$ if $r + m - 1$ is odd.
+		For any query vector $q$ consider a vector $u$ such that $r|u.x, r|u.y$ and $q - u \in \set{0, \dots, r - 1}^2$.
+		We have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $\d{T_u} = \set{0, \dots, n' - 1}^2$, $\f{T_u} = \f{(T - u)}$.
+		If $\f{T_u}$ is not defined for some $v \in \d{T_u}$, we can ''pad'' it with any symbol.
+		We then have $\d{(P + q - u)} \subseteq \d{T_u}$.
+		There are $O(n^2 / m^2)$ possible vectors $u$ and we run $\mathcal{A}$ for every pair of $T_u$ and $P$.
+	\end{proof}
 \end{theorem}
 
 
-\section{Description of Algorithm \ref{main_algo}.}
+
+\subsection{Wildcard padding}
+Consider the input strings for the two aforementioned two-dimensional problems -- an $n \times n$ text $T$ and $m \times m$ pattern $P$.
+We construct one-dimensional strings $T'$ and $P'$ by ''flattening'' $T$ and $P$ with some extra padding characters.
+Specifically:
+\eq{
+	T' &= T[0] \ \texttt{?}^{m} \ T[1] \ \texttt{?}^{m} \ \dots \ \texttt{?}^{m} \ T[n - 1] \ \texttt{?}^{m}, \\
+	P' &= P[0] \ \texttt{?}^{n} \ P[1] \ \texttt{?}^{n} \ \dots \ \texttt{?}^{n} \ P[m - 1] \ \texttt{?}^{n}
+}                                                                          
+where $T[0], \dots, T[n - 1]$ and $P[0], \dots, P[m - 1]$ represent subsequent rows of $T$ and $P$ and \texttt{?} is the \textbf{wildcard} symbol that matches with every single character.
+
+\begin{observation}\label{wildcard reduction}
+	The Hamming distance between $T[i \dd i + m - 1, j \dd j + m - 1]$ and $P$ is equal to the Hamming distance between $T'[i(n + m) + j \dd (i + m)(n + m) + j - 1]$ and $P'$.
+	As a result, any solution for \hd, which allows the text and pattern to contain wildcard symbols, can be easily generalized to solve \HD.
+\end{observation}
+
+Unfortunately, the most effective known algorithms for \hd rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and do not allow wildcard symbols, thus, they cannot be easily generalized.
+There are however two useful solutions for the \hd problem, which can.
+
+\begin{fact}\label{sigman}
+	There exists an algorithm which solves \hd in $\tO(n|\Sigma|)$ time.
+	[maybe a reference?]
+	It allows wildcard symbols in $T$ and $P$. 
+\end{fact}
+
+\begin{fact}\label{approx}
+	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd in $\tO(n)$ time.
+	It was first introduced in \cite{Karloff1993}.
+	It allows wildcard symbols in $T$ and $P$.
+\end{fact}
+
+\begin{corollary}
+	By Observation \ref{wildcard reduction}. and Fact \ref{sigman}., there exists an algorithm which solves \HD in $\tO(n^2|\Sigma|)$ time.
+\end{corollary}
+
+\begin{corollary}
+	By Observation \ref{wildcard reduction}. and Fact \ref{approx}., there exists a $(1 + \varepsilon)$-algorithm which solves \HD in $\tO(n^2)$ time.
+\end{corollary}
+
+
+\begin{theorem}
+	Consider an $n \times n$ string $T$, $m \times m$ string $P$ and set of vectors $Q$ such that $\d{(P + q)} \subseteq \d{T}$ for every $q \in Q$.
+	There exists an algorithm which calculates $ d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\tO(n^2 + \sum_{q \in Q} d_q)$.
+	\begin{proof}
+		For the sake of clarity of this proof, we will temporarily switch to the classical array notation for strings.
+		Let $T_0, \dots, T_{n - m}$ denote an array of two-dimensional strings (arrays) such that $T_k[0 \dd n - 1, 0 \dd m - 1] = T[0 \dd n - 1, k \dd k + m - 1]$.
+		For every row of $P$ and every row of every $T_k$ we assign an integer identifier so that $\ID(P[i]) = \ID(T_k[j]) \Leftrightarrow P[i] = T_k[j]$ using KMR ([reference]) in $\tO(n^2)$.
+		
+		We use the approach described in [kangaroo reference].
+		There exists a data structure (suffix array) which for a given one-dimensional array $S$ allows us to detect all mismatches between any given two of its subarrays of equal length.
+		It can be built in $\tO(|S|)$ and the query time is $\tO(d)$ where $d$ is the number of mismatches.
+		We construct the suffix array for the concatenation of the following arrays:
+		\begin{itemize}
+			\item the rows $P[i]$ for every $i$,
+			\item the rows $T[i]$ for every $i$,
+			\item the array $\ID(P[0]) \ID(P[1]) \dots \ID(P[m - 1])$,
+			\item the arrays $\ID(T_k[0]) \ID(T_k[1]) \dots \ID(T_k[n - 1])$ for every $k$,
+		\end{itemize}
+		the total length of which is $\O(n^2)$.
+		Let us consider a problem of detecting mismatches between $P$ and some $T' = T[j \dd j + m - 1, k \dd k + m - 1]$.
+		We can firstly detect all such $i$ for which $P[i] \neq T'[i]$ by querying the subarrays $\ID(P[0]) \dots \ID(P[m - 1])$ and $\ID(T_k[j]) \dots \ID(T_k[j + m - 1])$.
+		For every such $P[i] \neq T'[i]$ we can then find all mismatches by querying $P[i]$ and $T[i + j][k \dd k + m - 1]$.
+	\end{proof}
+\end{theorem}
+
+
+
+% MAIN ALGORITHM
+\section{Proof of Theorem \ref{main result}.}
 Firstly, we run a two-dimensional variant of Karloff's $(1 + \varepsilon)$-algorithm with $\varepsilon = 1$ matching the pattern with the text.
 We find the set $Q$ of vectors $q$ for which the estimated value of $\Ham(P + q, T)$ is at most $2k$.
 We return $\infty$ for $q \not \in Q$ and to calculate the exact result for $q \in Q$ we distinguish two cases depending on the size of $Q$.
@@ -309,7 +301,6 @@ We start by defining two-dimensional periodicity and finding suitable periods of
 \begin{lemma} \label{periodicity_lemma}
 	For every $u, v \in Q$, a vector $u - v$ is an $8k$-period of $P$.
 \end{lemma}
-
 
 
 
