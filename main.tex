@@ -78,11 +78,11 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 \newtheorem{example}{Example}
-\newtheorem{remark}[definition]{Remark}
 \newtheorem{conjecture}{Conjecture} 
 \newtheorem*{claim}{Claim}
 \newtheorem{problem}{Problem}
-%\newcommand{\defproblem}[4]{\begin{center}\vspace{2mm}\noindent\fbox{\begin{minipage}{0.96\textwidth} \begin{problem}[#2] \label{#1} \ \\ {\bf{Input:}} #3 \\ {\bf{Output:}} #4 \end{problem} \end{minipage}} \vspace{2mm}\end{center}}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
 \newcommand{\defproblem}[3]{\begin{center}\vspace{2mm}\noindent\fbox{\begin{minipage}{0.96\textwidth} #1 \\ {\bf{INPUT:}} #2 \\ {\bf{OUTPUT:}} #3 \end{minipage}} \vspace{2mm}\end{center}}
 
 
@@ -116,9 +116,9 @@
 \newcommand{\hd}{\textsc{HD1D}\xspace}
 \newcommand{\HD}{\textsc{HD2D}\xspace}
 
-We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m \le n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
+We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
 
-We consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m \le n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
+We consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
 
 We also consider the bounded variants of \hd and \HD, where we are only required to calculate the distances which are not greater than $k$, for some parameter $k \in \Z^+$.
 
@@ -127,8 +127,7 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 \end{fact}
 
 
-\begin{theorem}
-	\label{main result}
+\begin{theorem}[Main result]\label{main result}
 	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{theorem}
 
@@ -136,18 +135,25 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 % PRELIMINARIES
 \section{Preliminaries}
 
+Something about the model of computation?
+
 \renewcommand{\d}[1]{#1^\mathbf{d}}
 \newcommand{\f}[1]{#1^\mathbf{f}}
 \begin{definition}[Two-dimensional string]
-	We define a \textbf{string} $S$ as an ordered pair $(\d{S}, \f{S})$ where $\d{S} \subseteq \Z^2$ is a finite set of two-dimensional integer vectors and $\f{S} : \d{S} \to \Sigma$
+	We define a \textbf{string} $S$ as an ordered pair $(\d{S}, \f{S})$ where $\d{S} \subseteq \Z^2$ is a set of two-dimensional integer vectors and $\f{S} : \d{S} \to \Sigma$
 	is a function mapping the vectors to characters.
 	For simplicity we will sometimes write $S(u)$ to denote $\f{S}(u)$ for $u \in \d{S}$.
 	We will also sometimes write $u \in S$ to denote that $u \in \d{S}$.
-	We define a \textbf{substring} of $S$ as a string $R$ such that $\d{R} \subseteq \d{S}$ and $R(u) = S(u)$ for all $u \in R$.
-	We say that a string $S$ is \textbf{partitioned} into its substrings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$.
+	We say that a string $S$ is \textbf{partitioned} into strings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$.
 	We call a string $S$ \textbf{monochromatic} if $\f{S}[\d{S}] = \set{\alpha}$ for some $\alpha \in \Sigma$.
 	We say that $S$ is $n \times m$ for some integers $n, m > 0$ when $\d{S} = \set{0, \dots, n - 1} \times \set{0, \dots, m - 1}$.
 \end{definition}
+
+
+\begin{remark}
+	Note that we do not associate a two-dimensional string with a two-dimensional array of characters.
+	Although we will occasionally use the array notation, we do it exclusively for $n \times m$ strings and the general definition is much broader.
+\end{remark}
 
 
 \begin{definition}[Shifting]
@@ -164,10 +170,27 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 \end{definition}
 
 
+\begin{remark}
+	Under such notation, the \HD problem is equivalent to calculating the (bounded or unbounded) values of $ \Ham(P + q, T) $
+	for all $q \in \Z^2$ such that $\d{(P + q)} \subseteq \d{T}$ (so for $q \in \set{0, \dots, n - m}^2$).
+\end{remark}
+
+
+\begin{definition}[Dontcare symbol]
+	We define the \textbf{dontcare} symbol as a special character which matches with every character.
+	We will denote it with \texttt{?}.
+	Unless stated otherwise, we assume it is not allowed in $\Sigma$ and in both \hd and \HD every character present in $T$ and $P$ matches only with itself.
+\end{definition}
+
+
+\newcommand{\x}[1]{#1.x}
+\newcommand{\y}[1]{#1.y}
+\newcommand{\h}[1]{\phi \times #1}
+\newcommand{\s}[1]{\psi \times #1}
 \begin{definition}[Vector operators]
-	For a vector $u \in \Z^2$ we refer to its coordinates as $x(u), y(u)$.
-	For $u, v \in \Z^2$ we denote $u \cdot v = x(u) \cdot x(v) + y(u) \cdot y(v)$
-	and $u \times v = x(u) \cdot y(v) - y(u) \cdot x(v)$.
+	For a vector $u \in \Z^2$ we refer to its coordinates as $\x{u}, \y{u}$.
+	For $u, v \in \Z^2$ we denote $u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}$
+	and $u \times v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}$.
 	Note that alternatively $u \cdot v = |u||v| \cos \alpha$ and $u \times v = |u||v| \sin \alpha$ where $\alpha$ is the angle between $u$ and $v$.
 \end{definition}
 
@@ -176,10 +199,10 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 \begin{definition}[Quadrants]
 	We define the four \textbf{quadrants} as
 	\eq{
-		\Q_1 = (0, +\infty) \times [0, +\infty), \quad
-		\Q_2 = (-\infty, 0] \times (0, +\infty), \quad
-		\Q_3 = (-\infty, 0) \times (-\infty, 0], \quad
-		\Q_4 = [0, +\infty) \times (-\infty, 0).
+		\Q_1 &= (0, +\infty) \times [0, +\infty), \\
+		\Q_2 &= (-\infty, 0] \times (0, +\infty), \\
+		\Q_3 &= (-\infty, 0) \times (-\infty, 0], \\
+		\Q_4 &= [0, +\infty) \times (-\infty, 0).
 	}
 \end{definition}
 
@@ -189,7 +212,7 @@ In this section we explore some of the methods used for one-dimensional strings.
 Specifically, as our goal is to generalise the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
 
 
-\begin{theorem}
+\begin{theorem}[Instancing]\label{instancing}
 	Consider an algorithm $\mathcal{A}$ which solves \HD (bounded or unbounded), but only when $2|n$ and $n \le \frac{3}{2}m$.
 	If its running time is $\mathcal{T}(m)$, then there exists an algorithm which solves the general case in $\O(\mathcal{T}(m) n^2 / m^2)$.
 	\begin{proof}
@@ -198,58 +221,18 @@ Specifically, as our goal is to generalise the solution for pattern matching wit
 		We have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $\d{T_u} = \set{0, \dots, n' - 1}^2$, $\f{T_u} = \f{(T - u)}$.
 		If $\f{T_u}$ is not defined for some $v \in \d{T_u}$, we can ''pad'' it with any symbol.
 		We then have $\d{(P + q - u)} \subseteq \d{T_u}$.
-		There are $O(n^2 / m^2)$ possible vectors $u$ and we run $\mathcal{A}$ for every pair of $T_u$ and $P$.
+		There are $\O(n^2 / m^2)$ possible vectors $u$ and we run $\mathcal{A}$ for every pair of $T_u$ and $P$.
 	\end{proof}
 \end{theorem}
 
 
-
-\subsection{Wildcard padding}
-Consider the input strings for the two aforementioned two-dimensional problems -- an $n \times n$ text $T$ and $m \times m$ pattern $P$.
-We construct one-dimensional strings $T'$ and $P'$ by ''flattening'' $T$ and $P$ with some extra padding characters.
-Specifically:
-\eq{
-	T' &= T[0] \ \texttt{?}^{m} \ T[1] \ \texttt{?}^{m} \ \dots \ \texttt{?}^{m} \ T[n - 1] \ \texttt{?}^{m}, \\
-	P' &= P[0] \ \texttt{?}^{n} \ P[1] \ \texttt{?}^{n} \ \dots \ \texttt{?}^{n} \ P[m - 1] \ \texttt{?}^{n}
-}                                                                          
-where $T[0], \dots, T[n - 1]$ and $P[0], \dots, P[m - 1]$ represent subsequent rows of $T$ and $P$ and \texttt{?} is the \textbf{wildcard} symbol that matches with every single character.
-
-\begin{observation}\label{wildcard reduction}
-	The Hamming distance between $T[i \dd i + m - 1, j \dd j + m - 1]$ and $P$ is equal to the Hamming distance between $T'[i(n + m) + j \dd (i + m)(n + m) + j - 1]$ and $P'$.
-	As a result, any solution for \hd, which allows the text and pattern to contain wildcard symbols, can be easily generalized to solve \HD.
-\end{observation}
-
-Unfortunately, the most effective known algorithms for \hd rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and do not allow wildcard symbols, thus, they cannot be easily generalized.
-There are however two useful solutions for the \hd problem, which can.
-
-\begin{fact}\label{sigman}
-	There exists an algorithm which solves \hd in $\tO(n|\Sigma|)$ time.
-	[maybe a reference?]
-	It allows wildcard symbols in $T$ and $P$. 
-\end{fact}
-
-\begin{fact}\label{approx}
-	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd in $\tO(n)$ time.
-	It was first introduced in \cite{Karloff1993}.
-	It allows wildcard symbols in $T$ and $P$.
-\end{fact}
-
-\begin{corollary}
-	By Observation \ref{wildcard reduction}. and Fact \ref{sigman}., there exists an algorithm which solves \HD in $\tO(n^2|\Sigma|)$ time.
-\end{corollary}
-
-\begin{corollary}
-	By Observation \ref{wildcard reduction}. and Fact \ref{approx}., there exists a $(1 + \varepsilon)$-algorithm which solves \HD in $\tO(n^2)$ time.
-\end{corollary}
-
-
-\begin{theorem}
+\begin{theorem}[2D kangaroo jumps]\label{kangaroos}
 	Consider an $n \times n$ string $T$, $m \times m$ string $P$ and set of vectors $Q$ such that $\d{(P + q)} \subseteq \d{T}$ for every $q \in Q$.
 	There exists an algorithm which calculates $ d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\tO(n^2 + \sum_{q \in Q} d_q)$.
 	\begin{proof}
 		For the sake of clarity of this proof, we will temporarily switch to the classical array notation for strings.
 		Let $T_0, \dots, T_{n - m}$ denote an array of two-dimensional strings (arrays) such that $T_k[0 \dd n - 1, 0 \dd m - 1] = T[0 \dd n - 1, k \dd k + m - 1]$.
-		For every row of $P$ and every row of every $T_k$ we assign an integer identifier so that $\ID(P[i]) = \ID(T_k[j]) \Leftrightarrow P[i] = T_k[j]$ using KMR ([reference]) in $\tO(n^2)$.
+		For every row $P[0], \dots, P[m - 1]$ of $P$ and every row $T_k[0], \dots, T_k[n - 1]$ of every $T_k$ we assign an integer identifier so that $\ID(P[i]) = \ID(T_k[j]) \Leftrightarrow P[i] = T_k[j]$ using KMR algorithm ([reference]) in $\tO(n^2)$.
 		
 		We use the approach described in [kangaroo reference].
 		There exists a data structure (suffix array) which for a given one-dimensional array $S$ allows us to detect all mismatches between any given two of its subarrays of equal length.
@@ -269,39 +252,100 @@ There are however two useful solutions for the \hd problem, which can.
 \end{theorem}
 
 
+\begin{fact}\label{sigman1d}
+	There exists an algorithm which solves \hd in $\tO(n|\Sigma|)$ time.
+	It works by simply running $|\Sigma|$ instances of FFT.
+	It allows wildcard symbols in $T$ and $P$.
+\end{fact}
+
+
+\begin{fact}\label{approx1d}
+	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd in $\tO(n)$ time.
+	It was introduced in \cite{Karloff1993}.
+	It allows wildcard symbols in $T$ and $P$.
+\end{fact}
+
+
+\begin{theorem}\label{sigman2d}
+	There exists an algorithm which solves \HD in $\tO(n^2|\Sigma|)$ time.
+	It allows wildcard symbols in $T$ and $P$.
+	\begin{proof}
+		We will again use the array notation.
+		We construct one-dimensional strings $\bar{T}$ and $\bar{P}$ by concatenating subsequent rows $T[0], \dots, T[n - 1]$ of $T$ and rows $P[0], \dots, P[m - 1]$ of $P$ padded with some dontcare symbols:
+		\eq{
+			\bar{T} &= T[0] \ \texttt{?}^{m} \ T[1] \ \texttt{?}^{m} \ \dots \ \texttt{?}^{m} \ T[n - 1] \ \texttt{?}^{m}, \\
+			\bar{P} &= P[0] \ \texttt{?}^{n} \ P[1] \ \texttt{?}^{n} \ \dots \ \texttt{?}^{n} \ P[m - 1] \ \texttt{?}^{n}.
+			}                                                                          
+		We run the algorithm from Fact \ref{sigman1d}.
+		The distance between $T[i \dd i + m - 1, j \dd j + m - 1]$ and $P$ is equal to the distance between $\bar{T}[i(n + m) + j \dd (i + m)(n + m) + j - 1]$ and $\bar{P}$ for every $i, j$.
+	\end{proof}
+\end{theorem}
+
+
+\begin{theorem}\label{approx2d}
+	There exists a $(1 + \varepsilon)$-algorithm which solves \HD in $\tO(n^2)$ time.
+	It allows wildcard symbols in $T$ and $P$.
+	\begin{proof}
+		Identical to Theorem \ref{sigman2d}., but we use the algorithm from Fact \ref{approx1d}. instead of \ref{sigman1d}.
+	\end{proof}
+\end{theorem}
+
+
+\begin{remark}
+	The same reduction as in Theorem \ref{sigman2d}. can be applied for every \hd solution which allows dontcare symbols.
+	Unfortunately, the most effective known algorithms for bounded \hd rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and inherently do not allow dontcare symbols, thus, they cannot be easily generalized.
+\end{remark}
+
+
+\begin{observation}[Dontcare padding]
+	Every \HD solution which allows dontcare symbols (eg. the algorithms from Theorem \ref{sigman2d}. and \ref{approx2d}.) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
+	It can be done by padding the text with dontcare symbols and it does not change the complexity of the solution.
+\end{observation}
+
 
 % MAIN ALGORITHM
 \section{Proof of Theorem \ref{main result}.}
-Firstly, we run a two-dimensional variant of Karloff's $(1 + \varepsilon)$-algorithm with $\varepsilon = 1$ matching the pattern with the text.
-We find the set $Q$ of vectors $q$ for which the estimated value of $\Ham(P + q, T)$ is at most $2k$.
-We return $\infty$ for $q \not \in Q$ and to calculate the exact result for $q \in Q$ we distinguish two cases depending on the size of $Q$.
+We show an algorithm which works in time $\tO(m^2 + mk^{5/4})$ assuming $2|n$ and $m < n \le \frac{3}{2}m$.
+By Theorem \ref{instancing}., our thesis will follow.
+
+We start by running the algorithm from Theorem \ref{approx2d}. with $\varepsilon = 1$.
+We construct the set $Q$ as the set of such vectors $q \in \Z^2$ for which the estimated value of $\Ham(P + q, T)$ is at most $2k$.
+For every $q \in \set{0, \dots, n - m}^2 \setminus Q$ we say that $\Ham(P + q, T)$ equals $\infty$.
+The next step is to calculate the exact value of $\Ham(P + q, T)$ for every $q \in Q$.
+
+Let us consider the case when $|Q| \le 2m + m^2/k$.
+We can run the algorithm from Theorem \ref{kangaroos}. and by the fact that $\Ham(P + q, T) \le 4k$ for every $q \in Q$, it will perform $\tO(m^2 + mk)$ operations.
+We are left with the case when $|Q| > 2m + m^2/k$, in which we take advantage of the fact that some strings $P + q$ for $q \in Q$ must have a large overlap and small Hamming distance from each other, and thus $P$ must be periodic.
 
 
-\subsection{Solution for few queries}
-Assume that $|Q| \le 2n + n^2/k$.
-For every $q \in Q$ we explicitly detect all mismatches using the ''kangaroo jumps'' technique in $\O(k)$ operations.
-In total, the algorithm takes $\tO(n^2 + nk)$ time.
+\newcommand{\T}{\mathcal{T}}
+\renewcommand{\S}{\mathcal{S}}
+\renewcommand{\P}{\mathcal{P}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\F}{\mathcal{F}}
+\renewcommand{\L}{\mathcal{L}}
 
 
-\subsection{Solution for many queries}
-Assume that $|Q| > 2n + n^2/k$.
-We take advantage of the fact that some occurrences of the pattern in the text must have a large overlap, and thus the pattern must be periodic.
-Consequently, it can be decomposed into some regularly structured monochromatic substrings.
-We employ a similar decomposition approach for the text and then calculate the result by summing the contributions of every pair of pattern and text substrings.
-
-We start by defining two-dimensional periodicity and finding suitable periods of the pattern.
+% 2D PERIODICITY
+\subsection{Two-dimensional periodicity}
+In this section we introduce a range of new tools related to two-dimensional periodicity.
+We then consider the regular structure of the pattern and show how it can be decomposed into some easily representable monochromatic strings.
 
 
 \begin{definition}[Periodicity]
 	Consider any vector $\delta \in \Z^2$.
-	We say that a string $S$ has an $\ell$-period $\delta$ if $$ \Ham(S + \delta, S) \le \ell. $$
+	We say that a string $S$ has an $\ell$-period $\delta$ when
+	$$ \Ham(S + \delta, S) \le \ell. $$
 \end{definition}
 
 
 \begin{lemma} \label{periodicity_lemma}
-	For every $u, v \in Q$, a vector $u - v$ is an $8k$-period of $P$.
+	For every $u, v \in Q$, the vector $u - v$ is an $8k$-period of $P$.
+	\begin{proof}
+		$\Ham(P + u - v, P) = \Ham(P + u, P + v) \le \Ham(P + u, T) + \Ham(P + v, T) \le 4k + 4k. $
+	\end{proof}
 \end{lemma}
-
 
 
 \begin{theorem}
@@ -317,33 +361,28 @@ We start by defining two-dimensional periodicity and finding suitable periods of
 \end{theorem}
 
 
-By running Algorithm \ref{get_periods}. on the set $Q$ we obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$ which by Lemma \ref{periodicity_lemma}. are $\O(k)$-periods of $P$.
-We use them as constants throughout the rest of the description along with $m = \phi \times \psi$.
-Note that because $|Q| > n + n^2 / k$, we have $m \le |\phi||\psi| = \O(\min\set{n, k})$.
+We run Algorithm \ref{get_periods}. on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 2m + m^2/k \ge 4\ell$).
+We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$ which by Lemma~\ref{periodicity_lemma}. are $\O(k)$-periods of $P$.
+We use them as constants throughout the rest of the description along with $p = \phi \times \psi$.
+Note that because $|Q| > m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\set{m, k})$.
 
-We will abuse the notation and for $u \in \Z^2$ write $\phi(u), \psi(u)$ to denote values $\phi \times u$ and $\psi \times u$.
 
-
-\renewcommand{\L}{\mathcal{L}}
-\begin{definition}[Lattice function]
-	We call $\mathcal{F} : \Z^2 \to \set{1, \dots, m}$ a lattice function if
-	$$ \mathcal{F}(u) = \mathcal{F}(v) \Longleftrightarrow \exists_{s, t \in \Z} \ u = v + s\phi + t\psi. $$
+\begin{definition}[Lattice congruency]
+	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice congruent} and denote $u \equiv v$ when there exist $s, t \in \Z$ such that $u - v = s\phi + t\psi$.
 \end{definition}
-\begin{lemma}
-	There exists a lattice function (note that the values are from $1$ to $m$).
+
+
+\begin{lemma}[Lattice base]\label{lattice_base}
+	There exists an array $\gamma_1, \dots, \gamma_p \in \Z^2$ such that $\gamma_i \not \equiv \gamma_j$ for $i \neq j$ and for every $u \in \Z^2$ there exists $\gamma_i$ such that $u \equiv \gamma_i$.
 \end{lemma}
-
-
-We choose any lattice function $\L$ and use it consistently throughout the description, as a way to help with the notation.
-We will now show how to decompose the pattern and the text and how to calculate the result with the help of some auxiliary algorithms.
 
 
 \begin{definition}[Parquet]
 	Consider a set $U \subseteq \Z^2$. We call $U$ a \textbf{parquet} if there exist some values (restrictions) $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that
-	$$ U = \set{u : u \in \Z^2, x_0 < x(u) \le x_1, y_0 < y(u) \le y_1, \phi_0 < \phi(u) \le \phi_1, \psi_0 < \psi(u) \le \psi_1}. $$
+	$$ U = \set{u : u \in \Z^2, x_0 < \x{u} \le x_1, y_0 < \y{u} \le y_1, \phi_0 < \h{u} \le \phi_1, \psi_0 < \s{u} \le \psi_1}. $$
 	If some existing restrictions hold additional conditions, we classify $U$ as a special case of parquet:
 	\begin{enumerate}[a)]
-		\item if $x_1 - x_0 \ge |x(\phi)| + |x(\psi)|$ and $y_1 - y_0 \ge |y(\phi)| + |y(\psi)|$, then we call $U$ a \textbf{spacious} parquet,
+		\item if $x_1 - x_0 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 \ge |\y{\phi}| + |\y{\psi}|$, then we call $U$ a \textbf{spacious} parquet,
 		\item if $x_0, y_0 = -\infty$ and $x_1, y_1 = +\infty$, then we call $U$ a \textbf{simple} parquet,
 		\item if $x_0, y_0, \phi_0, \psi_0 = -\infty$ and $x_1, y_1 = +\infty$, then we call $U$ a \textbf{primitive} parquet.
 	\end{enumerate}
@@ -353,82 +392,83 @@ We will now show how to decompose the pattern and the text and how to calculate 
 
 \begin{definition}[Subparquet]
 	Consider a set $V \subseteq \Z^2$. 
-	We call $V$ a \textbf{subparquet} if there exist a parquet $U$ and a value $\gamma \in \set{1, \dots, m}$ such that
-	$$ V = \set{u : u \in U, \L(u) = \gamma}.$$
+	We call $V$ a \textbf{subparquet} if there exist a parquet $U$ and a vector $\gamma \in \Z^2$ such that
+	$$ V = \set{u : u \in U, u \equiv \gamma}.$$
 	We call $V$ a spacious/simple/primitive subparquet when there exists $U$ which is (correspondingly) a spacious/simple/primitive parquet.
-	We will abuse the notation and for non-empty $V$ write $\L(V)$ to (unambiguously) denote the value $\gamma$. 
+	We will abuse the notation and for non-empty $V$ write $u \equiv V$ to (unambiguously) denote that $u \equiv \gamma$ for some vector $u \in \Z^2$. 
 \end{definition}
 
 
 \begin{definition}[Parquet string]
 	For a string $S$, if $\d{S}$ is a spacious/simple (sub-)parquet, then we call $S$ a spacious/simple (sub-)parquet string.
-	Note that since primitive (sub-)parquets are infinite, we do not extend their notion to strings.
 \end{definition}
+
+
+\begin{theorem}[Periodic parquet decomposition]\label{parquet_decomposition}
+	Consider a spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$.
+	It can be partitioned into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
+	There exists an algorithm which finds this partitioning in $\tO(|\d{R}|)$ operations.
+\end{theorem}
+
+
+Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of Theorem \ref{parquet_decomposition}.
+We partition $P$ into a set of monochromatic spacious strings $\V$, where $|\V| = \O(k)$.
+Note that because the text is not necessarily periodic, we unfortunately cannot use the same approach for $T$.
+
+
+% TEXT DECOMPOSITION
+\subsection{Text decomposition}
+In this section we show how to decompose the text using a similar but more nuanced approach.
+We then introduce an effective way to aggregate the contributions of every pair of strings that $P$ and $T$ are decomposed into.
 
 
 \newcommand{\Ta}{T_a}
 \newcommand{\Tb}{T_b}
 \begin{definition}[Active text]
 	Consider a set $U = \bigcup_{q \in Q} \d{P} + q$. 
-	We define substrings $\Ta = (U, \f{T})$ and $\Tb = (\d{T} \setminus U, \f{T})$.
+	We define strings $\Ta = (U, \f{T})$ and $\Tb = (\d{T} \setminus U, \f{T})$.
 	We will call $\Ta$ the \textbf{active text} and $\Tb$ the \textbf{inactive text}.
 	For every $u \in \Z^2$ we define its \textbf{border distance} as
 	$$\min\set{\|u - v\|_\infty : v \in (\Z^2 \setminus U)}.$$
 \end{definition}
 
 
-\begin{lemma}
-	For every $q \in Q$ we have
-	$$ \Ham(P + q, T) = \Ham(P + q, \Ta).$$
-\end{lemma}
+\begin{observation}
+	$\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
+\end{observation}
 
 
-\begin{theorem}[Periodic parquet decomposition]
-	\label{parquet_decomposition}
-	Consider a spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$.
-	It can be partitioned into $\O(k)$ monochromatic spacious/simple subparquet substrings, correspondingly.
-	There exists an algorithm which finds those partitionings in $\tO(|\d{R}|)$ operations.
+\begin{theorem}[Active text decomposition]\label{text_decomposition}
+	There exists an algorithm which for any $\ell = \O(m)$ partitions $\Ta$ into a set of monochromatic simple subparquet strings $\U$ and a string $F$,
+	such that $|\U| = \O(\min\set{m^2, \ell k})$ and for every $u \in F$ its border distance is $\O(m / \ell)$.
+	It does so in $\tO(m^2)$ operations.
 \end{theorem}
 
 
-\newcommand{\T}{\mathcal{T}}
-\renewcommand{\S}{\mathcal{S}}
-\renewcommand{\P}{\mathcal{P}}
-\newcommand{\U}{\mathcal{U}}
-\newcommand{\V}{\mathcal{V}}
-\newcommand{\F}{\mathcal{F}}
-
-\begin{theorem}[Active text decomposition]
-	\label{text_decomposition}
-	There exists an algorithm which for any $\ell = \O(n)$ partitions $\Ta$ into a set of monochromatic simple subparquet substrings $\U$ and a substring $F$,
-	such that $|\U| = \O(\min\set{n^2, \ell k})$ and for every $u \in F$ its border distance is $\O(n / \ell)$.
-	It does so in $\tO(n^2)$ operations.
-\end{theorem}
-
-
-\begin{theorem}[Sparse Hamming]
-	\label{sparse_algo}
-	There exists an algorithm which for a set of monochromatic simple subparquet strings $\U$ and a set of monochromatic subparquet strings $\V$ calculates 
+\begin{theorem}[Sparse Hamming]\label{sparse_algo}
+	Consider a set of monochromatic simple subparquet strings $\U$, a set of monochromatic subparquet strings $\V$ and a set of vectors $Q$.
+	There exists an algorithm which calculates
 	$$ \sum_{U \in \U}\sum_{V \in \V} \Ham(U + q, V) $$
-	for any $q \in \Z^2 $ in $\tO(1)$ operations after $\tO(\ell^2 + |\U||\V|)$ preprocessing time assuming that all strings are defined for vectors with coordinate values from $\set{0, \dots, \ell}$.
+	for every $q \in Q$ in time $\tO(\ell^2 + |\U||\V| + |Q|)$ assuming that all strings are defined for vectors with coordinate values from $\set{0, \dots, \ell}$ for some $\ell \in \Z^+$.
 \end{theorem}
 
 
 \begin{theorem}[Dense Hamming]
 	\label{dense_algo}
-	Consider a substring $F$ of $\Ta$ such that for every $u \in F$ its border distance is less than $\ell$ for some integer $\ell$.
-	There exists an algorithm which calculates $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(n^2 + n \ell k^{1/2})$.
+	Consider a string $F$ such that for every $u \in F$ its border distance is less than $\ell$ for some $\ell \in \Z^+$.
+	There exists an algorithm which calculates $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + m \ell k^{1/2})$.
+	%Note that $P$, $Q$ and border distance are specific to our instance.
 \end{theorem}
 
 
-As $P$ is a spacious parquet string, we partition it using Algorithm \ref{parquet_decomposition}. into a set of subparquet substrings $\V$.
-Subsequently we partition $\Ta$ using Algorithm \ref{text_decomposition}. with $\ell = nk^{-3/4}$ into a set of simple subparquet substrings $\U$ and a substring $F$.
+We partition $\Ta$ using the algorithm from Theorem \ref{text_decomposition}. with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\U$ and a string $F$.
 For every $q \in Q$ we then have
-$$ \Ham(P + q, T) = \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{U \in \U}\sum_{V \in \V} \Ham(U - q, V) $$
-which we calculate by summing the results of Algorithm \ref{dense_algo} and Algorithm \ref{sparse_algo}
+$$ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{U \in \U}\sum_{V \in \V} \Ham(U - q, V) $$
+which we calculate by summing the results of algorithms from Theorem \ref{dense_algo}. and Theorem \ref{sparse_algo}.
 
 
-\section{Description of Algorithm \ref{get_periods}.}
+% PHI PSI FINDER
+\subsection{Proof of Theorem \ref{get_periods}.}
 Firstly, we find any closest pair of vectors $s, t \in U$ by running the standard $\tO(|U|)$ time algorithm and denote $w = t - s$.
 We define a partial order $\le_{w}$ where $v \le_w u$ for some $u, v \in U$ when at least one condition holds:
 \begin{enumerate}[(a)]
@@ -447,37 +487,45 @@ We have the following inequalities:
 By considering the assumpion $|U| > 4\ell$ it can be proven that $|w||w'| \le 22 \frac{\ell^2}{|U|}$ and the other conditions also hold.
 
 
-\section{Description of Algorithm \ref{parquet_decomposition}.}
+% PARQUET DECOMPOSITION
+\subsection{Proof of Theorem \ref{parquet_decomposition}.}
+
+
 \begin{definition}[Lattice graph]
 	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $G_U = (U, E_U)$ where
 	$$ E_U = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U} $$ 
 	so every vector is connected with its translations by $\phi, \psi, -\phi, -\psi$.
 \end{definition}
+
+
 \begin{lemma}
 	If $U$ is a spacious subparquet, then $G_U$ is connected.
 \end{lemma}
-Firstly, we partition $R$ into a set of subparquet substrings $\S$.
+
+
+Firstly, we partition $R$ into a set of subparquet strings $\S$.
 For every non-empty $S \in \S$ we consider a lattice graph $G_{\d{S}}$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighbouring vectors $v, w$ such that $S(v) \neq S(w)$.
-We select any such pair and partition $S$ into spacious (or simple if $S$ is simple) subparquet substrings $S'$ and $S''$ such that $v \in S'$ and $w \in S''$.
-For example if $v = w + \phi$, then $S' = \set{u : u \in S, \psi(u) \le \psi(v)}$ and $S'' = \set{u : u \in S, \psi(u) > \psi(v)}$.
+We select any such pair and partition $S$ into spacious (or simple if $S$ is simple) subparquet strings $S'$ and $S''$ such that $v \in S'$ and $w \in S''$.
+For example if $v = w + \phi$, then $S' = \set{u : u \in S, \s{u} \le \s{v}}$ and $S'' = \set{u : u \in S, \s{u} > \s{v}}$.
 In the cases when $v = w + \delta$ for $\delta \in \set{-\phi, \psi, -\psi}$ the construction in similar.
 
-We can recursively partition $S'$ and $S''$ further until we obtain monochromatic substrings.
+We can recursively partition $S'$ and $S''$ further until we obtain monochromatic strings.
 Because $R$ has $\O(k)$-periods $\phi$ and $\psi$, the total number of neighbor pairs $v, w$ such that $S(v) \neq S(w)$ is $\O(k)$ throughout all $S \in \S$.
-Thus the total number of recursive calls is $\O(k)$ and because $|\S| = \O(k)$, the total number of constructed substrings is $\O(k)$.
+Thus the total number of recursive calls is $\O(k)$ and because $|\S| = \O(k)$, the total number of constructed strings is $\O(k)$.
 The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
 
 
-\section{Description of Algorithm \ref{text_decomposition}.}
+% TEXT DECOMPOSITION
+\subsection{Proof of Theorem \ref{text_decomposition}.}
 
-We assume $\ell$ to be an even number smaller than $\frac{n}{4}$. 
+We assume $\ell$ to be an even number smaller than $\frac{n}{4}$ (if it is not, we can find $\ell' = \Theta(\ell)$, which is). 
 We start by partitioning $\d{T}$ into \textbf{tiles}.
-We define $\phi_{\min} = \min \set{\phi(u) : u \in \d{T}}$, analogously $\phi_{\max}, \psi_{\min}, \psi_{\max}$ and denote $\delta_{\phi} = \frac{\phi_{\max} - \phi_{\min}}{\ell}$, $\delta_{\psi} = \frac{\psi_{\max} - \psi_{\min}}{\ell}$.
+We define $\phi_{\min} = \min \set{\h{u} : u \in \d{T}}$, analogously $\phi_{\max}, \psi_{\min}, \psi_{\max}$ and denote $\delta_{\phi} = \frac{\phi_{\max} - \phi_{\min}}{\ell}$, $\delta_{\psi} = \frac{\psi_{\max} - \psi_{\min}}{\ell}$.
 We define a tile with integer coordinates $(s, t)$ as a set of vectors $u \in \Z^2$ such that
-$$ \phi_{\min} + s \delta_{\phi} < \phi(u) \le \phi_{\min} + (s + 1)\delta_{\phi}, $$ 
-$$ \psi_{\min} + t \delta_{\psi} < \psi(u) \le \psi_{\min} + (t + 1)\delta_{\psi}. $$
-For a fixed tile $U$, let's consider $x_{\min} = \min \set{x(u) : u \in U}$, analogously $x_{\max}, y_{\min}, y_{\max}$ and a set
-$$ R = \set{u : u \in \Z^2, x_{\min} \le x(u) \le x_{\max}, y_{\min} \le y(u) \le y_{\max}}. $$
+$$ \phi_{\min} + s \delta_{\phi} < \h{u} \le \phi_{\min} + (s + 1)\delta_{\phi}, $$ 
+$$ \psi_{\min} + t \delta_{\psi} < \s{u} \le \psi_{\min} + (t + 1)\delta_{\psi}. $$
+For a fixed tile $U$ consider $x_{\min} = \min \set{\x{u} : u \in U}$, analogously $x_{\max}, y_{\min}, y_{\max}$ and a set
+$$ R = \set{u : u \in \Z^2, x_{\min} \le \x{u} \le x_{\max}, y_{\min} \le \y{u} \le y_{\max}}. $$
 We classify $U$ into one of three types:
 \begin{enumerate}[a)]
 	\item if $U \cap \Ta = \emptyset$ then $U$ is an inactive tile,
@@ -485,7 +533,7 @@ We classify $U$ into one of three types:
 	\item if $U \cap \Ta \neq \emptyset$, $R \subseteq \Ta$ then $U$ is an active tile.
 \end{enumerate}
 We define $B$ as a set of all $u \in \Ta$ contained in a border tile and construct $F = (B, \f{T})$.
-Let us denote $z = \frac{3n - 2}{4}$.
+Let us denote $z = \frac{n - 1}{2}$.
 Consider a family of sets $\mathcal{R} = \set{R^1_i} \cup \set{R^2_i} \cup \set{R^3_i} \cup \set{R^4_i}$,
 where for every active tile $U$ with coordinates $(s, t)$ its members are placed into exactly one subset:
 \begin{enumerate}[1)]
@@ -496,13 +544,14 @@ where for every active tile $U$ with coordinates $(s, t)$ its members are placed
 \end{enumerate}
 The number of non-empty sets $R \in \mathcal{R}$ is $\O(\ell)$.
 For each of them we consider $S = (R, \f{T})$ which is a simple parquet string with $\O(k)$-periods $\phi$ and $\psi$,
-and we further partition it using Algorithm \ref{parquet_decomposition}., thus constructing the set $\U$.
+and we further partition it using algorithm from Theorem \ref{parquet_decomposition}., thus constructing the set $\U$.
 
 
-\section{Description of Algorithm \ref{sparse_algo}.}
+% SPARSE HAMMING
+\subsection{Proof of Theorem \ref{sparse_algo}.}
 
-
-For $U \in \U$, $V \in \V$, the value $ \Ham(U + q, V)$ either equals $|(\d{U} + q) \cap \d{V}|$ if $U[\d{U}] \neq V[\d{V}]$ or $0$ otherwise.
+Firstly, we assume that all strings in $\U$ nor $\V$ are non-empty.
+For $U \in \U$, $V \in \V$, the value $ \Ham(U + q, V)$ either equals $|(\d{U} + q) \cap \d{V}|$ if $U[\d{U}] \neq V[\d{V}]$ or~$0$ otherwise.
 We have
 $$ \sum_{U \in \U} \sum_{V \in \V} \Ham(U + q, V) = \sum_{(A, B) \in \F} |(A + q) \cap B| $$
 where $ \F = \set{(\d{U}, \d{V}) : U \in \U, V \in \V, U[\d{U}] \neq V[\d{V}]} $. 
@@ -510,35 +559,34 @@ For every $(A, B) \in \F$ we can find primitive subparquets $A_1, \dots, A_4$ su
 $$ |(A + q) \cap B| = |(A_1 + q) \cap B| - |(A_2 + q) \cap B| - |(A_3 + q) \cap B| + |(A_4 + q) \cap B| $$
 thus we will consider four instances of a problem of calculating $\sum_{(A, B) \in \F'} |(A + q) \cap B|$ where $A$ is a primitive subparquet and $B$ is a subparquet for all $(A, B) \in \F'$.
 
-We will write $u \le_{\phi\psi} v$ to denote that $\phi(u) \le \phi(v) \wedge \psi(u) \le \psi(v)$ for some $u, v \in \Z^2$.
+We will write $u \le_{\phi\psi} v$ to denote that $\h{u} \le \h{v} \wedge \s{u} \le \s{v}$ for some $u, v \in \Z^2$.
 
-
-\begin{theorem}
-	\label{sweeper}
+\begin{theorem}\label{sweeper}
 	There exists a data structure which for a given set of vectors $U$ and a set of parquets $\S$ calculates
 	$$ \sum_{v \in V} |\set{S : S \in \S, v \in S}| $$
 	for a given query vector $q$ where $V = \set{v : v \in U, v \le_{\phi\psi} q}$.
 	It requires $\tO(|U| + |\S|)$ preprocessing time and $\tO(1)$ query time.
 \end{theorem}
 
+We consider the array $\gamma_1, \dots, \gamma_p$ introduced in Lemma \ref{lattice_base}.
+We consider an array of data structures $J_1, \dots, J_p$ described in Theorem \ref{sweeper}.
+We construct $J_i$ for a set of points $U_i = \set{u : u \in \Z^2, |\x{u}| \le \ell, |\y{u}| \le \ell, u \equiv \gamma_i}$ and set of parquets $\S_i$.
+To construct $\S_i$ we consider every pair $(A, B) \in \F'$ and find a vector $w$ and a parquet $V$ such that 
+$$ A = \set{u : u \le_{\phi\psi} w, u \equiv w},$$
+$$ B = \set{u : u \in (V + w), u \equiv B}.$$
+The set $\S_i$ contains the parquets $V$ obtained for pairs $(A, B)$ such that $B - w \equiv \gamma_i$.
 
-We consider an array of data structures $J_1, \dots, J_m$ described in Algorithm \ref{sweeper}.
-We construct $J_\gamma$ for a set of points $U_\gamma = \set{u : u \in \Z^2, |x(u)| \le \ell, |y(u)| \le \ell, \L(u) = \gamma}$ and set of parquets $\S_\gamma$.
-To construct $\S_\gamma$ we consider every pair $(A, B) \in \F'$ and find a vector $w$ and a parquet $V$ such that 
-$$ A = \set{u : u \le_{\phi\psi} w, \L(u) = \L(w)},$$
-$$ B = \set{u : u \in (V + w), \L(u) = \L(B)}.$$
-The set $\S_\gamma$ contains the parquets $V$ obtained for pairs $(A, B)$ such that $\L(B - w) = \gamma$.
-We can obtain the result of $\sum_{(A, B) \in \F'} |(A + q) \cap B|$ by making a query to $J_{\L(q)}$ with vector $q$.
-
-For explanation, if $\L(A + q) \neq \L(B)$, then $(A + q) \cap B = \emptyset$.
-Otherwise $\L(q) = \L(B - w) = \gamma$ and we have
-$$ (A + q) \cap B = \set{u : u \le_{\phi\psi} w + q, u \in (V + w), \L(u) = \L(B)} = \set{v : v \le_{\phi\psi} q, v \in V, \L(v) = \gamma} $$
+For a query vector $q \in \Z^2$ we can obtain the value of $\sum_{(A, B) \in \F'} |(A + q) \cap B|$ by finding $i \in \set{1, \dots, p}$ such that $\gamma_i \equiv q$ and making a query to $J_i$ with vector $q$. 
+For explanation, if $A + q \not \equiv B$, then $(A + q) \cap B = \emptyset$.
+Otherwise $q \equiv B - w \equiv \gamma_i$ and we have
+$$ (A + q) \cap B = \set{u : u \le_{\phi\psi} w + q, u \in (V + w), u \equiv B} = \set{v : v \le_{\phi\psi} q, v \in V, v \equiv \gamma_i} $$
 
 
-\section{Description of Algorithm \ref{dense_algo}.}
+% DENSE HAMMING
+\subsection{Proof of Theorem \ref{dense_algo}.}
 To be done.
 %	We assume $l$ to be less than $\frac{1}{2}n$.
-%	We first partition the string $F$ into four substrings:
+%	We first partition the string $F$ into four strings:
 %	\begin{itemize}
 %		\item $F_1 = (\set{0, \dots, \frac{3}{4}n - 1} \times \set{0, \dots, \frac{3}{4}n - 1} \cap \d{F}, \f{F})$
 %		\item $F_2 = (\set{0, \dots, \frac{3}{4}n - 1} \times \set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \cap \d{F}, \f{F})$
@@ -547,14 +595,14 @@ To be done.
 %	\end{itemize}
 %	We then independently calculate $\Ham(P + q, F_i)$ for each $i$ and sum the results.
 %	
-%	To calculate the solution for $\Ham(P + q, F_1)$, let's consider substrings of $P$:
+%	To calculate the solution for $\Ham(P + q, F_1)$, let's consider strings of $P$:
 %	$$ P_1 = (\set{0, \dots, l - 1} \times \set{0, \dots, n - 1}, \f{P}) $$
 %	$$ P_2 = (\set{l, \dots, n - 1} \times \set{0, \dots, l - 1}, \f{P}) $$
 %	\begin{lemma}
 %		For $q \in Q$ we have
 %		$$ \Ham(P + q, F_1) = \Ham(P_1 + q, F_1) + \Ham(P_2 + q, F_2) $$
 %	\end{lemma}
-%	To calculate $\Ham(P_1 + q, F_1)$ let's partition $F_1$ into substrings $\S = \set{S_i}$, where
+%	To calculate $\Ham(P_1 + q, F_1)$ let's partition $F_1$ into strings $\S = \set{S_i}$, where
 %	$$ S_i = ((il + \set{0, \dots, l - 1}) \times \Z \cap \d{F_1}, \f{F_1}) $$
 %	For every non-empty string $S_i$ let's define $h_i = \max\set{y(u) : u \in S_i} - \min\set{y(u) : u \in S_i}$.
 %	\begin{lemma}
