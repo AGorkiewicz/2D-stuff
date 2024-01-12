@@ -89,6 +89,8 @@
 
 \sloppy
 
+\DeclareMathOperator*{\dom}{dom}
+\newcommand{\restr}[2]{#1\restriction_{#2}}
 
 % BEGIN DOCUMENT
 \begin{document}
@@ -117,11 +119,6 @@ We consider the two-dimensional all-substring Hamming distance problem (\HD), wh
 We also consider the bounded variants of \hd and \HD, where we are only required to calculate the distances which are not greater than $k$, for some parameter $k \in \Z^+$.
 
 
-\begin{fact}
-	Bounded \hd can be solved in $\tO((m + k \sqrt{m})n / m)$ time.
-\end{fact}
-
-
 \begin{theorem}[Main result]\label{main result}
 	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{theorem}
@@ -130,49 +127,45 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 % PRELIMINARIES
 \section{Preliminaries}
 
-Something about the model of computation?
+For our purposes we will not use the standard definition of a two-dimensional string, where we associate it with a two-dimensional array of characters, and instead we will define it more broadly.
+Although we will occasionally use the array notation, we will do it exclusively for $n \times m$ strings.
+In all sections we will only consider integer points or vectors and we will use these terms interchangeably.
+We will denote $[n] = \set{0, \dots, n - 1}$ for any $n \in \Z^+$.
+Our results hold under word-RAM model of computation.
 
-\renewcommand{\d}[1]{#1^\mathbf{d}}
+\newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
+\renewcommand{\d}[1]{\dom(#1)}
 \newcommand{\f}[1]{#1^\mathbf{f}}
 \begin{definition}[Two-dimensional string]
-	We define a \textbf{string} $S$ as an ordered pair $(\d{S}, \f{S})$ where $\d{S} \subseteq \Z^2$ is a set of two-dimensional integer vectors and $\f{S} : \d{S} \to \Sigma$
-	is a function mapping the vectors to characters.
-	For simplicity we will sometimes write $S(u)$ to denote $\f{S}(u)$ for $u \in \d{S}$.
-	We will also sometimes write $u \in S$ to denote that $u \in \d{S}$.
-	We say that a string $S$ is \textbf{partitioned} into strings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$.
-	We call a string $S$ \textbf{monochromatic} if $\f{S}[\d{S}] = \set{\alpha}$ for some $\alpha \in \Sigma$.
-	We say that $S$ is $n \times m$ for some integers $n, m > 0$ when $\d{S} = \set{0, \dots, n - 1} \times \set{0, \dots, m - 1}$.
+	We define a \textbf{string} $S$ as a partial function $\Z^2 \pto \Sigma$ which maps some set of points denoted as $\d{S}$ to characters.
+	For simplicity we will write $u \in S$ to denote that $u \in \d{S}$.
+	We say that a string $S$ is \textbf{partitioned} into strings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$ and $R_i(u) = S(u)$ for all $u \in R_i$.
+	We call a string $S$ \textbf{monochromatic} when it is constant on its domain.
+	We say that $S$ is $n \times m$ for some $n, m \in \Z^+$ when $\d{S} = [n] \times [m]$.
+	Physically we represent a string as a list of point-character pairs.
 \end{definition}
 
 
-\begin{remark}
-	Note that we do not associate a two-dimensional string with a two-dimensional array of characters.
-	Although we will occasionally use the array notation, we do it exclusively for $n \times m$ strings and the general definition is much broader.
-\end{remark}
-
-
 \begin{definition}[Shifting]
-	For a set of vectors $V$ and a vector $u$, we denote $V + u$ as $\set{v + u : v \in V}$.
-	For a string $S$ and a vector $u$, we denote $S + u$ as a string $R$ such that
-	$\d{R} = \d{S} + u$ and $\f{R}(v) = \f{S}(v - u)$ for $v \in \d{R}$.
-	Intuitively, we shift the set of vectors while maintaining their character values.
+	For a set of points $V \subseteq \Z^2$ and a vector $u \in \Z^2$, we denote $V + u$ as $\set{v + u : v \in V}$.
+	For a string $S$ and a vector $u \in \Z^2$ we denote $S + u$ as a string $R$ such that
+	$\d{R} = \d{S} + u$ and $R(v) = S(v - u)$ for $v \in \d{R}$.
+	Intuitively, we shift the set of points while maintaining their character values.
 \end{definition}
 
 
 \begin{definition}[Hamming distance]
 	Consider two strings $S, R$. We define
-	$$ \Ham(S, R) = |\set{u : u \in S, u \in R, S(u) \neq R(u)}|.$$
+	$$ \Ham(S, R) = |\set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|.$$
 \end{definition}
 
 
-\begin{remark}
-	Under such notation, the \HD problem is equivalent to calculating the (bounded or unbounded) values of $ \Ham(P + q, T) $
-	for all $q \in \Z^2$ such that $\d{(P + q)} \subseteq \d{T}$ (so for $q \in \set{0, \dots, n - m}^2$).
-\end{remark}
+Under such notation, the \HD problem is equivalent to calculating the (bounded or unbounded) values of $ \Ham(P + q, T) $
+for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m]^2$).
 
 
-\begin{definition}[Dontcare symbol]
-	We define the \textbf{dontcare} symbol as a special character which matches with every character.
+\begin{definition}[Don't care symbol]
+	We define the \textbf{don't care} symbol as a special character which matches with every character.
 	We will denote it with \texttt{?}.
 	Unless stated otherwise, we assume it is not allowed in $\Sigma$ and in both \hd and \HD every character present in $T$ and $P$ matches only with itself.
 \end{definition}
@@ -183,7 +176,7 @@ Something about the model of computation?
 \newcommand{\h}[1]{\phi \times #1}
 \newcommand{\s}[1]{\psi \times #1}
 \begin{definition}[Vector operators]
-	For a vector $u \in \Z^2$ we refer to its coordinates as $\x{u}, \y{u}$.
+	For any $u \in \Z^2$ we refer to its coordinates as $\x{u}, \y{u}$.
 	For $u, v \in \Z^2$ we denote $u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}$
 	and $u \times v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}$.
 	Note that alternatively $u \cdot v = |u||v| \cos \alpha$ and $u \times v = |u||v| \sin \alpha$ where $\alpha$ is the angle between $u$ and $v$.
@@ -209,13 +202,14 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 
 \begin{theorem}[Instancing]\label{instancing}
 	Consider an algorithm $\mathcal{A}$ which solves \HD (bounded or unbounded), but only when $2|n$ and $n \le \frac{3}{2}m$.
-	If its running time is $\mathcal{T}(m)$, then there exists an algorithm which solves the general case in $\O(\mathcal{T}(m) n^2 / m^2)$.
+	If its running time is $\mathcal{T}(m)$, then the general case can be solved in $\O(\mathcal{T}(m) n^2 / m^2)$.
 	\begin{proof}
 		Let $r = \floor{m / 2}$ and let $n' = r + m - 1$ or $r + m$ if $r + m - 1$ is odd.
-		For any query vector $q$ consider a vector $u$ such that $r|u.x, r|u.y$ and $q - u \in \set{0, \dots, r - 1}^2$.
-		We have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $\d{T_u} = \set{0, \dots, n' - 1}^2$, $\f{T_u} = \f{(T - u)}$.
-		If $\f{T_u}$ is not defined for some $v \in \d{T_u}$, we can ''pad'' it with any symbol.
-		We then have $\d{(P + q - u)} \subseteq \d{T_u}$.
+		We see that the set $N = [n']^2$ satisfies the conditions for the text domain.
+		For any vector $q \in [n - m]^2$ we can find a vector $u$ such that $r|u.x, r|u.y$ and $q - u \in [r]^2$,
+		so we have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $T_u = \restr{(T - u)}{N}$.
+		If $T - u$ is not defined for some $v \in N$, we can pad $T_u(v)$ with any character.
+		We can see that $\d{P + q - u} \subseteq N = \d{T_u}$.
 		There are $\O(n^2 / m^2)$ possible vectors $u$ and we run $\mathcal{A}$ for every pair of $T_u$ and $P$.
 	\end{proof}
 \end{theorem}
@@ -250,23 +244,23 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 \begin{fact}\label{sigman1d}
 	There exists an algorithm which solves \hd in $\tO(n|\Sigma|)$ time.
 	It works by simply running $|\Sigma|$ instances of FFT.
-	It allows dontcare symbols in $T$ and $P$.
+	It allows don't care symbols in $T$ and $P$.
 \end{fact}
 
 
 \begin{fact}\label{approx1d}
 	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd in $\tO(n)$ time.
 	It was introduced in \cite{Karloff1993}.
-	It allows dontcare symbols in $T$ and $P$.
+	It allows don't care symbols in $T$ and $P$.
 \end{fact}
 
 
 \begin{theorem}\label{sigman2d}
 	There exists an algorithm which solves \HD in $\tO(n^2|\Sigma|)$ time.
-	It allows dontcare symbols in $T$ and $P$.
+	It allows don't care symbols in $T$ and $P$.
 	\begin{proof}
 		We will again use the array notation.
-		We construct one-dimensional strings $\bar{T}$ and $\bar{P}$ by concatenating subsequent rows $T[0], \dots, T[n - 1]$ of $T$ and rows $P[0], \dots, P[m - 1]$ of $P$ padded with some dontcare symbols:
+		We construct one-dimensional strings $\bar{T}$ and $\bar{P}$ by concatenating subsequent rows $T[0], \dots, T[n - 1]$ of $T$ and rows $P[0], \dots, P[m - 1]$ of $P$ padded with some don't care symbols:
 		\eq{
 			\bar{T} &= T[0] \ \texttt{?}^{m} \ T[1] \ \texttt{?}^{m} \ \dots \ \texttt{?}^{m} \ T[n - 1] \ \texttt{?}^{m}, \\
 			\bar{P} &= P[0] \ \texttt{?}^{n} \ P[1] \ \texttt{?}^{n} \ \dots \ \texttt{?}^{n} \ P[m - 1] \ \texttt{?}^{n}.
@@ -279,7 +273,7 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 
 \begin{theorem}\label{approx2d}
 	There exists a $(1 + \varepsilon)$-algorithm which solves \HD in $\tO(n^2)$ time.
-	It allows dontcare symbols in $T$ and $P$.
+	It allows don't care symbols in $T$ and $P$.
 	\begin{proof}
 		Identical to Theorem \ref{sigman2d}., but we use the algorithm from Fact \ref{approx1d}. instead of \ref{sigman1d}.
 	\end{proof}
@@ -287,14 +281,14 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 
 
 \begin{remark}
-	The same reduction as in Theorem \ref{sigman2d}. can be applied for every \hd solution which allows dontcare symbols.
-	Unfortunately, the most effective known algorithms for bounded \hd rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and inherently do not allow dontcare symbols, thus, they cannot be easily generalized.
+	The same reduction as in Theorem \ref{sigman2d}. can be applied for every \hd solution which allows don't care symbols.
+	Unfortunately, the most effective known algorithms for bounded \hd rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
 \end{remark}
 
 
-\begin{observation}[Dontcare padding]
-	Every \HD solution which allows dontcare symbols (eg. the algorithms from Theorem \ref{sigman2d}. and \ref{approx2d}.) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
-	It can be done by padding the text with dontcare symbols and it does not change the complexity of the solution.
+\begin{observation}[Don't care padding]
+	Every \HD solution which allows don't care symbols (eg. the algorithms from Theorem \ref{sigman2d}. and \ref{approx2d}.) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
+	It can be done by padding the text with don't care symbols and it does not change the complexity of the solution.
 \end{observation}
 
 
