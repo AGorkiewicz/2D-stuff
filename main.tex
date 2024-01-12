@@ -12,6 +12,8 @@
 \usepackage{authblk}
 
 
+\DeclareMathOperator*{\Ham}{Ham}
+\DeclareMathOperator*{\ID}{Id}
 \def\dd{\mathinner{.\,.}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
@@ -23,7 +25,7 @@
 \newcommand{\bigset}[1]{\big \lbrace #1 \big \rbrace}
 \newcommand{\Bigset}[1]{\Big \lbrace #1 \Big \rbrace}
 \newcommand{\eq}[1]{\begin{align*} #1 \end{align*}}
-\DeclareMathOperator*{\Ham}{Ham}
+\newcommand{\defproblem}[3]{\begin{center}\vspace{2mm}\noindent\fbox{\begin{minipage}{0.96\textwidth} #1 \\ {\bf{INPUT:}} #2 \\ {\bf{OUTPUT:}} #3 \end{minipage}} \vspace{2mm}\end{center}}
 
 
 \usepackage{microtype} %if unwanted, comment out or use option "draft"
@@ -83,13 +85,10 @@
 \newtheorem{problem}{Problem}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
-\newcommand{\defproblem}[3]{\begin{center}\vspace{2mm}\noindent\fbox{\begin{minipage}{0.96\textwidth} #1 \\ {\bf{INPUT:}} #2 \\ {\bf{OUTPUT:}} #3 \end{minipage}} \vspace{2mm}\end{center}}
 
 
 \sloppy
 
-\renewcommand{\vector}[2]{\begin{pmatrix} #1 \\ #2 \end{pmatrix}}
-\DeclareMathOperator*{\ID}{Id}
 
 % BEGIN DOCUMENT
 \begin{document}
@@ -108,11 +107,6 @@
 % INTRODUCTION
 \section{Introduction}
 
-
-%\paragraph{bullshit}
-%\paragraph{related work}
-%\paragraph{our result}
-
 \newcommand{\hd}{\textsc{HD1D}\xspace}
 \newcommand{\HD}{\textsc{HD2D}\xspace}
 
@@ -121,6 +115,7 @@ We consider the one-dimensional all-substring Hamming distance problem (\hd), wh
 We consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
 
 We also consider the bounded variants of \hd and \HD, where we are only required to calculate the distances which are not greater than $k$, for some parameter $k \in \Z^+$.
+
 
 \begin{fact}
 	Bounded \hd can be solved in $\tO((m + k \sqrt{m})n / m)$ time.
@@ -209,7 +204,7 @@ Something about the model of computation?
 
 \section{One-dimensional generalizations}
 In this section we explore some of the methods used for one-dimensional strings.
-Specifically, as our goal is to generalise the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
+Specifically, as our goal is to generalize the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
 
 
 \begin{theorem}[Instancing]\label{instancing}
@@ -226,7 +221,7 @@ Specifically, as our goal is to generalise the solution for pattern matching wit
 \end{theorem}
 
 
-\begin{theorem}[2D kangaroo jumps]\label{kangaroos}
+\begin{theorem}[Kangaroo jumps]\label{kangaroos}
 	Consider an $n \times n$ string $T$, $m \times m$ string $P$ and set of vectors $Q$ such that $\d{(P + q)} \subseteq \d{T}$ for every $q \in Q$.
 	There exists an algorithm which calculates $ d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\tO(n^2 + \sum_{q \in Q} d_q)$.
 	\begin{proof}
@@ -255,20 +250,20 @@ Specifically, as our goal is to generalise the solution for pattern matching wit
 \begin{fact}\label{sigman1d}
 	There exists an algorithm which solves \hd in $\tO(n|\Sigma|)$ time.
 	It works by simply running $|\Sigma|$ instances of FFT.
-	It allows wildcard symbols in $T$ and $P$.
+	It allows dontcare symbols in $T$ and $P$.
 \end{fact}
 
 
 \begin{fact}\label{approx1d}
 	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd in $\tO(n)$ time.
 	It was introduced in \cite{Karloff1993}.
-	It allows wildcard symbols in $T$ and $P$.
+	It allows dontcare symbols in $T$ and $P$.
 \end{fact}
 
 
 \begin{theorem}\label{sigman2d}
 	There exists an algorithm which solves \HD in $\tO(n^2|\Sigma|)$ time.
-	It allows wildcard symbols in $T$ and $P$.
+	It allows dontcare symbols in $T$ and $P$.
 	\begin{proof}
 		We will again use the array notation.
 		We construct one-dimensional strings $\bar{T}$ and $\bar{P}$ by concatenating subsequent rows $T[0], \dots, T[n - 1]$ of $T$ and rows $P[0], \dots, P[m - 1]$ of $P$ padded with some dontcare symbols:
@@ -284,7 +279,7 @@ Specifically, as our goal is to generalise the solution for pattern matching wit
 
 \begin{theorem}\label{approx2d}
 	There exists a $(1 + \varepsilon)$-algorithm which solves \HD in $\tO(n^2)$ time.
-	It allows wildcard symbols in $T$ and $P$.
+	It allows dontcare symbols in $T$ and $P$.
 	\begin{proof}
 		Identical to Theorem \ref{sigman2d}., but we use the algorithm from Fact \ref{approx1d}. instead of \ref{sigman1d}.
 	\end{proof}
@@ -330,7 +325,7 @@ We are left with the case when $|Q| > 2m + m^2/k$, in which we take advantage of
 % 2D PERIODICITY
 \subsection{Two-dimensional periodicity}
 In this section we introduce a range of new tools related to two-dimensional periodicity.
-We then consider the regular structure of the pattern and show how it can be decomposed into some easily representable monochromatic strings.
+We then select some special periods of the pattern and show how to decompose it into some regularly structured monochromatic strings.
 
 
 \begin{definition}[Periodicity]
@@ -352,8 +347,7 @@ We then consider the regular structure of the pattern and show how it can be dec
 	\label{get_periods}
 	For an integer $\ell > 0$ and a set of vectors $U \subseteq \set{0, \dots, \ell}^2 $ such that $|U| > 4\ell$ there exist $s, t, s', t' \in U$ such that $w = t - s$ and $w' = t' - s'$ hold the following conditions:
 	\begin{itemize}
-		\item $w, w' \neq \vec{0}$,
-		\item $|w||w'| \le 22\frac{\ell^2}{|U|}$,
+		\item $0 < |w||w'| \le 22\frac{\ell^2}{|U|}$,
 		\item $|\sin \alpha| \ge \frac{1}{2}$ where $\alpha$ is the angle between $w$ and $w'$,
 		\item $w, w', -w, -w'$ are all contained in different quadrants.
 	\end{itemize}
@@ -412,7 +406,7 @@ Note that because $|Q| > m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\set
 
 
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of Theorem \ref{parquet_decomposition}.
-We partition $P$ into a set of monochromatic spacious strings $\V$, where $|\V| = \O(k)$.
+We partition $P$ into a set of monochromatic spacious parquet strings $\V$, where $|\V| = \O(k)$.
 Note that because the text is not necessarily periodic, we unfortunately cannot use the same approach for $T$.
 
 
@@ -484,7 +478,7 @@ We have the following inequalities:
 	\item $(|C| - 1) |w| \le (1 + \sqrt{3})\ell$ (roughly by the fact that vectors in $C$ must be increasing in a certain direction), 
 	\item $(|A| - 1) |w'| \le 2 \ell$ (by using a similar argument for vectors in $A$).
 \end{enumerate}
-By considering the assumpion $|U| > 4\ell$ it can be proven that $|w||w'| \le 22 \frac{\ell^2}{|U|}$ and the other conditions also hold.
+By considering the assumption $|U| > 4\ell$ it can be proven that $|w||w'| \le 22 \frac{\ell^2}{|U|}$ and the other conditions also hold.
 
 
 % PARQUET DECOMPOSITION
@@ -504,7 +498,7 @@ By considering the assumpion $|U| > 4\ell$ it can be proven that $|w||w'| \le 22
 
 
 Firstly, we partition $R$ into a set of subparquet strings $\S$.
-For every non-empty $S \in \S$ we consider a lattice graph $G_{\d{S}}$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighbouring vectors $v, w$ such that $S(v) \neq S(w)$.
+For every non-empty $S \in \S$ we consider a lattice graph $G_{\d{S}}$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighboring vectors $v, w$ such that $S(v) \neq S(w)$.
 We select any such pair and partition $S$ into spacious (or simple if $S$ is simple) subparquet strings $S'$ and $S''$ such that $v \in S'$ and $w \in S''$.
 For example if $v = w + \phi$, then $S' = \set{u : u \in S, \s{u} \le \s{v}}$ and $S'' = \set{u : u \in S, \s{u} > \s{v}}$.
 In the cases when $v = w + \delta$ for $\delta \in \set{-\phi, \psi, -\psi}$ the construction in similar.
@@ -517,6 +511,7 @@ The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
 
 % TEXT DECOMPOSITION
 \subsection{Proof of Theorem \ref{text_decomposition}.}
+
 
 We assume $\ell$ to be an even number smaller than $\frac{n}{4}$ (if it is not, we can find $\ell' = \Theta(\ell)$, which is). 
 We start by partitioning $\d{T}$ into \textbf{tiles}.
@@ -550,6 +545,7 @@ and we further partition it using algorithm from Theorem \ref{parquet_decomposit
 % SPARSE HAMMING
 \subsection{Proof of Theorem \ref{sparse_algo}.}
 
+
 Firstly, we assume that all strings in $\U$ nor $\V$ are non-empty.
 For $U \in \U$, $V \in \V$, the value $ \Ham(U + q, V)$ either equals $|(\d{U} + q) \cap \d{V}|$ if $U[\d{U}] \neq V[\d{V}]$ or~$0$ otherwise.
 We have
@@ -561,12 +557,14 @@ thus we will consider four instances of a problem of calculating $\sum_{(A, B) \
 
 We will write $u \le_{\phi\psi} v$ to denote that $\h{u} \le \h{v} \wedge \s{u} \le \s{v}$ for some $u, v \in \Z^2$.
 
+
 \begin{theorem}\label{sweeper}
 	There exists a data structure which for a given set of vectors $U$ and a set of parquets $\S$ calculates
 	$$ \sum_{v \in V} |\set{S : S \in \S, v \in S}| $$
 	for a given query vector $q$ where $V = \set{v : v \in U, v \le_{\phi\psi} q}$.
 	It requires $\tO(|U| + |\S|)$ preprocessing time and $\tO(1)$ query time.
 \end{theorem}
+
 
 We consider the array $\gamma_1, \dots, \gamma_p$ introduced in Lemma \ref{lattice_base}.
 We consider an array of data structures $J_1, \dots, J_p$ described in Theorem \ref{sweeper}.
@@ -579,11 +577,12 @@ The set $\S_i$ contains the parquets $V$ obtained for pairs $(A, B)$ such that $
 For a query vector $q \in \Z^2$ we can obtain the value of $\sum_{(A, B) \in \F'} |(A + q) \cap B|$ by finding $i \in \set{1, \dots, p}$ such that $\gamma_i \equiv q$ and making a query to $J_i$ with vector $q$. 
 For explanation, if $A + q \not \equiv B$, then $(A + q) \cap B = \emptyset$.
 Otherwise $q \equiv B - w \equiv \gamma_i$ and we have
-$$ (A + q) \cap B = \set{u : u \le_{\phi\psi} w + q, u \in (V + w), u \equiv B} = \set{v : v \le_{\phi\psi} q, v \in V, v \equiv \gamma_i} $$
+$$ (A + q) \cap B = \set{u : u \le_{\phi\psi} w + q, u \in (V + w), u \equiv B} = \set{v : v \le_{\phi\psi} q, v \in V, v \equiv \gamma_i}.$$
 
 
 % DENSE HAMMING
 \subsection{Proof of Theorem \ref{dense_algo}.}
+
 To be done.
 %	We assume $l$ to be less than $\frac{1}{2}n$.
 %	We first partition the string $F$ into four strings:
