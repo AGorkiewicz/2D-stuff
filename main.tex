@@ -12,8 +12,6 @@
 \usepackage{authblk}
 
 
-\DeclareMathOperator*{\Ham}{Ham}
-\DeclareMathOperator*{\ID}{Id}
 \def\dd{\mathinner{.\,.}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
@@ -89,8 +87,15 @@
 
 \sloppy
 
+\DeclareMathOperator*{\xspan}{x-span}
+\DeclareMathOperator*{\yspan}{y-span}
+\DeclareMathOperator*{\score}{score}
+\DeclareMathOperator*{\Ham}{Ham}
+\DeclareMathOperator*{\Fit}{Fit}
+\DeclareMathOperator*{\ID}{Id}
 \DeclareMathOperator*{\BD}{BD}
 \DeclareMathOperator*{\dom}{dom}
+\DeclareMathOperator*{\charrr}{C}
 \newcommand{\restr}[2]{#1\restriction_{#2}}
 
 % BEGIN DOCUMENT
@@ -130,18 +135,20 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 
 For our purposes we will not use the standard definition of a two-dimensional string, where we associate it with a two-dimensional array of characters, and instead we will define it more broadly.
 Although we will occasionally use the array notation, we will do it exclusively for $n \times m$ strings.
-We will denote $[n] = \set{0, \dots, n - 1}$ for any $n \in \Z^+$.
-In all sections we will only consider integer points or vectors and we will use these terms interchangeably.
+For any $n \in \Z^+$ we will denote $[n] = \set{0, \dots, n - 1}$.
+We will only consider integer points or vectors and we will use these terms interchangeably.
+For a function $f$ and a subset of its domain $X$ we will write $\restr{f}{X}$ to denote the restriction of $f$ to $X$.
 Our results hold under word-RAM model of computation.
 
+\newcommand{\getchar}[1]{\charrr(#1)}
 \newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
 \renewcommand{\d}[1]{\dom(#1)}
 \newcommand{\f}[1]{#1^\mathbf{f}}
 \begin{definition}[Two-dimensional string]
-	We define a \textbf{string} $S$ as a partial function $\Z^2 \pto \Sigma$ which maps some set of points denoted as $\d{S}$ to characters.
+	We define a \textbf{string} $S$ as a partial function $\Z^2 \pto \Sigma$ which maps some arbitrary set of integer points, denoted as $\d{S}$, to characters.
 	For simplicity we will write $u \in S$ to denote that $u \in \d{S}$.
 	We say that a string $S$ is \textbf{partitioned} into strings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$ and $R_i(u) = S(u)$ for all $u \in R_i$.
-	We call a string $S$ \textbf{monochromatic} when it is constant on its domain.
+	We call a string $S$ \textbf{monochromatic} when $S(u) = \sigma$ for every $u \in S$ for some $\sigma \in \Sigma$ and we will write $\getchar{S}$ to denote the value $\sigma$.
 	We say that $S$ is $n \times m$ for some $n, m \in \Z^+$ when $\d{S} = [n] \times [m]$.
 	Physically we represent a string as a list of point-character pairs.
 \end{definition}
@@ -156,8 +163,9 @@ Our results hold under word-RAM model of computation.
 
 
 \begin{definition}[Hamming distance]
-	Consider two strings $S, R$. We define
-	$$ \Ham(S, R) = |\set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|.$$
+	For a pair of strings $S, R$ we define
+	$$ \Ham(S, R) = |\set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|,$$
+	which corresponds to the number of mismatches between $S$ and $R$.
 \end{definition}
 
 
@@ -346,32 +354,32 @@ We will refer to those vectors throughout the rest of the description and we def
 Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\set{m, k})$.
 
 
-\begin{definition}[Lattice congruency]
-	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent} and denote $u \equiv v$ when there exist $s, t \in \Z$ such that $u - v = s\phi + t\psi$ [Galil citation].
+\begin{definition}[Lattice congruency]\label{lattice_congruency}
+	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
+	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent} and denote $u \equiv v$ when $u - v \in \L$ [Galil citation].
 \end{definition}
 
 
 \begin{lemma} \label{lattice_base}
-	There exist $\gamma_1, \dots, \gamma_p \in \Z^2$ such that $\gamma_i \not \equiv \gamma_j$ for $i \neq j$ and every point $u \in \Z^2$ is lattice-congruent to some $\gamma_i$.
+	There exists a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = p$ and every point $u \in \Z^2$ is lattice-congruent to exactly one point $\gamma \in \Gamma$.
 \end{lemma}
 
 
 \begin{definition}[Parquet]
-	We call a non-empty set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that
-	$$ U = \set{u : u \in (x_0, x_1] \times (y_0, y_1] \cap \Z^2, \h{u} \in (\phi_0, \phi_1], \s{u} \in (\psi_0, \psi_1]}. $$
+	We call a non-empty set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
+	$$ U = [x_0, x_1) \times [y_0, y_1) \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1), \s{u} \in [\psi_0, \psi_1)}. $$
 	\begin{enumerate}[a)]
 		\item If additionally $x_1 - x_0 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 \ge |\y{\phi}| + |\y{\psi}|$, then $U$ is a \textbf{spacious} parquet.
 		\item If additionally $x_0, y_0 = -\infty$ and $x_1, y_1 = +\infty$, then $U$ is a \textbf{simple} parquet.
-		\item If additionally $x_0, y_0, \phi_0, \psi_0 = -\infty$ and $x_1, y_1 = +\infty$, then $U$ is a \textbf{primitive} parquet.
 	\end{enumerate}
-	Note that every primitive parquet is simple and every simple parquet is spacious.
+	Note that every simple parquet is spacious.
 \end{definition}
 
 
 \begin{definition}[Subparquet]
 	We call a non-empty set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
 	$$ V = \set{u : u \in U, u \equiv \gamma}.$$
-	We call $V$ a spacious/simple/primitive subparquet when there exists $U$ which is (correspondingly) a spacious/simple/primitive parquet.
+	We call $V$ a spacious/simple subparquet when there exists $U$ which is (correspondingly) a spacious/simple parquet.
 	We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$.
 	We similarly define lattice congruency between two subparquets.
 \end{definition}
@@ -388,7 +396,7 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 
 
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
-We partition $P$ into a set of monochromatic spacious parquet strings $\V$, where $|\V| = \O(k)$.
+We partition $P$ into a set of monochromatic spacious subparquet strings $\V$, where $|\V| = \O(k)$.
 Note that because the text is not necessarily periodic, we unfortunately cannot use the same approach for $T$.
 
 
@@ -398,8 +406,8 @@ In this section we show how to decompose the text using a similar but more nuanc
 We then introduce an effective way to aggregate the contributions of every pair of strings that $P$ and $T$ are decomposed into.
 
 
-\newcommand{\Ta}{T_A}
-\newcommand{\Tb}{T_B}
+\newcommand{\Ta}{T_\mathbf{a}}
+\newcommand{\Tb}{T_\mathbf{b}}
 \begin{definition}[Active text]
 	Let $A = \bigcup_{q \in Q} \d{P} + q$ and $B = \d{T} \setminus A$. 
 	We define the \textbf{active text} as a string $\Ta = \restr{T}{A}$ and the \textbf{inactive text} as a string $\Tb = \restr{T}{B}$.
@@ -417,19 +425,19 @@ We then introduce an effective way to aggregate the contributions of every pair 
 
 
 \begin{theorem}[Active text decomposition]\label{text_decomposition}
-	For a given parameter $\ell \in ?$ the active text can be partitioned in time $\tO(m^2)$ into a set of monochromatic simple subparquet strings $\U$
-	such that $|\U| = \O(\min\set{m^2, \ell k})$ and a string $F$ such that $\BD(F) = \O(m / \ell)$.
+	For a given parameter $\ell \in ?$ the active text can be partitioned in time $\tO(m^2)$ into a set of $\O(\min\set{m^2, \ell k})$ monochromatic simple subparquet strings
+	and a string $F$ such that $\BD(F) = \O(m / \ell)$.
 \end{theorem}
 
 
-\begin{theorem}[Sparse Hamming]\label{sparse_algo}
-	For a given a set of monochromatic simple subparquet strings $\U$, a set of monochromatic subparquet strings $\V$ and a set of vectors $Q$ we can calculate
-	$$ \sum_{U \in \U}\sum_{V \in \V} \Ham(U + q, V) $$
-	for every $q \in Q$ in total time $\tO(\ell^2 + |\U||\V| + |Q|)$ assuming that all domains of the given strings are subsets of $[\ell]^2$ for some $\ell \in \Z^+$.
+\begin{theorem}\label{sparse_algo}
+	For a given list of signatures of simple subparquets $U_1, \dots, U_\ell$, list of signatures of subparquets $V_1, \dots, V_\ell$ and a set of vectors $Q$ we can calculate
+	$$ \sum_{i = 1}^\ell |(U_i + q) \cap V_i| $$
+	for every $q \in Q$ in total time $\tO(n^2 + \ell + |Q|)$ assuming that the subparquets only contain vectors of length $\O(n)$.
 \end{theorem}
 
 
-\begin{theorem}[Dense Hamming]\label{dense_algo}
+\begin{theorem}\label{dense_algo}
 	For a given string $F$ such that $\d{F} \subseteq \d{\Ta}$ we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + m k^{1/2} \BD(F) )$.
 \end{theorem}
 
@@ -437,7 +445,7 @@ We then introduce an effective way to aggregate the contributions of every pair 
 We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\U$ and a string $F$.
 For every $q \in Q$ we then have
 $$ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{U \in \U}\sum_{V \in \V} \Ham(U - q, V) $$
-which we calculate by summing the results of algorithms from \Cref{dense_algo} and \Cref{sparse_algo}.
+% which we calculate by summing the results of algorithms from \Cref{dense_algo} and \Cref{sparse_algo}.
 
 
 % PHI PSI FINDER
@@ -522,90 +530,112 @@ and we further partition it using algorithm from \Cref{parquet_decomposition}, t
 
 
 % SPARSE HAMMING
+\newcommand{\W}{\mathcal{W}}
 \subsection{Proof of \Cref{sparse_algo}}
+Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set introduced in \Cref{lattice_congruency}.
 
+\begin{lemma}\label{primitive_conv}
+	Given a set of subparquets $\V$ and a set of points $Q$, we can calculate
+	$$ \sum_{V \in \V} |(D + q) \cap V| $$
+	for every $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$ assuming that every $V \in \V$ consists of vectors of length $\O(n)$.
+	\begin{proof}
+		For every $u \in \Z^2$ let us define $\score(u) = |\set{V : V \in \V, u \in V}|$. Observe that
+		$$ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). $$
+		We start by explicitly calculating the scores.
+		We find the maximum length of a vector that some $V \in \V$ is defined for, which we denote $\ell$.
+		We construct the set $U \subseteq \Z^2$ of all vectors of length at most $\ell$.
+		By the assumption, we have $\ell = \O(n)$, and thus $|U| = \O(l ^ 2) = \O(n ^ 2)$.
+		We observe that since all the scores are zero for points outside of $U$, we can only calculate them for $u \in U$.
+		
+		We find the set $\Gamma$ introduced in \Cref{lattice_base} and for every $\gamma \in \Gamma$ we construct $U_\gamma = U \cap (\L + \gamma)$.
+		Consider any $u \in U_\gamma$ for some fixed $\gamma \in \Gamma$ and any $V \in \V$.
+		We observe that if $V \not \equiv \gamma$, then $u \not \in V$ and thus $V$ does not contribute to $\score(u)$.
+		If $V \equiv \gamma$, then we can find a parquet $W$ such that $V = W \cap (\L + \gamma)$ and we have
+		$u \in V \Leftrightarrow u \in W \cap (\L + \gamma) \Leftrightarrow u \in W$.
+		Thus, if we denote $\W_\gamma$ as the set of parquets $W$ obtained for every $V \in \V$ such that $V \equiv \gamma$, then $\score(u)$ for $u \in U_\gamma$ is the number of parquets $W \in \W_\gamma$ such that $u \in W$.
+		We calculate $\score(u)$ for every $u \in U_\gamma$ by sweeping $U_\gamma$ and $\W_\gamma$ in time $\tO(|U_\gamma| + |\W_\gamma|)$.
+		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|U| + |\V|) = \tO(n^2 + |\V|)$ operations in total.
 
-Firstly, we assume that all strings in $\U$ nor $\V$ are non-empty.
-For $U \in \U$, $V \in \V$, the value $ \Ham(U + q, V)$ either equals $|(\d{U} + q) \cap \d{V}|$ if $U[\d{U}] \neq V[\d{V}]$ or~$0$ otherwise.
-We have
-$$ \sum_{U \in \U} \sum_{V \in \V} \Ham(U + q, V) = \sum_{(A, B) \in \F} |(A + q) \cap B| $$
-where $ \F = \set{(\d{U}, \d{V}) : U \in \U, V \in \V, U[\d{U}] \neq V[\d{V}]} $. 
-For every $(A, B) \in \F$ we can find primitive subparquets $A_1, \dots, A_4$ such that for every $q$ we have
-$$ |(A + q) \cap B| = |(A_1 + q) \cap B| - |(A_2 + q) \cap B| - |(A_3 + q) \cap B| + |(A_4 + q) \cap B| $$
-thus we will consider four instances of a problem of calculating $\sum_{(A, B) \in \F'} |(A + q) \cap B|$ where $A$ is a primitive subparquet and $B$ is a subparquet for all $(A, B) \in \F'$.
+		Now consider a query vector $q \in Q$.
+		Let $\gamma \in \Gamma$ be such that $q \equiv \gamma$.
+		We have already showed that the sum of scores for $u \in D + q$ is equal to the sum of scores for $u \in (D + q) \cap U$.
+		Since $(D + q) \cap U = (D + q) \cap U_\gamma$, we see that the result is the sum of scores for $u \in U_\gamma$ such that $\h{u} \ge \h{q}$ and $\s{u} \ge \s{q}$.
+		If we denote $Q_\gamma = Q \cap (\L + \gamma)$, we see that we can calculate the results for all $q \in Q_\gamma$ by sweeping $Q_\gamma$ and $U_\gamma$ in time $\tO(|Q_\gamma| + |U_\gamma|)$.
+		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|Q| + |U|) = \tO(n^2 + |Q|)$ operations in total.
+	\end{proof}
+\end{lemma}
 
-We will write $u \le_{\phi\psi} v$ to denote that $\h{u} \le \h{v} \wedge \s{u} \le \s{v}$ for some $u, v \in \Z^2$.
+\begin{lemma}\label{primitive}
+	For any simple subparquet $U$ we can find $w_0, \dots, w_3 \in \Z^2$ such that
+	$$ |U \cap X| = \sum_{j = 0}^3 (-1)^j |(D + w_j) \cap X|$$
+	for every $X \subseteq \Z^2$.
+	If $U$ consists of vectors of length $\O(n)$, then $w_0, \dots, w_3$ are of length $\O(n)$.
+\end{lemma}
 
-
-\begin{theorem}\label{sweeper}
-	There exists a data structure which for a given set of vectors $U$ and a set of parquets $\S$ calculates
-	$$ \sum_{v \in V} |\set{S : S \in \S, v \in S}| $$
-	for a given query vector $q$ where $V = \set{v : v \in U, v \le_{\phi\psi} q}$.
-	It requires $\tO(|U| + |\S|)$ preprocessing time and $\tO(1)$ query time.
-\end{theorem}
-
-
-We consider the array $\gamma_1, \dots, \gamma_p$ introduced in \Cref{lattice_base}.
-We consider an array of data structures $J_1, \dots, J_p$ described in \Cref{sweeper}.
-We construct $J_i$ for a set of points $U_i = \set{u : u \in \Z^2, |\x{u}| \le \ell, |\y{u}| \le \ell, u \equiv \gamma_i}$ and set of parquets $\S_i$.
-To construct $\S_i$ we consider every pair $(A, B) \in \F'$ and find a vector $w$ and a parquet $V$ such that 
-$$ A = \set{u : u \le_{\phi\psi} w, u \equiv w},$$
-$$ B = \set{u : u \in (V + w), u \equiv B}.$$
-The set $\S_i$ contains the parquets $V$ obtained for pairs $(A, B)$ such that $B - w \equiv \gamma_i$.
-
-For a query vector $q \in \Z^2$ we can obtain the value of $\sum_{(A, B) \in \F'} |(A + q) \cap B|$ by finding $i \in \set{1, \dots, p}$ such that $\gamma_i \equiv q$ and making a query to $J_i$ with vector $q$. 
-For explanation, if $A + q \not \equiv B$, then $(A + q) \cap B = \emptyset$.
-Otherwise $q \equiv B - w \equiv \gamma_i$ and we have
-$$ (A + q) \cap B = \set{u : u \le_{\phi\psi} w + q, u \in (V + w), u \equiv B} = \set{v : v \le_{\phi\psi} q, v \in V, v \equiv \gamma_i}.$$
-
+We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$ so that we have
+\eq{
+\sum_{i = 1}^\ell|(U_i + q) \cap V_i| 
+= \sum_{i = 1}^\ell|U_i \cap (V_i - q)| 
+= \sum_{i = 1}^\ell \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| \\
+= \sum_{j = 0}^3 (-1)^j \sum_{i = 1}^\ell |(D + q) \cap (V_i - w_{i, j})|.
+}
+By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 1}^\ell |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in \set{1, \dots, \ell}}$ and $Q$.
 
 % DENSE HAMMING
 \subsection{Proof of \Cref{dense_algo}}
 
-To be done.
-%	We assume $l$ to be less than $\frac{1}{2}n$.
-%	We first partition the string $F$ into four strings:
-%	\begin{itemize}
-%		\item $F_1 = (\set{0, \dots, \frac{3}{4}n - 1} \times \set{0, \dots, \frac{3}{4}n - 1} \cap \d{F}, \f{F})$
-%		\item $F_2 = (\set{0, \dots, \frac{3}{4}n - 1} \times \set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \cap \d{F}, \f{F})$
-%		\item $F_3 = (\set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \times \set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \cap \d{F}, \f{F})$
-%		\item $F_4 = (\set{\frac{3}{4}n, \dots, \frac{3}{2}n - 1} \times \set{0, \dots, \frac{3}{4}n - 1} \cap \d{F}, \f{F})$
-%	\end{itemize}
-%	We then independently calculate $\Ham(P + q, F_i)$ for each $i$ and sum the results.
-%	
-%	To calculate the solution for $\Ham(P + q, F_1)$, let's consider strings of $P$:
-%	$$ P_1 = (\set{0, \dots, l - 1} \times \set{0, \dots, n - 1}, \f{P}) $$
-%	$$ P_2 = (\set{l, \dots, n - 1} \times \set{0, \dots, l - 1}, \f{P}) $$
-%	\begin{lemma}
-%		For $q \in Q$ we have
-%		$$ \Ham(P + q, F_1) = \Ham(P_1 + q, F_1) + \Ham(P_2 + q, F_2) $$
-%	\end{lemma}
-%	To calculate $\Ham(P_1 + q, F_1)$ let's partition $F_1$ into strings $\S = \set{S_i}$, where
-%	$$ S_i = ((il + \set{0, \dots, l - 1}) \times \Z \cap \d{F_1}, \f{F_1}) $$
-%	For every non-empty string $S_i$ let's define $h_i = \max\set{y(u) : u \in S_i} - \min\set{y(u) : u \in S_i}$.
-%	\begin{lemma}
-%		For every $S_i$ we have
-%		$$ \Ham(P_1 + q, S_i) = \Ham(B_i + q, S_i) $$
-%		where $B_i = (\Z \times \set{0, \dots, h_i} \cap \d{P_1}, \f{P_1}) $ for non-empty $S_i$, otherwise $B_i$ is empty.
-%	\end{lemma}
-%	\begin{lemma}
-%		The sum of $h_i$ for non-empty sets $S_i$ is $\O(n)$.
-%	\end{lemma}
-%	\begin{theorem}
-%		\label{2dfft}
-%		Consider two parquet strings $U$, $V$ such that
-%		$$ \max\set{x(u) - x(v) : u, v \in U}, \max\set{x(u) - x(v) : u, v \in V} \le \delta_x $$
-%		$$ \max\set{y(u) - y(v) : u, v \in U}, \max\set{y(u) - y(v) : u, v \in V} \le \delta_y $$
-%		for some $\delta_x, \delta_y$
-%		[TODO what the other conditions have to be, but it's clearly possible for our case].
-%		There exists an algorithm which calculates $\Ham(U + q, V)$ for every $q \in \Z^2$ for which it is non-zero (maybe less than $k$).
-%		There are $O(\delta_x\delta_y)$ such vectors $q$ and the algorithm takes $\tO(\delta_x\delta_yk^{1/2})$ time.
-%	\end{theorem}
-%	We have 
-%	$$ \Ham(P_1 + q, F_1) = \sum_i \Ham(B_i + q, S_i) $$
-%	By using \Cref{2dfft} for every non-empty pair $B_i, S_i$, we obtain the total complexity $\tO(nlk^{1/2})$.
-%	
-%	For $\Ham(P_2 + q, F_1)$ we use the same approach, as well as in the case of $\Ham(P + q, F_2)$, etc.
+
+Recall that by \Cref{parquet_decomposition} we can partition $P$ into a set of monochromatic subparquet strings $\V$, where $|\V| = O(k)$.
+For every character $\sigma \in \Sigma$ present in $P$ we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
+We call $\sigma$ a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
+We partition $F$ into two strings $S$ and $R$, where $S(u)$ is a frequent character for every $u \in S$ and $R(u)$ is an infrequent character for every $u \in R$.
+
+For every $q \in Q$ we then have $\Ham(P + q, F) = \Ham(P + q, S) + \Ham(P + q, R)$, which we calculate independently.
+
+\subsubsection{Frequent character contribution}
+We show how to calculate $\Ham(P + q, S)$ for every $q \in Q$.
+We start by partitioning $S$ into four strings $S_1, \dots, S_4$ by splitting through the middle with a horizontal and vertical line.
+Specifically
+\begin{itemize}
+	\item $S_1$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$,
+	\item $S_2$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{n / 2, \dots, n - 1}$,
+	\item $S_3$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{n / 2, \dots, n - 1}$,
+	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$.
+\end{itemize}
+We independently calculate $\Ham(P + q, S_i)$ for every $i$ and sum the results.
+We show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$.
+The other components can be handled similarly.
+
+We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
+Specifically, consider a set $J = [d] \times [n] \cup [n] \times [d]$ and a string $P_J = \restr{P}{J}$. 
+
+\begin{lemma}
+	$\Ham(P + q, S_1) = \Ham(P_J + q, S_1)$ for every $q \in Q$.
+\end{lemma}
+
+\begin{theorem}\label{column_cutting}
+	We can partition $S_1$ into $\O(m / d)$ strings such that their width is $\O(d)$ and the sum of their heights is $\O(m)$.
+\end{theorem}
+
+
+\subsubsection{Proof of \Cref{column_cutting}}
+Consider an array of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$ where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
+For the sake of formality (since the maximum/minimum of an empty set is undefined) we construct an array of strings $V_0, \dots, V_{\ell - 1}$ consisting of all non-empty strings $U_i$, given in the ascending order of $i$.
+Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$, their width is $\O(d)$ and it remains to show that the sum of their heights is $\O(m)$.
+Let us denote $a_i = \min \set{\y{u} : u \in V_i}$ and $b_i = \max \set{\y{u} : u \in V_i}$.
+Our goal is to prove that $\sum_{i = 0}^{\ell - 1} b_i - a_i + 1 = \O(m)$.
+\begin{lemma}
+	$b_{i + 2} - a_i \le d$ for every $i < \ell - 2$.
+	\begin{proof}
+		Let us assume the contrary and have $b_{i + 2} - a_i > d$ for some $i$.
+		There exists $u \in V_i$ such that $\y{u} = a_i$ and $v \in V_{i + 2}$ such that $\y{v} = b_{i + 2}$.
+		We have $\y{v} - \y{u} > d$ (by assumption) and $\x{v} - \x{u} > d$ (since $u \in V_i$, $v \in V_{i + 2}$).
+	\end{proof}
+\end{lemma}
+
+\subsubsection{Infrequent character contribution}
+
+
 
 \bibliographystyle{plain}
 \bibliography{references}
