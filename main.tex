@@ -286,7 +286,7 @@ The same reduction as in \Cref{sigman2d} can be applied for every \hd solution w
 Unfortunately, the most effective known algorithms for bounded \hd rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
 
 
-\begin{observation}[Don't care padding]
+\begin{observation}[Don't care padding]\label{dontcare_padding}
 	Every \HD solution which allows don't care symbols (eg. the algorithms from \Cref{sigman2d} and \Cref{approx2d}) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
 	It can be done by padding the text with don't care symbols and it does not change the complexity of the solution.
 \end{observation}
@@ -317,7 +317,7 @@ We are left with the case when $|Q| > 2m + m^2/k$, in which we take advantage of
 
 
 % 2D PERIODICITY
-\subsection{Two-dimensional periodicity}
+\subsection{Two-dimensional periodicity} \label{periodicity_section}
 In this section we introduce a range of new tools related to two-dimensional periodicity.
 We then select some special periods of the pattern and show how to decompose it into some regularly structured monochromatic strings.
 
@@ -345,6 +345,7 @@ We then select some special periods of the pattern and show how to decompose it 
 		\item $w, w', -w, -w'$ are all contained in different quadrants.
 	\end{itemize}
 	Such $w, w'$ can be found in $\tO(|U|)$ operations.
+	\begin{proof} See \Cref{get_periods_proof}. \end{proof}
 \end{theorem}
 
 
@@ -362,6 +363,7 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 
 \begin{lemma} \label{lattice_base}
 	There exists a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = p$ and every point $u \in \Z^2$ is lattice-congruent to exactly one point $\gamma \in \Gamma$.
+	\begin{proof} TODO \end{proof}
 \end{lemma}
 
 
@@ -385,6 +387,14 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 \end{definition}
 
 
+\begin{theorem}[Subparquet convolution]\label{subparquet_convolution}
+	For a given list of signatures of simple subparquets $U_1, \dots, U_\ell$, list of signatures of subparquets $V_1, \dots, V_\ell$ and a set of vectors $Q$ we can calculate
+	$$ \sum_{i = 1}^\ell |(U_i + q) \cap V_i| $$
+	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$ assuming that the subparquets only contain vectors of length $\O(m)$.
+	\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
+\end{theorem}
+
+
 \begin{definition}[Parquet string]
 	We call a string $S$ a spacious/simple (sub-)parquet string when $\d{S}$ is a spacious/simple (sub-)parquet.
 \end{definition}
@@ -392,27 +402,40 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 
 \begin{theorem}[Periodic string decomposition]\label{parquet_decomposition}
 	A given spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}|)$ into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
+	\begin{proof} See \Cref{parquet_decomposition_proof}. \end{proof}
 \end{theorem}
 
 
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
-We partition $P$ into a set of monochromatic spacious subparquet strings $\V$, where $|\V| = \O(k)$.
-Note that because the text is not necessarily periodic, we unfortunately cannot use the same approach for $T$.
+We partition $P$ into a set of strings $\V$.
+We then group the strings based on the single character they contain, specifically, we define $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
 
+
+\begin{theorem}\label{sparse_algo}
+	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
+	$$ \sum_{S \in \S} \Ham(P + q, S) $$
+	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$ assuming that $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
+	\begin{proof}
+		Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
+		$$ \sum_{S \in \S} \Ham(P + q, S) = |(P + q) \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.$$
+		We can calculate $|(P + q) \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) in time $\tO(m^2)$.
+		To calculate 
+		$$ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| $$
+		we use the algorithm from \Cref{subparquet_convolution} (with $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
+	\end{proof}
+\end{theorem}
 
 % TEXT DECOMPOSITION
 \subsection{Text decomposition}
+Because the text is not necessarily periodic, we unfortunately cannot use the same approach as for the pattern.
 In this section we show how to decompose the text using a similar but more nuanced approach.
-We then introduce an effective way to aggregate the contributions of every pair of strings that $P$ and $T$ are decomposed into.
 
 
 \newcommand{\Ta}{T_\mathbf{a}}
-\newcommand{\Tb}{T_\mathbf{b}}
 \begin{definition}[Active text]
-	Let $A = \bigcup_{q \in Q} \d{P} + q$ and $B = \d{T} \setminus A$. 
-	We define the \textbf{active text} as a string $\Ta = \restr{T}{A}$ and the \textbf{inactive text} as a string $\Tb = \restr{T}{B}$.
+	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P} + q$.
 	For a point $u \in \Z^2$ we define its \textbf{border distance} as
-	$\min\set{\|u - v\|_\infty : v \in B} $,
+	$\min\set{\|u - v\|_\infty : v \in \d{T} \setminus \d{\Ta}} $,
 	which we will denote as $\BD(u)$.
 	For a set of points $U \subseteq \Z^2$ we define $\BD(U) = \max\set{\BD(u) : u \in U}$.
 	Note that we consider the maximum distance, not minimum.
@@ -427,29 +450,29 @@ We then introduce an effective way to aggregate the contributions of every pair 
 \begin{theorem}[Active text decomposition]\label{text_decomposition}
 	For a given parameter $\ell \in ?$ the active text can be partitioned in time $\tO(m^2)$ into a set of $\O(\min\set{m^2, \ell k})$ monochromatic simple subparquet strings
 	and a string $F$ such that $\BD(F) = \O(m / \ell)$.
-\end{theorem}
-
-
-\begin{theorem}\label{sparse_algo}
-	For a given list of signatures of simple subparquets $U_1, \dots, U_\ell$, list of signatures of subparquets $V_1, \dots, V_\ell$ and a set of vectors $Q$ we can calculate
-	$$ \sum_{i = 1}^\ell |(U_i + q) \cap V_i| $$
-	for every $q \in Q$ in total time $\tO(n^2 + \ell + |Q|)$ assuming that the subparquets only contain vectors of length $\O(n)$.
+	\begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
 \end{theorem}
 
 
 \begin{theorem}\label{dense_algo}
 	For a given string $F$ such that $\d{F} \subseteq \d{\Ta}$ we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + m k^{1/2} \BD(F) )$.
+	\begin{proof} See \Cref{dense_algo_proof}. \end{proof}
 \end{theorem}
 
 
-We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\U$ and a string $F$.
+We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a string $F$,
+where $|\S| = \O(mk^{1/4})$ and $\BD(F) = \O(k^{3 / 4})$.
 For every $q \in Q$ we then have
-$$ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{U \in \U}\sum_{V \in \V} \Ham(U - q, V) $$
-% which we calculate by summing the results of algorithms from \Cref{dense_algo} and \Cref{sparse_algo}.
+$$ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).$$
+
+By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
+since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
+By \Cref{dense_algo}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5 / 4})$, which ends the proof.
+
 
 
 % PHI PSI FINDER
-\subsection{Proof of \Cref{get_periods}}
+\subsection{Proof of \Cref{get_periods}} \label{get_periods_proof}
 First, we find any closest pair of vectors $s, t \in U$ by running the standard $\tO(|U|)$ time algorithm and denote $w = t - s$.
 We define a partial order $\le_{w}$ where $v \le_w u$ for some $u, v \in U$ when at least one condition holds:
 \begin{enumerate}[(a)]
@@ -468,70 +491,9 @@ We have the following inequalities:
 By considering the assumption $|U| > 4\ell$ it can be proven that $|w||w'| \le 22 \frac{\ell^2}{|U|}$ and the other conditions also hold.
 
 
-% PARQUET DECOMPOSITION
-\subsection{Proof of \Cref{parquet_decomposition}}
-
-
-\begin{definition}[Lattice graph]
-	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $G_U = (U, E_U)$ where
-	$$ E_U = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U} $$ 
-	so every vector is connected with its translations by $\phi, \psi, -\phi, -\psi$.
-\end{definition}
-
-
-\begin{lemma}
-	If $U$ is a spacious subparquet, then $G_U$ is connected.
-\end{lemma}
-
-
-Firstly, we partition $R$ into a set of subparquet strings $\S$.
-For every non-empty $S \in \S$ we consider a lattice graph $G_{\d{S}}$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighboring vectors $v, w$ such that $S(v) \neq S(w)$.
-We select any such pair and partition $S$ into spacious (or simple if $S$ is simple) subparquet strings $S'$ and $S''$ such that $v \in S'$ and $w \in S''$.
-For example if $v = w + \phi$, then $S' = \set{u : u \in S, \s{u} \le \s{v}}$ and $S'' = \set{u : u \in S, \s{u} > \s{v}}$.
-In the cases when $v = w + \delta$ for $\delta \in \set{-\phi, \psi, -\psi}$ the construction in similar.
-
-We can recursively partition $S'$ and $S''$ further until we obtain monochromatic strings.
-Because $R$ has $\O(k)$-periods $\phi$ and $\psi$, the total number of neighbor pairs $v, w$ such that $S(v) \neq S(w)$ is $\O(k)$ throughout all $S \in \S$.
-Thus the total number of recursive calls is $\O(k)$ and because $|\S| = \O(k)$, the total number of constructed strings is $\O(k)$.
-The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
-
-
-% TEXT DECOMPOSITION
-\subsection{Proof of \Cref{text_decomposition}}
-
-
-We assume $\ell$ to be an even number smaller than $\frac{n}{4}$ (if it is not, we can find $\ell' = \Theta(\ell)$, which is). 
-We start by partitioning $\d{T}$ into \textbf{tiles}.
-We define $\phi_{\min} = \min \set{\h{u} : u \in \d{T}}$, analogously $\phi_{\max}, \psi_{\min}, \psi_{\max}$ and denote $\delta_{\phi} = \frac{\phi_{\max} - \phi_{\min}}{\ell}$, $\delta_{\psi} = \frac{\psi_{\max} - \psi_{\min}}{\ell}$.
-We define a tile with integer coordinates $(s, t)$ as a set of vectors $u \in \Z^2$ such that
-$$ \phi_{\min} + s \delta_{\phi} < \h{u} \le \phi_{\min} + (s + 1)\delta_{\phi}, $$ 
-$$ \psi_{\min} + t \delta_{\psi} < \s{u} \le \psi_{\min} + (t + 1)\delta_{\psi}. $$
-For a fixed tile $U$ consider $x_{\min} = \min \set{\x{u} : u \in U}$, analogously $x_{\max}, y_{\min}, y_{\max}$ and a set
-$$ R = \set{u : u \in \Z^2, x_{\min} \le \x{u} \le x_{\max}, y_{\min} \le \y{u} \le y_{\max}}. $$
-We classify $U$ into one of three types:
-\begin{enumerate}[a)]
-	\item if $U \cap \Ta = \emptyset$ then $U$ is an inactive tile,
-	\item if $U \cap \Ta \neq \emptyset$, $R \not \subseteq \Ta$ then $U$ a border tile,
-	\item if $U \cap \Ta \neq \emptyset$, $R \subseteq \Ta$ then $U$ is an active tile.
-\end{enumerate}
-We define $B$ as a set of all $u \in \Ta$ contained in a border tile and construct $F = (B, \f{T})$.
-Let us denote $z = \frac{n - 1}{2}$.
-Consider a family of sets $\mathcal{R} = \set{R^1_i} \cup \set{R^2_i} \cup \set{R^3_i} \cup \set{R^4_i}$,
-where for every active tile $U$ with coordinates $(s, t)$ its members are placed into exactly one subset:
-\begin{enumerate}[1)]
-	\item $R^1_{t}$ if $y_{\min} > z$, $x_{\max} \ge z$,
-	\item $R^2_{s}$ if $x_{\max} < z$, $y_{\max} \ge z$,
-	\item $R^3_{t}$ if $y_{\max} < z$, $x_{\min} \le z$,
-	\item $R^4_{s}$ if $x_{\min} > z$, $y_{\min} \le z$.
-\end{enumerate}
-The number of non-empty sets $R \in \mathcal{R}$ is $\O(\ell)$.
-For each of them we consider $S = (R, \f{T})$ which is a simple parquet string with $\O(k)$-periods $\phi$ and $\psi$,
-and we further partition it using algorithm from \Cref{parquet_decomposition}, thus constructing the set $\U$.
-
-
-% SPARSE HAMMING
+% SUBPARQUET CONVOLUTION
 \newcommand{\W}{\mathcal{W}}
-\subsection{Proof of \Cref{sparse_algo}}
+\subsection{Proof of \Cref{subparquet_convolution}} \label{subparquet_convolution_proof}
 Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set introduced in \Cref{lattice_congruency}.
 
 \begin{lemma}\label{primitive_conv}
@@ -570,6 +532,9 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 	$$ |U \cap X| = \sum_{j = 0}^3 (-1)^j |(D + w_j) \cap X|$$
 	for every $X \subseteq \Z^2$.
 	If $U$ consists of vectors of length $\O(n)$, then $w_0, \dots, w_3$ are of length $\O(n)$.
+	\begin{proof}
+		TODO
+	\end{proof}
 \end{lemma}
 
 We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$ so that we have
@@ -581,57 +546,197 @@ We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$ so
 }
 By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 1}^\ell |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in \set{1, \dots, \ell}}$ and $Q$.
 
-% DENSE HAMMING
-\subsection{Proof of \Cref{dense_algo}}
+
+% PARQUET DECOMPOSITION
+\subsection{Proof of \Cref{parquet_decomposition}} \label{parquet_decomposition_proof}
 
 
-Recall that by \Cref{parquet_decomposition} we can partition $P$ into a set of monochromatic subparquet strings $\V$, where $|\V| = O(k)$.
-For every character $\sigma \in \Sigma$ present in $P$ we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
-We call $\sigma$ a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
-We partition $F$ into two strings $S$ and $R$, where $S(u)$ is a frequent character for every $u \in S$ and $R(u)$ is an infrequent character for every $u \in R$.
+\begin{definition}[Lattice graph]
+	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $G_U = (U, E_U)$ where
+	$$ E_U = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U} $$ 
+	so every vector is connected with its translations by $\phi, \psi, -\phi, -\psi$.
+\end{definition}
 
-For every $q \in Q$ we then have $\Ham(P + q, F) = \Ham(P + q, S) + \Ham(P + q, R)$, which we calculate independently.
-
-\subsubsection{Frequent character contribution}
-We show how to calculate $\Ham(P + q, S)$ for every $q \in Q$.
-We start by partitioning $S$ into four strings $S_1, \dots, S_4$ by splitting through the middle with a horizontal and vertical line.
-Specifically
-\begin{itemize}
-	\item $S_1$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$,
-	\item $S_2$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{n / 2, \dots, n - 1}$,
-	\item $S_3$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{n / 2, \dots, n - 1}$,
-	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$.
-\end{itemize}
-We independently calculate $\Ham(P + q, S_i)$ for every $i$ and sum the results.
-We show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$.
-The other components can be handled similarly.
-
-We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
-Specifically, consider a set $J = [d] \times [n] \cup [n] \times [d]$ and a string $P_J = \restr{P}{J}$. 
 
 \begin{lemma}
-	$\Ham(P + q, S_1) = \Ham(P_J + q, S_1)$ for every $q \in Q$.
+	If $U$ is a spacious subparquet, then $G_U$ is connected.
 \end{lemma}
 
-\begin{theorem}\label{column_cutting}
-	We can partition $S_1$ into $\O(m / d)$ strings such that their width is $\O(d)$ and the sum of their heights is $\O(m)$.
+
+Firstly, we partition $R$ into a set of subparquet strings $\S$.
+For every non-empty $S \in \S$ we consider a lattice graph $G_{\d{S}}$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighboring vectors $v, w$ such that $S(v) \neq S(w)$.
+We select any such pair and partition $S$ into spacious (or simple if $S$ is simple) subparquet strings $S'$ and $S''$ such that $v \in S'$ and $w \in S''$.
+For example if $v = w + \phi$, then $S' = \set{u : u \in S, \s{u} \le \s{v}}$ and $S'' = \set{u : u \in S, \s{u} > \s{v}}$.
+In the cases when $v = w + \delta$ for $\delta \in \set{-\phi, \psi, -\psi}$ the construction in similar.
+
+We can recursively partition $S'$ and $S''$ further until we obtain monochromatic strings.
+Because $R$ has $\O(k)$-periods $\phi$ and $\psi$, the total number of neighbor pairs $v, w$ such that $S(v) \neq S(w)$ is $\O(k)$ throughout all $S \in \S$.
+Thus the total number of recursive calls is $\O(k)$ and because $|\S| = \O(k)$, the total number of constructed strings is $\O(k)$.
+The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
+
+
+% TEXT DECOMPOSITION
+\subsection{Proof of \Cref{text_decomposition}} \label{text_decomposition_proof}
+
+
+We assume $\ell$ to be an even number smaller than $\frac{n}{4}$ (if it is not, we can find $\ell' = \Theta(\ell)$, which is). 
+We start by partitioning $\d{T}$ into \textbf{tiles}.
+We define $\phi_{\min} = \min \set{\h{u} : u \in \d{T}}$, analogously $\phi_{\max}, \psi_{\min}, \psi_{\max}$ and denote $\delta_{\phi} = \frac{\phi_{\max} - \phi_{\min}}{\ell}$, $\delta_{\psi} = \frac{\psi_{\max} - \psi_{\min}}{\ell}$.
+We define a tile with integer coordinates $(s, t)$ as a set of vectors $u \in \Z^2$ such that
+$$ \phi_{\min} + s \delta_{\phi} < \h{u} \le \phi_{\min} + (s + 1)\delta_{\phi}, $$ 
+$$ \psi_{\min} + t \delta_{\psi} < \s{u} \le \psi_{\min} + (t + 1)\delta_{\psi}. $$
+For a fixed tile $U$ consider $x_{\min} = \min \set{\x{u} : u \in U}$, analogously $x_{\max}, y_{\min}, y_{\max}$ and a set
+$$ R = \set{u : u \in \Z^2, x_{\min} \le \x{u} \le x_{\max}, y_{\min} \le \y{u} \le y_{\max}}. $$
+We classify $U$ into one of three types:
+\begin{enumerate}[a)]
+	\item if $U \cap \Ta = \emptyset$ then $U$ is an inactive tile,
+	\item if $U \cap \Ta \neq \emptyset$, $R \not \subseteq \Ta$ then $U$ a border tile,
+	\item if $U \cap \Ta \neq \emptyset$, $R \subseteq \Ta$ then $U$ is an active tile.
+\end{enumerate}
+We define $B$ as a set of all $u \in \Ta$ contained in a border tile and construct $F = (B, \f{T})$.
+Let us denote $z = \frac{n - 1}{2}$.
+Consider a family of sets $\mathcal{R} = \set{R^1_i} \cup \set{R^2_i} \cup \set{R^3_i} \cup \set{R^4_i}$,
+where for every active tile $U$ with coordinates $(s, t)$ its members are placed into exactly one subset:
+\begin{enumerate}[1)]
+	\item $R^1_{t}$ if $y_{\min} > z$, $x_{\max} \ge z$,
+	\item $R^2_{s}$ if $x_{\max} < z$, $y_{\max} \ge z$,
+	\item $R^3_{t}$ if $y_{\max} < z$, $x_{\min} \le z$,
+	\item $R^4_{s}$ if $x_{\min} > z$, $y_{\min} \le z$.
+\end{enumerate}
+The number of non-empty sets $R \in \mathcal{R}$ is $\O(\ell)$.
+For each of them we consider $S = (R, \f{T})$ which is a simple parquet string with $\O(k)$-periods $\phi$ and $\psi$,
+and we further partition it using algorithm from \Cref{parquet_decomposition}, thus constructing the set $\U$.
+
+
+% PROPERTIES OF THE BORDER PROXIMITY
+\subsection{Border proximity}
+In this section we explore the properties of strings defined for points close to the border.
+We consider any non-empty string $S$, such that $\d{S} \subseteq \d{\Ta}$ and let $d = \BD(S)$.
+We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
+Specifically
+\begin{itemize}
+	\item $S_1$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{n / 2, \dots, n - 1}$ (upper right quarter),
+	\item $S_2$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{n / 2, \dots, n - 1}$ (upper left quarter),
+	\item $S_3$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$ (lower left quarter),
+	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$ (lower right quarter).
+\end{itemize}
+We will demonstrate some characteristics of $S_1$, and by symmetry generalize them to $S$.
+
+\begin{lemma} \label{border_lemma}
+	Assuming $d \le m/4$, there does not exist $u \in S_1$ and $v \in T_a$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
+	\begin{proof}
+		Assume the contrary.
+		Since $u \in S_1$, we have $\BD(u) \le d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$ such that
+		$\x{u} - d \le \x{w} \le \x{u} + d$ and
+		$\y{u} - d \le \y{w} \le \y{u} + d$.
+		Since $v \in T_a$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
+		We have
+		$$ \x{w} \ge \x{u} - d \ge n / 2 - m / 4 \ge n - m > \x{q} $$
+		and
+		$$ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. $$
+		Similarly we can show that $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^2 + q$.
+		Since $[m]^2 + q \subseteq \d{\Ta}$ and $w \not \in \Ta$, we get a contradiction.
+	\end{proof}
+\end{lemma}
+
+
+\begin{definition}(width \& height)
+	For a non-empty set $U \subseteq \Z^2$ we define its \textbf{width} as $\max\set{\x{u} - \x{v} + 1 : u, v \in U}$
+	and its \textbf{height} as $\max\set{\y{u} - \y{v} + 1 : u, v \in U}$.
+	For a non-empty string $R$ we define the width and height as the width and height of $\d{R}$.
+\end{definition}
+
+
+\begin{theorem}
+	Given two strings $P, T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can calculate $\Ham(P + q, T)$ for every $q \in \Z^2$, for which the result is non-zero, in total time $\tO(|\Sigma|(w_P + w_T)(h_P + h_T))$, where $|\Sigma|$ denotes the number of different characters present in both $P$ and $T$.
+	\begin{proof}
+		We can prove it by slightly generalizing \Cref{sigman2d}, although following the same method, and utilizing \Cref{dontcare_padding}.
+	\end{proof}
 \end{theorem}
 
 
-\subsubsection{Proof of \Cref{column_cutting}}
-Consider an array of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$ where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
-For the sake of formality (since the maximum/minimum of an empty set is undefined) we construct an array of strings $V_0, \dots, V_{\ell - 1}$ consisting of all non-empty strings $U_i$, given in the ascending order of $i$.
+\begin{theorem}\label{sigma_border}
+	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + md |\Sigma|)$, where $|\Sigma|$ is the number of different characters present in both $P$ and $S$.
+	\begin{proof} See \Cref{sigma_border_proof}. \end{proof}
+\end{theorem}
+
+
+
+\subsubsection{Proof of \Cref{sigma_border}} \label{sigma_border_proof}
+
+
+Recall that 
+$\Ham(P + q, S) = \Ham(P + q, S_1) + \dots + \Ham(P + q, S_4)$.
+We will only show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$, since the other cases are symmetric.
+
+We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
+Specifically, let us consider a string $P_0$ defined as the restriction of $P$ to $[n - d] \times [n - d]$ and a string $P_1$ defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
+Since the strings $P_0$ and $P_1$ partition $P$, we have
+$$ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).$$
+
+
+\begin{lemma}\label{border_hamming_reduction}
+	$\Ham(P_0 + q, S_1) = 0$ for every $q \in Q$.
+	\begin{proof}
+		We will show that $(P_0 + q) \cap S_1 = \emptyset$ for every $q \in Q$.
+		Let us assume the contrary.
+		We select any $u \in (P_0 + q) \cap S_1$ and consider a vector $v$ such that $\x{v} = \x{u} + d$ and $\y{v} = \y{u} + d$.
+		Since $u \in P_0 + q$, we have $v \in P + q \subseteq \d{\Ta}$, thus $u$ and $v$ contradict \Cref{border_lemma}.
+	\end{proof}
+\end{lemma}
+
+\begin{observation}\label{border_hamming_split}
+	$P_1$ can be partitioned into two strings $P_2$ and $P_3$ such that the width of $P_2$ and the height of $P_3$ are $\O(d)$.
+\end{observation}
+
+By \Cref{border_hamming_reduction} and \Cref{border_hamming_split} we have for every $q \in Q$ 
+$$\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_2). $$
+We will only show how to calculate $\Ham(P_2 + q, S_1)$, since the other case is symmetric.
+
+\subsubsection{Proof of Nothing}
+We will assume $d \le m / 4$, since for $d > m / 4$ the proof is trivial.
+Consider an array of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$, where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
+For the sake of formality (since the maximum/minimum of an empty set is undefined), let $V_0, \dots, V_{\ell - 1}$ consist of all non-empty strings $U_i$, given in the ascending order of $i$.
 Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$, their width is $\O(d)$ and it remains to show that the sum of their heights is $\O(m)$.
 Let us denote $a_i = \min \set{\y{u} : u \in V_i}$ and $b_i = \max \set{\y{u} : u \in V_i}$.
 Our goal is to prove that $\sum_{i = 0}^{\ell - 1} b_i - a_i + 1 = \O(m)$.
-\begin{lemma}
+Since for $\ell < 2$, the proof is trivial, we will assume $\ell \ge 2$.
+\begin{lemma}\label{small_difference_lemma}
 	$b_{i + 2} - a_i \le d$ for every $i < \ell - 2$.
 	\begin{proof}
 		Let us assume the contrary and have $b_{i + 2} - a_i > d$ for some $i$.
 		There exists $u \in V_i$ such that $\y{u} = a_i$ and $v \in V_{i + 2}$ such that $\y{v} = b_{i + 2}$.
-		We have $\y{v} - \y{u} > d$ (by assumption) and $\x{v} - \x{u} > d$ (since $u \in V_i$, $v \in V_{i + 2}$).
+		We have $\y{v} - \y{u} > d$ (by assumption) and $\x{v} - \x{u} > d$ (since $u \in V_i$, $v \in V_{i + 2}$), which contradicts \Cref{border_lemma}.
 	\end{proof}
 \end{lemma}
+By \Cref{small_difference_lemma}, we have
+$$\sum_{i = 0}^{\ell - 1} b_i - a_i + 1 = \ell + b_0 + b_1 - a_{\ell - 2} - a_{\ell - 1} + \sum_{i = 0}^{\ell - 3} b_{i + 2} - a_i \le 3m + (\ell - 2) \cdot d = \O(m). $$
+
+
+
+% DENSE HAMMING
+\subsection{Proof of \Cref{dense_algo}} \label{dense_algo_proof}
+
+Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}.
+We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
+\begin{observation}\label{frequent_character_bound}
+	The number of different frequent characters is $\O(\sqrt{k})$.
+\end{observation}
+
+
+
+
+We partition $F$ into two strings $S$ and $R$ based on character frequency.
+We want $S$ to consist of only the frequent characters and $R$ to consist of only the infrequent ones.
+For every $q \in Q$ we then have 
+$$\Ham(P + q, F) = \Ham(P + q, S) + \Ham(P + q, R).$$
+Assuming $S$ is non-empty, by \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + mk^{1/2} \BD(F))$, since $\BD(S) \le \BD(F)$. 
+
+We now consider the calculation of $\Ham(P + q, R)$ for every $q \in Q$.
+
+
+
+
 
 \subsubsection{Infrequent character contribution}
 
