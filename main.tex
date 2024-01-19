@@ -58,7 +58,7 @@
 \pagestyle{myheadings}
 
 
-\title{Fast algorithm for two-dimensional pattern matching with $k$ mismatches}
+\title{Two-dimensional pattern matching with $k$ mismatches}
 \author[1]{Jonas Ellert}
 \author[2]{Paweł Gawrychowski}
 \author[3]{Adam Górkiewicz}
@@ -96,7 +96,6 @@
 \DeclareMathOperator*{\BD}{BD}
 \DeclareMathOperator*{\dom}{dom}
 \DeclareMathOperator*{\charrr}{C}
-\newcommand{\restr}[2]{#1\restriction_{#2}}
 
 % BEGIN DOCUMENT
 \begin{document}
@@ -137,7 +136,6 @@ For our purposes we will not use the standard definition of a two-dimensional st
 Although we will occasionally use the array notation, we will do it exclusively for $n \times m$ strings.
 For any $n \in \Z^+$ we will denote $[n] = \set{0, \dots, n - 1}$.
 We will only consider integer points or vectors and we will use these terms interchangeably.
-For a function $f$ and a subset of its domain $X$ we will write $\restr{f}{X}$ to denote the restriction of $f$ to $X$.
 Our results hold under word-RAM model of computation.
 
 \newcommand{\getchar}[1]{\charrr(#1)}
@@ -170,7 +168,7 @@ Our results hold under word-RAM model of computation.
 
 
 Under such notation, the \HD problem is equivalent to calculating the (bounded or unbounded) values of $ \Ham(P + q, T) $
-for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m]^2$).
+for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m + 1]^2$).
 
 
 \begin{definition}[Don't care symbol]
@@ -216,7 +214,7 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 		Let $r = \floor{m / 2}$ and let $n' = r + m - 1$ or $r + m$ if $r + m - 1$ is odd.
 		We see that the set $N = [n']^2$ satisfies the conditions for the text domain.
 		For any vector $q \in [n - m]^2$ we can find a vector $u$ such that $r|u.x, r|u.y$ and $q - u \in [r]^2$,
-		so we have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $T_u = \restr{(T - u)}{N}$.
+		so we have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $T_u$ is the restriction of $T - u$ to $N$.
 		If $T - u$ is not defined for some $v \in N$, we can pad $T_u(v)$ with any character.
 		We see that $\d{P + q - u} \subseteq N = \d{T_u}$.
 		There are $\O(n^2 / m^2)$ possible vectors $u$ and we run $\mathcal{A}$ for every pair of $T_u$ and $P$.
@@ -293,8 +291,8 @@ Unfortunately, the most effective known algorithms for bounded \hd rely on perio
 
 
 % MAIN ALGORITHM
-\section{Proof of Theorem \Cref{main result}}
-We show an algorithm which works in time $\tO(m^2 + mk^{5/4})$ assuming $2|n$ and $m < n \le \frac{3}{2}m$.
+\section{Proof of \Cref{main result}}
+We show an algorithm which works in time $\tO(m^2 + mk^{5/4})$, assuming $2|n$ and $m < n \le \frac{3}{2}m$.
 By \Cref{instancing}, our main result follows.
 
 We start by running the algorithm from \Cref{approx2d} with $\varepsilon = 1$.
@@ -367,7 +365,7 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 \end{lemma}
 
 
-\begin{definition}[Parquet]
+\begin{definition}[Parquet]\label{parquet_definition}
 	We call a non-empty set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
 	$$ U = [x_0, x_1) \times [y_0, y_1) \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1), \s{u} \in [\psi_0, \psi_1)}. $$
 	\begin{enumerate}[a)]
@@ -378,19 +376,19 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 \end{definition}
 
 
-\begin{definition}[Subparquet]
+\begin{definition}[Subparquet]\label{subparquet_definition}
 	We call a non-empty set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
 	$$ V = \set{u : u \in U, u \equiv \gamma}.$$
 	We call $V$ a spacious/simple subparquet when there exists $U$ which is (correspondingly) a spacious/simple parquet.
 	We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$.
-	We similarly define lattice congruency between two subparquets.
+	We similarly define the lattice congruency between two subparquets.
 \end{definition}
 
 
 \begin{theorem}[Subparquet convolution]\label{subparquet_convolution}
-	For a given list of signatures of simple subparquets $U_1, \dots, U_\ell$, list of signatures of subparquets $V_1, \dots, V_\ell$ and a set of vectors $Q$ we can calculate
-	$$ \sum_{i = 1}^\ell |(U_i + q) \cap V_i| $$
-	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$ assuming that the subparquets only contain vectors of length $\O(m)$.
+	For a given list of signatures of simple subparquets $U_0, \dots, U_{\ell - 1}$, list of signatures of subparquets $V_0, \dots, V_{\ell - 1}$ and a set of vectors $Q$ we can calculate
+	$$ \sum_{i = 0}^{\ell - 1} |(U_i + q) \cap V_i| $$
+	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$, assuming that the subparquets only contain vectors of length $\O(m)$.
 	\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
 \end{theorem}
 
@@ -408,34 +406,35 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
 We partition $P$ into a set of strings $\V$.
-We then group the strings based on the single character they contain, specifically, we define $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
+We then group the strings based on the single character they contain.
+Specifically, we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$ for every character $\sigma \in \Sigma$ present in $P$.
 
 
 \begin{theorem}\label{sparse_algo}
 	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
 	$$ \sum_{S \in \S} \Ham(P + q, S) $$
-	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$ assuming that $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
+	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$, assuming that the sets $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
 	\begin{proof}
 		Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
 		$$ \sum_{S \in \S} \Ham(P + q, S) = |(P + q) \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.$$
-		We can calculate $|(P + q) \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) in time $\tO(m^2)$.
-		To calculate 
+		We can calculate $|(P + q) \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
+		To calculate the values
 		$$ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| $$
-		we use the algorithm from \Cref{subparquet_convolution} (with $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
+		we use the algorithm from \Cref{subparquet_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
 	\end{proof}
 \end{theorem}
 
 % TEXT DECOMPOSITION
 \subsection{Text decomposition}
 Because the text is not necessarily periodic, we unfortunately cannot use the same approach as for the pattern.
-In this section we show how to decompose the text using a similar but more nuanced approach.
+In this section we show how to decompose $T$ using a similar, but more nuanced approach.
 
 
 \newcommand{\Ta}{T_\mathbf{a}}
 \begin{definition}[Active text]
 	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P} + q$.
 	For a point $u \in \Z^2$ we define its \textbf{border distance} as
-	$\min\set{\|u - v\|_\infty : v \in \d{T} \setminus \d{\Ta}} $,
+	$\min\set{\|u - v\|_\infty : v \in \Z^2 \setminus \d{\Ta}} $,
 	which we will denote as $\BD(u)$.
 	For a set of points $U \subseteq \Z^2$ we define $\BD(U) = \max\set{\BD(u) : u \in U}$.
 	Note that we consider the maximum distance, not minimum.
@@ -454,12 +453,6 @@ In this section we show how to decompose the text using a similar but more nuanc
 \end{theorem}
 
 
-\begin{theorem}\label{dense_algo}
-	For a given string $F$ such that $\d{F} \subseteq \d{\Ta}$ we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + m k^{1/2} \BD(F) )$.
-	\begin{proof} See \Cref{dense_algo_proof}. \end{proof}
-\end{theorem}
-
-
 We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a string $F$,
 where $|\S| = \O(mk^{1/4})$ and $\BD(F) = \O(k^{3 / 4})$.
 For every $q \in Q$ we then have
@@ -467,9 +460,175 @@ $$ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).$$
 
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
-By \Cref{dense_algo}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5 / 4})$, which ends the proof.
+In the next section we will introduce \Cref{dense_algo}, which states that we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mk^{1/2} \BD(F))$.
+By substituting $\BD(F) = \O(k^{3/4})$, we get the complexity of $\tO(m^2 + mk^{5/4})$, which ends the main proof.
 
 
+% BORDER PROXIMITY
+\subsection{Border proximity}
+In this section we explore the properties of strings defined only for the points close to the border.
+We consider any non-empty string $S$, such that $\d{S} \subseteq \d{\Ta}$ and let $d = \BD(S)$.
+We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
+Specifically
+\begin{itemize}
+	\item $S_1$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{n / 2, \dots, n - 1}$ (upper right quarter),
+	\item $S_2$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{n / 2, \dots, n - 1}$ (upper left quarter),
+	\item $S_3$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$ (lower left quarter),
+	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$ (lower right quarter).
+\end{itemize}
+We will demonstrate some characteristics of $S_1$, and by symmetry, generalize them to $S$.
+
+\begin{lemma} \label{border_lemma}
+	Assuming $d \le m/4$, there does not exist $u \in S_1$ and $v \in T_a$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
+	\begin{proof}
+		Assume the contrary.
+		Since $u \in S_1$, we have $\BD(u) \le d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$ such that
+		$\x{u} - d \le \x{w} \le \x{u} + d$ and
+		$\y{u} - d \le \y{w} \le \y{u} + d$.
+		Since $v \in T_a$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
+		We have
+		$$ \x{w} \ge \x{u} - d \ge n / 2 - m / 4 \ge n - m > \x{q} $$
+		and
+		$$ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. $$
+		Similarly we can show that $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^2 + q$.
+		Since $[m]^2 + q \subseteq \d{\Ta}$ and $w \not \in \Ta$, we get a contradiction.
+	\end{proof}
+\end{lemma}
+
+\begin{theorem}\label{sigma_border}
+	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + md |\Sigma|)$, where $|\Sigma|$ is the number of different characters present in both $P$ and $S$.
+	\begin{proof} See \Cref{sigma_border_proof}. \end{proof}
+\end{theorem}
+
+\begin{theorem}\label{dense_algo}
+	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
+	\begin{proof} See \Cref{dense_algo_proof}. \end{proof}
+\end{theorem}
+
+
+\subsubsection{Proof of \Cref{sigma_border}} \label{sigma_border_proof}
+
+We base our approach on the simple method of calculating the Hamming distance by running an instance of FFT for each unique character.
+We will again utilize partitioning to reduce the problem to some smaller ones and then solve them naively.
+
+\begin{definition}(width \& height)\label{width_and_height_definition}
+	For a non-empty set $U \subseteq \Z^2$ we define its \textbf{width} as $\max\set{\x{u} - \x{v} + 1 : u, v \in U}$
+	and its \textbf{height} as $\max\set{\y{u} - \y{v} + 1 : u, v \in U}$.
+	For a non-empty string $R$ we define the width and height as the width and height of $\d{R}$.
+\end{definition}
+
+\begin{theorem}\label{general_fft}
+	Given two non-empty strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can calculate $\Ham(P + q, T)$ for every $q \in \Z^2$, for which the result is non-zero, in total time $\tO((|\Sigma| + 1)(w_P + w_T)(h_P + h_T))$, where $|\Sigma|$ denotes the number of different characters present in both $P$ and $T$.
+	\begin{proof}
+		We can prove it by slightly generalizing \Cref{sigman2d}, although following the same method, and utilizing \Cref{dontcare_padding}.
+	\end{proof}
+\end{theorem}
+
+We will assume that $d \le m / 4$, since for $d = \Omega(m)$ we can, by \Cref{general_fft}, calculate the results in time $\tO(m^2 + m^2|\Sigma|)$, which is sufficient.
+
+Recall that 
+$\Ham(P + q, S) = \Ham(P + q, S_1) + \dots + \Ham(P + q, S_4)$.
+We will only show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$, since the other cases are symmetric.
+
+We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
+Specifically, let us consider a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
+Since the strings $P_0$ and $P_1$ partition $P$, we have
+$$ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).$$
+
+\begin{lemma}\label{border_hamming_reduction}
+	$\d{P_0 + q} \cap \d{S_1} = \emptyset$ for every $q \in Q$.
+	\begin{proof}
+		Let us assume the contrary.
+		Select any $q \in Q$ such that $\d{P_0 + q} \cap \d{S_1}$ 
+		contains some point $u$ and consider the point $v = (\x{u} + d, \y{u} + d)$.
+		Since $u \in [m - d]^2 + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus the points $u \in S_1$ and $v \in \Ta$ contradict \Cref{border_lemma}.
+	\end{proof}
+\end{lemma}
+
+\begin{observation}\label{border_hamming_split}
+	$P_1$ can be partitioned into two strings $P_2$ and $P_3$ such that the width of $P_2$ and the height of $P_3$ are equal to $d$.
+\end{observation}
+
+By \Cref{border_hamming_reduction}, $\Ham(P_0 + q, S_1) = 0$ for every $q \in Q$
+and by \Cref{border_hamming_split} we then have 
+$$\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_1). $$
+for some newly constructed strings $P_2$ and $P_3$, such that the width of $P_2$ and the height of $P_3$ equals $d$.
+We calculate $\Ham(P_2 + q, S_1)$ and $\Ham(P_3 + q, S_1)$ for every $Q$ independently and sum the results.
+We only show how to calculate $\Ham(P_2 + q, S_1)$, since the other case is symmetric.
+
+We will now partition $S_1$.
+Consider an array of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$, where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
+For the sake of formality (since the maximum/minimum of an empty set is undefined), let $V_0, \dots, V_{\ell - 1}$ consist of all non-empty strings $U_i$, given in the increasing order of $i$.
+Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not greater than $d$.
+
+For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{u}, \y{u} + h_i) \not \in \Ta$ for every $u \in V_i$.
+
+\begin{lemma}\label{sum_of_h}
+	The sum of all $h_i$ is $\O(m)$.
+	\begin{proof}
+		Since for $\ell < 2$, the proof is trivial, we assume $\ell \ge 2$.
+		For every $i$ (since $h_i$ is minimal) there exists a point $u_i \in V_i$, such that $(\x{u_i}, \y{u_i} + h_i - 1) \in \Ta$.
+		It can be shown that for all $i \ge 2$ we have
+		$$ h_{i} \le \y{u_{i - 2}} - \y{u_{i}} + d,$$
+		since if that was not the case for some $i$, then the points $u_{i - 2}$ and $v = (\x{u_{i}}, \y{u_{i}} + h_{i} - 1)$ would contradict \Cref{border_lemma}.
+		We can conclude that
+		$$
+			\sum_{i = 0}^{\ell - 1} h_i
+			\le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d)
+			= h_0 + h_1 + \y{u_0} + \y{u_1} - \y{u_{\ell - 2}} - \y{u_{\ell - 1}} + (\ell - 2)d 
+			= \O(m).
+		$$
+	\end{proof}
+\end{lemma}
+
+
+\begin{observation}\label{area_bound}
+	For every $i$, the height of $V_i$ is not greater than $h_i$.
+	By \Cref{sum_of_h} we have $|S_1| = \O(md)$ and by extension $|S| = \O(md)$.
+\end{observation}
+
+
+For every $i \in [l]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
+and the string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$.
+Since $L_i$ and $H_i$ partition $V_i$, we have
+$$ \Ham(P_2 + q, S_1) = \sum_{i = 0}^{\ell - 1} \Ham(P_2 + q, V_i) = \sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) + \sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i). $$
+
+\begin{lemma}\label{pattern_height_reduction}
+	$\d{L_i + q} \cap \d{V_i} = \emptyset$ for every $q \in Q$ and $i \in [\ell]$.
+	\begin{proof}
+		Let us assume the contrary.
+		Select any $q \in Q$ and $i \in [\ell]$, such that $\d{L_i + q} \cap \d{V_i}$ 
+		contains some point $u$ and consider the point $v = (\x{u}, \y{u} + h_i)$.
+		Since $u \in [m] \times [m - h_i] + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus $v \in \Ta$, which contradicts the definition of $h_i$.
+	\end{proof}
+\end{lemma}
+
+By \Cref{pattern_height_reduction}, for every $q \in Q$ we have $\sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) = 0$, thus our result is equal to $\sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i)$.
+We run the algorithm from \Cref{general_fft} for every pair of $H_i$ and $V_i$ and, since both $H_i$ and $V_i$ have widths not greater than $d$ and heights not greater than $h_i$, we obtain the total complexity of $\tO(\sum_{i = 0}^{\ell - 1} (|\Sigma| + 1)dh_i)$, 
+which, by \Cref{sum_of_h}, is $\tO(m^2 + md|\Sigma|)$.
+
+\subsubsection{Proof of \Cref{dense_algo}} \label{dense_algo_proof}
+
+Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}.
+We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
+\begin{observation}\label{frequent_character_bound}
+	The number of different frequent characters is $\O(\sqrt{k})$.
+\end{observation}
+
+
+We partition $S$ into two strings $F$ and $I$, based on character frequency,
+so that $F$ consists of only the frequent characters and $I$ consists of only the infrequent ones.
+For every $q \in Q$ we then have 
+$$\Ham(P + q, S) = \Ham(P + q, F) + \Ham(P + q, I).$$
+
+By \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $\BD(F) \le d$. 
+
+We partition $I$ into $|\d{I}|$ strings, one per every $u \in I$.
+Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in I$.
+We have $\Ham(P + q, I) = \sum_{u \in I} \Ham(P + q, I_u)$ for every $q \in Q$.
+By \Cref{subparquet_definition}, $I_u$ are simple subarquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in I} |\V_{I(u)}|)$.
+Since $I(u)$ is an infrequent character for every $u \in I$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in I$.
+By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
 
 % PHI PSI FINDER
 \subsection{Proof of \Cref{get_periods}} \label{get_periods_proof}
@@ -499,7 +658,7 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 \begin{lemma}\label{primitive_conv}
 	Given a set of subparquets $\V$ and a set of points $Q$, we can calculate
 	$$ \sum_{V \in \V} |(D + q) \cap V| $$
-	for every $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$ assuming that every $V \in \V$ consists of vectors of length $\O(n)$.
+	for every $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$, assuming that every $V \in \V$ consists of vectors of length $\O(n)$.
 	\begin{proof}
 		For every $u \in \Z^2$ let us define $\score(u) = |\set{V : V \in \V, u \in V}|$. Observe that
 		$$ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). $$
@@ -521,7 +680,7 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 		Now consider a query vector $q \in Q$.
 		Let $\gamma \in \Gamma$ be such that $q \equiv \gamma$.
 		We have already showed that the sum of scores for $u \in D + q$ is equal to the sum of scores for $u \in (D + q) \cap U$.
-		Since $(D + q) \cap U = (D + q) \cap U_\gamma$, we see that the result is the sum of scores for $u \in U_\gamma$ such that $\h{u} \ge \h{q}$ and $\s{u} \ge \s{q}$.
+		Since $(D + q) \cap U = (D + q) \cap U_\gamma$, we see that the result is the sum of scores for such $u \in U_\gamma$, for which $\h{u} \ge \h{q}$ and $\s{u} \ge \s{q}$.
 		If we denote $Q_\gamma = Q \cap (\L + \gamma)$, we see that we can calculate the results for all $q \in Q_\gamma$ by sweeping $Q_\gamma$ and $U_\gamma$ in time $\tO(|Q_\gamma| + |U_\gamma|)$.
 		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|Q| + |U|) = \tO(n^2 + |Q|)$ operations in total.
 	\end{proof}
@@ -539,12 +698,12 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 
 We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$ so that we have
 \eq{
-\sum_{i = 1}^\ell|(U_i + q) \cap V_i| 
-= \sum_{i = 1}^\ell|U_i \cap (V_i - q)| 
-= \sum_{i = 1}^\ell \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| \\
-= \sum_{j = 0}^3 (-1)^j \sum_{i = 1}^\ell |(D + q) \cap (V_i - w_{i, j})|.
+	\sum_{i = 0}^{\ell - 1}|(U_i + q) \cap V_i| 
+= \sum_{i = 0}^{\ell - 1}|U_i \cap (V_i - q)| 
+= \sum_{i = 0}^{\ell - 1} \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| \\
+= \sum_{j = 0}^3 (-1)^j \sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|.
 }
-By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 1}^\ell |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in \set{1, \dots, \ell}}$ and $Q$.
+By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in [\ell]}$ and $Q$.
 
 
 % PARQUET DECOMPOSITION
@@ -577,169 +736,46 @@ The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
 
 % TEXT DECOMPOSITION
 \subsection{Proof of \Cref{text_decomposition}} \label{text_decomposition_proof}
+Define
+\eq{
+	a_{\min} &= \min \set{\h{u} : u \in T}, \quad a_{\max} = \max \set{\h{u} : u \in T}, \quad A = \set{a_{\min}, \dots, a_{\max}}, \\
+	b_{\min} &= \min \set{\s{u} : u \in T}, \quad b_{\max} = \max \set{\s{u} : u \in T}, \quad B = \set{b_{\min}, \dots, b_{\max}}.
+}
 
-
-We assume $\ell$ to be an even number smaller than $\frac{n}{4}$ (if it is not, we can find $\ell' = \Theta(\ell)$, which is). 
-We start by partitioning $\d{T}$ into \textbf{tiles}.
-We define $\phi_{\min} = \min \set{\h{u} : u \in \d{T}}$, analogously $\phi_{\max}, \psi_{\min}, \psi_{\max}$ and denote $\delta_{\phi} = \frac{\phi_{\max} - \phi_{\min}}{\ell}$, $\delta_{\psi} = \frac{\psi_{\max} - \psi_{\min}}{\ell}$.
-We define a tile with integer coordinates $(s, t)$ as a set of vectors $u \in \Z^2$ such that
-$$ \phi_{\min} + s \delta_{\phi} < \h{u} \le \phi_{\min} + (s + 1)\delta_{\phi}, $$ 
-$$ \psi_{\min} + t \delta_{\psi} < \s{u} \le \psi_{\min} + (t + 1)\delta_{\psi}. $$
-For a fixed tile $U$ consider $x_{\min} = \min \set{\x{u} : u \in U}$, analogously $x_{\max}, y_{\min}, y_{\max}$ and a set
-$$ R = \set{u : u \in \Z^2, x_{\min} \le \x{u} \le x_{\max}, y_{\min} \le \y{u} \le y_{\max}}. $$
-We classify $U$ into one of three types:
-\begin{enumerate}[a)]
-	\item if $U \cap \Ta = \emptyset$ then $U$ is an inactive tile,
-	\item if $U \cap \Ta \neq \emptyset$, $R \not \subseteq \Ta$ then $U$ a border tile,
-	\item if $U \cap \Ta \neq \emptyset$, $R \subseteq \Ta$ then $U$ is an active tile.
-\end{enumerate}
-We define $B$ as a set of all $u \in \Ta$ contained in a border tile and construct $F = (B, \f{T})$.
-Let us denote $z = \frac{n - 1}{2}$.
-Consider a family of sets $\mathcal{R} = \set{R^1_i} \cup \set{R^2_i} \cup \set{R^3_i} \cup \set{R^4_i}$,
-where for every active tile $U$ with coordinates $(s, t)$ its members are placed into exactly one subset:
-\begin{enumerate}[1)]
-	\item $R^1_{t}$ if $y_{\min} > z$, $x_{\max} \ge z$,
-	\item $R^2_{s}$ if $x_{\max} < z$, $y_{\max} \ge z$,
-	\item $R^3_{t}$ if $y_{\max} < z$, $x_{\min} \le z$,
-	\item $R^4_{s}$ if $x_{\min} > z$, $y_{\min} \le z$.
-\end{enumerate}
-The number of non-empty sets $R \in \mathcal{R}$ is $\O(\ell)$.
-For each of them we consider $S = (R, \f{T})$ which is a simple parquet string with $\O(k)$-periods $\phi$ and $\psi$,
-and we further partition it using algorithm from \Cref{parquet_decomposition}, thus constructing the set $\U$.
-
-
-% PROPERTIES OF THE BORDER PROXIMITY
-\subsection{Border proximity}
-In this section we explore the properties of strings defined for points close to the border.
-We consider any non-empty string $S$, such that $\d{S} \subseteq \d{\Ta}$ and let $d = \BD(S)$.
-We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
-Specifically
-\begin{itemize}
-	\item $S_1$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{n / 2, \dots, n - 1}$ (upper right quarter),
-	\item $S_2$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{n / 2, \dots, n - 1}$ (upper left quarter),
-	\item $S_3$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$ (lower left quarter),
-	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$ (lower right quarter).
-\end{itemize}
-We will demonstrate some characteristics of $S_1$, and by symmetry generalize them to $S$.
-
-\begin{lemma} \label{border_lemma}
-	Assuming $d \le m/4$, there does not exist $u \in S_1$ and $v \in T_a$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
+\begin{lemma}\label{AB_size_bound}
+	$|A| \le 2n|\phi|$ and $|B| \le 2n|\psi|$.
 	\begin{proof}
-		Assume the contrary.
-		Since $u \in S_1$, we have $\BD(u) \le d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$ such that
-		$\x{u} - d \le \x{w} \le \x{u} + d$ and
-		$\y{u} - d \le \y{w} \le \y{u} + d$.
-		Since $v \in T_a$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
+		There exist $u, v \in T$ such that $\h{u} = a_{\min}$ and $\h{v} = a_{\max}$. We have
+		$$|A| = a_{\max} - a_{\min} + 1 = \h{v} - \h{u} + 1 = \h{(v - u)} + 1 \le |\phi||v - u| + 1 \le |\phi|(2n - 2) + 1 \le 2n|\phi|$$
+		The proof is identical for the second inequality.
+	\end{proof}
+\end{lemma}
+
+Considering \Cref{AB_size_bound}, we can partition the set $A$ into $\ell$ sets $A_0, \dots, A_{\ell - 1}$, such that each $A_i$ contains some subsequent integers ($A_0$ the smallest, $A_{\ell - 1}$ the largest) and $|A_i| \le \lceil 2n|\phi| / \ell \rceil$.
+Specifically, 
+$ A_i = \set{a_{\min} + id, \dots, a_{\min} + id + d - 1} $, where $d = \lceil |A| / \ell \rceil$.
+We identically partition the set $B$ into $\ell$ sets $B_0, \dots, B_{\ell - 1}$, such that $|B_i| \le \lceil 2n|\psi| / \ell \rceil$.
+Note that $A_i$ and $B_i$ are non-empty.
+For every $i, j \in [\ell]$ we construct the simple parquet (recall \Cref{parquet_definition})
+$$ U_{i,j} = \set{u : u \in \Z^2, \h{u} \in A_i, \s{u} \in B_j}.$$
+We will use the \Cref{width_and_height_definition} of the width and height of a set.
+
+\begin{lemma}
+	The width and height of $U_{i, j}$ are $\O(n / \ell)$ for every $i, j$.
+	\begin{proof}
+		Consider any set $U_{i, j}$ and points $u, v \in U_{i, j}$.
+		We will show that the length of the vector $w = u - v$ is $\O(n / \ell)$.
 		We have
-		$$ \x{w} \ge \x{u} - d \ge n / 2 - m / 4 \ge n - m > \x{q} $$
-		and
-		$$ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. $$
-		Similarly we can show that $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^2 + q$.
-		Since $[m]^2 + q \subseteq \d{\Ta}$ and $w \not \in \Ta$, we get a contradiction.
+		$$ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| $$
+		Since $\h{u}, \h{v} \in A_i$ and $|A_i| = \O(n|\phi| / \ell)$, we have $|\h{w}| = \O(n|\phi| / \ell)$ and we can similarly show that $|\s{w}| = \O(n|\psi| / \ell)$.
+		Since $\phi$ and $\psi$ are not collinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$.
+		Recall that by \Cref{get_periods} we have $|\phi \times \psi| \ge \frac{1}{2}|\phi||\psi|$ (since $|\sin \alpha| \ge 1/2$), thus
+		$$ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), $$
+		which gives us $|t\phi| = \O(n / \ell)$.
+		We can similarly prove that $|s\psi| = \O(n / \ell)$ and finally
+		$$ |w| = |s\phi + t\psi| \le |s\phi| + |t\psi| = \O(n / \ell). $$
 	\end{proof}
 \end{lemma}
-
-
-\begin{definition}(width \& height)
-	For a non-empty set $U \subseteq \Z^2$ we define its \textbf{width} as $\max\set{\x{u} - \x{v} + 1 : u, v \in U}$
-	and its \textbf{height} as $\max\set{\y{u} - \y{v} + 1 : u, v \in U}$.
-	For a non-empty string $R$ we define the width and height as the width and height of $\d{R}$.
-\end{definition}
-
-
-\begin{theorem}
-	Given two strings $P, T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can calculate $\Ham(P + q, T)$ for every $q \in \Z^2$, for which the result is non-zero, in total time $\tO(|\Sigma|(w_P + w_T)(h_P + h_T))$, where $|\Sigma|$ denotes the number of different characters present in both $P$ and $T$.
-	\begin{proof}
-		We can prove it by slightly generalizing \Cref{sigman2d}, although following the same method, and utilizing \Cref{dontcare_padding}.
-	\end{proof}
-\end{theorem}
-
-
-\begin{theorem}\label{sigma_border}
-	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + md |\Sigma|)$, where $|\Sigma|$ is the number of different characters present in both $P$ and $S$.
-	\begin{proof} See \Cref{sigma_border_proof}. \end{proof}
-\end{theorem}
-
-
-
-\subsubsection{Proof of \Cref{sigma_border}} \label{sigma_border_proof}
-
-
-Recall that 
-$\Ham(P + q, S) = \Ham(P + q, S_1) + \dots + \Ham(P + q, S_4)$.
-We will only show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$, since the other cases are symmetric.
-
-We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
-Specifically, let us consider a string $P_0$ defined as the restriction of $P$ to $[n - d] \times [n - d]$ and a string $P_1$ defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
-Since the strings $P_0$ and $P_1$ partition $P$, we have
-$$ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).$$
-
-
-\begin{lemma}\label{border_hamming_reduction}
-	$\Ham(P_0 + q, S_1) = 0$ for every $q \in Q$.
-	\begin{proof}
-		We will show that $(P_0 + q) \cap S_1 = \emptyset$ for every $q \in Q$.
-		Let us assume the contrary.
-		We select any $u \in (P_0 + q) \cap S_1$ and consider a vector $v$ such that $\x{v} = \x{u} + d$ and $\y{v} = \y{u} + d$.
-		Since $u \in P_0 + q$, we have $v \in P + q \subseteq \d{\Ta}$, thus $u$ and $v$ contradict \Cref{border_lemma}.
-	\end{proof}
-\end{lemma}
-
-\begin{observation}\label{border_hamming_split}
-	$P_1$ can be partitioned into two strings $P_2$ and $P_3$ such that the width of $P_2$ and the height of $P_3$ are $\O(d)$.
-\end{observation}
-
-By \Cref{border_hamming_reduction} and \Cref{border_hamming_split} we have for every $q \in Q$ 
-$$\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_2). $$
-We will only show how to calculate $\Ham(P_2 + q, S_1)$, since the other case is symmetric.
-
-\subsubsection{Proof of Nothing}
-We will assume $d \le m / 4$, since for $d > m / 4$ the proof is trivial.
-Consider an array of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$, where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
-For the sake of formality (since the maximum/minimum of an empty set is undefined), let $V_0, \dots, V_{\ell - 1}$ consist of all non-empty strings $U_i$, given in the ascending order of $i$.
-Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$, their width is $\O(d)$ and it remains to show that the sum of their heights is $\O(m)$.
-Let us denote $a_i = \min \set{\y{u} : u \in V_i}$ and $b_i = \max \set{\y{u} : u \in V_i}$.
-Our goal is to prove that $\sum_{i = 0}^{\ell - 1} b_i - a_i + 1 = \O(m)$.
-Since for $\ell < 2$, the proof is trivial, we will assume $\ell \ge 2$.
-\begin{lemma}\label{small_difference_lemma}
-	$b_{i + 2} - a_i \le d$ for every $i < \ell - 2$.
-	\begin{proof}
-		Let us assume the contrary and have $b_{i + 2} - a_i > d$ for some $i$.
-		There exists $u \in V_i$ such that $\y{u} = a_i$ and $v \in V_{i + 2}$ such that $\y{v} = b_{i + 2}$.
-		We have $\y{v} - \y{u} > d$ (by assumption) and $\x{v} - \x{u} > d$ (since $u \in V_i$, $v \in V_{i + 2}$), which contradicts \Cref{border_lemma}.
-	\end{proof}
-\end{lemma}
-By \Cref{small_difference_lemma}, we have
-$$\sum_{i = 0}^{\ell - 1} b_i - a_i + 1 = \ell + b_0 + b_1 - a_{\ell - 2} - a_{\ell - 1} + \sum_{i = 0}^{\ell - 3} b_{i + 2} - a_i \le 3m + (\ell - 2) \cdot d = \O(m). $$
-
-
-
-% DENSE HAMMING
-\subsection{Proof of \Cref{dense_algo}} \label{dense_algo_proof}
-
-Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}.
-We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
-\begin{observation}\label{frequent_character_bound}
-	The number of different frequent characters is $\O(\sqrt{k})$.
-\end{observation}
-
-
-
-
-We partition $F$ into two strings $S$ and $R$ based on character frequency.
-We want $S$ to consist of only the frequent characters and $R$ to consist of only the infrequent ones.
-For every $q \in Q$ we then have 
-$$\Ham(P + q, F) = \Ham(P + q, S) + \Ham(P + q, R).$$
-Assuming $S$ is non-empty, by \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + mk^{1/2} \BD(F))$, since $\BD(S) \le \BD(F)$. 
-
-We now consider the calculation of $\Ham(P + q, R)$ for every $q \in Q$.
-
-
-
-
-
-\subsubsection{Infrequent character contribution}
-
 
 
 \bibliographystyle{plain}
