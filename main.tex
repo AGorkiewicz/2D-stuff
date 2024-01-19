@@ -117,6 +117,13 @@
 
 \jonasi{work in progress $\downarrow$, unfinished}
 
+
+\paragraph{Hamming-Threshold PM in 1D}
+
+\begin{itemize}
+	\item \jonas{...}
+\end{itemize}
+
 \paragraph{Exact PM in 2D}
 
 Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
@@ -126,7 +133,7 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 	\item By using multiple pattern matching on only $\O(n/m)$ rows of the text, Baeza-Yates and Régnier achieve average time complexity $\O(n^2 / m)$, using $\O(m^2)$ space and still running in $\O(n^2)$ time in the worst case \cite{Baeza-Yates1993}. This was followed by more results optimizing the average time complexity \cite{Tarhio1996,Kaerkkaeinen1999}.
 	\item Crochremore at al.\ \cite{Crochemore1995} solve two-dimensional pattern matching space efficiently, using an $\O(m^2)$ time and $\O(\log m)$ space preprocessing followed by an $\O(n^2)$ time and constant space search phase.
 	\item On a PRAM, the problem can be solved in constant time and $O(n^2)$ work \cite{Crochemore1998}, after preprocessing the pattern in $\O(\log \log m)$ time and $\O(m^2)$ work \cite{Cole1993}.
-	\item Other works studying the problem are, e.g., \cite{Baker1978,Karp1987,Zhu1989,Amir1994,Galil1996}
+	\item Other works studying the problem are, e.g., \cite{Baker1978,Karp1987,Zhu1988,Zhu1989,Amir1994,Galil1996}
 \end{itemize}
 
 
@@ -136,26 +143,38 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 	\item First result in 1987 by Krithivasan and Sitalakshmi \cite{Krithivasan1987}, who show that $\tO(kmn^2)$ time can be achieved.
 	\item Faster algorithm by Rank and Heywood runs in $\tO((k+m)n^2)$ time \cite{Ranka1991}.
 	\item Current state of the art\jonas{check} is $\O(kn^2)$ \cite{Amir1991}
-	\item More work \cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999} aimed at optimizing the average time complexity.
+	\item More work \cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999} is aimed at optimizing the average time complexity. This has also been done for the setting in which arbitrary rotations of the pattern are allowed \cite{Fredriksson2002}.
+	\item Dynamic and online algorithms \cite{Clifford2016}
 \end{itemize}
 
 \paragraph{2D Periodicity}
 
 \begin{itemize}
-	\item Two-dimensional periodicity introduced in \cite{Amir1992} and refined in \cite{Galil1996}. All periods (and witnesses for all non-periods) can be computed in $\O(n^2)$ time \cite{Cole2004}.
+	\item Two-dimensional periodicity was introduced in \cite{Amir1992,Amir1998} and refined in \cite{Galil1996}. All periods (and witnesses for all non-periods) can be computed in $\O(n^2)$ time \cite{Cole2004}. Witnesses can be used to efficiently eliminate potential occurrences of periodic patterns. Since witness computation is costly for run-length encoded strings, Amir at al.\ \cite{Amir1997} show additional properties of two-dimensial periodicities that allow the elimination of occurrences without witnesses.
+	\item Famous periodicity theorems have been generalized to two dimensions, for example the Fine-Wilf theorem \cite{Mignosi2003} and the Lyndon-Schützenberger theorem \cite{Gamard2017}.
+	\item Smallest rectangular cover in $\O(n^2)$ time, all aperiodic covers in $\O(n^2 \log n)$ time \cite{Charalampopoulos2021}. Covers of two-dimensional strings were also considered in \cite{Gamard2019,Crochemore1998a}. 
+	\item All tile covers in $\O(n^{2+\epsilon})$ time \cite{Radoszewski2022}.
 	\item There can be $\Omega(n^3 \log n)$ tandem substrings (repeated rectangle, like square in a normal string) \cite{Apostolico2000}.
 	\item All tandems can be computed in $\O(n^3 \log n)$ time \cite{Apostolico2005}.
 	\item There can be $\Omega(n^2 \log n)$ two-dimensional runs (maximal repetitions) \cite{Gawrychowski2021}.
 	\item There are at most $\O(n^2 \log^2 n)$ two-dimensional runs \cite{Charalampopoulos2020}.
 	\item All runs can be computed in $\O(n^2 \log^2 n)$ time \cite{Amir2020}.
-	\item Smallest rectangular cover in $\O(n^2)$ time, all aperiodic covers in $\O(n^2 \log n)$ time \cite{Charalampopoulos2021}.
-	\item All tile covers in $\O(n^{2+\epsilon})$ time \cite{Radoszewski2022}.
+
 \end{itemize}
 
 
 \paragraph{Other 2D Shannanigans}
 
+\begin{itemize}
+	\item A survey by Rytter \cite{Rytter2000} discusses compressed representations of two-dimensional strings and the computation on such representations without explicit decompression. If the text is compressed as a two-dimensional SLP, then merely deciding if a pattern is present is NP-complete with respect to the compressed size \cite{Berman2002}. If both text and pattern are compressed using a two-dimensional version of Lempel-Ziv compression, then exact matching can be done in $\O(n^2 + m^3)$ time, using additional working space proportional to the compressed representation of the pattern \cite{Amir2003}. If text and pattern are given in two-dimensional run-length encoding, then the time for exact matching is linear in the size of the compressed text, and the space is linear in the size of the compressed pattern \cite{Amir2003a}. If multiple patterns are given, then they can be compressed into a space efficient self-index that allows fast dictionary matching \cite{Neuburger2013}.
+	\item More work on structural elements in two-dimensionsal strings, e.g., frames (rectangles with matching outer columns and rows) \cite{Boneh2023}, Lyndon words \cite{Marcus2017}, motif patterns (allowing ``don't cares'', and satisfying special properties) \cite{Apostolico2008}, patterns with at least two occurrences \cite{Karp1972}, and palindromic substrings \cite{Mahalingam2019}.
+	\item There is an efficient algorithm for matching a half-rectangular pattern (fixed height, but irregular shape) in a text, allowing a fixed number of mismatches, insertions and deletions \cite{Amir1995}.
+\end{itemize}
+
+
 \jonasi{work in progress, unfinished $\uparrow$}
+
+
 
 % INTRODUCTION
 \section{Introduction}
