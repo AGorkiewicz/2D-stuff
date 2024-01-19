@@ -14,6 +14,7 @@
 
 
 \def\dd{\mathinner{.\,.}}
+\newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
 \renewcommand{\O}{\mathcal{O}}
@@ -88,13 +89,10 @@
 
 \sloppy
 
-\DeclareMathOperator*{\xspan}{x-span}
-\DeclareMathOperator*{\yspan}{y-span}
 \DeclareMathOperator*{\score}{score}
 \DeclareMathOperator*{\Ham}{Ham}
-\DeclareMathOperator*{\Fit}{Fit}
 \DeclareMathOperator*{\ID}{Id}
-\DeclareMathOperator*{\BD}{BD}
+\DeclareMathOperator*{\BD}{BorderDis}
 \DeclareMathOperator*{\dom}{dom}
 \DeclareMathOperator*{\charrr}{C}
 
@@ -472,6 +470,7 @@ Specifically, we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}
 	\end{proof}
 \end{theorem}
 
+
 % TEXT DECOMPOSITION
 \subsection{Text decomposition}
 Because the text is not necessarily periodic, we unfortunately cannot use the same approach as for the pattern.
@@ -482,9 +481,9 @@ In this section we show how to decompose $T$ using a similar, but more nuanced a
 \begin{definition}[Active text]
 	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P} + q$.
 	For a point $u \in \Z^2$ we define its \textbf{border distance} as
-	$\min\set{\|u - v\|_\infty : v \in \Z^2 \setminus \d{\Ta}} $,
+	$\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}} $,
 	which we will denote as $\BD(u)$.
-	For a set of points $U \subseteq \Z^2$ we define $\BD(U) = \max\set{\BD(u) : u \in U}$.
+	For a set of points $U \subseteq \Z^2$, we define $\BD(U) = \max\set{\BD(u) : u \in U}$ and for a string $S$, we define $\BD(S) = \BD(\d{S})$.
 	Note that we consider the maximum distance, not minimum.
 \end{definition}
 
@@ -495,7 +494,7 @@ In this section we show how to decompose $T$ using a similar, but more nuanced a
 
 
 \begin{theorem}[Active text decomposition]\label{text_decomposition}
-	For a given parameter $\ell \in ?$ the active text can be partitioned in time $\tO(m^2)$ into a set of $\O(\min\set{m^2, \ell k})$ monochromatic simple subparquet strings
+	For a given positive integer $\ell \le m$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings
 	and a string $F$ such that $\BD(F) = \O(m / \ell)$.
 	\begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
 \end{theorem}
@@ -748,7 +747,7 @@ We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$ so
 \eq{
 	\sum_{i = 0}^{\ell - 1}|(U_i + q) \cap V_i| 
 = \sum_{i = 0}^{\ell - 1}|U_i \cap (V_i - q)| 
-= \sum_{i = 0}^{\ell - 1} \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| \\
+= \sum_{i = 0}^{\ell - 1} \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| = \\
 = \sum_{j = 0}^3 (-1)^j \sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|.
 }
 By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in [\ell]}$ and $Q$.
@@ -786,36 +785,43 @@ The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
 \subsection{Proof of \Cref{text_decomposition}} \label{text_decomposition_proof}
 Define
 \eq{
-	a_{\min} &= \min \set{\h{u} : u \in T}, \quad a_{\max} = \max \set{\h{u} : u \in T}, \quad A = \set{a_{\min}, \dots, a_{\max}}, \\
-	b_{\min} &= \min \set{\s{u} : u \in T}, \quad b_{\max} = \max \set{\s{u} : u \in T}, \quad B = \set{b_{\min}, \dots, b_{\max}}.
+	a_{\min} &= \min \set{\h{u} : u \in T}, \quad a_{\max} = \max \set{\h{u} : u \in T},\\
+	b_{\min} &= \min \set{\s{u} : u \in T}, \quad b_{\max} = \max \set{\s{u} : u \in T}.
 }
 
 \begin{lemma}\label{AB_size_bound}
-	$|A| \le 2n|\phi|$ and $|B| \le 2n|\psi|$.
+	$|\set{a_{\min}, \dots, a_{\max}}| \le 2n|\phi|$ and $|\set{b_{\min}, \dots, b_{\max}}| \le 2n|\psi|$.
 	\begin{proof}
 		There exist $u, v \in T$ such that $\h{u} = a_{\min}$ and $\h{v} = a_{\max}$. We have
-		$$|A| = a_{\max} - a_{\min} + 1 = \h{v} - \h{u} + 1 = \h{(v - u)} + 1 \le |\phi||v - u| + 1 \le |\phi|(2n - 2) + 1 \le 2n|\phi|$$
+		\eq{
+			|\set{a_{\min}, \dots, a_{\max}}| = 
+			a_{\max} - a_{\min} + 1 = \h{v} - \h{u} + 1 = \\
+			= \h{(v - u)} + 1 \le |\phi||v - u| + 1 \le |\phi|(2n - 2) + 1 \le 2n|\phi|
+		}
 		The proof is identical for the second inequality.
 	\end{proof}
 \end{lemma}
 
-Considering \Cref{AB_size_bound}, we can partition the set $A$ into $\ell$ sets $A_0, \dots, A_{\ell - 1}$, such that each $A_i$ contains some subsequent integers ($A_0$ the smallest, $A_{\ell - 1}$ the largest) and $|A_i| \le \lceil 2n|\phi| / \ell \rceil$.
+Considering \Cref{AB_size_bound}, we can partition the set $\set{a_{\min}, \dots, a_{\max}}$ into $\ell$ sets $A_0, \dots, A_{\ell - 1}$, such that each $A_i$ contains some subsequent integers ($A_0$ the smallest, $A_{\ell - 1}$ the largest) and $|A_i| \le \lceil 2n|\phi| / \ell \rceil$.
 Specifically, 
 $ A_i = \set{a_{\min} + id, \dots, a_{\min} + id + d - 1} $, where $d = \lceil |A| / \ell \rceil$.
-We identically partition the set $B$ into $\ell$ sets $B_0, \dots, B_{\ell - 1}$, such that $|B_i| \le \lceil 2n|\psi| / \ell \rceil$.
+We identically partition the set $\set{b_{\min}, \dots, b_{\max}}$ into $\ell$ sets $B_0, \dots, B_{\ell - 1}$, such that $|B_i| \le \lceil 2n|\psi| / \ell \rceil$.
 Note that $A_i$ and $B_i$ are non-empty.
-For every $i, j \in [\ell]$ we construct the simple parquet (recall \Cref{parquet_definition})
-$$ U_{i,j} = \set{u : u \in \Z^2, \h{u} \in A_i, \s{u} \in B_j}.$$
-We will use the \Cref{width_and_height_definition} of the width and height of a set.
+For every $i, j \in [\ell]$ we construct a simple parquet (recall \Cref{parquet_definition})
+$$ U_{i,j} = \set{u : u \in \Z^2, \h{u} \in A_i, \s{u} \in B_j}$$
+and for the purpose of the analysis we also define its extension, which includes non-integer points (which we do not explicitly calculate and only use for the proof)
+$$ U^\R_{i,j} = \set{u : u \in \R^2, \h{u} \in A_i, \s{u} \in B_j}.$$
+Observe that $U^\R_{i, j}$ are non-empty and $U_{i, j}$ might be.
+We also define
+$$ X_{i, j} = \set{\x{u} : u \in U^\R_{i, j}}, \quad Y_{i, j} = \set{\y{u} : u \in U^\R_{i, j}}.$$
 
-\begin{lemma}
-	The width and height of $U_{i, j}$ are $\O(n / \ell)$ for every $i, j$.
+\begin{lemma}\label{distance_bound}
+	For every $i, j$ and every $u, v \in U^\R_{i, j}$, we have $|u - v| = \O(n / \ell)$.
 	\begin{proof}
-		Consider any set $U_{i, j}$ and points $u, v \in U_{i, j}$.
-		We will show that the length of the vector $w = u - v$ is $\O(n / \ell)$.
-		We have
-		$$ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| $$
-		Since $\h{u}, \h{v} \in A_i$ and $|A_i| = \O(n|\phi| / \ell)$, we have $|\h{w}| = \O(n|\phi| / \ell)$ and we can similarly show that $|\s{w}| = \O(n|\psi| / \ell)$.
+		Consider any $u, v \in U^\R_{i, j}$ for some $i, j$ and denote $w = u - v$.
+		By \Cref{AB_size_bound} and the fact that $\h{u}$ and $\h{v}$ belong to $A_i$, we have
+		$$ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| \le |A_i| - 1 = \O(n|\phi| / \ell).$$
+		We can similarly show that $|\s{w}| = \O(n|\psi| / \ell)$.
 		Since $\phi$ and $\psi$ are not collinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$.
 		Recall that by \Cref{get_periods} we have $|\phi \times \psi| \ge \frac{1}{2}|\phi||\psi|$ (since $|\sin \alpha| \ge 1/2$), thus
 		$$ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), $$
@@ -824,6 +830,115 @@ We will use the \Cref{width_and_height_definition} of the width and height of a 
 		$$ |w| = |s\phi + t\psi| \le |s\phi| + |t\psi| = \O(n / \ell). $$
 	\end{proof}
 \end{lemma}
+
+
+\begin{lemma}
+	For every $i \in [\ell - 1]$ and $j \in [\ell]$ we have
+	\eq{
+		\min X_{i, j} \le \min X_{i + 1, j}, \quad
+		&\min Y_{i, j} \le \min Y_{i + 1, j}, \\
+		\max X_{i, j} \le \max X_{i + 1, j}, \quad
+		&\max Y_{i, j} \le \max Y_{i + 1, j}
+	}
+	and for every $i \in [\ell]$ and $j \in [\ell - 1]$ we have
+	\eq{
+		\min X_{i, j} \ge \min X_{i, j + 1}, \quad
+		&\min Y_{i, j} \le \min Y_{i, j + 1}, \\
+		\max X_{i, j} \ge \max X_{i, j + 1}, \quad
+		&\max Y_{i, j} \le \max Y_{i, j + 1}.
+	}
+	\begin{proof}
+		Recall that we selected $\phi \in \Q_4$ and $\psi \in \Q_1$.
+		We show the first inequality.
+		There exists a point $v \in U^\R_{i + 1, j}$, such that $\x{v} = \min X_{i + 1, j}$.
+		Select any $h \in A_i$ and consider a point $u \in \R^2$, such that $\h{u} = h$ and $\s{u} = \s{v}$.
+		Observe that $u \in U^\R_{i, j}$.
+		Let $w = v - u$.
+		There exist $s, t$ such that $w = s\phi + t\psi$.
+		We have
+		$$ s \phi \times \psi = \s{(s\phi + t\psi)} = \s{w} = \s{v} - \s{u} = 0, $$
+		and since $\phi \times \psi > 0$, we get $s = 0$, thus $w = t\psi$.
+		Similarly
+		$$ t \phi \times \psi = \phi \times t\psi = \h{w} = \h{v} - \h{u} > 0,$$
+		and since $\phi \times \psi > 0$, we get $t > 0$. Because $\x{\psi} \ge 0$, we finally have
+		$$ \min X_{i, j} \le \x{u} = \x{v} - \x{w} = \x{v} - t\x{\psi} \le \x{v} = \min X_{i + 1, j}. $$
+		The other inequalities can be proven analogously.
+	\end{proof}
+\end{lemma}
+
+We now classify each $U_{i, j}$ into one of six types, numbered from $0$ to $5$.
+We say that $U_{i, j}$ is of the $0$th type when
+$$ X_{i, j} \times Y_{i, j} \cap (\Z^2 \setminus \d{\Ta}) \neq \emptyset.$$
+Note that even though we do not explicitly construct the sets $X_{i, j}$ and $Y_{i, j}$, we can easily check the above condition without doing so (TODO).
+For every $U_{i, j}$ that is not of the $0$th type, we have the following classification:
+\begin{enumerate}[a)]
+	\item If $\min X_{i, j} \ge n / 2$ and $\min Y_{i, j} \ge n / 2$, then $U_{i, j}$ is of the $1$st type (in the upper right quarter).
+	\item If $\max X_{i, j}  <  n / 2$ and $\min Y_{i, j} \ge n / 2$, then $U_{i, j}$ is of the $2$nd type (in the upper left quarter).
+	\item If $\max X_{i, j}  <  n / 2$ and $\max Y_{i, j}  <  n / 2$, then $U_{i, j}$ is of the $3$rd type (in the lower left quarter).
+	\item If $\min X_{i, j} \ge n / 2$ and $\max Y_{i, j}  <  n / 2$, then $U_{i, j}$ is of the $4$th type (in the lower right quarter).
+	\item If none of the above is true, then $U_{i, j}$ is of the $5$th type.
+\end{enumerate}
+
+% We will denote $C_k$ as the set of all pairs $(i, j)$, such that $U_{i, j}$ is of the $k$th type.
+\begin{lemma}\label{border_distance_bound}
+	If $U_{i, j}$ is of the $0$th type, then $\BD(U_{i, j}) = \O(n / \ell)$.
+	\begin{proof}
+		By definition, there exists a point $f \in X_{i, j} \times Y_{i, j} \cap (\Z^2 \setminus \d{\Ta})$.
+		There also exists a point $v \in U^\R_{i, j}$ such that $\x{v} = \x{f}$ and a point $w \in U^\R_{i, j}$ such that $\y{w} = \y{f}$.
+		By \Cref{distance_bound} we have
+		$$ |v - f| = |\y{v} - \y{f}| \le |v - w| = \O(n / \ell).$$
+		Since for every $u \in U_{i, j}$, we (by the same lemma) have $|u - v| = \O(n / \ell)$, we get
+		$$ |u - f| \le |u - v| + |v - f| = \O(n / \ell).$$
+	\end{proof}
+\end{lemma}
+
+
+\begin{lemma}\label{type 5 bound}
+	There are $\O(\ell)$ sets $U_{i, j}$ of the $5$th type.
+	\begin{proof} See \Cref{type 5 bound proof}. \end{proof}
+\end{lemma}
+
+We construct the set $R$ as the sum of all $U_{i, j} \cap \d{\Ta}$, such that $U_{i, j}$ is of the $0$th type.
+By \Cref{border_distance_bound}, we have $\BD(R) = \O(n / \ell)$.
+Note that the set $R$ and all the sets $U_{i, j}$ of the $1$-$5$ types form a partitioning of $\d{\Ta}$.
+
+We will now merge the $\O(\ell^2)$ sets of the $1$-$5$ types and construct $\O(\ell)$ larger ones.
+Since by \Cref{type 5 bound}, the number of sets $U_{i, j}$ of the $5$th type is $\O(\ell)$, we will focus on the $1$-$4$ types.
+
+For every $i \in [\ell]$ we construct the sets
+\eq{
+	V^1_i = \bigcup_{j = 0}^{\ell - 1} \set{U_{j, i} : U_{j, i} \text{ is of the $1$st type}}, \quad
+	V^2_i = \bigcup_{j = 0}^{\ell - 1} \set{U_{i, j} : U_{i, j} \text{ is of the $2$nd type}}, \\
+	V^3_i = \bigcup_{j = 0}^{\ell - 1} \set{U_{j, i} : U_{j, i} \text{ is of the $3$rd type}}, \quad
+	V^4_i = \bigcup_{j = 0}^{\ell - 1} \set{U_{i, j} : U_{i, j} \text{ is of the $4$th type}}.
+}
+Consider the family $\U$ consisting of all the sets $V^j_i$ for $i \in [\ell]$, $j \in \set{1, \dots, 4}$ along with all the $U_{i, j}$ sets of the $5$th type.
+Observe that $\U \cup \set{R}$ forms a partitioning of $\d{\Ta}$ and that by \Cref{type 5 bound}, $|\U| = \O(\ell)$.
+
+\begin{lemma}
+	$\U$ consists of simple parquets.
+	\begin{proof}
+	\end{proof}
+\end{lemma}
+
+Define $\S$.
+
+\begin{lemma}
+	$S$ has $\O(k)$-periods $\phi$ and $\psi$ for every $S \in \S$.
+	\begin{proof}
+	\end{proof}
+\end{lemma}
+
+\subsubsection{Proof of \Cref{type 5 bound}} \label{type 5 bound proof}
+Every set $U_{i, j}$ of the $5$th type holds at least one of the followig conditions:
+\begin{enumerate}
+	\item $x_{\min} < n / 2$ and $x_{\max} \ge n / 2$, or \label{condition 1}
+	\item $y_{\min} < n / 2$ and $y_{\max} \ge n / 2$.
+\end{enumerate}
+We will estimate the number of sets satisfying Condition \ref{condition 1}.
+Consider the points $u_0, \dots, u_{n - 1}$, where $u_h = (n / 2, h)$.
+Observe that every $U_{i, j}$ satisfying Condition \ref{condition 1} must contain some $u_h$.
+
 
 
 \bibliographystyle{plain}
