@@ -118,13 +118,13 @@
 
 \section{Related Work}
 
-\jonasi{work in progress $\downarrow$, unfinished}
-
-
 \paragraph{Hamming-Threshold PM in 1D}
 
+
 \begin{itemize}
-	\item \jonas{...}
+	\item Early solutions for pattern matching with mismatches use fast Fourier transform and run in $\O(n \sqrt{m \log m})$ time \cite{Abrahamson1987}. The first algorithms that explicitly exploit the threshold $k$ run in time roughly $\O(nk)$ \cite{Landau1986,Galil1986} and use ``kangaroo jumping'', a technique in which each text position is considered as a potential occurrence, and verified by jumping from mismatch to mismatch using a data structure for longest common extensions.
+	\item Faster solution in $\O(n\sqrt{k \log k})$ or $\tO(n + k^3n/m)$ time \cite{Amir2004} by still using convolutions, but also exploiting periodicity and using counting arguments. The latter result was first improved to $\tO(n + k^2n/m)$ time \cite{Clifford2016a}, and then further refined to $\tO(n + kn/\sqrt{m})$ time \cite{Gawrychowski2018}, which is a smooth trade-off between the previous $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$ bounds. If Monte-Carlo randomization is allowed, then the time can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020}. A significantly faster algorithm would imply unexpected consequences for the complexity of boolean matrix multiplication \cite{Gawrychowski2018}.
+	\item The $k$-mismatch occurrences of the pattern either have a simple and exploitable structure, or the pattern is close to being periodic. This property is a powerful tool for pattern matching with mismatches, and was analyzed in \cite{Bringmann2019,Charalampopoulos2020a}.
 \end{itemize}
 
 \paragraph{Exact PM in 2D}
@@ -148,13 +148,14 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 	\item Current state of the art\jonas{check} is $\O(kn^2)$ \cite{Amir1991}
 	\item More work \cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999} is aimed at optimizing the average time complexity. This has also been done for the setting in which arbitrary rotations of the pattern are allowed \cite{Fredriksson2002}.
 	\item Dynamic and online algorithms \cite{Clifford2016}
+	\item Measures like edit distance are more complicated to define for two-dimensional strings \cite{Baeza-Yates1998a}.
 \end{itemize}
 
 \paragraph{2D Periodicity}
 
 \begin{itemize}
-	\item Two-dimensional periodicity was introduced in \cite{Amir1992,Amir1998} and refined in \cite{Galil1996}. All periods (and witnesses for all non-periods) can be computed in $\O(n^2)$ time \cite{Cole2004}. Witnesses can be used to efficiently eliminate potential occurrences of periodic patterns. Since witness computation is costly for run-length encoded strings, Amir at al.\ \cite{Amir1997} show additional properties of two-dimensial periodicities that allow the elimination of occurrences without witnesses.
-	\item Famous periodicity theorems have been generalized to two dimensions, for example the Fine-Wilf theorem \cite{Mignosi2003} and the Lyndon-Schützenberger theorem \cite{Gamard2017}.
+	\item Two-dimensional periodicity was introduced in \cite{Amir1992,Amir1998} and refined in \cite{Galil1996}. All periods (and witnesses for all non-periods) can be computed in $\O(n^2)$ time \cite{Cole2004}. Witnesses can be used to efficiently eliminate potential occurrences of the pattern. Since witness computation is costly for run-length encoded strings, Amir at al.\ \cite{Amir1997} show additional properties of two-dimensial periodicities that allow the elimination of occurrences without witnesses.
+	\item Famous periodicity theorems have been generalized to two dimensions, for example the Fine-Wilf theorem \cite{Fine1965,Mignosi2003} and the Lyndon-Schützenberger theorem \cite{Lyndon1962,Gamard2017}.
 	\item Smallest rectangular cover in $\O(n^2)$ time, all aperiodic covers in $\O(n^2 \log n)$ time \cite{Charalampopoulos2021}. Covers of two-dimensional strings were also considered in \cite{Gamard2019,Crochemore1998a}. 
 	\item All tile covers in $\O(n^{2+\epsilon})$ time \cite{Radoszewski2022}.
 	\item There can be $\Omega(n^3 \log n)$ tandem substrings (repeated rectangle, like square in a normal string) \cite{Apostolico2000}.
@@ -170,13 +171,10 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 
 \begin{itemize}
 	\item A survey by Rytter \cite{Rytter2000} discusses compressed representations of two-dimensional strings and the computation on such representations without explicit decompression. If the text is compressed as a two-dimensional SLP, then merely deciding if a pattern is present is NP-complete with respect to the compressed size \cite{Berman2002}. If both text and pattern are compressed using a two-dimensional version of Lempel-Ziv compression, then exact matching can be done in $\O(n^2 + m^3)$ time, using additional working space proportional to the compressed representation of the pattern \cite{Amir2003}. If text and pattern are given in two-dimensional run-length encoding, then the time for exact matching is linear in the size of the compressed text, and the space is linear in the size of the compressed pattern \cite{Amir2003a}. If multiple patterns are given, then they can be compressed into a space efficient self-index that allows fast dictionary matching \cite{Neuburger2013}.
+	\item In parametrized matching, pattern occurrences have to be isomorphic via a bijection on the effective alphabets \cite{Amir2006,Cole2014}. A key step for efficient parametrized matching in two dimensions is counting the number of distinct symbols in every $m \times m$ substring, which can be done in $\O(n^2)$ time \cite{Cole2014}.
 	\item More work on structural elements in two-dimensionsal strings, e.g., frames (rectangles with matching outer columns and rows) \cite{Boneh2023}, Lyndon words \cite{Marcus2017}, motif patterns (allowing ``don't cares'', and satisfying special properties) \cite{Apostolico2008}, patterns with at least two occurrences \cite{Karp1972}, and palindromic substrings \cite{Mahalingam2019}.
 	\item There is an efficient algorithm for matching a half-rectangular pattern (fixed height, but irregular shape) in a text, allowing a fixed number of mismatches, insertions and deletions \cite{Amir1995}.
 \end{itemize}
-
-
-\jonasi{work in progress, unfinished $\uparrow$}
-
 
 
 % INTRODUCTION
@@ -1073,7 +1071,7 @@ By \Cref{distance_bound_aux2}, there exist $u', v' \in p_{i, j}$ such that $|u -
 By \Cref{distance_bound_aux}, we have
 $$ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). $$
 
-\bibliographystyle{plain}
+\bibliographystyle{plainurl}
 \bibliography{references}
 
 \end{document}
