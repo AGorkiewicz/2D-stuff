@@ -95,7 +95,6 @@
 \DeclareMathOperator*{\score}{score}
 \DeclareMathOperator*{\Ham}{Ham}
 \DeclareMathOperator*{\ID}{Id}
-\DeclareMathOperator*{\BD}{BorderDis}
 \DeclareMathOperator*{\dom}{dom}
 \DeclareMathOperator*{\charrr}{C}
 
@@ -256,16 +255,6 @@ for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m
 \end{definition}
 
 
-\newcommand{\Q}{\mathcal{Q}}
-\begin{definition}[Quadrants]
-	We define the four \textbf{quadrants} as
-	\eq{
-		\Q_1 &= (0, +\infty) \times [0, +\infty), \\
-		\Q_2 &= (-\infty, 0] \times (0, +\infty), \\
-		\Q_3 &= (-\infty, 0) \times (-\infty, 0], \\
-		\Q_4 &= [0, +\infty) \times (-\infty, 0).
-	}
-\end{definition}
 
 
 \section{One-dimensional generalizations}
@@ -401,12 +390,19 @@ We then select some special periods of the pattern and show how to decompose it 
 \end{lemma}
 
 
+\newcommand{\Q}{\mathcal{Q}}
 \begin{theorem} \label{get_periods}
 	For a given $\ell \in \Z^+$ and a set of points $U \subseteq [\ell + 1]^2 $ such that $|U| > 4\ell$ there exist $s, t, s', t' \in U$ such that the following conditions hold for $w = t - s$ and $w' = t' - s'$:
 	\begin{itemize}
 		\item $0 < |w||w'| \le 22\frac{\ell^2}{|U|}$,
 		\item $|\sin \alpha| \ge \frac{1}{2}$ where $\alpha$ is the angle between $w$ and $w'$,
-		\item $w, w', -w, -w'$ are all contained in different quadrants.
+		\item $w, w', -w, -w'$ are all contained in different \textbf{quadrants}, defined as
+			\eq{
+				\Q_1 &= (0, +\infty) \times [0, +\infty), \\
+				\Q_2 &= (-\infty, 0] \times (0, +\infty), \\
+				\Q_3 &= (-\infty, 0) \times (-\infty, 0], \\
+				\Q_4 &= [0, +\infty) \times (-\infty, 0).
+			}
 	\end{itemize}
 	Such $w, w'$ can be found in $\tO(|U|)$ operations.
 	\begin{proof} See \Cref{get_periods_proof}. \end{proof}
@@ -415,27 +411,39 @@ We then select some special periods of the pattern and show how to decompose it 
 
 We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 2m + m^2/k \ge 4\ell$).
 We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$ which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
-We will refer to those vectors throughout the rest of the description and we define $p = \phi \times \psi$.
-Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\set{m, k})$.
+We will refer to those vectors throughout the rest of the description.
+Note that because $|Q| > 2m + m^2 / k$, we have $0 \le \phi \times \psi \le |\phi||\psi| = \O(\min\set{m, k})$.
 
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
 	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
-	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent} and denote $u \equiv v$ when $u - v \in \L$ [Galil citation].
+	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent} and denote $u \equiv v$ when $u - v \in \L$.
 \end{definition}
 
 
 \begin{lemma} \label{lattice_base}
-	There exists a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = p$ and every point $u \in \Z^2$ is lattice-congruent to exactly one point $\gamma \in \Gamma$.
-	\begin{proof} TODO \end{proof}
+	There exists a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and every point $u \in \Z^2$ is lattice-congruent to exactly one point $\gamma \in \Gamma$.
+	\begin{proof}
+		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$.
+		We construct $\Gamma = p \cap \Z^2$.
+		It is commonly known, that a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its surface area.
+		Observe that the points in $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
+		Since its surface area is $\phi \times \psi = \O(\min\set{m, k})$, we get $|\Gamma| = \O(\min\set{m, k})$.
+		
+		Now consider any point $u \in \Z^2$.
+		There exist some unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
+		$u = (s + s') \phi + (t + t') \psi$.
+		It is easy to see that
+		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
+	\end{proof}
 \end{lemma}
 
 
 \begin{definition}[Parquet]\label{parquet_definition}
-	We call a non-empty set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
-	$$ U = [x_0, x_1) \times [y_0, y_1) \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1), \s{u} \in [\psi_0, \psi_1)}. $$
+	We call a set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
+	$$ U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. $$
 	\begin{enumerate}[a)]
-		\item If additionally $x_1 - x_0 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 \ge |\y{\phi}| + |\y{\psi}|$, then $U$ is a \textbf{spacious} parquet.
+		\item If additionally $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, then $U$ is a \textbf{spacious} parquet.
 		\item If additionally $x_0, y_0 = -\infty$ and $x_1, y_1 = +\infty$, then $U$ is a \textbf{simple} parquet.
 	\end{enumerate}
 	Note that every simple parquet is spacious.
@@ -443,8 +451,9 @@ Note that because $|Q| > 2m + m^2 / k$, we have $p \le |\phi||\psi| = \O(\min\se
 
 
 \begin{definition}[Subparquet]\label{subparquet_definition}
-	We call a non-empty set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
+	We call a set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
 	$$ V = \set{u : u \in U, u \equiv \gamma}.$$
+	A signature of $V$ consists of a signature of $U$ and the vector $\gamma$.
 	We call $V$ a spacious/simple subparquet when there exists $U$ which is (correspondingly) a spacious/simple parquet.
 	We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$.
 	We similarly define the lattice congruency between two subparquets.
@@ -501,10 +510,9 @@ In this section we show how to decompose $T$ using a similar, but more nuanced a
 \begin{definition}[Active text]
 	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P} + q$.
 	For a point $u \in \Z^2$ we define its \textbf{border distance} as
-	$\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}} $,
-	which we will denote as $\BD(u)$.
-	For a set of points $U \subseteq \Z^2$, we define $\BD(U) = \max\set{\BD(u) : u \in U}$ and for a string $S$, we define $\BD(S) = \BD(\d{S})$.
-	Note that we consider the maximum distance, not minimum.
+	$\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}} $.
+	We say that a set of points $U \subseteq \Z^2$ is $d$-\textbf{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is not greater than $d$.
+	Similarly, we say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
 \end{definition}
 
 
@@ -515,26 +523,25 @@ In this section we show how to decompose $T$ using a similar, but more nuanced a
 
 \begin{theorem}[Active text decomposition]\label{text_decomposition}
 	For a given positive integer $\ell \le m$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings
-	and a string $F$ such that $\BD(F) = \O(m / \ell)$.
+	and a $\O(m / \ell)$-peripheral string.
 	\begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
 \end{theorem}
 
 
-We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a string $F$,
-where $|\S| = \O(mk^{1/4})$ and $\BD(F) = \O(k^{3 / 4})$.
+We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a $\O(k^{3 / 4})$-peripheral string $F$.
 For every $q \in Q$ we then have
 $$ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).$$
 
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
-In the next section we will introduce \Cref{dense_algo}, which states that we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mk^{1/2} \BD(F))$.
-By substituting $\BD(F) = \O(k^{3/4})$, we get the complexity of $\tO(m^2 + mk^{5/4})$, which ends the main proof.
+In the next section we will introduce \Cref{dense_algo}, which states that for a $d$-peripheral string $F$, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
+By substituting $d = \O(k^{3/4})$, we get the complexity of $\tO(m^2 + mk^{5/4})$, which ends the main proof.
 
 
 % BORDER PROXIMITY
-\subsection{Border proximity}
-In this section we explore the properties of strings defined only for the points close to the border.
-We consider any non-empty string $S$, such that $\d{S} \subseteq \d{\Ta}$ and let $d = \BD(S)$.
+\subsection{The text periphery}
+In this section we explore the properties of peripheral strings.
+We consider any $d > 0$ and a non-empty $d$-peripheral string $S$, such that $\d{S} \subseteq \d{\Ta}$.
 We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
 Specifically
 \begin{itemize}
@@ -549,7 +556,7 @@ We will demonstrate some characteristics of $S_1$, and by symmetry, generalize t
 	Assuming $d \le m/4$, there does not exist $u \in S_1$ and $v \in T_a$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
 	\begin{proof}
 		Assume the contrary.
-		Since $u \in S_1$, we have $\BD(u) \le d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$ such that
+		Since $u \in S_1$, the border distance of $u$ is at most $d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$, such that
 		$\x{u} - d \le \x{w} \le \x{u} + d$ and
 		$\y{u} - d \le \y{w} \le \y{u} + d$.
 		Since $v \in T_a$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
@@ -688,7 +695,7 @@ so that $F$ consists of only the frequent characters and $I$ consists of only th
 For every $q \in Q$ we then have 
 $$\Ham(P + q, S) = \Ham(P + q, F) + \Ham(P + q, I).$$
 
-By \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $\BD(F) \le d$. 
+By \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $F$ is $d$-peripheral. 
 
 We partition $I$ into $|\d{I}|$ strings, one per every $u \in I$.
 Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in I$.
@@ -754,16 +761,36 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 \end{lemma}
 
 \begin{lemma}\label{primitive}
-	For any simple subparquet $U$ we can find $w_0, \dots, w_3 \in \Z^2$ such that
+	For any simple subparquet $U$ we can find $w_0, \dots, w_3 \in \Z^2$, such that
 	$$ |U \cap X| = \sum_{j = 0}^3 (-1)^j |(D + w_j) \cap X|$$
 	for every $X \subseteq \Z^2$.
 	If $U$ consists of vectors of length $\O(n)$, then $w_0, \dots, w_3$ are of length $\O(n)$.
 	\begin{proof}
-		TODO
+		Let \eq{
+			\phi_0 = \min\set{{\h{u} : u \in U}}, \quad 
+			\phi_1 = \max\set{{\h{u} : u \in U}},\\
+			\psi_0 = \min\set{{\s{u} : u \in U}}, \quad
+			\psi_1 = \max\set{{\s{u} : u \in U}}.
+		}
+		Note that these values can be extracted from the signature.
+		Since $U$ is a parquet, there exist unique points $u_0, \dots, u_3 \in U$, such that
+		\begin{itemize}
+			\item $\h{u_0} = \phi_0$ and $\s{u_0} = \psi_0$,
+			\item $\h{u_1} = \phi_1$ and $\s{u_1} = \psi_0$,
+			\item $\h{u_2} = \phi_1$ and $\s{u_2} = \psi_1$,
+			\item $\h{u_3} = \phi_0$ and $\s{u_3} = \psi_1$.
+		\end{itemize}
+		We construct \eq{
+			w_0 = u_0, \quad 
+			w_1 = u_1 + \psi, \quad
+			w_2 = u_2 + \phi + \psi, \quad
+			w_3 = u_3 + \phi.
+		}
+		It can be proven that the condition is satisfied.
 	\end{proof}
 \end{lemma}
 
-We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$ so that we have
+We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$, so that we have
 \eq{
 	\sum_{i = 0}^{\ell - 1}|(U_i + q) \cap V_i| 
 = \sum_{i = 0}^{\ell - 1}|U_i \cap (V_i - q)| 
@@ -786,8 +813,10 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 
 \begin{lemma}
 	If $U$ is a spacious subparquet, then $G_U$ is connected.
+	\begin{proof}
+		TODO
+	\end{proof}
 \end{lemma}
-
 
 Firstly, we partition $R$ into a set of subparquet strings $\S$.
 For every non-empty $S \in \S$ we consider a lattice graph $G_{\d{S}}$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighboring vectors $v, w$ such that $S(v) \neq S(w)$.
@@ -857,8 +886,8 @@ Observe that every $u \in [n]^2$ is contained strictly inside exactly one parall
 \end{lemma}
 
 Consider the case when $\max \X(p_{i, j}) - \min \X(p_{i, j}) \ge m / 4$ for some $i, j \in [\ell]$.
-By \Cref{distance_bound_lemma}, we would have $m / 4 \le \max \X_(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$.
-In that case we can return a trivial partitioning where $F = \Ta$ and the set of monochromatic strings is empty, since $\BD(\Ta) = \O(m)$.
+By \Cref{distance_bound_lemma}, we would have $m / 4 \le \max \X(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$.
+In that case we can return a trivial partitioning where $F = \Ta$ and the set of monochromatic strings is empty, since $\Ta$ is $\O(m)$-peripheral.
 We can use the same argument if we have $\max \Y(p_{i, j}) - \min \Y(p_{i, j}) \ge m / 4$ for some $i, j \in [\ell]$.
 Thus, from now on we will assume that $\max X_{i, j} - \min X_{i, j} < m / 4$ and $\max Y_{i, j} - \min Y_{i, j} < m / 4$ for every $i, j \in [\ell]$. 
 
@@ -930,18 +959,23 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 	We say that a set $U \subseteq \Z^2$ is \textbf{coverable} if $U \subseteq \d{P + q}$ for some $q \in Q$.
 \end{definition}
 
-\begin{lemma}
-	For every $p \in \I$, the set $p \cap \Z^2$ is coverable.
+\begin{lemma}\label{I_division}
+	For every $p \in \I$, the set $p \cap \Z^2$ is either coverable or $\O(n / \ell)$-peripheral.
 	\begin{proof}
-%		By \Cref{type 5 lemma}, and since the other cases are symmetric, we can assume that there exists a point $v \in U^\R_{i, j}$, such that $\x{v} = n / 2$ and $\y{v} \ge n / 2$.
-%		Thus we have $\min X_{i, j} \ge n / 2 - m / 4$ and $\min Y_{i, j} \ge n / 2 - m / 4$.
-%		Consider a point
-%		$$ p = (\max \set{\x{u} : u \in U_{i, j}}, \max \set{\y{u} : u \in U_{i, j}}).$$
-%		Since $U_{i, j}$ is not of type \Rom{6}, $p \in \Ta$ and there exists $q \in Q$, such that $p \in [m]^2 + q$, thus $\x{u} \le \x{q} + m - 1$ and $\y{u} \le \y{q} + m - 1$ for all $u \in U_{i, j}$.
-%		We have 
-%		$$\x{q} \le n - m \le n / 2 - m / 4 \le \min X_{i, j} \le \x{u}$$
-%		for all $u \in U_{i, j}$ and we can silimarly get $\y{q} \le \y{u}$, thus $U_{i, j} \subseteq [m]^2 + q$.
-	[FINISH]
+		Consider any $p \in \I$.
+		Since the other cases are rotationally symmetric, assume that it intersects with some point $s \in \R^2$, such that $\x{s} = z$ and $\y{s} \ge z$.
+		Let $v = (\floor{\max \X(p), \max \Y(p)})$.
+		We have $\x{v} \ge \floor{z} = n / 2 - 1$ and $\y{v} \ge \floor{z} = n / 2 - 1$.
+		If $v \not \in \Ta$, we can see that by \Cref{distance_bound_lemma},
+		$|u - v| = \O(n / \ell)$ for every $u \in p \cap \Z^2$, thus $p$ is $\O(n / \ell)$-peripheral.
+		If $v \in \Ta$, there exists $q \in Q$, such that $v \in [m]^2 + q$.
+		Consider any $u \in p \cap \Z^2$.
+		By the assumption that $\max \X(p) - \min \X(p) < m / 4$ and $\max \Y(p) - \min \Y(p) < m / 4$ we get
+		\eq{
+			\x{u} \ge n / 2 - m / 4 \ge n - m \ge \x{q},\\ 
+			\y{u} \ge n / 2 - m / 4 \ge n - m \ge \y{q},
+		}
+		and since $\x{u} \le \x{v} \le \x{q} + m - 1$ and $\y{u} \le \y{v} \le \y{q} + m - 1$, we get $u \in [m]^2 + q$, thus $U \subseteq [m]^2 + q$.
 	\end{proof}
 \end{lemma}
 
@@ -949,7 +983,7 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 	For every $g \in \G$ we can construct two parallelograms $c$ and $b$, such that
 	\begin{itemize}
 		\item $c \cap \Z^2$ is coverable,
-		\item $b \cap \Z^2$ is a $\O(n / \ell)$-periphery,
+		\item $b \cap \Z^2$ is $\O(n / \ell)$-peripheral,
 		\item $g \cap \Z^2$ is partitioned into $b \cap \Z^2$ and $c \cap \Z^2$.
 	\end{itemize}
 	\begin{proof} See \Cref{parallelogram_split_lemma_proof}. \end{proof}
@@ -967,42 +1001,50 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 	\end{proof}
 \end{lemma}
 
-[FINISH]
-%We split every non-empty set from $\G$ (by \Cref{partition_lemma}) into a coverable simple parquet $S$ and a simple parquet $R$, where $\BD(R) = \O(n / \ell)$.
-%We construct a family $\S$ of all the obtained sets $S$ and all sets $U_{i, j}$ of type 5.
-%We also construct a family $\mathcal{R}$ of all the obtained sets $R$ intersected with $\d{\Ta}$.
-%Observe that $\S \cup \mathcal{R}$ forms a partitioning of $\Ta$.
-%By \Cref{5 is coverable} and \Cref{coverable is periodic}, we can see that every restriction of $T$ to some set from $\S$ is periodic.
-%We can thus construct all such restrictions and use the algorithm from \Cref{parquet_decomposition} to partition each of them into $\O(|\S|k)$ monochromatic simple subparquets.
-%Since $|\S| = \O(\ell)$, the total number of constructed subparquets is $\O(\ell k)$.
-%Now construct the restriction of $T$ to $\bigcup_{R \in \mathcal{R}} R$, denoted $F$.
-%We have $\BD(F) = \O(m / \ell)$.
+\newcommand{\B}{\mathcal{B}}
+We split every non-empty parallelogram $g \in \G$ (by \Cref{parallelogram_split_lemma}) into parallelograms $c$ and $b$.
+We construct a set $\C$ consisting of all the obtained parallelograms $c$ and a set $\B$ consisting of all the obtained parallelograms $b$.
+
+We similarly divide the parallelograms in $\I$ (by \Cref{I_division}) and construct the sets $\C' = \set{p : p \in \I, p \cap \Z^2 \text{ is coverable}}$ and $\B' = \I \setminus \C'$.
+
+Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup B'} b \cap \d{\Ta}$.
+Observe that all sets $U \in \U$ are coverable simple parquets, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
+
+For each $U \in \U$ we construct the restriction of $T$ to $U$.
+By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{parquet_decomposition}, it can be partitioned into $\O(k)$ monochromatic simple subparquet strings.
+Since $|\C'| \le |\I| = \O(\ell)$ (by \Cref{I_size_bound}) and $|\C| \le |\G| = \ell$, we have $|\U| = |\C| + |\C'| = \O(\ell)$, thus the total number of constructed strings is $\O(\ell k)$.
+
+Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-peripheral string.
 
 
 % PROOF OF SPLIT LEMMA
 \subsubsection{Proof of \Cref{parallelogram_split_lemma}} \label{parallelogram_split_lemma_proof}
 For an empty parallelogram, the proof is trivial.
 Consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
-We denote $B = K_1 \cap \Z^2 \setminus \d{\Ta}$.
-
-\begin{lemma}\label{domination_lemma}
-	There does not exist a pair of points $u \in \Ta$ and $v \in B$, such that $\x{u} \ge \x{v}$ and $\y{u} \ge \y{v}$. 
-	\begin{proof}
-	\end{proof}
-\end{lemma}
+%We denote $B = \Z^2 \setminus \d{\Ta}$.
 
 \begin{lemma}\label{coverability_condition}
 	Every set $U \subseteq K_1 \cap \Z^2$, such that $(\max \X(U), \max \Y(U)) \in \Ta$ is coverable.
 	\begin{proof}
+		Let $v = (\max \X(U), \max \Y(U))$.
+		By assumption, there exists $q \in Q$, such that $v \in [m]^2 + q$.
+		For every $u \in U$ we have
+		$\x{q} \le n - m \le n / 2 \le \x{u} \le \x{v} < \x{q} + m$
+		and $\y{q} \le n - m \le n / 2 \le \y{u} \le \y{v} < \y{q} + m$,
+		thus $u \in [m]^2 + q$.
 	\end{proof}
 \end{lemma}
 
-Consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
+\begin{observation}\label{domination_lemma}
+	By \Cref{coverability_condition}, there does not exist a pair of points $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \Ta$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. 
+\end{observation}
+
+
 Recall that there exists $t \in [\ell + 1]$, such that
 $ g^1_j = \bigcup_{i = t}^{\ell - 1} p_{i, j}.$
 We find 
-$$ f = \min\set{i : i \in \set{t, \dots, \ell - 1}, (\floor{\max \X(p_{i, j})}, \floor{\max \Y(p_{i, j})}) \in B}.$$
-If the minimum does not exist, we set $f = \ell$.
+$$ f = \min\set{i : i \in \set{t, \dots, \ell - 1}, (\floor{\max \X(p_{i, j})}, \floor{\max \Y(p_{i, j})}) \in \Z^2 \setminus \d{\Ta}}.$$
+If the minimum does not exist, we consider $f = \ell$.
 We then construct the parallelograms
 $$c = \bigcup_{i = 0}^{f - 1} p_{i, j}, \quad b = \bigcup_{i = f}^{\ell - 1} p_{i, j}.$$
 
@@ -1026,14 +1068,19 @@ considering that
 $(\floor{\max \X(p_{f - 1, j})}, \floor{\max \Y(p_{f - 1, j})}) \in \Ta$.
 We see that $c \cap \Z^2$ satisfies the conditions of \Cref{coverability_condition}, thus $c \cap \Z^2$ is coverable.
 
-We now show that the set $b \cap \Z^2$ is a $\O(n / \ell)$-periphery.
+We now show that the set $b \cap \Z^2$ is $\O(n / \ell)$-peripheral.
 If it is empty, then the proof is trivial, so let us assume it is not.
 In that case $f < \ell$.
 Denote $v = (\floor{\max \X(p_{f, j})}, \floor{\max \Y(p_{f, j})})$.
-By definition, $v \in B$.
+By definition, $v \in \Z^2 \setminus \d{\Ta}$.
 Consider any point $u \in b \cap \Z^2$.
 There exists exactly one $i \in \set{f, \dots, \ell - 1}$, such that $u$ lays strictly inside $p_{i, j}$.
-[FINISH]
+Let $w = (\floor{\max \X(p_{i, j})}, \floor{\max \Y(p_{i, j})})$.
+By \Cref{monotonicity_lemma}, we have $\x{w} \ge \x{v}$ and $\y{w} \ge \y{v}$, and by considering \Cref{domination_lemma},
+we get $w \in \Z^2 \setminus \d{\Ta}$.
+Finally, by \Cref{distance_bound_lemma}, we get $|u - w| = \O(n / \ell)$.
+
+The constructions for $g^2_i$, $g^3_j$, $g^4_i$ are rotationally symmetric.
 
 
 % PROOF OF DISTANCE BOUND
