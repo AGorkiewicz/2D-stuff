@@ -89,6 +89,8 @@
 
 \sloppy
 
+\DeclareMathOperator*{\Edges}{E}
+\DeclareMathOperator*{\Graph}{G}
 \DeclareMathOperator*{\X}{X}
 \DeclareMathOperator*{\Y}{Y}
 \DeclareMathOperator*{\Ext}{Ext}
@@ -805,21 +807,68 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 
 
 \begin{definition}[Lattice graph]
-	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $G_U = (U, E_U)$ where
-	$$ E_U = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U} $$ 
-	so every vector is connected with its translations by $\phi, \psi, -\phi, -\psi$.
+	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $(U, \Edges(U))$, where
+	$$ \Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U},$$ 
+	so every vector is connected with its translations by $\phi, \psi, -\phi, -\psi$, which are contained in $U$.
 \end{definition}
 
 
-\begin{lemma}
-	If $U$ is a spacious subparquet, then $G_U$ is connected.
+\begin{lemma}\label{lattice_graph_connectivity}
+	If $U$ is a spacious subparquet, then $(U, \Edges(U))$ is connected.
 	\begin{proof}
-		TODO
+		Assume the contrary.
+		Consider any pair of points $u, v \in U$, such that
+		\begin{itemize}
+			\item $u$ and $v$ belong to different connected components,
+			\item if we let $s, t \in \Z$ be such that $v = u + s \phi + t \psi$, then $|s| + |t|$ is minimized.
+		\end{itemize}
+		Let us assume that for such $u$ and $v = u + s \phi + t \psi$ we have $s \ge 0$, since in the other case they can be swapped.
+		We now show that there exists a point $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $|s'| + |t'| < |s| + |t|$, which contradicts the minimality of $|s| + |t|$. 
+	
+		Let $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ be such that
+		\begin{itemize}
+			\item $ U = [x_0, x_1] \times [y_0, y_1] \cap \set{w : w \in \Z^2, \h{w} \in [\phi_0, \phi_1], \s{w} \in [\psi_0, \psi_1], w \equiv u}$,
+			\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$.
+		\end{itemize}
+		They exist by definition of a spacious subparquet.
+		Recall that $\x{\phi} \ge 0$, $\y{\phi} \le 0$, $\x{\psi} \ge 0$, $\y{\psi} \ge 0$.
+		We have the following cases:
+		\begin{enumerate}[$1^\circ$]
+			\item If $s = 0$ and $t > 0$, then $w = u + \psi$. Observe that
+				\eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} \le \y{v}, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				and since $w \equiv u$, we get $w \in U$.
+			\item If $s = 0$ and $t < 0$, then $w = u - \psi$ and we can similarly show that $w \in U$, since
+				$$\x{v} \le \x{w} \le \x{u}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} \le \h{w} \le \h{u}, \quad \s{w} = \s{u}.$$
+			\item If $s > 0$ and $t = 0$, then $w = u + \phi$ and we get $w \in U$, since
+				$$\x{u} \le \x{w} \le \x{v}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} = \h{u}, \quad \s{v} \le \s{w} \le \s{u}.$$
+			\item If $s > 0$ and $t > 0$, consider the point $w' = u + \phi$. \label{case_pos}
+				We have \eq{
+					\x{u} \le \x{w'} \le \x{v}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
+				}
+				If $w' \in U$, then $w = w'$.
+				If $w' \not \in U$, then since all other requirements are satisfied, we must have $\y{w'} \not \in [y_0, y_1]$.
+				Since $\y{w'} = \y{u} + \y{\phi} \le \y{u}$, we have $\y{u} + \y{\phi} \le y_0 - 1$, and
+				considering $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, we get $y_1 \ge \y{u} + \y{\psi}$.
+				Now let $w = u + \psi$.
+				We have \eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} = \y{u} + \y{\psi} \le y_1, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				thus $w \in U$.
+			\item If $s > 0$ and $t < 0$, consider $w' = u + \phi$.
+				We have \eq{
+					\y{v} \le \y{w'} \le \y{u}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
+				}
+				If $w' \in U$, then $w = w'$.
+				Otherwise we can (similarly to $\ref{case_pos}^\circ$) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$.
+		\end{enumerate}
 	\end{proof}
 \end{lemma}
 
-Firstly, we partition $R$ into a set of subparquet strings $\S$.
-For every non-empty $S \in \S$ we consider a lattice graph $G_{\d{S}}$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighboring vectors $v, w$ such that $S(v) \neq S(w)$.
+We partition $R$ into a set of subparquet strings $\S$.
+
+For every non-empty $S \in \S$ we construct a lattice graph $\Graph(\d{S})$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighboring vectors $v, w$ such that $S(v) \neq S(w)$.
 We select any such pair and partition $S$ into spacious (or simple if $S$ is simple) subparquet strings $S'$ and $S''$ such that $v \in S'$ and $w \in S''$.
 For example if $v = w + \phi$, then $S' = \set{u : u \in S, \s{u} \le \s{v}}$ and $S'' = \set{u : u \in S, \s{u} > \s{v}}$.
 In the cases when $v = w + \delta$ for $\delta \in \set{-\phi, \psi, -\psi}$ the construction in similar.
@@ -828,6 +877,7 @@ We can recursively partition $S'$ and $S''$ further until we obtain monochromati
 Because $R$ has $\O(k)$-periods $\phi$ and $\psi$, the total number of neighbor pairs $v, w$ such that $S(v) \neq S(w)$ is $\O(k)$ throughout all $S \in \S$.
 Thus the total number of recursive calls is $\O(k)$ and because $|\S| = \O(k)$, the total number of constructed strings is $\O(k)$.
 The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
+
 
 
 % TEXT DECOMPOSITION
