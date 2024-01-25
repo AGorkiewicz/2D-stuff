@@ -357,9 +357,9 @@ We construct the set $Q$ as the set of such vectors $q \in \Z^2$ for which the e
 For every $q \in \set{0, \dots, n - m}^2 \setminus Q$ we say that $\Ham(P + q, T)$ equals $\infty$.
 The next step is to calculate the exact value of $\Ham(P + q, T)$ for every $q \in Q$.
 
-Let us consider the case when $|Q| \le 2m + m^2/k$.
+Let us consider the case when $|Q| \le 6m + m^2/k$.
 We can run the algorithm from \Cref{kangaroos} and by the fact that $\Ham(P + q, T) \le 4k$ for every $q \in Q$, it will perform $\tO(m^2 + mk)$ operations.
-We are left with the case when $|Q| > 2m + m^2/k$, in which we take advantage of the fact that some strings $P + q$ for $q \in Q$ must have a large overlap and small Hamming distance from each other, and thus $P$ must be periodic.
+We are left with the case when $|Q| > 6m + m^2/k$, in which we take advantage of the fact that some strings $P + q$ for $q \in Q$ must have a large overlap and small Hamming distance from each other, and thus $P$ must be periodic.
 
 
 \newcommand{\T}{\mathcal{T}}
@@ -394,9 +394,9 @@ We then select some special periods of the pattern and show how to decompose it 
 
 \newcommand{\Q}{\mathcal{Q}}
 \begin{theorem} \label{get_periods}
-	For a given $\ell \in \Z^+$ and a set of points $U \subseteq [\ell + 1]^2 $ such that $|U| > 4\ell$ there exist $s, t, s', t' \in U$ such that the following conditions hold for $w = t - s$ and $w' = t' - s'$:
+	For a given $\ell \in \Z^+$ and a set of points $U \subseteq [\ell + 1]^2$, such that $|U| > 12\ell$, there exist $s, t, s', t' \in U$, such that the following conditions hold for $w = t - s$ and $w' = t' - s'$:
 	\begin{itemize}
-		\item $0 < |w||w'| \le 22\frac{\ell^2}{|U|}$,
+		\item $0 < |w||w'| = \O(\ell^2 / |U|)$,
 		\item $|\sin \alpha| \ge \frac{1}{2}$ where $\alpha$ is the angle between $w$ and $w'$,
 		\item $w, w', -w, -w'$ are all contained in different \textbf{quadrants}, defined as
 			\eq{
@@ -411,10 +411,10 @@ We then select some special periods of the pattern and show how to decompose it 
 \end{theorem}
 
 
-We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 2m + m^2/k \ge 4\ell$).
+We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 6m + m^2/k \ge 12\ell$).
 We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$ which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
 We will refer to those vectors throughout the rest of the description.
-Note that because $|Q| > 2m + m^2 / k$, we have $0 \le \phi \times \psi \le |\phi||\psi| = \O(\min\set{m, k})$.
+Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\phi||\psi| = \O(\min\set{m, k})$.
 
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
@@ -476,7 +476,7 @@ Note that because $|Q| > 2m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 
 
 \begin{theorem}[Periodic string decomposition]\label{parquet_decomposition}
-	A given spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}|)$ into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
+	A given spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
 	\begin{proof} See \Cref{parquet_decomposition_proof}. \end{proof}
 \end{theorem}
 
@@ -708,22 +708,109 @@ By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity i
 
 % PHI PSI FINDER
 \subsection{Proof of \Cref{get_periods}} \label{get_periods_proof}
-First, we find any closest pair of vectors $s, t \in U$ by running the standard $\tO(|U|)$ time algorithm and denote $w = t - s$.
-We define a partial order $\le_{w}$ where $v \le_w u$ for some $u, v \in U$ when at least one condition holds:
-\begin{enumerate}[(a)]
-	\item $u = v$,
-	\item $u - v$ and $w$ belong to the same quadrant,
-	\item $\alpha \in (-\frac{\pi}{6}, \frac{\pi}{6})$ where $\alpha$ is the angle between $w$ and $u - v$.
+We start by finding the closest pair of points in $U$.
+Specifically, we select any pair of different points $s, t \in U$, which minimizes $|t - s|$. 
+Such pair can be obtained in $\tO(|U|)$ operations, for example with a sweep line method.
+We construct $w = t - s$.
+
+We define a partial order $\le_{w}$ on $\Z^2$, where we have $u \le_w u$ for every $u \in \Z^2$ and $v \le_w u$ for some pair of different points $u, v \in \Z^2$, when at least one condition holds for $\delta = u - v$:
+\begin{enumerate}[a)]
+	\item $w$ and $\delta$ belong to the same quadrant, \label{quadrant_condition}
+	\item $\alpha \in (-\pi / 6, \pi / 6)$, where $\alpha$ is the angle between $w$ and $\delta$. \label{angle_condition}
 \end{enumerate}
-We find the longest chain $C$ and the longest antichain $A$ using dynamic programming in $\tO(|U|)$ operations.
-We then find any closest pair of vectors $s', t' \in A$ and denote $w' = t' - s'$.
-We have the following inequalities:
-\begin{enumerate}[(i)]
-	\item $|U| \le |C| |A|$ (by Dilworth's theorem),
-	\item $(|C| - 1) |w| \le (1 + \sqrt{3})\ell$ (roughly by the fact that vectors in $C$ must be increasing in a certain direction), 
-	\item $(|A| - 1) |w'| \le 2 \ell$ (by using a similar argument for vectors in $A$).
+Consider a vector $k$, where
+\begin{enumerate}[$1^\circ$]
+	\item if $w \in \Q_1$, then $k = (+\sqrt{2} / 2, +\sqrt{2} / 2)$,
+	\item if $w \in \Q_2$, then $k = (-\sqrt{2} / 2, +\sqrt{2} / 2)$,
+	\item if $w \in \Q_3$, then $k = (-\sqrt{2} / 2, -\sqrt{2} / 2)$,
+	\item if $w \in \Q_4$, then $k = (+\sqrt{2} / 2, -\sqrt{2} / 2)$.
 \end{enumerate}
-By considering the assumption $|U| > 4\ell$ it can be proven that $|w||w'| \le 22 \frac{\ell^2}{|U|}$ and the other conditions also hold.
+Observe that the condition (\ref{quadrant_condition}) is equivalent to
+\begin{enumerate}[a')]
+	\item $\alpha \in [-\pi / 4, \pi / 4)$, where $\alpha$ is the angle between $k$ and $\delta$.
+\end{enumerate}
+Let $\beta$ be the angle between $k$ and $w$. Similarly, the condition (\ref{angle_condition}) is equivalent to
+\begin{enumerate}[b')]
+	\item $\alpha \in (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $k$ and $\delta$. 
+\end{enumerate}
+Let $r = [-\pi / 4, \pi / 4) \cup (\beta - \pi / 6, \beta + \pi / 6)$. 
+We can see that the conditions (\ref{quadrant_condition}) and (\ref{angle_condition}) are thus equivalent to a single condition:
+\begin{enumerate}[A)]
+	\item $\alpha \in r$, where $\alpha$ is the angle between $k$ and $\delta$. \label{joint_condition}
+\end{enumerate}
+Observe that $r \subseteq (-5 \pi / 12, 5 \pi / 12)$.
+Thus, the vectors $\delta$, which satisfy (\ref{joint_condition}), belong to a single half-plane and they satisfy $\delta \cdot k > \cos(5\pi / 12)|\delta||k| > |\delta| / 4$.
+Also, since $r$ is a continuous range of angles, for every $\delta_1$ and $\delta_2$ satisfying the condition, $\delta_1 + \delta_2$ also satisfies it.
+Thus, we can prove that for every $u_1, u_2, u_3 \in \Z^2$, such that $u_1 \le_w u_2$ and $u_2 \le_w u_3$, we have $u_1 \le_w u_3$ (meaning the relation is transitive).
+If $u_1 = u_2$ or $u_2 = u_3$, the proof is trivial. If not, we see that $\delta_1 = u_2 - u_1$ and $\delta_2 = u_3 - u_1$ hold the condition, 
+thus it also holds for $u_3 - u_1 = \delta_1 + \delta_2$.
+It is also easy to prove that $\le_w$ is acyclic.
+
+Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming in $\tO(|U|)$ operations.
+
+
+\begin{lemma}\label{C_ineq}
+	$(|C| - 1) |w| < 6\ell$. 
+	\begin{proof}
+		Let $f = |C| - 1$ and
+		let $c_0, \dots, c_{f}$ denote the consecutive points in $C$, such that we have $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
+		Consider the array $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
+		By definition of $w$, we have $|\delta_i| \ge |w|$,
+		and since $\delta_i \cdot k > |\delta_i| / 4$, we get
+		$\delta_i \cdot k > |w| / 4$ for every $i \in [f]$.
+		We have
+		$$ \sum_{i = 0}^{f - 1} \delta_i = c_f - c_0,$$
+		and thus
+		$$ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot k = (c_f - c_0) \cdot k \le \ell \sqrt{2}, $$
+		which gives us $(|C| - 1)|w| < 4\ell \sqrt{2} < 6\ell$.
+	\end{proof}
+\end{lemma}
+
+\begin{lemma}\label{dilworth}
+	$|U| \le |C| |A|$.
+	\begin{proof}
+		It follows from Dilworth's theorem.
+	\end{proof}
+\end{lemma}
+
+We know that $|C| \ge 2$, since there exists a chain containing $s$ and $t$.
+By \cref{C_ineq}, we have
+$$ |C||w| / 2 \le (|C| - 1)|w| < 6\ell, $$
+and thus
+$$ |C| \le |C||w| < 12\ell. $$
+By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}
+$$12 \ell < |U| \le |C| |A| < 12\ell|A|,$$
+thus $|A| > 1$, which means $|A| \ge 2$.
+We select any pair of different vectors $s', t' \in A$, which minimizes $|t' - s'|$ and construct $w' = t' - s'$.
+We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
+
+\begin{lemma}\label{A_ineq}
+	$(|A| - 1) |w'| \le 2\ell$. 
+	\begin{proof}
+		Recall that $(-\pi / 4, \pi / 4) \subseteq r$.
+		Define a range of angles $r' = [-\pi / 4, 3\pi / 4]$.
+		Consider any $u, v \in \Z^2$, such that $u \not \le_w v$ and $v \not \le_w u$.
+		It can be shown that the angle between $k$ and $\delta$ is in $r'$ for some $\delta \in \set{u - v, v - u}$.
+		Thus $|(u - v) \times k| \ge \sin(\pi / 4) |u - v||k| = |u - v|\sqrt{2} / 2$.
+		
+		Let $f = |A| - 1$ and let $a_0, \dots, a_{f}$ be the points in $A$ ordered such that $a_i \times k \le a_{i + 1} \times k$ for every $i \in [f]$.
+		Consider the array $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
+		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times k| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times k = |\delta_i \times k| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
+		We have
+		$$ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,$$
+		and thus
+		$$ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times k = (c_f - c_0) \times k \le \ell \sqrt{2}, $$
+		which gives us $(|A| - 1)|w| \le 2\ell$.
+	\end{proof}
+\end{lemma}
+
+By \Cref{A_ineq}, and since $|A| \ge 2$, we have
+$$|A||w'| \le 2(|A| - 1) |w'| \le 4\ell.$$
+Recall that $|C||w| < 12\ell$ and $|U| \le |C| |A|$. We can multiply the inequalities and obtain
+$$ |U||w||w'| \le |C||A||w||w'| < 48 \ell^2,$$
+which finally gives us
+$$|w||w'| < \frac{48\ell^2}{|U|} = \O(\ell^2 / |U|). $$
+It can be easily shown that $w, w'$ hold the remaining conditions by the definition of $\le_w$.
 
 
 % SUBPARQUET CONVOLUTION
@@ -866,24 +953,68 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 	\end{proof}
 \end{lemma}
 
-We partition $R$ into a set of subparquet strings $\S$.
 
-For every non-empty $S \in \S$ we construct a lattice graph $\Graph(\d{S})$. If $S$ is not monochromatic, then since $G_{\d{S}}$ is connected, there must exist a pair of neighboring vectors $v, w$ such that $S(v) \neq S(w)$.
-We select any such pair and partition $S$ into spacious (or simple if $S$ is simple) subparquet strings $S'$ and $S''$ such that $v \in S'$ and $w \in S''$.
-For example if $v = w + \phi$, then $S' = \set{u : u \in S, \s{u} \le \s{v}}$ and $S'' = \set{u : u \in S, \s{u} > \s{v}}$.
-In the cases when $v = w + \delta$ for $\delta \in \set{-\phi, \psi, -\psi}$ the construction in similar.
+\begin{lemma}\label{monochromacy_condition}
+	A spacious subparquet string $S$ is monochromatic if and only if
+	$$\Ham(S + \phi, S) + \Ham(S + \psi) = 0.$$
+	\begin{proof}
+		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
+		Assume the contrary for the other implication.
+		Let $u, v \in S$ be such that $S(u) \neq S(v)$.
+		Since $\d{S}$ is a spacious subparquet, the graph $(\d{S}, \Edges(\d{S})$ is connected (by \Cref{lattice_graph_connectivity}) and there must exist a path between $u$ and $v$.
+		On that path there must exist a pair of neighbors $w, w'$, such that $S(w) \neq S(w')$ and $w' = w + \delta$ for some $\delta \in \set{\phi, \psi}$.
+		If $\delta = \phi$, then $\Ham(S + \phi, S) \ge 1$ and if $\delta = \psi$, then $\Ham(S + \psi, S) \ge 1$ and we get a contradiction.
+	\end{proof}
+\end{lemma}
 
-We can recursively partition $S'$ and $S''$ further until we obtain monochromatic strings.
-Because $R$ has $\O(k)$-periods $\phi$ and $\psi$, the total number of neighbor pairs $v, w$ such that $S(v) \neq S(w)$ is $\O(k)$ throughout all $S \in \S$.
-Thus the total number of recursive calls is $\O(k)$ and because $|\S| = \O(k)$, the total number of constructed strings is $\O(k)$.
-The algorithm can be implemented to work in time $\tO(|\d{R}|)$.
+
+\begin{lemma}\label{cut_partitioning}
+	A spacious subparquet string $S$ can be partitioned in time $\tO(|\d{S}| + 1)$ into both the following sets of strings (we have two options):
+	\begin{enumerate}[a)]
+		\item a set of $\O(\Ham(S + \phi, S) + 1)$ strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
+		\item a set of $\O(\Ham(S + \psi, S) + 1)$ strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
+	\end{enumerate}
+	All the obtained strings are spacious and if $S$ is simple, they are simple.
+	\begin{proof}
+		Let us consider option (\ref{partition_a}). We construct a set
+		$$ A = \set{\s{u} : u \in S, u + \phi \in S, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}$$
+		and then sort its elements increasingly, creating an array $a_0, \dots, a_\ell$.
+		Note that $\ell \le \Ham(S + \phi, S) + 2$.
+		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to
+		$\set{u : u \in S, \s{u} \in [a_i, a_{i + 1})}$ for every $i \in [\ell]$.
+		Observe that $S_0, \dots, S_{\ell - 1}$ partition $S$ and that $\Ham(S_i + \phi, S_i) = 0$ for every $i \in [\ell]$.
+		Also, is $S$ is spacious, then they are spacious and if $S$ is simple, then they are simple.
+	
+		In the case of option (\ref{partition_b}), we similarly construct
+		$$ A = \set{\h{u} : u \in S, u + \psi \in S, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} $$
+		and then sort it increasingly, creating $a_0, \dots, a_\ell$, where $\ell \le \Ham(S + \psi, S) + 2$.
+		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to 
+		$\set{u : u \in S, \h{u} \in (a_i, a_{i + 1}]}$.
+	\end{proof}
+\end{lemma}
 
 
+We partition $R$ into a set of subparquet strings $\S$, such that $|\S| = \O(\min\set{m, k})$.
+Specifically, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a restriction of $R$ to $\d{R} \cap (\L + \gamma)$.
+Observe that if $R$ is spacious, then all $S \in \S$ are spacious and if $R$ is simple, then all $S \in \S$ are simple.
+We now partition each $S \in \S$ independently by using \Cref{cut_partitioning} (\ref{partition_a})
+and construct a set of subparquet strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
+Note that
+$$ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),$$
+since $R$ has an $\O(k)$-period $\phi$.
+We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subparquet strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
+Again we have
+$$ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),$$
+since $R$ has an $\O(k)$-period $\psi$.
+By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
+The total number of operations is $\O(|\d{R}| + k)$.
 
 % TEXT DECOMPOSITION
 \subsection{Proof of \Cref{text_decomposition}} \label{text_decomposition_proof}
 
-In this section we will consider an empty set to be a valid parallelogram.
+In this section we will use a more geometrical approach and construct some lines and parallelograms.
+For the sake of simplicity, we will consider an empty set to be a valid parallelogram.
+Also, we assume that a parallelogram contains the points laying on its border and its vertices.
 
 \begin{definition}
 	For a set of points $U \subseteq \R^2$ we will denote
@@ -900,7 +1031,7 @@ In this section we will consider an empty set to be a valid parallelogram.
 \end{observation}
 
 We use \Cref{line_existence} with $v = \phi$ to construct the lines $h_0, \dots, h_\ell$ and with $v = \psi$ to construct the lines $s_0, \dots, s_\ell$.
-For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as the intersection of $h_i$ and $s_j$ (it is easy to see that since $\phi$ and $\psi$ are not collinear, $h_i$ and $s_j$ are not parallel).
+For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as an intersection of $h_i$ and $s_j$ (it is easy to see that since $\phi$ and $\psi$ are not collinear, $h_i$ and $s_j$ are not parallel).
 For every $i, j \in [\ell]$ we construct a parallelogram $p_{i, j}$ defined as the area between $s_i$ and $s_{i + 1}$ intersected with the area between $h_j$ and $h_{j + 1}$.
 Specifically,
 $$p_{i, j} = \set{u : u \in \R^2, \h{u} \in [\h{w_{i, j}}, \h{w_{i + 1, j + 1}}], \s{u} \in [\s{w_{i, j}}, \s{w_{i + 1, j + 1}}]}.$$
@@ -942,7 +1073,7 @@ We can use the same argument if we have $\max \Y(p_{i, j}) - \min \Y(p_{i, j}) \
 Thus, from now on we will assume that $\max X_{i, j} - \min X_{i, j} < m / 4$ and $\max Y_{i, j} - \min Y_{i, j} < m / 4$ for every $i, j \in [\ell]$. 
 
 Let $z = \frac{n - 1}{2}$. 
-We split the plain with two lines $x = z$ and $y = z$ into four quarters:
+We split the plane with two lines $x = z$ and $y = z$ into four quarters:
 \begin{enumerate}[1)]
 	\item $K_1 = (z, +\infty) \times (z, +\infty)$,
 	\item $K_2 = (-\infty, z) \times (z, +\infty)$,
