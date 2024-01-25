@@ -155,7 +155,7 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 \paragraph{2D Periodicity}
 
 \begin{itemize}
-	\item Two-dimensional periodicity was introduced in \cite{Amir1992,Amir1998} and refined in \cite{Galil1996}. All periods (and witnesses for all non-periods) can be computed in $\O(n^2)$ time \cite{Cole2004}. Witnesses can be used to efficiently eliminate potential occurrences of the pattern. Since witness computation is costly for run-length encoded strings, Amir at al.\ \cite{Amir1997} show additional properties of two-dimensial periodicities that allow the elimination of occurrences without witnesses.
+	\item Two-dimensional periodicity was introduced in \cite{Amir1992,Amir1998} and refined in \cite{Galil1996}. All periods (and witnesses for all non-periods) can be computed in $\O(n^2)$ time \cite{Cole2004}. Witnesses can be used to efficiently eliminate potential occurrences of the pattern. Since witness computation is costly for run-length encoded strings, Amir at al.\ \cite{Amir1997} show additional properties of two-dimensional periodicities that allow the elimination of occurrences without witnesses.
 	\item Famous periodicity theorems have been generalized to two dimensions, for example the Fine-Wilf theorem \cite{Fine1965,Mignosi2003} and the Lyndon-Schützenberger theorem \cite{Lyndon1962,Gamard2017}.
 	\item Smallest rectangular cover in $\O(n^2)$ time, all aperiodic covers in $\O(n^2 \log n)$ time \cite{Charalampopoulos2021}. Covers of two-dimensional strings were also considered in \cite{Gamard2019,Crochemore1998a}. 
 	\item All tile covers in $\O(n^{2+\epsilon})$ time \cite{Radoszewski2022}.
@@ -173,7 +173,7 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 \begin{itemize}
 	\item A survey by Rytter \cite{Rytter2000} discusses compressed representations of two-dimensional strings and the computation on such representations without explicit decompression. If the text is compressed as a two-dimensional SLP, then merely deciding if a pattern is present is NP-complete with respect to the compressed size \cite{Berman2002}. If both text and pattern are compressed using a two-dimensional version of Lempel-Ziv compression, then exact matching can be done in $\O(n^2 + m^3)$ time, using additional working space proportional to the compressed representation of the pattern \cite{Amir2003}. If text and pattern are given in two-dimensional run-length encoding, then the time for exact matching is linear in the size of the compressed text, and the space is linear in the size of the compressed pattern \cite{Amir2003a}. If multiple patterns are given, then they can be compressed into a space efficient self-index that allows fast dictionary matching \cite{Neuburger2013}.
 	\item In parametrized matching, pattern occurrences have to be isomorphic via a bijection on the effective alphabets \cite{Amir2006,Cole2014}. A key step for efficient parametrized matching in two dimensions is counting the number of distinct symbols in every $m \times m$ substring, which can be done in $\O(n^2)$ time \cite{Cole2014}.
-	\item More work on structural elements in two-dimensionsal strings, e.g., frames (rectangles with matching outer columns and rows) \cite{Boneh2023}, Lyndon words \cite{Marcus2017}, motif patterns (allowing ``don't cares'', and satisfying special properties) \cite{Apostolico2008}, patterns with at least two occurrences \cite{Karp1972}, and palindromic substrings \cite{Mahalingam2019}.
+	\item More work on structural elements in two-dimensional strings, e.g., frames (rectangles with matching outer columns and rows) \cite{Boneh2023}, Lyndon words \cite{Marcus2017}, motif patterns (allowing ``don't cares'', and satisfying special properties) \cite{Apostolico2008}, patterns with at least two occurrences \cite{Karp1972}, and palindromic substrings \cite{Mahalingam2019}.
 	\item There is an efficient algorithm for matching a half-rectangular pattern (fixed height, but irregular shape) in a text, allowing a fixed number of mismatches, insertions and deletions \cite{Amir1995}.
 \end{itemize}
 
@@ -702,7 +702,7 @@ By \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\H
 We partition $I$ into $|\d{I}|$ strings, one per every $u \in I$.
 Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in I$.
 We have $\Ham(P + q, I) = \sum_{u \in I} \Ham(P + q, I_u)$ for every $q \in Q$.
-By \Cref{subparquet_definition}, $I_u$ are simple subarquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in I} |\V_{I(u)}|)$.
+By \Cref{subparquet_definition}, $I_u$ are simple subparquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in I} |\V_{I(u)}|)$.
 Since $I(u)$ is an infrequent character for every $u \in I$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in I$.
 By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
 
@@ -1031,7 +1031,7 @@ Also, we assume that a parallelogram contains the points laying on its border an
 \end{observation}
 
 We use \Cref{line_existence} with $v = \phi$ to construct the lines $h_0, \dots, h_\ell$ and with $v = \psi$ to construct the lines $s_0, \dots, s_\ell$.
-For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as an intersection of $h_i$ and $s_j$ (it is easy to see that since $\phi$ and $\psi$ are not collinear, $h_i$ and $s_j$ are not parallel).
+For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as an intersection of $h_i$ and $s_j$ (it is easy to see that since $\phi$ and $\psi$ are not colinear, $h_i$ and $s_j$ are not parallel).
 For every $i, j \in [\ell]$ we construct a parallelogram $p_{i, j}$ defined as the area between $s_i$ and $s_{i + 1}$ intersected with the area between $h_j$ and $h_{j + 1}$.
 Specifically,
 $$p_{i, j} = \set{u : u \in \R^2, \h{u} \in [\h{w_{i, j}}, \h{w_{i + 1, j + 1}}], \s{u} \in [\s{w_{i, j}}, \s{w_{i + 1, j + 1}}]}.$$
@@ -1276,7 +1276,7 @@ Consider a parallelogram $p_{i, j}$ for some $i, j \in [\ell]$.
 		By definition of $p_{i, j}$, we have
 		$$ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| = \O(n|\phi| / \ell) $$
 		and similarly $|\s{w}| = \O(n|\psi| / \ell)$.
-		Since $\phi$ and $\psi$ are not collinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$.
+		Since $\phi$ and $\psi$ are not colinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$.
 		Recall that by \Cref{get_periods} we have $|\phi \times \psi| \ge \frac{1}{2}|\phi||\psi|$ (since $|\sin \alpha| \ge 1/2$), thus
 		$$ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), $$
 		which gives us $|t\phi| = \O(n / \ell)$.
