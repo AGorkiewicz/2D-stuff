@@ -354,7 +354,7 @@ By \Cref{instancing}, our main result follows.
 
 We start by running the algorithm from \Cref{approx2d} with $\varepsilon = 1$.
 We construct the set $Q$ as the set of such vectors $q \in \Z^2$ for which the estimated value of $\Ham(P + q, T)$ is at most $2k$.
-For every $q \in \set{0, \dots, n - m}^2 \setminus Q$ we say that $\Ham(P + q, T)$ equals $\infty$.
+For every $q \in [n - m + 1]^2 \setminus Q$ we say that $\Ham(P + q, T)$ equals $\infty$.
 The next step is to calculate the exact value of $\Ham(P + q, T)$ for every $q \in Q$.
 
 Let us consider the case when $|Q| \le 6m + m^2/k$.
@@ -637,7 +637,18 @@ Consider an array of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$, where $U
 For the sake of formality (since the maximum/minimum of an empty set is undefined), let $V_0, \dots, V_{\ell - 1}$ consist of all non-empty strings $U_i$, given in the increasing order of $i$.
 Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not greater than $d$.
 
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{periphery_decomposition}
+	\end{center}
+	\caption{The decomposition of $S_1$.}
+	\label{figure:periphery_decomposition}
+\end{figure}
+
 For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{u}, \y{u} + h_i) \not \in \Ta$ for every $u \in V_i$.
+For better reference, see \Cref{figure:periphery_decomposition}.
+The colored points represent $\d{S_1}$, where the green ones belong to some specific $\d{V_i}$.
+
 
 \begin{lemma}\label{sum_of_h}
 	The sum of all $h_i$ is $\O(m)$.
@@ -718,36 +729,36 @@ We define a partial order $\le_{w}$ on $\Z^2$, where we have $u \le_w u$ for eve
 	\item $w$ and $\delta$ belong to the same quadrant, \label{quadrant_condition}
 	\item $\alpha \in (-\pi / 6, \pi / 6)$, where $\alpha$ is the angle between $w$ and $\delta$. \label{angle_condition}
 \end{enumerate}
-Consider a vector $k$, where
+Consider a vector $\rho$, where
 \begin{enumerate}[$1^\circ$]
-	\item if $w \in \Q_1$, then $k = (+\sqrt{2} / 2, +\sqrt{2} / 2)$,
-	\item if $w \in \Q_2$, then $k = (-\sqrt{2} / 2, +\sqrt{2} / 2)$,
-	\item if $w \in \Q_3$, then $k = (-\sqrt{2} / 2, -\sqrt{2} / 2)$,
-	\item if $w \in \Q_4$, then $k = (+\sqrt{2} / 2, -\sqrt{2} / 2)$.
+	\item if $w \in \Q_1$, then $\rho = (+\sqrt{2} / 2, +\sqrt{2} / 2)$,
+	\item if $w \in \Q_2$, then $\rho = (-\sqrt{2} / 2, +\sqrt{2} / 2)$,
+	\item if $w \in \Q_3$, then $\rho = (-\sqrt{2} / 2, -\sqrt{2} / 2)$,
+	\item if $w \in \Q_4$, then $\rho = (+\sqrt{2} / 2, -\sqrt{2} / 2)$.
 \end{enumerate}
 Observe that the condition (\ref{quadrant_condition}) is equivalent to
 \begin{enumerate}[a')]
-	\item $\alpha \in [-\pi / 4, \pi / 4)$, where $\alpha$ is the angle between $k$ and $\delta$.
+	\item $\alpha \in [-\pi / 4, \pi / 4)$, where $\alpha$ is the angle between $\rho$ and $\delta$.
 \end{enumerate}
 Let $\beta$ be the angle between $k$ and $w$. Similarly, the condition (\ref{angle_condition}) is equivalent to
 \begin{enumerate}[b')]
-	\item $\alpha \in (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $k$ and $\delta$. 
+	\item $\alpha \in (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $\rho$ and $\delta$. 
 \end{enumerate}
 Let $r = [-\pi / 4, \pi / 4) \cup (\beta - \pi / 6, \beta + \pi / 6)$. 
 We can see that the conditions (\ref{quadrant_condition}) and (\ref{angle_condition}) are thus equivalent to a single condition:
 \begin{enumerate}[A)]
-	\item $\alpha \in r$, where $\alpha$ is the angle between $k$ and $\delta$. \label{joint_condition}
+	\item $\alpha \in r$, where $\alpha$ is the angle between $\rho$ and $\delta$. \label{joint_condition}
 \end{enumerate}
 Observe that $r \subseteq (-5 \pi / 12, 5 \pi / 12)$.
-Thus, the vectors $\delta$, which satisfy (\ref{joint_condition}), belong to a single half-plane and they satisfy $\delta \cdot k > \cos(5\pi / 12)|\delta||k| > |\delta| / 4$.
+Thus, the vectors $\delta$, which hold (\ref{joint_condition}), belong to a single half-plane and they satisfy $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
 Also, since $r$ is a continuous range of angles, for every $\delta_1$ and $\delta_2$ satisfying the condition, $\delta_1 + \delta_2$ also satisfies it.
 Thus, we can prove that for every $u_1, u_2, u_3 \in \Z^2$, such that $u_1 \le_w u_2$ and $u_2 \le_w u_3$, we have $u_1 \le_w u_3$ (meaning the relation is transitive).
-If $u_1 = u_2$ or $u_2 = u_3$, the proof is trivial. If not, we see that $\delta_1 = u_2 - u_1$ and $\delta_2 = u_3 - u_1$ hold the condition, 
+If $u_1 = u_2$ or $u_2 = u_3$, the proof is trivial.
+If not, observe that $\delta_1 = u_2 - u_1$ and $\delta_2 = u_3 - u_1$ hold the condition, 
 thus it also holds for $u_3 - u_1 = \delta_1 + \delta_2$.
 It is also easy to prove that $\le_w$ is acyclic.
 
 Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming in $\tO(|U|)$ operations.
-
 
 \begin{lemma}\label{C_ineq}
 	$(|C| - 1) |w| < 6\ell$. 
@@ -756,12 +767,12 @@ Under the partial order $\le_w$, we find the longest chain $C$ and the longest a
 		let $c_0, \dots, c_{f}$ denote the consecutive points in $C$, such that we have $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
 		Consider the array $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
 		By definition of $w$, we have $|\delta_i| \ge |w|$,
-		and since $\delta_i \cdot k > |\delta_i| / 4$, we get
-		$\delta_i \cdot k > |w| / 4$ for every $i \in [f]$.
+		and since $\delta_i \cdot \rho > |\delta_i| / 4$, we get
+		$\delta_i \cdot \rho > |w| / 4$ for every $i \in [f]$.
 		We have
 		$$ \sum_{i = 0}^{f - 1} \delta_i = c_f - c_0,$$
 		and thus
-		$$ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot k = (c_f - c_0) \cdot k \le \ell \sqrt{2}, $$
+		$$ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot \rho = (c_f - c_0) \cdot \rho \le \ell \sqrt{2}, $$
 		which gives us $(|C| - 1)|w| < 4\ell \sqrt{2} < 6\ell$.
 	\end{proof}
 \end{lemma}
@@ -790,16 +801,16 @@ We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
 		Recall that $(-\pi / 4, \pi / 4) \subseteq r$.
 		Define a range of angles $r' = [-\pi / 4, 3\pi / 4]$.
 		Consider any $u, v \in \Z^2$, such that $u \not \le_w v$ and $v \not \le_w u$.
-		It can be shown that the angle between $k$ and $\delta$ is in $r'$ for some $\delta \in \set{u - v, v - u}$.
-		Thus $|(u - v) \times k| \ge \sin(\pi / 4) |u - v||k| = |u - v|\sqrt{2} / 2$.
+		It can be shown that the angle between $\rho$ and $\delta$ is in $r'$ for some $\delta \in \set{u - v, v - u}$.
+		Thus $|(u - v) \times \rho| \ge \sin(\pi / 4) |u - v||\rho| = |u - v|\sqrt{2} / 2$.
 		
-		Let $f = |A| - 1$ and let $a_0, \dots, a_{f}$ be the points in $A$ ordered such that $a_i \times k \le a_{i + 1} \times k$ for every $i \in [f]$.
+		Let $f = |A| - 1$ and let $a_0, \dots, a_{f}$ be the points in $A$ ordered such that $a_i \times \rho \le a_{i + 1} \times \rho$ for every $i \in [f]$.
 		Consider the array $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
-		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times k| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times k = |\delta_i \times k| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
+		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times \rho| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times \rho = |\delta_i \times \rho| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
 		We have
 		$$ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,$$
 		and thus
-		$$ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times k = (c_f - c_0) \times k \le \ell \sqrt{2}, $$
+		$$ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times \rho = (c_f - c_0) \times \rho \le \ell \sqrt{2}, $$
 		which gives us $(|A| - 1)|w| \le 2\ell$.
 	\end{proof}
 \end{lemma}
@@ -842,7 +853,7 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 
 		Now consider a query vector $q \in Q$.
 		Let $\gamma \in \Gamma$ be such that $q \equiv \gamma$.
-		We have already showed that the sum of scores for $u \in D + q$ is equal to the sum of scores for $u \in (D + q) \cap U$.
+		We have already shown that the sum of scores for $u \in D + q$ is equal to the sum of scores for $u \in (D + q) \cap U$.
 		Since $(D + q) \cap U = (D + q) \cap U_\gamma$, we see that the result is the sum of scores for such $u \in U_\gamma$, for which $\h{u} \ge \h{q}$ and $\s{u} \ge \s{q}$.
 		If we denote $Q_\gamma = Q \cap (\L + \gamma)$, we see that we can calculate the results for all $q \in Q_\gamma$ by sweeping $Q_\gamma$ and $U_\gamma$ in time $\tO(|Q_\gamma| + |U_\gamma|)$.
 		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|Q| + |U|) = \tO(n^2 + |Q|)$ operations in total.
@@ -1009,12 +1020,15 @@ since $R$ has an $\O(k)$-period $\psi$.
 By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
 The total number of operations is $\O(|\d{R}| + k)$.
 
+
 % TEXT DECOMPOSITION
 \subsection{Proof of \Cref{text_decomposition}} \label{text_decomposition_proof}
 
 In this section we will use a more geometrical approach and construct some lines and parallelograms.
 For the sake of simplicity, we will consider an empty set to be a valid parallelogram.
 Also, we assume that a parallelogram contains the points laying on its border and its vertices.
+
+
 
 \begin{definition}
 	For a set of points $U \subseteq \R^2$ we will denote
@@ -1183,6 +1197,15 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 \end{lemma}
 
 \newcommand{\B}{\mathcal{B}}
+
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{text_decomposition}
+	\end{center}
+	\caption{The constructed parallelograms from $\C$ and $\C'$.}
+	\label{figure:text_decomposition}
+\end{figure}
+
 We split every non-empty parallelogram $g \in \G$ (by \Cref{parallelogram_split_lemma}) into parallelograms $c$ and $b$.
 We construct a set $\C$ consisting of all the obtained parallelograms $c$ and a set $\B$ consisting of all the obtained parallelograms $b$.
 
@@ -1190,6 +1213,10 @@ We similarly divide the parallelograms in $\I$ (by \Cref{I_division}) and constr
 
 Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup B'} b \cap \d{\Ta}$.
 Observe that all sets $U \in \U$ are coverable simple parquets, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
+For better reference, the decomposition can be seen on \Cref{figure:text_decomposition}.
+The points in the grey area are outside of $\dom(\Ta)$.
+The parallelograms from $\C$ and $\C'$ are colored blue and green, respectively.
+The points outside of them (in the white area) form the peripheral set $V$.
 
 For each $U \in \U$ we construct the restriction of $T$ to $U$.
 By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{parquet_decomposition}, it can be partitioned into $\O(k)$ monochromatic simple subparquet strings.
@@ -1202,7 +1229,6 @@ Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-p
 \subsubsection{Proof of \Cref{parallelogram_split_lemma}} \label{parallelogram_split_lemma_proof}
 For an empty parallelogram, the proof is trivial.
 Consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
-%We denote $B = \Z^2 \setminus \d{\Ta}$.
 
 \begin{lemma}\label{coverability_condition}
 	Every set $U \subseteq K_1 \cap \Z^2$, such that $(\max \X(U), \max \Y(U)) \in \Ta$ is coverable.
