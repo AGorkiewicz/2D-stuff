@@ -49,7 +49,6 @@ def draw_dots(s, t):
 
 
 S = [[0 for i in range(n)] for j in range(n)]
-T = [Point(i, j) for i in range(n) for j in range(n)]
 P = [Point(i, j) for i in range(m) for j in range(m)]
 Q = []
 D = [[1e9 for i in range(n)] for j in range(n)]
@@ -142,11 +141,13 @@ for (i, j) in U[10]:
                 p = (i, j)
             break
 
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=2ex, mirror}}] ({p[0]}, {p[1] + h}) -- ({p[0]}, {p[1]}) node [midway,scale=10, xshift=-1em]{{$h_i$}};'
-
 res += f'\\draw ({p[0]}, {p[1] - 10}) node [scale=10]{{$V_i$}};'
 
+res += f'\\draw[decorate, decoration={{brace, amplitude=200pt, raise=2ex, mirror}}] ({p[0]}, {p[1] + h}) -- ({p[0]}, {p[1]}) node [midway,scale=10, xshift=-2.7em]{{$h_i$}};'
+
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=2ex, mirror}}] ({10 * d}, {60}) -- ({11 * d - 1}, {60}) node [midway, scale=10, yshift=-1em]{{$d - 1$}};'
 
 res += '\\end{tikzpicture}\n\\end{document}'
+
 print(res)
 
