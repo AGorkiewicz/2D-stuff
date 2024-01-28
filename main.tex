@@ -229,7 +229,7 @@ Our results hold under word-RAM model of computation.
 
 \begin{definition}[Hamming distance]
 	For a pair of strings $S, R$ we define
-	$$ \Ham(S, R) = |\set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|,$$
+	\[ \Ham(S, R) = |\set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|,\]
 	which corresponds to the number of mismatches between $S$ and $R$.
 \end{definition}
 
@@ -311,8 +311,8 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 \end{lemma}
 
 
-\begin{lemma}\label{approx1d}
-	There exists a $(1 + \varepsilon)$-approximate algorithm (introduced in \cite{Karloff1993}) which solves \hd with don't care symbols in $\tO(n)$.
+\begin{lemma}[\cite{Karloff1993})]\label{approx1d}
+	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd with don't care symbols in $\tO(n)$.
 \end{lemma}
 
 
@@ -321,8 +321,8 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 	\begin{proof}
 		We will again use the array notation.
 		We construct one-dimensional strings $\bar{T}$ and $\bar{P}$ by concatenating subsequent rows $T[0], \dots, T[n - 1]$ of $T$ and rows $P[0], \dots, P[m - 1]$ of $P$ padded with don't care symbols:
-		$$ \bar{T} = T[0] \ T[1] \ \dots \ T[n - 1], $$
-		$$ \bar{P} = P[0] \ \texttt{?}^{n - m} \ P[1] \ \texttt{?}^{n - m} \ \dots \ \texttt{?}^{n - m} \ P[m - 1].$$
+		\[ \bar{T} = T[0] \ T[1] \ \dots \ T[n - 1], \]
+		\[ \bar{P} = P[0] \ \texttt{?}^{n - m} \ P[1] \ \texttt{?}^{n - m} \ \dots \ \texttt{?}^{n - m} \ P[m - 1].\]
 		We run the algorithm from \Cref{sigman1d}.
 		The distance between $T[i \dd i + m - 1, j \dd j + m - 1]$ and $P$ is equal to the distance between $\bar{T}[in + j \dd in + j + nm - n + m - 1]$ and $\bar{P}$.
 	\end{proof}
@@ -338,7 +338,7 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 
 
 The same reduction as in \Cref{sigman2d} can be applied for every \hd solution which allows don't care symbols.
-Unfortunately, the most effective known algorithms for bounded \hd rely on periodicity (\cite{Clifford2015}, \cite{Gawrychowski2017}) and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
+Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
 
 
 \begin{observation}[Don't care padding]\label{dontcare_padding}
@@ -380,7 +380,7 @@ We then select some special periods of the pattern and show how to decompose it 
 \begin{definition}[Periodicity]
 	Consider any vector $\delta \in \Z^2$.
 	We say that a string $S$ has an $\ell$-period $\delta$ when
-	$$ \Ham(S + \delta, S) \le \ell. $$
+	\[ \Ham(S + \delta, S) \le \ell. \]
 \end{definition}
 
 
@@ -450,8 +450,8 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 
 \begin{definition}[Parquet]\label{parquet_definition}
 	We call a set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
-	$$ U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. $$
-	For better reference, see \Cref{figure:parquet}.
+	\[ U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. \]
+	See \Cref{figure:parquet} for an illustration.
 	\begin{enumerate}[a)]
 		\item If additionally $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, then $U$ is a \textbf{spacious} parquet.
 		\item If additionally $x_0, y_0 = -\infty$ and $x_1, y_1 = +\infty$, then $U$ is a \textbf{simple} parquet.
@@ -462,8 +462,8 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 
 \begin{definition}[Subparquet]\label{subparquet_definition}
 	We call a set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
-	$$ V = \set{u : u \in U, u \equiv \gamma}.$$
-	For better reference, see \Cref{figure:parquet}.
+	\[ V = \set{u : u \in U, u \equiv \gamma}.\]
+	This is also illustrated in \Cref{figure:parquet}.
 	A signature of $V$ consists of a signature of $U$ and the vector $\gamma$.
 	We call $V$ a spacious/simple subparquet when there exists $U$ which is (correspondingly) a spacious/simple parquet.
 	We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$.
@@ -473,7 +473,7 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 
 \begin{theorem}[Subparquet convolution]\label{subparquet_convolution}
 	For a given list of signatures of simple subparquets $U_0, \dots, U_{\ell - 1}$, list of signatures of subparquets $V_0, \dots, V_{\ell - 1}$ and a set of vectors $Q$ we can calculate
-	$$ \sum_{i = 0}^{\ell - 1} |(U_i + q) \cap V_i| $$
+	\[ \sum_{i = 0}^{\ell - 1} |(U_i + q) \cap V_i| \]
 	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$, assuming that the subparquets only contain vectors of length $\O(m)$.
 	\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
 \end{theorem}
@@ -498,14 +498,14 @@ Specifically, we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}
 
 \begin{theorem}\label{sparse_algo}
 	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
-	$$ \sum_{S \in \S} \Ham(P + q, S) $$
+	\[ \sum_{S \in \S} \Ham(P + q, S) \]
 	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$, assuming that the sets $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
 	\begin{proof}
 		Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
-		$$ \sum_{S \in \S} \Ham(P + q, S) = |(P + q) \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.$$
+		\[ \sum_{S \in \S} \Ham(P + q, S) = |(P + q) \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.\]
 		We can calculate $|(P + q) \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
 		To calculate the values
-		$$ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| $$
+		\[ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| \]
 		we use the algorithm from \Cref{subparquet_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
 	\end{proof}
 \end{theorem}
@@ -541,7 +541,7 @@ In this section we show how to decompose $T$ using a similar, but more nuanced a
 
 We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a $\O(k^{3 / 4})$-peripheral string $F$.
 For every $q \in Q$ we then have
-$$ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).$$
+\[ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).\]
 
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
@@ -572,9 +572,9 @@ We will demonstrate some characteristics of $S_1$, and by symmetry, generalize t
 		$\y{u} - d \le \y{w} \le \y{u} + d$.
 		Since $v \in T_a$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
 		We have
-		$$ \x{w} \ge \x{u} - d \ge n / 2 - m / 4 \ge n - m > \x{q} $$
+		\[ \x{w} \ge \x{u} - d \ge n / 2 - m / 4 \ge n - m > \x{q} \]
 		and
-		$$ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. $$
+		\[ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. \]
 		Similarly we can show that $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^2 + q$.
 		Since $[m]^2 + q \subseteq \d{\Ta}$ and $w \not \in \Ta$, we get a contradiction.
 	\end{proof}
@@ -618,7 +618,7 @@ We will only show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$, since
 We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
 Specifically, let us consider a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
 Since the strings $P_0$ and $P_1$ partition $P$, we have
-$$ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).$$
+\[ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).\]
 
 \begin{lemma}\label{border_hamming_reduction}
 	$\d{P_0 + q} \cap \d{S_1} = \emptyset$ for every $q \in Q$.
@@ -636,7 +636,7 @@ $$ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).$$
 
 By \Cref{border_hamming_reduction}, $\Ham(P_0 + q, S_1) = 0$ for every $q \in Q$
 and by \Cref{border_hamming_split} we then have 
-$$\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_1). $$
+\[\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_1). \]
 for some newly constructed strings $P_2$ and $P_3$, such that the width of $P_2$ and the height of $P_3$ equals $d$.
 We calculate $\Ham(P_2 + q, S_1)$ and $\Ham(P_3 + q, S_1)$ for every $Q$ independently and sum the results.
 We only show how to calculate $\Ham(P_2 + q, S_1)$, since the other case is symmetric.
@@ -673,15 +673,15 @@ The colored points represent $\d{S_1}$, where the green ones belong to some spec
 		Since for $\ell < 2$, the proof is trivial, we assume $\ell \ge 2$.
 		For every $i$ (since $h_i$ is minimal) there exists a point $u_i \in V_i$, such that $(\x{u_i}, \y{u_i} + h_i - 1) \in \Ta$.
 		It can be shown that for all $i \ge 2$ we have
-		$$ h_{i} \le \y{u_{i - 2}} - \y{u_{i}} + d,$$
+		\[ h_{i} \le \y{u_{i - 2}} - \y{u_{i}} + d,\]
 		since if that was not the case for some $i$, then the points $u_{i - 2}$ and $v = (\x{u_{i}}, \y{u_{i}} + h_{i} - 1)$ would contradict \Cref{border_lemma}.
 		We can conclude that
-		$$
+		\[
 			\sum_{i = 0}^{\ell - 1} h_i
 			\le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d)
 			= h_0 + h_1 + \y{u_0} + \y{u_1} - \y{u_{\ell - 2}} - \y{u_{\ell - 1}} + (\ell - 2)d 
 			= \O(m).
-		$$
+		\]
 	\end{proof}
 \end{lemma}
 
@@ -695,7 +695,7 @@ The colored points represent $\d{S_1}$, where the green ones belong to some spec
 For every $i \in [l]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
 and the string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$.
 Since $L_i$ and $H_i$ partition $V_i$, we have
-$$ \Ham(P_2 + q, S_1) = \sum_{i = 0}^{\ell - 1} \Ham(P_2 + q, V_i) = \sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) + \sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i). $$
+\[ \Ham(P_2 + q, S_1) = \sum_{i = 0}^{\ell - 1} \Ham(P_2 + q, V_i) = \sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) + \sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i). \]
 
 \begin{lemma}\label{pattern_height_reduction}
 	$\d{L_i + q} \cap \d{V_i} = \emptyset$ for every $q \in Q$ and $i \in [\ell]$.
@@ -723,7 +723,7 @@ We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma
 We partition $S$ into two strings $F$ and $I$, based on character frequency,
 so that $F$ consists of only the frequent characters and $I$ consists of only the infrequent ones.
 For every $q \in Q$ we then have 
-$$\Ham(P + q, S) = \Ham(P + q, F) + \Ham(P + q, I).$$
+\[\Ham(P + q, S) = \Ham(P + q, F) + \Ham(P + q, I).\]
 
 By \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $F$ is $d$-peripheral. 
 
@@ -787,9 +787,9 @@ Under the partial order $\le_w$, we find the longest chain $C$ and the longest a
 		and since $\delta_i \cdot \rho > |\delta_i| / 4$, we get
 		$\delta_i \cdot \rho > |w| / 4$ for every $i \in [f]$.
 		We have
-		$$ \sum_{i = 0}^{f - 1} \delta_i = c_f - c_0,$$
+		\[ \sum_{i = 0}^{f - 1} \delta_i = c_f - c_0,\]
 		and thus
-		$$ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot \rho = (c_f - c_0) \cdot \rho \le \ell \sqrt{2}, $$
+		\[ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot \rho = (c_f - c_0) \cdot \rho \le \ell \sqrt{2}, \]
 		which gives us $(|C| - 1)|w| < 4\ell \sqrt{2} < 6\ell$.
 	\end{proof}
 \end{lemma}
@@ -803,11 +803,11 @@ Under the partial order $\le_w$, we find the longest chain $C$ and the longest a
 
 We know that $|C| \ge 2$, since there exists a chain containing $s$ and $t$.
 By \cref{C_ineq}, we have
-$$ |C||w| / 2 \le (|C| - 1)|w| < 6\ell, $$
+\[ |C||w| / 2 \le (|C| - 1)|w| < 6\ell, \]
 and thus
-$$ |C| \le |C||w| < 12\ell. $$
+\[ |C| \le |C||w| < 12\ell. \]
 By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}
-$$12 \ell < |U| \le |C| |A| < 12\ell|A|,$$
+\[12 \ell < |U| \le |C| |A| < 12\ell|A|,\]
 thus $|A| > 1$, which means $|A| \ge 2$.
 We select any pair of different vectors $s', t' \in A$, which minimizes $|t' - s'|$ and construct $w' = t' - s'$.
 We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
@@ -825,19 +825,19 @@ We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
 		Consider the array $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
 		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times \rho| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times \rho = |\delta_i \times \rho| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
 		We have
-		$$ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,$$
+		\[ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,\]
 		and thus
-		$$ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times \rho = (c_f - c_0) \times \rho \le \ell \sqrt{2}, $$
+		\[ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times \rho = (c_f - c_0) \times \rho \le \ell \sqrt{2}, \]
 		which gives us $(|A| - 1)|w| \le 2\ell$.
 	\end{proof}
 \end{lemma}
 
 By \Cref{A_ineq}, and since $|A| \ge 2$, we have
-$$|A||w'| \le 2(|A| - 1) |w'| \le 4\ell.$$
+\[|A||w'| \le 2(|A| - 1) |w'| \le 4\ell.\]
 Recall that $|C||w| < 12\ell$ and $|U| \le |C| |A|$. We can multiply the inequalities and obtain
-$$ |U||w||w'| \le |C||A||w||w'| < 48 \ell^2,$$
+\[ |U||w||w'| \le |C||A||w||w'| < 48 \ell^2,\]
 which finally gives us
-$$|w||w'| < \frac{48\ell^2}{|U|} = \O(\ell^2 / |U|). $$
+\[|w||w'| < \frac{48\ell^2}{|U|} = \O(\ell^2 / |U|). \]
 It can be easily shown that $w, w'$ hold the remaining conditions by the definition of $\le_w$.
 
 
@@ -848,11 +848,11 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 
 \begin{lemma}\label{primitive_conv}
 	Given a set of subparquets $\V$ and a set of points $Q$, we can calculate
-	$$ \sum_{V \in \V} |(D + q) \cap V| $$
+	\[ \sum_{V \in \V} |(D + q) \cap V| \]
 	for every $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$, assuming that every $V \in \V$ consists of vectors of length $\O(n)$.
 	\begin{proof}
 		For every $u \in \Z^2$ let us define $\score(u) = |\set{V : V \in \V, u \in V}|$. Observe that
-		$$ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). $$
+		\[ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). \]
 		We start by explicitly calculating the scores.
 		We find the maximum length of a vector that some $V \in \V$ is defined for, which we denote $\ell$.
 		We construct the set $U \subseteq \Z^2$ of all vectors of length at most $\ell$.
@@ -879,7 +879,7 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 
 \begin{lemma}\label{primitive}
 	For any simple subparquet $U$ we can find $w_0, \dots, w_3 \in \Z^2$, such that
-	$$ |U \cap X| = \sum_{j = 0}^3 (-1)^j |(D + w_j) \cap X|$$
+	\[ |U \cap X| = \sum_{j = 0}^3 (-1)^j |(D + w_j) \cap X|\]
 	for every $X \subseteq \Z^2$.
 	If $U$ consists of vectors of length $\O(n)$, then $w_0, \dots, w_3$ are of length $\O(n)$.
 	\begin{proof}
@@ -923,7 +923,7 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 
 \begin{definition}[Lattice graph]
 	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $(U, \Edges(U))$, where
-	$$ \Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U},$$ 
+	\[ \Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U},\] 
 	so every vector is connected with its translations by $\phi, \psi, -\phi, -\psi$, which are contained in $U$.
 \end{definition}
 
@@ -955,9 +955,9 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 				}
 				and since $w \equiv u$, we get $w \in U$.
 			\item If $s = 0$ and $t < 0$, then $w = u - \psi$ and we can similarly show that $w \in U$, since
-				$$\x{v} \le \x{w} \le \x{u}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} \le \h{w} \le \h{u}, \quad \s{w} = \s{u}.$$
+				\[\x{v} \le \x{w} \le \x{u}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} \le \h{w} \le \h{u}, \quad \s{w} = \s{u}.\]
 			\item If $s > 0$ and $t = 0$, then $w = u + \phi$ and we get $w \in U$, since
-				$$\x{u} \le \x{w} \le \x{v}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} = \h{u}, \quad \s{v} \le \s{w} \le \s{u}.$$
+				\[\x{u} \le \x{w} \le \x{v}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} = \h{u}, \quad \s{v} \le \s{w} \le \s{u}.\]
 			\item If $s > 0$ and $t > 0$, consider the point $w' = u + \phi$. \label{case_pos}
 				We have \eq{
 					\x{u} \le \x{w'} \le \x{v}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
@@ -976,7 +976,7 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 					\y{v} \le \y{w'} \le \y{u}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
 				}
 				If $w' \in U$, then $w = w'$.
-				Otherwise we can (similarly to $\ref{case_pos}^\circ$) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$.
+				Otherwise we can (similarly to $\ref{case_pos}^\circ$) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$. \qedhere
 		\end{enumerate}
 	\end{proof}
 \end{lemma}
@@ -993,7 +993,7 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 
 \begin{lemma}\label{monochromacy_condition}
 	A spacious subparquet string $S$ is monochromatic if and only if
-	$$\Ham(S + \phi, S) + \Ham(S + \psi) = 0.$$
+	\[\Ham(S + \phi, S) + \Ham(S + \psi) = 0.\]
 	\begin{proof}
 		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
 		Assume the contrary for the other implication.
@@ -1014,7 +1014,7 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 	All the obtained strings are spacious and if $S$ is simple, they are simple.
 	\begin{proof}
 		Let us consider option (\ref{partition_a}). We construct a set
-		$$ A = \set{\s{u} : u \in S, u + \phi \in S, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}$$
+		\[ A = \set{\s{u} : u \in S, u + \phi \in S, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
 		and then sort its elements increasingly, creating an array $a_0, \dots, a_\ell$.
 		Note that $\ell \le \Ham(S + \phi, S) + 2$.
 		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to
@@ -1023,7 +1023,7 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 		Also, is $S$ is spacious, then they are spacious and if $S$ is simple, then they are simple.
 	
 		In the case of option (\ref{partition_b}), we similarly construct
-		$$ A = \set{\h{u} : u \in S, u + \psi \in S, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} $$
+		\[ A = \set{\h{u} : u \in S, u + \psi \in S, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} \]
 		and then sort it increasingly, creating $a_0, \dots, a_\ell$, where $\ell \le \Ham(S + \psi, S) + 2$.
 		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to 
 		$\set{u : u \in S, \h{u} \in (a_i, a_{i + 1}]}$.
@@ -1037,11 +1037,11 @@ Observe that if $R$ is spacious, then all $S \in \S$ are spacious and if $R$ is 
 We now partition each $S \in \S$ independently by using \Cref{cut_partitioning} (\ref{partition_a})
 and construct a set of subparquet strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
 Note that
-$$ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),$$
+\[ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),\]
 since $R$ has an $\O(k)$-period $\phi$.
 We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subparquet strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
 Again we have
-$$ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),$$
+\[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
 since $R$ has an $\O(k)$-period $\psi$.
 The process is illustrated on \Cref{figure:parquet_decomposition}.
 The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
@@ -1060,7 +1060,7 @@ Also, we assume that a parallelogram contains the points laying on its border an
 
 \begin{definition}
 	For a set of points $U \subseteq \R^2$ we will denote
-	$$ \X(U) = \set{\x{u} : u \in U}, \quad \Y(U) = \set{\y{u} : u \in U}.$$
+	\[ \X(U) = \set{\x{u} : u \in U}, \quad \Y(U) = \set{\y{u} : u \in U}.\]
 \end{definition}
 
 \newcommand{\IQ}{\mathbb{R} \setminus \mathbb{Q}}
@@ -1076,7 +1076,7 @@ We use \Cref{line_existence} with $v = \phi$ to construct the lines $h_0, \dots,
 For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as an intersection of $h_i$ and $s_j$ (it is easy to see that since $\phi$ and $\psi$ are not colinear, $h_i$ and $s_j$ are not parallel).
 For every $i, j \in [\ell]$ we construct a parallelogram $p_{i, j}$ defined as the area between $s_i$ and $s_{i + 1}$ intersected with the area between $h_j$ and $h_{j + 1}$.
 Specifically,
-$$p_{i, j} = \set{u : u \in \R^2, \h{u} \in [\h{w_{i, j}}, \h{w_{i + 1, j + 1}}], \s{u} \in [\s{w_{i, j}}, \s{w_{i + 1, j + 1}}]}.$$
+\[p_{i, j} = \set{u : u \in \R^2, \h{u} \in [\h{w_{i, j}}, \h{w_{i + 1, j + 1}}], \s{u} \in [\s{w_{i, j}}, \s{w_{i + 1, j + 1}}]}.\]
 For a better reference, the vertices of $p_{i, j}$ are $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$.
 Observe that every $u \in [n]^2$ is contained strictly inside exactly one parallelogram $p_{i, j}$.
 
@@ -1150,10 +1150,10 @@ By \Cref{monotonicity_lemma}, we can find $s, t \in [\ell + 1]$, such that the a
 \end{enumerate}
 We now ''merge together'' the parallelograms from group (\ref{full in 3}) and from group (\ref{full in 1}).
 Specifically, we construct
-$$
+\[
 g^3_j = \bigcup_{i = 0}^{s - 1} p_{i, j}, \quad 
 g^1_j = \bigcup_{i = t}^{\ell - 1} p_{i, j}.
-$$
+\]
 We do it for every $j \in [\ell]$.
 Observe that the sets $g^1_0, \dots, g^1_{\ell - 1}$ are are parallelograms (possibly empty) and that they cover the same area as all the fully contained in $K_1$ parallelograms $p_{i, j}$.
 The same is true for $g^3_0, \dots, g^3_{\ell - 1}$ and the parallelograms in $K_3$. 
@@ -1165,17 +1165,17 @@ Now for every $i \in [\ell]$ we similarly find $s, t \in [\ell + 1]$, such that 
 	\item $p_{i, t}, \dots, p_{i, \ell - 1}$, which includes only parallelograms fully contained in $K_2$,
 \end{enumerate}
 and then construct
-$$
+\[
 g^4_i = \bigcup_{j = 0}^{s - 1} p_{i, j}, \quad 
 g^2_i = \bigcup_{j = t}^{\ell - 1} p_{i, j}.
-$$
+\]
 We denote
-$$
+\[
 \G = \set{g^1_0, \dots, g^1_{\ell - 1}}  
 \cup \set{g^2_0, \dots, g^2_{\ell - 1}}
 \cup \set{g^3_0, \dots, g^3_{\ell - 1}}
 \cup \set{g^4_0, \dots, g^4_{\ell - 1}}.
-$$
+\]
 Again observe that for every $u \in [n]^2$ there exists exactly one parallelogram $p \in \G \cup \I$, such that $u \in p$, and since the sides of $p$ do not contain integer points, $u$ lays strictly inside $p$.
 
 \begin{definition}[Coverability]
@@ -1278,10 +1278,10 @@ Consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
 Recall that there exists $t \in [\ell + 1]$, such that
 $ g^1_j = \bigcup_{i = t}^{\ell - 1} p_{i, j}.$
 We find 
-$$ f = \min\set{i : i \in \set{t, \dots, \ell - 1}, (\floor{\max \X(p_{i, j})}, \floor{\max \Y(p_{i, j})}) \in \Z^2 \setminus \d{\Ta}}.$$
+\[ f = \min\set{i : i \in \set{t, \dots, \ell - 1}, (\floor{\max \X(p_{i, j})}, \floor{\max \Y(p_{i, j})}) \in \Z^2 \setminus \d{\Ta}}.\]
 If the minimum does not exist, we consider $f = \ell$.
 We then construct the parallelograms
-$$c = \bigcup_{i = 0}^{f - 1} p_{i, j}, \quad b = \bigcup_{i = f}^{\ell - 1} p_{i, j}.$$
+\[c = \bigcup_{i = 0}^{f - 1} p_{i, j}, \quad b = \bigcup_{i = f}^{\ell - 1} p_{i, j}.\]
 
 We now show that the set $c \cap \Z^2$ is coverable.
 If $c \cap \Z^2$ is empty, then it is coverable, so let us assume it is not.
@@ -1328,14 +1328,14 @@ Consider a parallelogram $p_{i, j}$ for some $i, j \in [\ell]$.
 	\begin{proof}
 		Consider any $u, v \in p_{i, j}$ and denote $w = u - v$.
 		By definition of $p_{i, j}$, we have
-		$$ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| = \O(n|\phi| / \ell) $$
+		\[ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| = \O(n|\phi| / \ell) \]
 		and similarly $|\s{w}| = \O(n|\psi| / \ell)$.
 		Since $\phi$ and $\psi$ are not colinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$.
 		Recall that by \Cref{get_periods} we have $|\phi \times \psi| \ge \frac{1}{2}|\phi||\psi|$ (since $|\sin \alpha| \ge 1/2$), thus
-		$$ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), $$
+		\[ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), \]
 		which gives us $|t\phi| = \O(n / \ell)$.
 		We can similarly prove that $|s\psi| = \O(n / \ell)$ and finally
-		$$ |w| = |s\phi + t\psi| \le |s\phi| + |t\psi| = \O(n / \ell). $$
+		\[ |w| = |s\phi + t\psi| \le |s\phi| + |t\psi| = \O(n / \ell). \]
 	\end{proof}
 \end{lemma}
 
@@ -1344,14 +1344,14 @@ Consider a parallelogram $p_{i, j}$ for some $i, j \in [\ell]$.
 	\begin{proof}
 		There exists a point $w \in p_{i, j}$, such that $\x{u} = \x{w}$, and a point $v \in p_{i, j}$, such that $\y{u} = \y{v}$.
 		By \Cref{distance_bound_aux}, we have
-		$$|u - v| = |\x{u} - \x{v}| = |\x{w} - \x{v}| \le |w - v| = \O(n / \ell).$$ 
+		\[|u - v| = |\x{u} - \x{v}| = |\x{w} - \x{v}| \le |w - v| = \O(n / \ell).\] 
 	\end{proof}
 \end{lemma}
 
 Consider any $u, v \in p_{i, j}$.
 By \Cref{distance_bound_aux2}, there exist $u', v' \in p_{i, j}$ such that $|u - u'| = \O(n / \ell)$ and $|v - v'| = \O(n / \ell)$.
 By \Cref{distance_bound_aux}, we have
-$$ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). $$
+\[ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). \]
 
 \bibliographystyle{plainurl}
 \bibliography{references}
