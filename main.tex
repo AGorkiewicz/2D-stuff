@@ -189,8 +189,7 @@ We consider the two-dimensional all-substring Hamming distance problem (\HD), wh
 
 We also consider the bounded variants of \hd and \HD, where we are only required to calculate the distances which are not greater than $k$, for some parameter $k \in \Z^+$.
 
-\begin{restatable*}[Main result]{theorem}{MainResult}
-	\label{main result}
+\begin{restatable*}{theorem}{MainResult}\label{main result}
 	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{restatable*}
 
@@ -345,7 +344,7 @@ Unfortunately, the most effective known algorithms for bounded \hd~\cite{Cliffor
 
 
 % MAIN ALGORITHM
-\section{Proof of \Cref{main result}}
+\section{Main result}
 
 \MainResult
 
@@ -393,8 +392,7 @@ We then select some special periods of the pattern and show how to decompose it 
 
 
 \newcommand{\Q}{\mathcal{Q}}
-\begin{restatable*}{theorem}{GetPeriods}
-	\label{get_periods}
+\begin{restatable*}{theorem}{GetPeriods}\label{get_periods}
 	For a given $\ell \in \Z^+$ and a set of points $U \subseteq [\ell + 1]^2$, such that $|U| > 12\ell$, there exist $s, t, s', t' \in U$, such that the following conditions hold for $w = t - s$ and $w' = t' - s'$:
 	\begin{itemize}
 		\item $0 < |w||w'| = \O(\ell^2 / |U|)$,
@@ -408,9 +406,8 @@ We then select some special periods of the pattern and show how to decompose it 
 			}
 	\end{itemize}
 	Such $w, w'$ can be found in $\tO(|U|)$ operations.
-	\begin{proof} See \Cref{get_periods_proof}. \end{proof}
 \end{restatable*}
-
+\begin{proof} See \Cref{get_periods_proof}. \end{proof}
 
 We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 6m + m^2/k \ge 12\ell$).
 We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$ which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
@@ -441,6 +438,7 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 	\end{proof}
 \end{lemma}
 
+
 \begin{figure}[!t]
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/parquet}
@@ -448,6 +446,7 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 	\caption{All the points in the polygon form a parquet and the red points form a subparquet.}
 	\label{figure:parquet}
 \end{figure}
+
 
 \begin{definition}[Parquet]\label{parquet_definition}
 	We call a set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
@@ -472,23 +471,15 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 \end{definition}
 
 
-\begin{theorem}[Subparquet convolution]\label{subparquet_convolution}
-	For a given list of signatures of simple subparquets $U_0, \dots, U_{\ell - 1}$, list of signatures of subparquets $V_0, \dots, V_{\ell - 1}$ and a set of vectors $Q$ we can calculate
-	\[ \sum_{i = 0}^{\ell - 1} |(U_i + q) \cap V_i| \]
-	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$, assuming that the subparquets only contain vectors of length $\O(m)$.
-	\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
-\end{theorem}
-
-
-\begin{definition}[Parquet string]
+\begin{definition}[Parquet string]\label{parquet_string_definition}
 	We call a string $S$ a spacious/simple (sub-)parquet string when $\d{S}$ is a spacious/simple (sub-)parquet.
 \end{definition}
 
 
-\begin{theorem}[Periodic string decomposition]\label{parquet_decomposition}
+\begin{restatable*}{theorem}{ParquetDecomposition}\label{parquet_decomposition}
 	A given spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
-	\begin{proof} See \Cref{parquet_decomposition_proof}. \end{proof}
-\end{theorem}
+\end{restatable*}
+\begin{proof} See \Cref{parquet_decomposition_proof}. \end{proof}
 
 
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
@@ -496,21 +487,12 @@ We partition $P$ into a set of strings $\V$.
 We then group the strings based on the single character they contain.
 Specifically, we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$ for every character $\sigma \in \Sigma$ present in $P$.
 
-
-\begin{theorem}\label{sparse_algo}
+\begin{restatable*}{theorem}{SparseAlgo}\label{sparse_algo}
 	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
 	\[ \sum_{S \in \S} \Ham(P + q, S) \]
 	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$, assuming that the sets $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
-	\begin{proof}
-		Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
-		\[ \sum_{S \in \S} \Ham(P + q, S) = |(P + q) \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.\]
-		We can calculate $|(P + q) \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
-		To calculate the values
-		\[ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| \]
-		we use the algorithm from \Cref{subparquet_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
-	\end{proof}
-\end{theorem}
-
+\end{restatable*}
+\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
 
 % TEXT DECOMPOSITION
 \subsection{Text decomposition}
@@ -533,11 +515,10 @@ In this section we show how to decompose $T$ using a similar, but more nuanced a
 \end{observation}
 
 
-\begin{theorem}[Active text decomposition]\label{text_decomposition}
-	For a given positive integer $\ell \le m$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings
-	and a $\O(m / \ell)$-peripheral string.
-	\begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
-\end{theorem}
+\begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
+	For a given positive integer $\ell \le m$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings and an $\O(m / \ell)$-peripheral string.
+\end{restatable*}
+\begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
 
 
 We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a $\O(k^{3 / 4})$-peripheral string $F$.
@@ -551,7 +532,7 @@ By substituting $d = \O(k^{3/4})$, we get the complexity of $\tO(m^2 + mk^{5/4})
 
 
 % BORDER PROXIMITY
-\subsection{The text periphery}
+\subsection{Text periphery}
 In this section we explore the properties of peripheral strings.
 We consider any $d > 0$ and a non-empty $d$-peripheral string $S$, such that $\d{S} \subseteq \d{\Ta}$.
 We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
@@ -581,18 +562,38 @@ We will demonstrate some characteristics of $S_1$, and by symmetry, generalize t
 	\end{proof}
 \end{lemma}
 
-\begin{theorem}\label{sigma_border}
+We now introduce two major theorems regarding peripheral strings, the first of which is proven in the next section (\ref{sigma_border_proof}):
+
+\begin{restatable*}{theorem}{SigmaBorder}\label{sigma_border}
 	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + md |\Sigma|)$, where $|\Sigma|$ is the number of different characters present in both $P$ and $S$.
-	\begin{proof} See \Cref{sigma_border_proof}. \end{proof}
-\end{theorem}
+\end{restatable*}
 
 \begin{theorem}\label{dense_algo}
 	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
-	\begin{proof} See \Cref{dense_algo_proof}. \end{proof}
 \end{theorem}
+\begin{proof}
+	Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}.
+	We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
+	We partition $S$ into two strings $F$ and $I$, based on character frequency,
+	so that $F$ consists of only the frequent characters and $I$ consists of only the infrequent ones.
+	For every $q \in Q$ we then have 
+	\[\Ham(P + q, S) = \Ham(P + q, F) + \Ham(P + q, I).\]
+	
+	Observe that the number of different frequent characters is $\O(\sqrt{k})$, and thus, by \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $F$ is $d$-peripheral. 
+	
+	We partition $I$ into $|\d{I}|$ strings, one per every $u \in I$.
+	Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in I$.
+	We have $\Ham(P + q, I) = \sum_{u \in I} \Ham(P + q, I_u)$ for every $q \in Q$.
+	By \Cref{subparquet_definition}, $I_u$ are simple subparquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in I} |\V_{I(u)}|)$.
+	Since $I(u)$ is an infrequent character for every $u \in I$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in I$.
+	By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
+\end{proof}
 
+\subsubsection{Periphery decomposition} \label{sigma_border_proof}
 
-\subsubsection{Proof of \Cref{sigma_border}} \label{sigma_border_proof}
+This section serves as the proof of the following theorem:
+
+\SigmaBorder
 
 We base our approach on the simple method of calculating the Hamming distance by running an instance of FFT for each unique character.
 We will again utilize partitioning to reduce the problem to some smaller ones and then solve them naively.
@@ -667,7 +668,6 @@ For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal n
 For better reference, see \Cref{figure:periphery_decomposition}.
 The colored points represent $\d{S_1}$, where the green ones belong to some specific $\d{V_i}$.
 
-
 \begin{lemma}\label{sum_of_h}
 	The sum of all $h_i$ is $\O(m)$.
 	\begin{proof}
@@ -686,12 +686,10 @@ The colored points represent $\d{S_1}$, where the green ones belong to some spec
 	\end{proof}
 \end{lemma}
 
-
 \begin{observation}\label{area_bound}
 	For every $i$, the height of $V_i$ is not greater than $h_i$.
 	By \Cref{sum_of_h} we have $|\d{S_1}| = \O(md)$ and by extension $|\d{S}| = \O(md)$.
 \end{observation}
-
 
 For every $i \in [l]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
 and the string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$.
@@ -713,31 +711,11 @@ By \Cref{pattern_height_reduction}, for every $q \in Q$ we have $\sum_{i = 0}^{\
 We run the algorithm from \Cref{general_fft} for every pair of $H_i$ and $V_i$ and, since both $H_i$ and $V_i$ have widths not greater than $d$ and heights not greater than $h_i$, we obtain the total complexity of $\tO(\sum_{i = 0}^{\ell - 1} (|\Sigma| + 1)dh_i)$, 
 which, by \Cref{sum_of_h}, is $\tO(m^2 + md|\Sigma|)$.
 
-\subsubsection{Proof of \Cref{dense_algo}} \label{dense_algo_proof}
-
-Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}.
-We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
-\begin{observation}\label{frequent_character_bound}
-	The number of different frequent characters is $\O(\sqrt{k})$.
-\end{observation}
-
-
-We partition $S$ into two strings $F$ and $I$, based on character frequency,
-so that $F$ consists of only the frequent characters and $I$ consists of only the infrequent ones.
-For every $q \in Q$ we then have 
-\[\Ham(P + q, S) = \Ham(P + q, F) + \Ham(P + q, I).\]
-
-By \Cref{frequent_character_bound} and \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $F$ is $d$-peripheral. 
-
-We partition $I$ into $|\d{I}|$ strings, one per every $u \in I$.
-Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in I$.
-We have $\Ham(P + q, I) = \sum_{u \in I} \Ham(P + q, I_u)$ for every $q \in Q$.
-By \Cref{subparquet_definition}, $I_u$ are simple subparquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in I} |\V_{I(u)}|)$.
-Since $I(u)$ is an infrequent character for every $u \in I$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in I$.
-By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
 
 % PHI PSI FINDER
-\subsection{Proof of \Cref{get_periods}} \label{get_periods_proof}
+\subsection{Period acquisition} \label{get_periods_proof}
+
+This section serves as the proof of the following theorem:
 
 \GetPeriods
 
@@ -848,8 +826,10 @@ It can be easily shown that $w, w'$ hold the remaining conditions by the definit
 
 % SUBPARQUET CONVOLUTION
 \newcommand{\W}{\mathcal{W}}
-\subsection{Proof of \Cref{subparquet_convolution}} \label{subparquet_convolution_proof}
-Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set introduced in \Cref{lattice_congruency}.
+\subsection{Subparquet convolution} \label{subparquet_convolution_proof}
+
+Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency}.
+We start by introducing some auxiliary tools, which we later use in the proof of \Cref{sparse_algo}.
 
 \begin{lemma}\label{primitive_conv}
 	Given a set of subparquets $\V$ and a set of points $Q$, we can calculate
@@ -912,19 +892,37 @@ Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u
 	\end{proof}
 \end{lemma}
 
-We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$, so that we have
-\eq{
-	\sum_{i = 0}^{\ell - 1}|(U_i + q) \cap V_i| 
-= \sum_{i = 0}^{\ell - 1}|U_i \cap (V_i - q)| 
-= \sum_{i = 0}^{\ell - 1} \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| = \\
-= \sum_{j = 0}^3 (-1)^j \sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|.
-}
-By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in [\ell]}$ and $Q$.
+\begin{theorem}\label{subparquet_convolution}
+	For a given list of signatures of simple subparquets $U_0, \dots, U_{\ell - 1}$, list of signatures of subparquets $V_0, \dots, V_{\ell - 1}$ and a set of vectors $Q$ we can calculate
+	\[ \sum_{i = 0}^{\ell - 1} |(U_i + q) \cap V_i| \]
+	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$, assuming that the subparquets only contain vectors of length $\O(m)$.
+	\begin{proof}
+		We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$, so that we have
+		\eq{
+			\sum_{i = 0}^{\ell - 1}|(U_i + q) \cap V_i| 
+			= \sum_{i = 0}^{\ell - 1}|U_i \cap (V_i - q)| 
+			= \sum_{i = 0}^{\ell - 1} \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| = \\
+			= \sum_{j = 0}^3 (-1)^j \sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|.
+		}
+		By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in [\ell]}$ and $Q$.
+	\end{proof}
+\end{theorem}
+
+\SparseAlgo
+\begin{proof}
+	Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
+	\[ \sum_{S \in \S} \Ham(P + q, S) = |(P + q) \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.\]
+	We can calculate $|(P + q) \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
+	To calculate the values
+	\[ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| \]
+	we use the algorithm from \Cref{subparquet_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
+\end{proof}
 
 
 % PARQUET DECOMPOSITION
-\subsection{Proof of \Cref{parquet_decomposition}} \label{parquet_decomposition_proof}
-
+\subsection{Periodic parquet partitioning} \label{parquet_decomposition_proof}
+In this section we explore the properties of periodic (sub-)parquet strings (recall Definitions \ref{parquet_definition}, \ref{subparquet_definition}, \ref{parquet_string_definition}).
+Specifically, we introduce some methods of partitioning them into monochromatic strings.
 
 \begin{definition}[Lattice graph]
 	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $(U, \Edges(U))$, where
@@ -1035,33 +1033,36 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 	\end{proof}
 \end{lemma}
 
-
-We partition $R$ into a set of subparquet strings $\S$, such that $|\S| = \O(\min\set{m, k})$.
-Specifically, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a restriction of $R$ to $\d{R} \cap (\L + \gamma)$.
-Observe that if $R$ is spacious, then all $S \in \S$ are spacious and if $R$ is simple, then all $S \in \S$ are simple.
-We now partition each $S \in \S$ independently by using \Cref{cut_partitioning} (\ref{partition_a})
-and construct a set of subparquet strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
-Note that
-\[ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),\]
-since $R$ has an $\O(k)$-period $\phi$.
-We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subparquet strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
-Again we have
-\[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
-since $R$ has an $\O(k)$-period $\psi$.
-The process is illustrated in \Cref{figure:parquet_decomposition}.
-The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
-By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
-The total number of operations is $\O(|\d{R}| + k)$.
-
+\ParquetDecomposition
+\begin{proof}
+	We partition $R$ into a set of subparquet strings $\S$, such that $|\S| = \O(\min\set{m, k})$.
+	Specifically, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a restriction of $R$ to $\d{R} \cap (\L + \gamma)$.
+	Observe that if $R$ is spacious, then all $S \in \S$ are spacious and if $R$ is simple, then all $S \in \S$ are simple.
+	We now partition each $S \in \S$ independently by using \Cref{cut_partitioning} (\ref{partition_a})
+	and construct a set of subparquet strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
+	Note that
+	\[ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),\]
+	since $R$ has an $\O(k)$-period $\phi$.
+	We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subparquet strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
+	Again we have
+	\[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
+	since $R$ has an $\O(k)$-period $\psi$.
+	The process is illustrated in \Cref{figure:parquet_decomposition}.
+	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
+	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
+	The total number of operations is $\O(|\d{R}| + k)$.
+\end{proof}
 
 % TEXT DECOMPOSITION
-\subsection{Proof of \Cref{text_decomposition}} \label{text_decomposition_proof}
+\subsection{Active text decomposition} \label{text_decomposition_proof}
 
-In this section we will use a more geometrical approach and construct some lines and parallelograms.
+This section serves as the proof of the following theorem:
+
+\TextDecomposition
+
+We will use a more geometrical approach and construct some lines and parallelograms.
 For the sake of simplicity, we will consider an empty set to be a valid parallelogram.
 Also, we assume that a parallelogram contains the points laying on its border and its vertices.
-
-
 
 \begin{definition}
 	For a set of points $U \subseteq \R^2$ we will denote
@@ -1108,10 +1109,10 @@ Observe that every $u \in [n]^2$ is contained strictly inside exactly one parall
 	\end{proof}
 \end{lemma}
 
-\begin{lemma}\label{distance_bound_lemma}
+\begin{restatable*}{lemma}{DistanceBoundLemma}\label{distance_bound_lemma}
 	For every $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $|u - v| = \O(n / \ell)$.
-	\begin{proof} See \Cref{distance_bound_lemma_proof}. \end{proof}
-\end{lemma}
+\end{restatable*}
+\begin{proof} See \Cref{distance_bound_lemma_proof}. \end{proof}
 
 Consider the case when $\max \X(p_{i, j}) - \min \X(p_{i, j}) \ge m / 4$ for some $i, j \in [\ell]$.
 By \Cref{distance_bound_lemma}, we would have $m / 4 \le \max \X(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$.
@@ -1183,6 +1184,14 @@ We denote
 \]
 Again observe that for every $u \in [n]^2$ there exists exactly one parallelogram $p \in \G \cup \I$, such that $u \in p$, and since the sides of $p$ do not contain integer points, $u$ lays strictly inside $p$.
 
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/text_decomposition}
+	\end{center}
+	\caption{The parallelograms from $\C$ (blue) and $\C'$ (green).}
+	\label{figure:text_decomposition}
+\end{figure}
+
 \begin{definition}[Coverability]
 	We say that a set $U \subseteq \Z^2$ is \textbf{coverable} if $U \subseteq \d{P + q}$ for some $q \in Q$.
 \end{definition}
@@ -1207,16 +1216,6 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 	\end{proof}
 \end{lemma}
 
-\begin{lemma}\label{parallelogram_split_lemma}
-	For every $g \in \G$ we can construct two parallelograms $c$ and $b$, such that
-	\begin{itemize}
-		\item $c \cap \Z^2$ is coverable,
-		\item $b \cap \Z^2$ is $\O(n / \ell)$-peripheral,
-		\item $g \cap \Z^2$ is partitioned into $b \cap \Z^2$ and $c \cap \Z^2$.
-	\end{itemize}
-	\begin{proof} See \Cref{parallelogram_split_lemma_proof}. \end{proof}
-\end{lemma}
-
 \begin{lemma}\label{coverable is periodic}
 	The restriction of $T$ to a coverable set has $\O(k)$-periods $\phi$ and $\psi$.
 	\begin{proof}
@@ -1229,22 +1228,24 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 	\end{proof}
 \end{lemma}
 
-\newcommand{\B}{\mathcal{B}}
+\begin{lemma}\label{parallelogram_split_lemma}
+	For every $g \in \G$ we can construct two parallelograms $c$ and $b$, such that
+	\begin{itemize}
+		\item $c \cap \Z^2$ is coverable,
+		\item $b \cap \Z^2$ is $\O(n / \ell)$-peripheral,
+		\item $g \cap \Z^2$ is partitioned into $b \cap \Z^2$ and $c \cap \Z^2$.
+	\end{itemize}
+	\begin{proof} See the next section (\ref{parallelogram_split_lemma_proof}). \end{proof}
+\end{lemma}
 
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/text_decomposition}
-	\end{center}
-	\caption{The parallelograms from $\C$ (blue) and $\C'$ (green).}
-	\label{figure:text_decomposition}
-\end{figure}
+\newcommand{\B}{\mathcal{B}}
 
 We split every non-empty parallelogram $g \in \G$ (by \Cref{parallelogram_split_lemma}) into parallelograms $c$ and $b$.
 We construct a set $\C$ consisting of all the obtained parallelograms $c$ and a set $\B$ consisting of all the obtained parallelograms $b$.
 
 We similarly divide the parallelograms in $\I$ (by \Cref{I_division}) and construct the sets $\C' = \set{p : p \in \I, p \cap \Z^2 \text{ is coverable}}$ and $\B' = \I \setminus \C'$.
 
-Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup B'} b \cap \d{\Ta}$.
+Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup \B'} b \cap \d{\Ta}$.
 Observe that all sets $U \in \U$ are coverable simple parquets, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
 For better reference, the decomposition can be seen in \Cref{figure:text_decomposition}.
 The points in the grey area are outside of $\dom(\Ta)$.
@@ -1253,15 +1254,16 @@ The points outside of them (in the white area) form the peripheral set $V$.
 
 For each $U \in \U$ we construct the restriction of $T$ to $U$.
 By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{parquet_decomposition}, it can be partitioned into $\O(k)$ monochromatic simple subparquet strings.
-Since $|\C'| \le |\I| = \O(\ell)$ (by \Cref{I_size_bound}) and $|\C| \le |\G| = \ell$, we have $|\U| = |\C| + |\C'| = \O(\ell)$, thus the total number of constructed strings is $\O(\ell k)$.
+Since $|\C'| \le |\I| = \O(\ell)$ (by \Cref{I_size_bound}) and $|\C| \le |\G| = \O(\ell)$, we have $|\U| = |\C| + |\C'| = \O(\ell)$, thus the total number of constructed strings is $\O(\ell k)$.
 
 Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-peripheral string.
 
 
 % PROOF OF SPLIT LEMMA
-\subsubsection{Proof of \Cref{parallelogram_split_lemma}} \label{parallelogram_split_lemma_proof}
-For an empty parallelogram, the proof is trivial.
-Consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
+\subsubsection{Parallelogram splitting} \label{parallelogram_split_lemma_proof}
+
+This section serves as the proof of \Cref{parallelogram_split_lemma}.
+Since for an empty parallelogram the proof is trivial, consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
 
 \begin{lemma}\label{coverability_condition}
 	Every set $U \subseteq K_1 \cap \Z^2$, such that $(\max \X(U), \max \Y(U)) \in \Ta$ is coverable.
@@ -1294,8 +1296,8 @@ In that case $f > 0$.
 It is clear that $c \cap \Z^2 \subseteq K_1$.
 By \Cref{monotonicity_lemma}, we have 
 \eq{
-\max \X(c) = \max \X(p_{f - 1, j}), \\
-\max \X(c) = \max \Y(p_{f - 1, j}),
+	\max \X(c) = \max \X(p_{f - 1, j}), \\
+	\max \X(c) = \max \Y(p_{f - 1, j}),
 }
 and thus
 \eq{
@@ -1324,9 +1326,10 @@ The constructions for $g^2_i$, $g^3_j$, $g^4_i$ are rotationally symmetric.
 
 
 % PROOF OF DISTANCE BOUND
-\subsubsection{Proof of \Cref{distance_bound_lemma}} \label{distance_bound_lemma_proof}
+\subsubsection{Parallelogram span bounds} \label{distance_bound_lemma_proof}
 
-Consider a parallelogram $p_{i, j}$ for some $i, j \in [\ell]$.
+In this section we will establish a distance bound for points laying inside or in the proximity of the constructed parallelograms.
+Consider any $p_{i, j}$ for some $i, j \in [\ell]$.
 
 \begin{lemma}\label{distance_bound_aux}
 	For every $u, v \in p_{i, j}$, we have $|u - v| = \O(n / \ell)$.
@@ -1353,10 +1356,13 @@ Consider a parallelogram $p_{i, j}$ for some $i, j \in [\ell]$.
 	\end{proof}
 \end{lemma}
 
-Consider any $u, v \in p_{i, j}$.
-By \Cref{distance_bound_aux2}, there exist $u', v' \in p_{i, j}$ such that $|u - u'| = \O(n / \ell)$ and $|v - v'| = \O(n / \ell)$.
-By \Cref{distance_bound_aux}, we have
-\[ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). \]
+\DistanceBoundLemma
+\begin{proof}
+	Consider any $u, v \in p_{i, j}$.
+	By \Cref{distance_bound_aux2}, there exist $u', v' \in p_{i, j}$ such that $|u - u'| = \O(n / \ell)$ and $|v - v'| = \O(n / \ell)$.
+	By \Cref{distance_bound_aux}, we have
+	\[ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). \]
+\end{proof}
 
 \bibliographystyle{plainurl}
 \bibliography{references}
