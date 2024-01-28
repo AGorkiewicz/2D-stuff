@@ -72,12 +72,6 @@ def draw_dots(ax, bx, ay, by):
     res += f'\\foreach \\x in {{{ax},...,{bx}}} \\foreach \\y in {{{ay},...,{by}}} \\draw (\\x, \\y) circle (0.1pt);'
 
 
-def draw_grid(a, b, settings = ''):
-    global res
-    res += f'\\draw[{settings}] (0, 0) grid ({a}, {b});'
-
-
-
 h0 = -123
 h1 = 156
 s0 = -111
@@ -111,7 +105,8 @@ ax = math.floor(min_x(parquet)) - 1
 bx = math.ceil(max_x(parquet)) + 1
 ay = math.floor(min_y(parquet)) - 1
 by = math.ceil(max_y(parquet)) + 1
-#draw_dots(ax, bx, ay, by)
+
+
 
 vis = []
 
@@ -129,6 +124,8 @@ sx = -6
 sy = -2
 dfs(sx, sy)
 
+res += f'\\draw [white, fill=white] ({ax - 0.5}, {ay - 0.5}) rectangle ({bx + 0.5}, {by + 0.5});'
+
 res += f'\\draw [-{{Stealth[length=20pt]}}] ({sx}, {sy}) -- node [below left, scale = 3] {{$\\varphi$}} ++({phi_x}, {phi_y});'
 res += f'\\draw [-{{Stealth[length=20pt]}}] ({sx}, {sy}) -- node [above left, scale = 3] {{$\\psi$}} ++({psi_x}, {psi_y});'
 
@@ -143,9 +140,9 @@ def inside(p):
 for x in range(ax, bx + 1):
     for y in range(ay, by + 1):
         if inside(Point(x, y)):
-            res += f'\\draw[fill=black] ({x},{y}) circle (1pt);'
-        #else:
-         #   res += f'\\draw[fill=black] ({x},{y}) circle (0.5pt);'
+            res += f'\\draw[fill=black] ({x},{y}) circle (1.5pt);'
+        else:
+            res += f'\\draw[fill=black] ({x},{y}) circle (0.5pt);'
 
 for (x, y) in vis:
     if inside(Point(x, y)):
