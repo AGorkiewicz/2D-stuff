@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 res = '\\documentclass{standalone}\n\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}'
 res += '\\usetikzlibrary{decorations.pathreplacing}'
+res += '\\usetikzlibrary{decorations.pathmorphing}'
 
 
 m = 80
@@ -22,12 +23,10 @@ class Point:
     y: float
     def __add__(self, a):   return Point(self.x + a.x, self.y + a.y)
 
-
 def min_x(points): return min(p.x for p in points)
 def max_x(points): return max(p.x for p in points)
 def min_y(points): return min(p.y for p in points)
 def max_y(points): return max(p.y for p in points)
-
 
 def draw_poly(vertices, settings = 'black'):
     global res
@@ -36,7 +35,6 @@ def draw_poly(vertices, settings = 'black'):
     vertices = ' -- '.join(vertices)
     vertices = f'\\draw[{settings}] ' + vertices
     res += vertices + '\n'
-
 
 def fill_rect(u, v, settings = ''):
     global res
@@ -47,13 +45,11 @@ def draw_dots(s, t):
     global res
     res += f'\\foreach \\x in {{{s},...,{t}}} \\foreach \\y in {{{s},...,{t}}} \\draw [fill=black](\\x, \\y) circle (0.5pt);'
 
-
 S = [[0 for i in range(n)] for j in range(n)]
 P = [Point(i, j) for i in range(m) for j in range(m)]
 Q = []
 D = [[1e9 for i in range(n)] for j in range(n)]
 dom = []
-
 
 Q = [
     (0,  37),
@@ -71,24 +67,19 @@ for (x, y) in Q:
     for u in P:
         S[x + u.x][y + u.y] = 1
 
-fill_rect((z, z), (R, R), 'lightgray')
 
-for i in range(n):
-    for j in range(n):
-        if i < z or j < z: continue
-        if S[i][j] == 0: continue
-        cnt = 0
-        if i == 0 or S[i - 1][j] == 0: cnt += 1
-        if j == 0 or S[i][j - 1] == 0: cnt += 1
-        if i == n - 1 or S[i + 1][j] == 0: cnt += 1
-        if j == n - 1 or S[i][j + 1] == 0: cnt += 1
-        assert cnt <= 2
-        if cnt < 2: continue
-        r = 0.5
-        if i < z and j < z: fill_rect((i - r, j - r), (z, z), 'white')
-        if i < z and j > z: fill_rect((i - r, j + r), (z, z), 'white')
-        if i > z and j < z: fill_rect((i + r, j - r), (z, z), 'white')
-        if i > z and j > z: fill_rect((i + r, j + r), (z, z), 'white')
+fill_rect((z, z), (R, R), 'lightgray, opacity=0.7')
+
+P = [Point(z, z)]
+for (i, j) in Q:
+    P.append(Point(P[-1].x, j + m - 0.5))
+    P.append(Point(i + m - 0.5, j + m - 0.5))
+
+P += [Point(P[-1].x, z)]
+draw_poly(P, 'rounded corners=10, fill=white, white')
+
+fill_rect((z, z), (z + 1, Q[0][1] + m - 0.5), 'fill=white')
+fill_rect((z, z), (Q[-1][0] + m - 0.5, z + 1), 'fill=white')
 
 draw_dots(n // 2, n - 1)
 

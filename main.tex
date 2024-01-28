@@ -982,6 +982,15 @@ By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}
 \end{lemma}
 
 
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
+	\end{center}
+	\caption{The partitioning of a simple subparquet string into monochromatic simple subparquet strings. Different colors represent different characters assigned to a point.}
+	\label{figure:parquet_decomposition}
+\end{figure}
+
+
 \begin{lemma}\label{monochromacy_condition}
 	A spacious subparquet string $S$ is monochromatic if and only if
 	$$\Ham(S + \phi, S) + \Ham(S + \psi) = 0.$$
@@ -1034,6 +1043,8 @@ We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partit
 Again we have
 $$ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),$$
 since $R$ has an $\O(k)$-period $\psi$.
+The process is illustrated on \Cref{figure:parquet_decomposition}.
+The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
 By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
 The total number of operations is $\O(|\d{R}| + k)$.
 

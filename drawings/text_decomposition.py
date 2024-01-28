@@ -3,6 +3,8 @@ import random
 from dataclasses import dataclass
 
 res = '\\documentclass{standalone}\n\\usepackage{tikz}\n\\begin{document}\n\\begin{tikzpicture}'
+res += '\\usetikzlibrary{decorations.pathreplacing}'
+res += '\\usetikzlibrary{decorations.pathmorphing}'
 
 
 phi_x = 10
@@ -72,12 +74,7 @@ def fill_rect(u, v, settings = ''):
 
 def draw_dots(s):
     global res
-    res += f'\\foreach \\x in {{0,...,{s - 1}}} \\foreach \\y in {{0,...,{s - 1}}} \\draw (\\x, \\y) circle (0.1pt);'
-
-
-def draw_grid(a, b, settings = ''):
-    global res
-    res += f'\\draw[{settings}] (0, 0) grid ({a}, {b});'
+    res += f'\\foreach \\x in {{0,...,{s - 1}}} \\foreach \\y in {{0,...,{s - 1}}} \\draw[opacity=0.8] (\\x, \\y) circle (0.5pt);'
 
 
 for i in range(10):
@@ -88,26 +85,33 @@ for i in range(10):
         S[x + u.x][y + u.y] = 1
 
 
-fill_rect((L, L), (R, R), 'lightgray')
+fill_rect((L, L), (R, R), 'lightgray, opacity=0.7')
 
+PA = []
+PB = []
+PC = []
+PD = []
 
-for i in range(n):
-    for j in range(n):
-        if S[i][j] == 0: continue
-        cnt = 0
-        if i == 0 or S[i - 1][j] == 0: cnt += 1
-        if j == 0 or S[i][j - 1] == 0: cnt += 1
-        if i == n - 1 or S[i + 1][j] == 0: cnt += 1
-        if j == n - 1 or S[i][j + 1] == 0: cnt += 1
-        assert cnt <= 2
-        if cnt < 2: continue
-        r = 0.5
-        if i < z and j < z: fill_rect((i - r, j - r), (z, z), 'white')
-        if i < z and j > z: fill_rect((i - r, j + r), (z, z), 'white')
-        if i > z and j < z: fill_rect((i + r, j - r), (z, z), 'white')
-        if i > z and j > z: fill_rect((i + r, j + r), (z, z), 'white')
+for i in reversed(range(n - 1)):
+    for j in range(n - 1):
+        a, b, c, d = S[i][j], S[i + 1][j], S[i][j + 1], S[i + 1][j + 1]
+        if a == 0 and b == 1 and c == 1 and d == 1: PA.append((i, j))
+        if a == 0 and b == 0 and c == 0 and d == 1: PA.append((i, j))
+        if a == 1 and b == 1 and c == 1 and d == 0: PD.append((i, j))
+        if a == 1 and b == 0 and c == 0 and d == 0: PD.append((i, j))
 
+for i in range(n - 1):
+    for j in range(n - 1):
+        a, b, c, d = S[i][j], S[i + 1][j], S[i][j + 1], S[i + 1][j + 1]
+        if a == 1 and b == 0 and c == 1 and d == 1: PB.append((i, j))
+        if a == 0 and b == 0 and c == 1 and d == 0: PB.append((i, j))
+        if a == 1 and b == 1 and c == 0 and d == 1: PC.append((i, j))
+        if a == 0 and b == 1 and c == 0 and d == 0: PC.append((i, j))
 
+P = PA[::-1] + PB + PD + PC[::-1]
+P = [Point(i + 0.5, j + 0.5) for (i, j) in P]
+
+draw_poly(P, 'rounded corners=10, fill=white, white')
 
 l = 40
 h_min = min([u.h for u in T])
@@ -174,44 +178,38 @@ for i in range(l):
         if ax > z and by < z: K4.append((i, j))
         if ax <= z and bx >= z or ay <= z and by >= z: I.append((i, j))
 
+res += '\\tikzset{internal border/.style = {postaction = {clip, postaction = {draw = #1, solid, line width = 10pt, opacity=0.7},postaction = {draw}}}}'
+
 # I
 for (i, j) in I:
-    draw_poly(P[i][j], 'fill=teal, opacity=0.5')
+    draw_poly(P[i][j], 'very thick, internal border=teal, fill=teal, fill opacity=0.2')
 
 
 # K1 and K3
 for j in range(l):
-    t = [i for (i, k) in K1 if k == j]
-    if len(t) > 0:
-        a, b = min(t), max(t) + 1
-        draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'fill=cyan, opacity=0.5')
-    t = [i for (i, jj) in K3 if jj == j]
-    if len(t) > 0:
-        a, b = min(t), max(t) + 1
-        draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'fill=cyan, opacity=0.5')
+    for t in [[i for (i, k) in K1 if k == j], [i for (i, jj) in K3 if jj == j]]: 
+        if len(t) > 0:
+            a, b = min(t), max(t) + 1
+            draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'very thick, internal border=cyan, fill=cyan, fill opacity=0.2')
 
 #K2 and K4
 for i in range(l):
-    t = [j for (k, j) in K2 if k == i]
-    if len(t) > 0:
-        a, b = min(t), max(t) + 1
-        draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'fill=cyan, opacity=0.5')
-    t = [j for (k, j) in K4 if k == i]
-    if len(t) > 0:
-        a, b = min(t), max(t) + 1
-        draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'fill=cyan, opacity=0.5')
+    for t in [[j for (k, j) in K2 if k == i], [j for (k, j) in K4 if k == i]]: 
+        if len(t) > 0:
+            a, b = min(t), max(t) + 1
+            draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'very thick, internal border=cyan, fill=cyan, fill opacity=0.2')
 
 
 for h in h:
     a = (x_hy(h, L), L) if x_hy(h, L) <= R else (R, y_hx(h, R))
     b = (x_hy(h, R), R) if x_hy(h, R) >= L else (L, y_hx(h, L))
-    draw_poly([a, b], 'opacity=0.1')
+    draw_poly([a, b], 'opacity=0.2')
         
 
 for s in s:
     a = (x_sy(s, L), L) if x_sy(s, L) >= L else (L, y_sx(s, L))
     b = (x_sy(s, R), R) if x_sy(s, R) <= R else (R, y_sx(s, R))
-    draw_poly([a, b], 'opacity=0.1')
+    draw_poly([a, b], 'opacity=0.2')
 
 
 #draw_poly([(z, L), (z, R)], 'opacity=0.4')
