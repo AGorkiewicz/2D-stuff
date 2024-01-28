@@ -43,7 +43,6 @@
 \usepackage{multirow}
 \usepackage{diagbox}
 \usepackage{todonotes}
-\usepackage{thmtools}
 \usepackage[ruled,noline,noend]{algorithm2e}
 \usepackage[capitalise]{cleveref}
 \usepackage{graphics,adjustbox}
@@ -190,10 +189,10 @@ We consider the two-dimensional all-substring Hamming distance problem (\HD), wh
 
 We also consider the bounded variants of \hd and \HD, where we are only required to calculate the distances which are not greater than $k$, for some parameter $k \in \Z^+$.
 
-
-\begin{theorem}[Main result]\label{main result}
+\begin{restatable*}[Main result]{theorem}{MainResult}
+	\label{main result}
 	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
-\end{theorem}
+\end{restatable*}
 
 
 % PRELIMINARIES
@@ -257,8 +256,6 @@ for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m
 \end{definition}
 
 
-
-
 \section{One-dimensional generalizations}
 In this section we explore some of the methods used for one-dimensional strings.
 Specifically, as our goal is to generalize the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
@@ -285,9 +282,9 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 	\begin{proof}
 		For the sake of clarity, we will temporarily switch to the classical array notation for strings.
 		Let $T_0, \dots, T_{n - m}$ denote an array of two-dimensional strings (arrays) such that $T_k[0 \dd n - 1, 0 \dd m - 1] = T[0 \dd n - 1, k \dd k + m - 1]$.
-		For every row $P[0], \dots, P[m - 1]$ of $P$ and every row $T_k[0], \dots, T_k[n - 1]$ of every $T_k$ we assign an integer identifier so that $\ID(P[i]) = \ID(T_k[j]) \Leftrightarrow P[i] = T_k[j]$ by using the KMR algorithm ([reference]) in $\tO(n^2)$.
+		For every row $P[0], \dots, P[m - 1]$ of $P$ and every row $T_k[0], \dots, T_k[n - 1]$ of every $T_k$ we assign an integer identifier so that $\ID(P[i]) = \ID(T_k[j]) \Leftrightarrow P[i] = T_k[j]$ by using the KMR algorithm (described in \cite{Karp1972}) in $\tO(n^2)$.
 		
-		We use the approach described in [kangaroo reference].
+		We use the approach described in \cite{Galil1986}.
 		There exists a data structure (suffix array) which for a given one-dimensional array $S$ allows us to detect all mismatches between any given two of its subarrays of equal length.
 		It can be built in $\tO(|S|)$ and the query time is $\tO(d + 1)$ where $d$ is the number of mismatches.
 		We construct the suffix array for the concatenation of the following arrays:
@@ -311,7 +308,7 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 \end{lemma}
 
 
-\begin{lemma}[\cite{Karloff1993})]\label{approx1d}
+\begin{lemma}[\cite{Karloff1993}]\label{approx1d}
 	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd with don't care symbols in $\tO(n)$.
 \end{lemma}
 
@@ -349,8 +346,11 @@ Unfortunately, the most effective known algorithms for bounded \hd~\cite{Cliffor
 
 % MAIN ALGORITHM
 \section{Proof of \Cref{main result}}
+
+\MainResult
+
 We show an algorithm which works in time $\tO(m^2 + mk^{5/4})$, assuming $2|n$ and $m < n \le \frac{3}{2}m$.
-By \Cref{instancing}, our main result follows.
+The solution for the general case follows from \Cref{instancing}. 
 
 We start by running the algorithm from \Cref{approx2d} with $\varepsilon = 1$.
 We construct the set $Q$ as the set of such vectors $q \in \Z^2$ for which the estimated value of $\Ham(P + q, T)$ is at most $2k$.
@@ -393,7 +393,8 @@ We then select some special periods of the pattern and show how to decompose it 
 
 
 \newcommand{\Q}{\mathcal{Q}}
-\begin{theorem} \label{get_periods}
+\begin{restatable*}{theorem}{GetPeriods}
+	\label{get_periods}
 	For a given $\ell \in \Z^+$ and a set of points $U \subseteq [\ell + 1]^2$, such that $|U| > 12\ell$, there exist $s, t, s', t' \in U$, such that the following conditions hold for $w = t - s$ and $w' = t' - s'$:
 	\begin{itemize}
 		\item $0 < |w||w'| = \O(\ell^2 / |U|)$,
@@ -408,7 +409,7 @@ We then select some special periods of the pattern and show how to decompose it 
 	\end{itemize}
 	Such $w, w'$ can be found in $\tO(|U|)$ operations.
 	\begin{proof} See \Cref{get_periods_proof}. \end{proof}
-\end{theorem}
+\end{restatable*}
 
 
 We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 6m + m^2/k \ge 12\ell$).
@@ -658,7 +659,7 @@ Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not g
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/pattern_restriction}
 	\end{center}
-	\caption{Pattern restriction. TODO}
+	\caption{Pattern partitioning.}
 	\label{figure:pattern_restriction}
 \end{figure}
 
@@ -688,12 +689,13 @@ The colored points represent $\d{S_1}$, where the green ones belong to some spec
 
 \begin{observation}\label{area_bound}
 	For every $i$, the height of $V_i$ is not greater than $h_i$.
-	By \Cref{sum_of_h} we have $|S_1| = \O(md)$ and by extension $|S| = \O(md)$.
+	By \Cref{sum_of_h} we have $|\d{S_1}| = \O(md)$ and by extension $|\d{S}| = \O(md)$.
 \end{observation}
 
 
 For every $i \in [l]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
 and the string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$.
+The construction is illustrated in \Cref{figure:pattern_restriction}.
 Since $L_i$ and $H_i$ partition $V_i$, we have
 \[ \Ham(P_2 + q, S_1) = \sum_{i = 0}^{\ell - 1} \Ham(P_2 + q, V_i) = \sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) + \sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i). \]
 
@@ -736,6 +738,9 @@ By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity i
 
 % PHI PSI FINDER
 \subsection{Proof of \Cref{get_periods}} \label{get_periods_proof}
+
+\GetPeriods
+
 We start by finding the closest pair of points in $U$.
 Specifically, we select any pair of different points $s, t \in U$, which minimizes $|t - s|$. 
 Such pair can be obtained in $\tO(|U|)$ operations, for example with a sweep line method.
@@ -1043,7 +1048,7 @@ We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partit
 Again we have
 \[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
 since $R$ has an $\O(k)$-period $\psi$.
-The process is illustrated on \Cref{figure:parquet_decomposition}.
+The process is illustrated in \Cref{figure:parquet_decomposition}.
 The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
 By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
 The total number of operations is $\O(|\d{R}| + k)$.
@@ -1077,7 +1082,7 @@ For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as an intersecti
 For every $i, j \in [\ell]$ we construct a parallelogram $p_{i, j}$ defined as the area between $s_i$ and $s_{i + 1}$ intersected with the area between $h_j$ and $h_{j + 1}$.
 Specifically,
 \[p_{i, j} = \set{u : u \in \R^2, \h{u} \in [\h{w_{i, j}}, \h{w_{i + 1, j + 1}}], \s{u} \in [\s{w_{i, j}}, \s{w_{i + 1, j + 1}}]}.\]
-For a better reference, the vertices of $p_{i, j}$ are $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$.
+For better reference, the vertices of $p_{i, j}$ are $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$.
 Observe that every $u \in [n]^2$ is contained strictly inside exactly one parallelogram $p_{i, j}$.
 
 \begin{lemma}\label{monotonicity_lemma}
@@ -1230,7 +1235,7 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/text_decomposition}
 	\end{center}
-	\caption{The constructed parallelograms from $\C$ and $\C'$.}
+	\caption{The parallelograms from $\C$ (blue) and $\C'$ (green).}
 	\label{figure:text_decomposition}
 \end{figure}
 
@@ -1241,7 +1246,7 @@ We similarly divide the parallelograms in $\I$ (by \Cref{I_division}) and constr
 
 Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup B'} b \cap \d{\Ta}$.
 Observe that all sets $U \in \U$ are coverable simple parquets, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
-For better reference, the decomposition can be seen on \Cref{figure:text_decomposition}.
+For better reference, the decomposition can be seen in \Cref{figure:text_decomposition}.
 The points in the grey area are outside of $\dom(\Ta)$.
 The parallelograms from $\C$ and $\C'$ are colored blue and green, respectively.
 The points outside of them (in the white area) form the peripheral set $V$.
