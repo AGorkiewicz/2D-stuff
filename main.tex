@@ -12,7 +12,6 @@
 \usepackage{authblk}
 \usepackage{todonotes}
 
-
 \def\dd{\mathinner{.\,.}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -26,7 +25,6 @@
 \newcommand{\Bigset}[1]{\Big \lbrace #1 \Big \rbrace}
 \newcommand{\eq}[1]{\begin{align*} #1 \end{align*}}
 \newcommand{\defproblem}[3]{\begin{center}\vspace{2mm}\noindent\fbox{\begin{minipage}{0.96\textwidth} #1 \\ {\bf{INPUT:}} #2 \\ {\bf{OUTPUT:}} #3 \end{minipage}} \vspace{2mm}\end{center}}
-
 
 \usepackage{microtype} %if unwanted, comment out or use option "draft"
 \usepackage{amsmath,amsfonts}
@@ -58,7 +56,6 @@
 
 \pagestyle{myheadings}
 
-
 \title{Two-dimensional pattern matching with $k$ mismatches}
 \author[1]{Jonas Ellert}
 \author[2]{Paweł Gawrychowski}
@@ -68,7 +65,6 @@
 \affil[2]{?}
 \affil[3]{?}
 \affil[4]{?}
-
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -84,7 +80,6 @@
 \newtheorem{problem}{Problem}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
-
 
 \sloppy
 
@@ -109,17 +104,16 @@
 \maketitle
 
 \begin{abstract}
+	[TODO]
 \end{abstract}
 
 %\thispagestyle{empty}
 %\clearpage
 %\setcounter{page}{1}
 
-
 \section{Related Work}
 
 \paragraph{Hamming-Threshold PM in 1D}
-
 
 \begin{itemize}
 	\item Early solutions for pattern matching with mismatches use fast Fourier transform and run in $\O(n \sqrt{m \log m})$ time \cite{Abrahamson1987}. The first algorithms that explicitly exploit the threshold $k$ run in time roughly $\O(nk)$ \cite{Landau1986,Galil1986} and use ``kangaroo jumping'', a technique in which each text position is considered as a potential occurrence, and verified by jumping from mismatch to mismatch using a data structure for longest common extensions.
@@ -138,7 +132,6 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 	\item On a PRAM, the problem can be solved in constant time and $O(n^2)$ work \cite{Crochemore1998}, after preprocessing the pattern in $\O(\log \log m)$ time and $\O(m^2)$ work \cite{Cole1993}.
 	\item Other works studying the problem are, e.g., \cite{Baker1978,Karp1987,Zhu1988,Zhu1989,Amir1994,Galil1996}
 \end{itemize}
-
 
 \paragraph{Hamming-Threshold PM in 2D} Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$, and threshold $k < m^2$.
 
@@ -166,7 +159,6 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 
 \end{itemize}
 
-
 \paragraph{Other 2D Shannanigans}
 
 \begin{itemize}
@@ -182,6 +174,8 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 
 \newcommand{\hd}{\textsc{HD1D}\xspace}
 \newcommand{\HD}{\textsc{HD2D}\xspace}
+
+[TODO]
 
 We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
 
@@ -216,7 +210,6 @@ Our results hold under word-RAM model of computation.
 	Physically we represent a string as a list of point-character pairs.
 \end{definition}
 
-
 \begin{definition}[Shifting]
 	For a set of points $V \subseteq \Z^2$ and a vector $u \in \Z^2$, we denote $V + u$ as $\set{v + u : v \in V}$.
 	For a string $S$ and a vector $u \in \Z^2$ we denote $S + u$ as a string $R$ such that
@@ -224,24 +217,20 @@ Our results hold under word-RAM model of computation.
 	Intuitively, we shift the set of points while maintaining their character values.
 \end{definition}
 
-
 \begin{definition}[Hamming distance]
 	For a pair of strings $S, R$ we define
 	\[ \Ham(S, R) = |\set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|,\]
 	which corresponds to the number of mismatches between $S$ and $R$.
 \end{definition}
 
-
 Under such notation, the \HD problem is equivalent to calculating the (bounded or unbounded) values of $ \Ham(P + q, T) $
 for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m + 1]^2$).
-
 
 \begin{definition}[Don't care symbol]
 	We define the \textbf{don't care} symbol as a special character which matches with every character.
 	We will denote it with \texttt{?}.
 	Unless stated otherwise, we assume it is not allowed in $\Sigma$ and in both \hd and \HD every character present in $T$ and $P$ matches only with itself.
 \end{definition}
-
 
 \newcommand{\x}[1]{#1.x}
 \newcommand{\y}[1]{#1.y}
@@ -256,11 +245,11 @@ for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m
 
 
 \section{One-dimensional generalizations}
+
 In this section we explore some of the methods used for one-dimensional strings.
 Specifically, as our goal is to generalize the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
 
-
-\begin{theorem}[Instancing]\label{instancing}
+\begin{theorem}\label{instancing}
 	Consider an algorithm $\mathcal{A}$ which solves \HD (bounded or unbounded), but only when $2|n$ and $n \le \frac{3}{2}m$.
 	If its running time is $\mathcal{T}(m)$, then the general case can be solved in $\O(\mathcal{T}(m) n^2 / m^2)$.
 	\begin{proof}
@@ -274,8 +263,7 @@ Specifically, as our goal is to generalize the solution for pattern matching wit
 	\end{proof}
 \end{theorem}
 
-
-\begin{theorem}[Kangaroo jumps]\label{kangaroos}
+\begin{theorem}\label{kangaroos}
 	Consider an $n \times n$ string $T$, $m \times m$ string $P$ and set of vectors $Q$ such that $\d{P + q} \subseteq \d{T}$ for every $q \in Q$.
 	There exists an algorithm which calculates $ d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\tO(n^2 + \sum_{q \in Q} d_q)$.
 	\begin{proof}
@@ -337,7 +325,7 @@ The same reduction as in \Cref{sigman2d} can be applied for every \hd solution w
 Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
 
 
-\begin{observation}[Don't care padding]\label{dontcare_padding}
+\begin{observation}\label{dontcare_padding}
 	Every \HD solution which allows don't care symbols (eg. the algorithms from \Cref{sigman2d} and \Cref{approx2d}) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
 	It can be done by padding the text with don't care symbols and it does not change the complexity of the solution.
 \end{observation}
@@ -345,6 +333,8 @@ Unfortunately, the most effective known algorithms for bounded \hd~\cite{Cliffor
 
 % MAIN ALGORITHM
 \section{Main result}
+
+In this section we provide a detailed proof of the following theorem:
 
 \MainResult
 
@@ -410,7 +400,7 @@ We then select some special periods of the pattern and show how to decompose it 
 \begin{proof} See \Cref{get_periods_proof}. \end{proof}
 
 We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 6m + m^2/k \ge 12\ell$).
-We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$ which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
+We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$, which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
 We will refer to those vectors throughout the rest of the description.
 Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\phi||\psi| = \O(\min\set{m, k})$.
 
@@ -485,7 +475,7 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
 We partition $P$ into a set of strings $\V$.
 We then group the strings based on the single character they contain.
-Specifically, we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$ for every character $\sigma \in \Sigma$ present in $P$.
+Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct the set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
 
 \begin{restatable*}{theorem}{SparseAlgo}\label{sparse_algo}
 	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
@@ -497,29 +487,30 @@ Specifically, we construct $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}
 % TEXT DECOMPOSITION
 \subsection{Text decomposition}
 Because the text is not necessarily periodic, we unfortunately cannot use the same approach as for the pattern.
-In this section we show how to decompose $T$ using a similar, but more nuanced approach.
+In this section we show how to decompose $T$ using a similar, but more nuanced method.
 
 
 \newcommand{\Ta}{T_\mathbf{a}}
 \begin{definition}[Active text]
-	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P} + q$.
-	For a point $u \in \Z^2$ we define its \textbf{border distance} as
-	$\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}} $.
-	We say that a set of points $U \subseteq \Z^2$ is $d$-\textbf{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is not greater than $d$.
-	Similarly, we say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
+	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to
+	\[ \bigcup_{q \in Q} \d{P + q}. \]
 \end{definition}
-
 
 \begin{observation}
 	$\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
 \end{observation}
 
+\begin{definition}[Peripherality]
+	For every point $u \in \Z^2$ we define its \textbf{border distance} as
+	$\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}} $.
+	We say that a set of points $U \subseteq \Z^2$ is $d$-\textbf{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is not greater than $d$.
+	We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
+\end{definition}
 
 \begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
 	For a given positive integer $\ell \le m$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings and an $\O(m / \ell)$-peripheral string.
 \end{restatable*}
 \begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
-
 
 We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a $\O(k^{3 / 4})$-peripheral string $F$.
 For every $q \in Q$ we then have
@@ -527,12 +518,12 @@ For every $q \in Q$ we then have
 
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
-In the next section we will introduce \Cref{dense_algo}, which states that for a $d$-peripheral string $F$, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
+In the next section (\ref{periphery_section}) we will introduce \Cref{dense_algo}, which states that for a $d$-peripheral string $F$, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
 By substituting $d = \O(k^{3/4})$, we get the complexity of $\tO(m^2 + mk^{5/4})$, which ends the main proof.
 
 
 % BORDER PROXIMITY
-\subsection{Text periphery}
+\subsection{Text periphery}\label{periphery_section}
 In this section we explore the properties of peripheral strings.
 We consider any $d > 0$ and a non-empty $d$-peripheral string $S$, such that $\d{S} \subseteq \d{\Ta}$.
 We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
@@ -589,14 +580,22 @@ We now introduce two major theorems regarding peripheral strings, the first of w
 	By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
 \end{proof}
 
-\subsubsection{Periphery decomposition} \label{sigma_border_proof}
+\subsubsection{Peripheral convolution} \label{sigma_border_proof}
 
-This section serves as the proof of the following theorem:
+This section serves as the proof of the theorem we just used to prove \Cref{dense_algo}:
 
 \SigmaBorder
 
 We base our approach on the simple method of calculating the Hamming distance by running an instance of FFT for each unique character.
 We will again utilize partitioning to reduce the problem to some smaller ones and then solve them naively.
+We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
+
+Recall that 
+$\Ham(P + q, S) = \Ham(P + q, S_1) + \dots + \Ham(P + q, S_4)$.
+We will only show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$, since the other cases are symmetric.
+Consider a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
+Since the strings $P_0$ and $P_1$ partition $P$, we have
+\[ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).\]
 
 \begin{definition}(width \& height)\label{width_and_height_definition}
 	For a non-empty set $U \subseteq \Z^2$ we define its \textbf{width} as $\max\set{\x{u} - \x{v} + 1 : u, v \in U}$
@@ -611,16 +610,8 @@ We will again utilize partitioning to reduce the problem to some smaller ones an
 	\end{proof}
 \end{theorem}
 
-We will assume that $d \le m / 4$, since for $d = \Omega(m)$ we can, by \Cref{general_fft}, calculate the results in time $\tO(m^2 + m^2|\Sigma|)$, which is sufficient.
+From now we will assume that $d \le m / 4$, since for $d > m / 4$ we can, by \Cref{general_fft}, calculate the results in time $\tO(m^2 + m^2|\Sigma|)$, which is sufficient.
 
-Recall that 
-$\Ham(P + q, S) = \Ham(P + q, S_1) + \dots + \Ham(P + q, S_4)$.
-We will only show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$, since the other cases are symmetric.
-
-We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
-Specifically, let us consider a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
-Since the strings $P_0$ and $P_1$ partition $P$, we have
-\[ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).\]
 
 \begin{lemma}\label{border_hamming_reduction}
 	$\d{P_0 + q} \cap \d{S_1} = \emptyset$ for every $q \in Q$.
@@ -637,9 +628,9 @@ Since the strings $P_0$ and $P_1$ partition $P$, we have
 \end{observation}
 
 By \Cref{border_hamming_reduction}, $\Ham(P_0 + q, S_1) = 0$ for every $q \in Q$
-and by \Cref{border_hamming_split} we then have 
-\[\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_1). \]
-for some newly constructed strings $P_2$ and $P_3$, such that the width of $P_2$ and the height of $P_3$ equals $d$.
+and by \Cref{border_hamming_split} we have 
+\[\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_1) \]
+for some strings $P_2$ and $P_3$ partitioning $P_1$, such that the width of $P_2$ and the height of $P_3$ are equal to $d$.
 We calculate $\Ham(P_2 + q, S_1)$ and $\Ham(P_3 + q, S_1)$ for every $Q$ independently and sum the results.
 We only show how to calculate $\Ham(P_2 + q, S_1)$, since the other case is symmetric.
 
@@ -665,8 +656,10 @@ Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not g
 \end{figure}
 
 For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{u}, \y{u} + h_i) \not \in \Ta$ for every $u \in V_i$.
-For better reference, see \Cref{figure:periphery_decomposition}.
-The colored points represent $\d{S_1}$, where the green ones belong to some specific $\d{V_i}$.
+
+The construction is illustrated in \Cref{figure:periphery_decomposition}.
+The points in the gray area are outside of the active text.
+The remaining ones are in the active text, where the red and green represent $\d{S_1}$, and the green belong to some fixed $V_i$.
 
 \begin{lemma}\label{sum_of_h}
 	The sum of all $h_i$ is $\O(m)$.
@@ -715,7 +708,7 @@ which, by \Cref{sum_of_h}, is $\tO(m^2 + md|\Sigma|)$.
 % PHI PSI FINDER
 \subsection{Period acquisition} \label{get_periods_proof}
 
-This section serves as the proof of the following theorem:
+This section serves as the proof of the theorem, which we used to obtain the periods $\phi$ and $\psi$:
 
 \GetPeriods
 
@@ -922,7 +915,7 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 % PARQUET DECOMPOSITION
 \subsection{Periodic parquet partitioning} \label{parquet_decomposition_proof}
 In this section we explore the properties of periodic (sub-)parquet strings (recall Definitions \ref{parquet_definition}, \ref{subparquet_definition}, \ref{parquet_string_definition}).
-Specifically, we introduce some methods of partitioning them into monochromatic strings.
+Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
 \begin{definition}[Lattice graph]
 	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $(U, \Edges(U))$, where
@@ -1016,7 +1009,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 	\end{enumerate}
 	All the obtained strings are spacious and if $S$ is simple, they are simple.
 	\begin{proof}
-		Let us consider option (\ref{partition_a}). We construct a set
+		Let us consider option (\ref{partition_a}). We construct the set
 		\[ A = \set{\s{u} : u \in S, u + \phi \in S, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
 		and then sort its elements increasingly, creating an array $a_0, \dots, a_\ell$.
 		Note that $\ell \le \Ham(S + \phi, S) + 2$.
@@ -1056,7 +1049,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 % TEXT DECOMPOSITION
 \subsection{Active text decomposition} \label{text_decomposition_proof}
 
-This section serves as the proof of the following theorem:
+This section serves as the proof of the following major theorem:
 
 \TextDecomposition
 
@@ -1143,7 +1136,8 @@ Observe that every parallelogram $p_{i, j} \not \in \I$ must be fully contained 
 		Denote the set of such intersections as $U$.
 		For every parallelogram $p \in \I$, there must exist $u \in U$, such that $u \in p$.
 		For every $u \in U$, there are at most four parallelograms $p \in \I$, such that $u \in p$,
-		thus $|\I| \le 4|U| = \O(\ell)$.
+		thus the number of parallelograms intersecting with $f$ is at most $4|U| = \O(\ell)$.
+		We can identically bound the number of parallelograms intersecting with the line $y = z$, and thus get $|\I| = \O(\ell)$.
 	\end{proof}
 \end{lemma}
 
@@ -1241,14 +1235,15 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 \newcommand{\B}{\mathcal{B}}
 
 We split every non-empty parallelogram $g \in \G$ (by \Cref{parallelogram_split_lemma}) into parallelograms $c$ and $b$.
-We construct a set $\C$ consisting of all the obtained parallelograms $c$ and a set $\B$ consisting of all the obtained parallelograms $b$.
+We construct the set $\C$ consisting of all the obtained parallelograms $c$ and a set $\B$ consisting of all the obtained parallelograms $b$.
 
 We similarly divide the parallelograms in $\I$ (by \Cref{I_division}) and construct the sets $\C' = \set{p : p \in \I, p \cap \Z^2 \text{ is coverable}}$ and $\B' = \I \setminus \C'$.
 
 Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup \B'} b \cap \d{\Ta}$.
 Observe that all sets $U \in \U$ are coverable simple parquets, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
-For better reference, the decomposition can be seen in \Cref{figure:text_decomposition}.
-The points in the grey area are outside of $\dom(\Ta)$.
+
+The decomposition is illustrated in \Cref{figure:text_decomposition}.
+The points in the gray area are outside of the active text.
 The parallelograms from $\C$ and $\C'$ are colored blue and green, respectively.
 The points outside of them (in the white area) form the peripheral set $V$.
 
@@ -1262,8 +1257,9 @@ Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-p
 % PROOF OF SPLIT LEMMA
 \subsubsection{Parallelogram splitting} \label{parallelogram_split_lemma_proof}
 
-This section serves as the proof of \Cref{parallelogram_split_lemma}.
+This section serves as the proof of \Cref{parallelogram_split_lemma}, introduced at the end of the previous section (\ref{text_decomposition_proof}).
 Since for an empty parallelogram the proof is trivial, consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
+We will explore some properties of the part of the text contained in $K_1$ specifically, which can be generalized to other quarters by symmetry.
 
 \begin{lemma}\label{coverability_condition}
 	Every set $U \subseteq K_1 \cap \Z^2$, such that $(\max \X(U), \max \Y(U)) \in \Ta$ is coverable.
@@ -1280,7 +1276,6 @@ Since for an empty parallelogram the proof is trivial, consider a non-empty set 
 \begin{observation}\label{domination_lemma}
 	By \Cref{coverability_condition}, there does not exist a pair of points $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \Ta$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. 
 \end{observation}
-
 
 Recall that there exists $t \in [\ell + 1]$, such that
 $ g^1_j = \bigcup_{i = t}^{\ell - 1} p_{i, j}.$
@@ -1329,7 +1324,8 @@ The constructions for $g^2_i$, $g^3_j$, $g^4_i$ are rotationally symmetric.
 \subsubsection{Parallelogram span bounds} \label{distance_bound_lemma_proof}
 
 In this section we will establish a distance bound for points laying inside or in the proximity of the constructed parallelograms.
-Consider any $p_{i, j}$ for some $i, j \in [\ell]$.
+Consider any fixed $p_{i, j}$ for some $i, j \in [\ell]$.
+We first show some auxiliary (weaker) lemmas, which we then use to prove \Cref{distance_bound_lemma}.
 
 \begin{lemma}\label{distance_bound_aux}
 	For every $u, v \in p_{i, j}$, we have $|u - v| = \O(n / \ell)$.
