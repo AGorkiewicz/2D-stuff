@@ -508,18 +508,28 @@ In this section we show how to decompose $T$ using a similar, but more nuanced m
 \end{definition}
 
 \begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
-	For a given positive integer $\ell \le m$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings and an $\O(m / \ell)$-peripheral string.
+	Given any $\ell \in \Z^+$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings and an $\O(m / \ell)$-peripheral string.
 \end{restatable*}
 \begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
 
-We partition $\Ta$ using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$ into a set of simple subparquet strings $\S$ and a $\O(k^{3 / 4})$-peripheral string $F$.
+\paragraph{Toy solution}
+An immediate consequence of \Cref{text_decomposition} is that we can partition the active text into $\O(mk)$ monochromatic simple subparquet strings.
+We can constuct such partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
+If we denote the resulting set of monochromatic simple parquet strings as $\S$, we have
+\[ \Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S).\]
+By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{2})$,
+since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$.
+This yields us a complete $\tO(m^2 + mk^2)$ solution for the \HD problem, which for $k = \O(m ^ {1/2})$, works in optimal time $\tO(m^2)$.
+
+\paragraph{Full solution}
+To obtain the final $\tO(m^2 + mk^{5/4})$ complexity, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
+We obtain a set of $\O(mk^{1/4})$ simple subparquet strings $\S$, and a $\O(k^{3 / 4})$-peripheral string $F$.
 For every $q \in Q$ we then have
 \[ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).\]
-
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
-since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
+since similarly we have $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
 In the next section (\ref{periphery_section}) we will introduce \Cref{dense_algo}, which states that for a $d$-peripheral string $F$, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
-By substituting $d = \O(k^{3/4})$, we get the complexity of $\tO(m^2 + mk^{5/4})$, which ends the main proof.
+By substituting $d = \O(k^{3/4})$, we get the total complexity of $\tO(m^2 + mk^{5/4})$, which ends the main proof.
 
 
 % BORDER PROXIMITY
