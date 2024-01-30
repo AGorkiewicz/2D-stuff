@@ -196,12 +196,13 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 \paragraph{Overview of the techniques}
 We follow a pipeline similar to the \hd solution described in \cite{Gawrychowski2018}. 
 Our method first approximates the Hamming distance for every occurrence of the pattern in the text by using a two-dimensional variant of the algorithm introduced in \cite{Karloff1993}.
-We then select the occurrences, for which the predicted results are small enough to be calculated precisely.
+We then select the occurrences, for which the predicted result is small enough to be calculated precisely.
 If we have few such occurrences, for each of them we explicitly discover every mismatch position with the text, by using a two dimensional variant of the kangaroo jumps technique introduced in \cite{Galil1986}.
 In the other case, that is, when we have a lot of such occurrences, we take advantage of the fact that some of them must have a large overlap and consequently, the pattern must be periodic.
-The periodicity of the pattern allows us to decompose it into some monochromatic, regularly structured fragments.
-Although the text is not periodic, because some of its fragments are similar to the pattern, we can use a modified decomposition approach for the area covered by those fragments specifically.
-After decomposing the pattern and the text, we then convolve the resulting pairs of monochromatic fragments and aggregate their contributions.
+The periodicity of the pattern allows us to decompose it into some monochromatic regularly structured fragments.
+Although the whole text is not periodic, some of its fragments are similar to the pattern and share the same periods.
+Because of that we can use a modified decomposition approach for the area covered by those fragments specifically.
+After decomposing the pattern and the text, we then convolve the resulting pairs of monochromatic fragments and sum their contributions.
 
 
 % PRELIMINARIES
@@ -530,7 +531,7 @@ In this section we show how to decompose $T$ using a similar, but more nuanced m
 
 \paragraph{Toy solution}
 An immediate consequence of \Cref{text_decomposition} is that we can partition the active text into $\O(mk)$ monochromatic simple subparquet strings.
-We can constuct such partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
+We can construct such partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
 If we denote the resulting set of monochromatic simple parquet strings as $\S$, we have
 \[ \Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S).\]
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{2})$,
