@@ -61,10 +61,9 @@
 \author[2]{Paweł Gawrychowski}
 \author[3]{Adam Górkiewicz}
 \author[4]{Tatiana Starikovskaya}
-\affil[1]{?}
-\affil[2]{?}
-\affil[3]{?}
-\affil[4]{?}
+\affil[1]{Technical University of Dortmund, Germany}
+\affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
+\affil[4]{DI/ENS, PSL Research University}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -104,6 +103,16 @@
 \maketitle
 
 \begin{abstract}
+We consider a natural generalisation of the classical approximate pattern matching problem to two-dimensional strings.
+A two-dimensional string is simply a square array of characters. Given two such arrays, the pattern of size $m\times m$
+and the text of size $n\times n$, our goal is to find all locations in the text where the pattern match with at most $k$
+mismatches. This problem has been extensively studied for regular one-dimensional strings, and by now we have a good
+understanding of the best possible time complexity as a function of $n$, $m$, and $k$. In particular, we know that
+for $k=\O\sqrt(m)$ we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018]. Surprisingly,
+no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$
+time [Amir and Landau, TCS 1991]. We improve on this bounds from 30 years ago with a non-trivial adaptation of tools
+used to tackle the one-dimensional version, and design an $\tO((m^{2}+k^{5/4}m)n^{2}/m^{2})$ time algorithm.
+In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
 \end{abstract}
 
 %\thispagestyle{empty}
