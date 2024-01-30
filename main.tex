@@ -104,7 +104,6 @@
 \maketitle
 
 \begin{abstract}
-	[TODO]
 \end{abstract}
 
 %\thispagestyle{empty}
@@ -175,8 +174,6 @@ Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
 \newcommand{\hd}{\textsc{HD1D}\xspace}
 \newcommand{\HD}{\textsc{HD2D}\xspace}
 
-[TODO]
-
 We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
 
 We consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
@@ -186,6 +183,16 @@ We also consider the bounded variants of \hd and \HD, where we are only required
 \begin{restatable*}{theorem}{MainResult}\label{main result}
 	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{restatable*}
+
+\paragraph{Overview of the techniques}
+We follow a pipeline similar to the \hd solution described in \cite{Gawrychowski2018}. 
+Our method first approximates the Hamming distance for every occurrence of the pattern in the text by using a two-dimensional variant of the algorithm introduced in \cite{Karloff1993}.
+We then select the occurrences, for which the predicted results are small enough to be calculated precisely.
+If we have few such occurrences, for each of them we explicitly discover every mismatch position with the text, by using a two dimensional variant of the kangaroo jumps technique introduced in \cite{Galil1986}.
+In the other case, that is, when we have a lot of such occurrences, we take advantage of the fact that some of them must have a large overlap and consequently, the pattern must be periodic.
+The periodicity of the pattern allows us to decompose it into some monochromatic, regularly structured fragments.
+Although the text is not periodic, because some of its fragments are similar to the pattern, we can use a modified decomposition approach for the area covered by those fragments specifically.
+After decomposing the pattern and the text, we then convolve the resulting pairs of monochromatic fragments and aggregate their contributions.
 
 
 % PRELIMINARIES
@@ -247,7 +254,7 @@ for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m
 \section{One-dimensional generalizations}
 
 In this section we explore some of the methods used for one-dimensional strings.
-Specifically, as our goal is to generalize the solution for pattern matching with $k$ mismatches described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
+Specifically, as our goal is to generalize the solution for \hd described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
 
 \begin{theorem}\label{instancing}
 	Consider an algorithm $\mathcal{A}$ which solves \HD (bounded or unbounded), but only when $2|n$ and $n \le \frac{3}{2}m$.
@@ -519,7 +526,7 @@ If we denote the resulting set of monochromatic simple parquet strings as $\S$, 
 \[ \Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S).\]
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{2})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$.
-This yields us a complete $\tO(m^2 + mk^2)$ solution for the \HD problem, which for $k = \O(m ^ {1/2})$, works in optimal time $\tO(m^2)$.
+This yields us a complete $\tO((m^2 + mk^2)n^2/m^2)$ solution for the \HD problem, which for $k = \O(m ^ {1/2})$, works in optimal time $\tO(n^2)$.
 
 \paragraph{Full solution}
 To obtain the final $\tO(m^2 + mk^{5/4})$ complexity, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
