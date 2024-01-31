@@ -137,7 +137,7 @@ approach based on the fast Fourier transform works in $\O(n \sqrt{m \log m})$ ti
 suggesting that the $\O(nk)$ bound is not optimal for the whole range of values of $k$. It was only in 2004 that
 the both bounds were unified to obtain an $\O(n\sqrt{k \log k})$  time algorithm~\cite{Amir2004}.  This complexity
 was later improved to $\tO(n + k^2n/m)$~\cite{Clifford2016a}, and then further refined to $\tO(n + kn/\sqrt{m})$~\cite{Gawrychowski2018},
-which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We use $\tO$ to hide factors polylogarithmic in $n$.}. 
+which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We write $\tO$ to hide factors polylogarithmic in $n$.}. 
 It is known that a significantly faster algorithm implies fast boolean matrix multiplication~\cite{Gawrychowski2018},
 and the time complexity can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020} (at the expense
 of allowing Monte Carlo randomisation). In a very recent exciting improvement, it was shown how to slightly improve
@@ -146,83 +146,55 @@ that the time complexity of one-dimensional pattern matching with bounded Hammin
 This is also the case from the more combinatorial point of view: we know that occurrences of the pattern with $k$ mismatches
 either have a simple and exploitable structure, or the pattern is close to being periodic~\cite{Bringmann2019,Charalampopoulos2020a}.
 
-\section{Related Work}
+\paragraph{2D strings.} The natural extension of strings to two dimensions is to consider arrays
+of characters, called 2D strings. To avoid multiplying the parameters, we will assume that they are square. Such an extension
+is motivated by the possible application in image processing. Then, the basic algorithmic problem becomes
+to find all occurrences of an $m\times m$ pattern in an $n\times n$ text. An efficient $\O(n^{2}+m^{2})$ time algorithm
+for this problem was obtained already in the late 70s~\cite{Bird1977}, but obtaining such a complexity without
+any assumption on the size of the alphabet was achieved only in the mid-90s~\cite{Amir1994,Galil1996}
+(even in logarithmic space~\cite{Crochemore1995}). Efficient parallel algorithms have also been obtained~\cite{Crochemore1998,Crochemore1998},
+and the time complexity for random inputs, i.e. average time complexity, has been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
 
-\paragraph{Exact PM in 2D}
+\paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is that of periodicity,
+defined as follows. We say that $p$ is a period of $s[1..n]$ when $s[i]=s[i+p]$, for all $i$ such that the expression is defined.
+The set of all periods of a given string has a very simple structure~\cite{Fine1965}. For 2D strings, the notion of periodicity
+becomes more involved~\cite{Amir1998}, but still remains to be a powerful tool for exact pattern matching~\cite{Amir1992,Galil1996}.
+Some purely combinatorial properties of two-dimensional periodicities have been studied~\cite{Mignosi2003,Gamard2017},
+but generally speaking repetition in two-dimensional strings are inherently more complicated than in one-dimensional strings.
+For example, compressed pattern matching for two-dimensional strings becomes NP-complete~\cite{Berman2002}, see~\cite{Rytter2000}
+for a more extensive discussion.
+Another example, perhaps less extreme, are the bounds on two-dimensional runs~\cite{Amir2020} and
+distinct squares~\cite{Charalampopoulos2020}, where we know that increasing the dimension incurs at least an additional
+logarithmic factor~\cite{Charalampopoulos2020}.
 
-Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$.
+\paragraph{2D pattern matching with $k$ mismatches.} The next step for 2D pattern matching is to allow $k$ mismatches.
+Already in 1987, an $\to(kmn^{2})$ time algorithm was obtained for this problem~\cite{Krithivasan1987}. This was
+soon improved to $\tO((k+m)n^2)$ time~\cite{Ranka1991}, and finally to $\O(kn^2)$~\cite{Amir1991}, which remains
+to be the asymptotically fastest algorithm. A number of non-trivial results have been obtained under the assumption
+that the input is random, i.e. for the average time complexity~\cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999}.
+Given that other notions of approximate occurrences, e.g. bounded edit distance, seem less natural in the two-dimensional
+setting~\cite{Baeza-Yates1998a}, the natural challenge is to obtain a better understanding of the complexity
+of 2D pattern matching with $k$ mismatches. In particular, it would be interesting to design a quasi-linear time
+algorithm for polynomial $k=O(n^{\epsilon})$ number of mismatches.
 
-\begin{itemize}
-	\item Two-dimensional pattern matching dates back (at least) to the 1970s, when Richard Bird generalized the Knuth-Morris-Pratt algorithm \cite{Knuth1977} for one-dimensional pattern matching, achieving $\O(n^2 + m^2)$ time \cite{Bird1977}.
-	\item By using multiple pattern matching on only $\O(n/m)$ rows of the text, Baeza-Yates and Régnier achieve average time complexity $\O(n^2 / m)$, using $\O(m^2)$ space and still running in $\O(n^2)$ time in the worst case \cite{Baeza-Yates1993}. This was followed by more results optimizing the average time complexity \cite{Tarhio1996,Kaerkkaeinen1999}.
-	\item Crochremore at al.\ \cite{Crochemore1995} solve two-dimensional pattern matching space efficiently, using an $\O(m^2)$ time and $\O(\log m)$ space preprocessing followed by an $\O(n^2)$ time and constant space search phase.
-	\item On a PRAM, the problem can be solved in constant time and $O(n^2)$ work \cite{Crochemore1998}, after preprocessing the pattern in $\O(\log \log m)$ time and $\O(m^2)$ work \cite{Cole1993}.
-	\item Other works studying the problem are, e.g., \cite{Baker1978,Karp1987,Zhu1988,Zhu1989,Amir1994,Galil1996}
-\end{itemize}
-
-\paragraph{Hamming-Threshold PM in 2D} Assuming $n \times n$ text and $m \times m$ pattern, $m \leq n$, and threshold $k < m^2$.
-
-\begin{itemize}
-	\item First result in 1987 by Krithivasan and Sitalakshmi \cite{Krithivasan1987}, who show that $\tO(kmn^2)$ time can be achieved.
-	\item Faster algorithm by Rank and Heywood runs in $\tO((k+m)n^2)$ time \cite{Ranka1991}.
-	\item Current state of the art\jonas{check} is $\O(kn^2)$ \cite{Amir1991}
-	\item More work \cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999} is aimed at optimizing the average time complexity. This has also been done for the setting in which arbitrary rotations of the pattern are allowed \cite{Fredriksson2002}.
-	\item Dynamic and online algorithms \cite{Clifford2016}
-	\item Measures like edit distance are more complicated to define for two-dimensional strings \cite{Baeza-Yates1998a}.
-\end{itemize}
-
-\paragraph{2D Periodicity}
-
-\begin{itemize}
-	\item Two-dimensional periodicity was introduced in \cite{Amir1992,Amir1998} and refined in \cite{Galil1996}. All periods (and witnesses for all non-periods) can be computed in $\O(n^2)$ time \cite{Cole2004}. Witnesses can be used to efficiently eliminate potential occurrences of the pattern. Since witness computation is costly for run-length encoded strings, Amir at al.\ \cite{Amir1997} show additional properties of two-dimensional periodicities that allow the elimination of occurrences without witnesses.
-	\item Famous periodicity theorems have been generalized to two dimensions, for example the Fine-Wilf theorem \cite{Fine1965,Mignosi2003} and the Lyndon-Schützenberger theorem \cite{Lyndon1962,Gamard2017}.
-	\item Smallest rectangular cover in $\O(n^2)$ time, all aperiodic covers in $\O(n^2 \log n)$ time \cite{Charalampopoulos2021}. Covers of two-dimensional strings were also considered in \cite{Gamard2019,Crochemore1998a}. 
-	\item All tile covers in $\O(n^{2+\epsilon})$ time \cite{Radoszewski2022}.
-	\item There can be $\Omega(n^3 \log n)$ tandem substrings (repeated rectangle, like square in a normal string) \cite{Apostolico2000}.
-	\item All tandems can be computed in $\O(n^3 \log n)$ time \cite{Apostolico2005}.
-	\item There can be $\Omega(n^2 \log n)$ two-dimensional runs (maximal repetitions) \cite{Gawrychowski2021}.
-	\item There are at most $\O(n^2 \log^2 n)$ two-dimensional runs \cite{Charalampopoulos2020}.
-	\item All runs can be computed in $\O(n^2 \log^2 n)$ time \cite{Amir2020}.
-
-\end{itemize}
-
-\paragraph{Other 2D Shannanigans}
-
-\begin{itemize}
-	\item A survey by Rytter \cite{Rytter2000} discusses compressed representations of two-dimensional strings and the computation on such representations without explicit decompression. If the text is compressed as a two-dimensional SLP, then merely deciding if a pattern is present is NP-complete with respect to the compressed size \cite{Berman2002}. If both text and pattern are compressed using a two-dimensional version of Lempel-Ziv compression, then exact matching can be done in $\O(n^2 + m^3)$ time, using additional working space proportional to the compressed representation of the pattern \cite{Amir2003}. If text and pattern are given in two-dimensional run-length encoding, then the time for exact matching is linear in the size of the compressed text, and the space is linear in the size of the compressed pattern \cite{Amir2003a}. If multiple patterns are given, then they can be compressed into a space efficient self-index that allows fast dictionary matching \cite{Neuburger2013}.
-	\item In parametrized matching, pattern occurrences have to be isomorphic via a bijection on the effective alphabets \cite{Amir2006,Cole2014}. A key step for efficient parametrized matching in two dimensions is counting the number of distinct symbols in every $m \times m$ substring, which can be done in $\O(n^2)$ time \cite{Cole2014}.
-	\item More work on structural elements in two-dimensional strings, e.g., frames (rectangles with matching outer columns and rows) \cite{Boneh2023}, Lyndon words \cite{Marcus2017}, motif patterns (allowing ``don't cares'', and satisfying special properties) \cite{Apostolico2008}, patterns with at least two occurrences \cite{Karp1972}, and palindromic substrings \cite{Mahalingam2019}.
-	\item There is an efficient algorithm for matching a half-rectangular pattern (fixed height, but irregular shape) in a text, allowing a fixed number of mismatches, insertions and deletions \cite{Amir1995}.
-\end{itemize}
-
-
-% INTRODUCTION
-\section{Introduction}
-
-\newcommand{\hd}{\textsc{HD1D}\xspace}
-\newcommand{\HD}{\textsc{HD2D}\xspace}
-
-We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
-
-We consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
-
-We also consider the bounded variants of \hd and \HD, where we are only required to calculate the distances which are not greater than $k$, for some parameter $k \in \Z^+$.
-
-\begin{restatable*}{theorem}{MainResult}\label{main result}
-	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
-\end{restatable*}
+\paragraph{Our result.} We design an algorithm that, given an $n\times n$ text and $m\times m$ pattern, finds
+all occurrences with at most $k$ mismatches of the former in latter in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+This significantly improves on the previously known upper bound of $\O(kn^{2})$ (from over 30 years ago),
+and provides a quasi-linear time algorithm for $k=\O(m^{4/5})$. 
 
 \paragraph{Overview of the techniques}
-We follow a pipeline similar to the \hd solution described in \cite{Gawrychowski2018}. 
-Our method first approximates the Hamming distance for every occurrence of the pattern in the text by using a two-dimensional variant of the algorithm introduced in \cite{Karloff1993}.
-We then select the occurrences, for which the predicted result is small enough to be calculated precisely.
-If we have few such occurrences, for each of them we explicitly discover every mismatch position with the text, by using a two dimensional variant of the kangaroo jumps technique introduced in \cite{Galil1986}.
-In the other case, that is, when we have a lot of such occurrences, we take advantage of the fact that some of them must have a large overlap and consequently, the pattern must be periodic.
+The starting point for our algorithm is the algorithm for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
+for an optimised version (but the approach is due to~\cite{Clifford2015}), which proceeds as follows.
+First, we approximate the Hamming distance for every position in the ext, by adapting Karloff's~\cite{Karloff1993}
+method to 2D. Then, we can eliminate positions for which the approximated distance is very large.
+If the number of remaining position is small enough, we can essentially adapt the kangaroo jump~\cite{Galil1986}.
+Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a periodicity
+in the pattern. Then, the two-dimensional case becomes significantly more involved (due to the more complex
+nature of two-dimensional periodicities).
 The periodicity of the pattern allows us to decompose it into some monochromatic regularly structured fragments.
 Although the whole text is not periodic, some of its fragments are similar to the pattern and share the same periods.
 Because of that we can use a modified decomposition approach for the area covered by those fragments specifically.
 After decomposing the pattern and the text, we then convolve the resulting pairs of monochromatic fragments and sum their contributions.
-
 
 % PRELIMINARIES
 \section{Preliminaries}
@@ -231,7 +203,14 @@ For our purposes we will not use the standard definition of a two-dimensional st
 Although we will occasionally use the array notation, we will do it exclusively for $n \times m$ strings.
 For any $n \in \Z^+$ we will denote $[n] = \set{0, \dots, n - 1}$.
 We will use the terms point and vector interchangeably.
-Our results hold under word-RAM model of computation.
+Our results hold under the standard word-RAM model of computation with words of size $\Omega(\log n)$.
+
+\newcommand{\hd}{\textsc{HD1D}\xspace}
+\newcommand{\HD}{\textsc{HD2D}\xspace}
+
+We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
+Next, we consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
+In the bounded variants of both \hd and \HD we are only required to calculate the distances which are not greater than $k$, for some parameter $k$.
 
 \newcommand{\getchar}[1]{\charrr(#1)}
 \newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
@@ -372,7 +351,9 @@ Unfortunately, the most effective known algorithms for bounded \hd~\cite{Cliffor
 
 In this section we provide a detailed proof of the following theorem:
 
-\MainResult
+\begin{restatable*}{theorem}{MainResult}\label{main result}
+	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+\end{restatable*}
 
 We show an algorithm which works in time $\tO(m^2 + mk^{5/4})$, assuming $2|n$ and $m < n \le \frac{3}{2}m$.
 The solution for the general case follows from \Cref{instancing}. 
