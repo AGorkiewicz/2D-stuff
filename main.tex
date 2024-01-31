@@ -119,15 +119,34 @@ In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
 %\clearpage
 %\setcounter{page}{1}
 
+\section{Introduction}
+
+The basic algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
+finding one string in another. Efficient linear-time algorithms for this problem are known since the 70s~\cite{Knuth1977}.
+However, from the point of view of possible applications it is desirable to search for approximate occurrences.
+A clean and yet possibly useful in practice notion of an approximate occurrence is that of bounded Hamming distance,
+where given a parameter $k$ we want to find all positions in the text where the pattern matches with at most $k$
+mismatches. The natural assumption is that $k$ is not too large, and the running time should be close to linear
+when $k$ is small. The first algorithms~\cite{Landau1986,Galil1986}  that achieved such a goal in the 80s used the technique
+informally called ``kangaroo jumping'': they consider each position in the text, and calculate the number of mismatches
+by jumping over regions where there is no mismatch. A single jump can be implemented in constant time with a
+data structure for longest common extensions, such as a suffix tree augmented with a lowest common ancestors structure,
+and after having found more than $k$ mismatches we can move to the next position in the text. Thus, the overall
+time becomes $\O(nk)$. For very large values of $k$ this is not better than the naive algorithm. However, another
+approach based on the fast Fourier transform works in $\O(n \sqrt{m \log m})$ time~\cite{Abrahamson1987},
+suggesting that the $\O(nk)$ bound is not optimal for the whole range of values of $k$. It was only in 2004 that
+the both bounds were unified to obtain an $\O(n\sqrt{k \log k})$  time algorithm~\cite{Amir2004}.  This complexity
+was later improved to $\tO(n + k^2n/m)$~\cite{Clifford2016a}, and then further refined to $\tO(n + kn/\sqrt{m})$~\cite{Gawrychowski2018},
+which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We use $\tO$ to hide factors polylogarithmic in $n$.}. 
+It is known that a significantly faster algorithm implies fast boolean matrix multiplication~\cite{Gawrychowski2018},
+and the time complexity can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020} (at the expense
+of allowing Monte Carlo randomisation). In a very recent exciting improvement, it was shown how to slightly improve
+these time complexities by leveraging a connection to the 3-SUM problem~\cite{Chan0WX23}. Thus, it appears
+that the time complexity of one-dimensional pattern matching with bounded Hamming distance is fairly well understood.
+This is also the case from the more combinatorial point of view: we know that occurrences of the pattern with $k$ mismatches
+either have a simple and exploitable structure, or the pattern is close to being periodic~\cite{Bringmann2019,Charalampopoulos2020a}.
+
 \section{Related Work}
-
-\paragraph{Hamming-Threshold PM in 1D}
-
-\begin{itemize}
-	\item Early solutions for pattern matching with mismatches use fast Fourier transform and run in $\O(n \sqrt{m \log m})$ time \cite{Abrahamson1987}. The first algorithms that explicitly exploit the threshold $k$ run in time roughly $\O(nk)$ \cite{Landau1986,Galil1986} and use ``kangaroo jumping'', a technique in which each text position is considered as a potential occurrence, and verified by jumping from mismatch to mismatch using a data structure for longest common extensions.
-	\item Faster solution in $\O(n\sqrt{k \log k})$ or $\tO(n + k^3n/m)$ time \cite{Amir2004} by still using convolutions, but also exploiting periodicity and using counting arguments. The latter result was first improved to $\tO(n + k^2n/m)$ time \cite{Clifford2016a}, and then further refined to $\tO(n + kn/\sqrt{m})$ time \cite{Gawrychowski2018}, which is a smooth trade-off between the previous $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$ bounds. If Monte-Carlo randomization is allowed, then the time can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020}. A significantly faster algorithm would imply unexpected consequences for the complexity of boolean matrix multiplication \cite{Gawrychowski2018}.
-	\item The $k$-mismatch occurrences of the pattern either have a simple and exploitable structure, or the pattern is close to being periodic. This property is a powerful tool for pattern matching with mismatches, and was analyzed in \cite{Bringmann2019,Charalampopoulos2020a}.
-\end{itemize}
 
 \paragraph{Exact PM in 2D}
 
