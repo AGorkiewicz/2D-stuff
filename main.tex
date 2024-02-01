@@ -168,14 +168,14 @@ distinct squares~\cite{Charalampopoulos2020}, where we know that increasing the 
 logarithmic factor~\cite{Charalampopoulos2020}.
 
 \paragraph{2D pattern matching with $k$ mismatches.} The next step for 2D pattern matching is to allow $k$ mismatches.
-Already in 1987, an $\to(kmn^{2})$ time algorithm was obtained for this problem~\cite{Krithivasan1987}. This was
+Already in 1987, an $\tO(kmn^{2})$ time algorithm was obtained for this problem~\cite{Krithivasan1987}. This was
 soon improved to $\tO((k+m)n^2)$ time~\cite{Ranka1991}, and finally to $\O(kn^2)$~\cite{Amir1991}, which remains
 to be the asymptotically fastest algorithm. A number of non-trivial results have been obtained under the assumption
 that the input is random, i.e. for the average time complexity~\cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999}.
 Given that other notions of approximate occurrences, e.g. bounded edit distance, seem less natural in the two-dimensional
 setting~\cite{Baeza-Yates1998a}, the natural challenge is to obtain a better understanding of the complexity
 of 2D pattern matching with $k$ mismatches. In particular, it would be interesting to design a quasi-linear time
-algorithm for polynomial $k=O(n^{\epsilon})$ number of mismatches.
+algorithm for polynomial $k=\O(n^{\epsilon})$ number of mismatches.
 
 \paragraph{Our result.} We design an algorithm that, given an $n\times n$ text and $m\times m$ pattern, finds
 all occurrences with at most $k$ mismatches of the former in latter in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
@@ -188,13 +188,22 @@ for an optimised version (but the approach is due to~\cite{Clifford2015}), which
 First, we approximate the Hamming distance for every position in the ext, by adapting Karloff's~\cite{Karloff1993}
 method to 2D. Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining position is small enough, we can essentially adapt the kangaroo jump~\cite{Galil1986}.
-Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a periodicity
-in the pattern. Then, the two-dimensional case becomes significantly more involved (due to the more complex
-nature of two-dimensional periodicities).
-The periodicity of the pattern allows us to decompose it into some monochromatic regularly structured fragments.
+Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a periodicity in the pattern.
+Then, the two-dimensional case becomes significantly more involved (due to the more complex nature of two-dimensional periodicities).
+To construct a functional compressed representation of a periodic string, we require it to have not one, but two periods.
+For technical reasons, the periods (which we associate with vectors) have to be selected with great care and their existance allows us to decompose the pattern into some regularly structured monochromatic fragments.
+The number of such fragments is $\O(k)$ and the positions each of them is defined for are given by some lattice of points restricted to some polygon.
+We call such a set of positions a subparquet.
+After successfully dealing with the pattern, we proceed with the text.
 Although the whole text is not periodic, some of its fragments are similar to the pattern and share the same periods.
 Because of that we can use a modified decomposition approach for the area covered by those fragments specifically.
-After decomposing the pattern and the text, we then convolve the resulting pairs of monochromatic fragments and sum their contributions.
+Since the complexity of the algorithm depends on how fast we can convolve the pairs of monochromatic fragments that we decompose the pattern and the text into, we need to construct .
+The time needed to aggregate the contribution of a single pair of subparquets is $\tO(1)$, but only in the case when one of them is simple, which translates to an additional condition regarding its structure.
+Accordingly, the text needs to be decomposed into fragments defined for simple subparquets.
+Since the number of such fragments would be too large if we considered them exclusively, we instead introduce a notion of a peripheral set of positions.
+The positions in the peripheral set can overlap with only a small portion of the positions in the pattern, and considering them provides us with an alternative speed-up method.
+We show how to decompose the pattern into fragments, which are either monochromatic and defined for simple subparquets, or peripheral ones.
+With various approaches we then calculate their contributions to the number of mismatches and sum them for each occurrence.
 
 % PRELIMINARIES
 \section{Preliminaries}
