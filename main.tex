@@ -103,15 +103,15 @@
 \maketitle
 
 \begin{abstract}
-We consider a natural generalisation of the classical approximate pattern matching problem to two-dimensional strings.
+We consider a natural generalization of the classical approximate pattern matching problem to two-dimensional strings.
 A two-dimensional string is simply a square array of characters. Given two such arrays, the pattern of size $m\times m$
-and the text of size $n\times n$, our goal is to find all locations in the text where the pattern match with at most $k$
-mismatches. This problem has been extensively studied for regular one-dimensional strings, and by now we have a good
+and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$
+mismatches. This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good
 understanding of the best possible time complexity as a function of $n$, $m$, and $k$. In particular, we know that
-for $k=\O\sqrt(m)$ we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018]. Surprisingly,
+for $k=\O\sqrt(m)$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018]. Surprisingly,
 no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$
-time [Amir and Landau, TCS 1991]. We improve on this bounds from 30 years ago with a non-trivial adaptation of tools
-used to tackle the one-dimensional version, and design an $\tO((m^{2}+k^{5/4}m)n^{2}/m^{2})$ time algorithm.
+time [Amir and Landau, TCS 1991]. We improve on these bounds from 30 years ago with a non-trivial adaptation of tools
+used to tackle the one-dimensional version and design an $\tO((m^{2}+k^{5/4}m)n^{2}/m^{2})$ time algorithm.
 In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
 \end{abstract}
 
@@ -120,29 +120,27 @@ In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
 %\setcounter{page}{1}
 
 \section{Introduction}
-
-The basic algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
+The fundamental algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
 finding one string in another. Efficient linear-time algorithms for this problem are known since the 70s~\cite{Knuth1977}.
-However, from the point of view of possible applications it is desirable to search for approximate occurrences.
+However, from the point of view of possible applications, it is desirable to search for approximate occurrences.
 A clean and yet possibly useful in practice notion of an approximate occurrence is that of bounded Hamming distance,
-where given a parameter $k$ we want to find all positions in the text where the pattern matches with at most $k$
+where given a parameter $k$, we want to find all positions in the text where the pattern matches with at most $k$
 mismatches. The natural assumption is that $k$ is not too large, and the running time should be close to linear
-when $k$ is small. The first algorithms~\cite{Landau1986,Galil1986}  that achieved such a goal in the 80s used the technique
-informally called ``kangaroo jumping'': they consider each position in the text, and calculate the number of mismatches
+when $k$ is small. The first algorithms~\cite{Landau1986,Galil1986} that achieved such a goal in the 80s used the technique
+informally called ``kangaroo jumping'': they consider each position in the text and calculate the number of mismatches
 by jumping over regions where there is no mismatch. A single jump can be implemented in constant time with a
-data structure for longest common extensions, such as a suffix tree augmented with a lowest common ancestors structure,
+data structure for the longest common extensions, such as a suffix tree augmented with a lowest common ancestors structure,
 and after having found more than $k$ mismatches we can move to the next position in the text. Thus, the overall
 time becomes $\O(nk)$. For very large values of $k$ this is not better than the naive algorithm. However, another
 approach based on the fast Fourier transform works in $\O(n \sqrt{m \log m})$ time~\cite{Abrahamson1987},
 suggesting that the $\O(nk)$ bound is not optimal for the whole range of values of $k$. It was only in 2004 that
-the both bounds were unified to obtain an $\O(n\sqrt{k \log k})$  time algorithm~\cite{Amir2004}.  This complexity
+both bounds were unified to obtain an $\O(n\sqrt{k \log k})$ time algorithm~\cite{Amir2004}. This complexity
 was later improved to $\tO(n + k^2n/m)$~\cite{Clifford2016a}, and then further refined to $\tO(n + kn/\sqrt{m})$~\cite{Gawrychowski2018},
 which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We write $\tO$ to hide factors polylogarithmic in $n$.}. 
 It is known that a significantly faster algorithm implies fast boolean matrix multiplication~\cite{Gawrychowski2018},
 and the time complexity can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020} (at the expense
-of allowing Monte Carlo randomisation). In a very recent exciting improvement, it was shown how to slightly improve
-these time complexities by leveraging a connection to the 3-SUM problem~\cite{Chan0WX23}. Thus, it appears
-that the time complexity of one-dimensional pattern matching with bounded Hamming distance is fairly well understood.
+of allowing Monte Carlo randomization). In a very recent exciting improvement, it was shown how to slightly improve
+these time complexities by leveraging a connection to the 3-SUM problem~\cite{Chan0WX23}. Thus, the time complexity of one-dimensional pattern matching with bounded Hamming distance is fairly well understood.
 This is also the case from the more combinatorial point of view: we know that occurrences of the pattern with $k$ mismatches
 either have a simple and exploitable structure, or the pattern is close to being periodic~\cite{Bringmann2019,Charalampopoulos2020a}.
 
@@ -150,17 +148,17 @@ either have a simple and exploitable structure, or the pattern is close to being
 of characters, called 2D strings. To avoid multiplying the parameters, we will assume that they are square. Such an extension
 is motivated by the possible application in image processing. Then, the basic algorithmic problem becomes
 to find all occurrences of an $m\times m$ pattern in an $n\times n$ text. An efficient $\O(n^{2}+m^{2})$ time algorithm
-for this problem was obtained already in the late 70s~\cite{Bird1977}, but obtaining such a complexity without
+for this problem was obtained already in the late 70s~\cite{Bird1977}, but obtaining such complexity without
 any assumption on the size of the alphabet was achieved only in the mid-90s~\cite{Amir1994,Galil1996}
 (even in logarithmic space~\cite{Crochemore1995}). Efficient parallel algorithms have also been obtained~\cite{Crochemore1998,Crochemore1998},
-and the time complexity for random inputs, i.e. average time complexity, has been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
+and the time complexity for random inputs, i.e., average time complexity, has been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
 
-\paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is that of periodicity,
+\paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is periodicity,
 defined as follows. We say that $p$ is a period of $s[1..n]$ when $s[i]=s[i+p]$, for all $i$ such that the expression is defined.
 The set of all periods of a given string has a very simple structure~\cite{Fine1965}. For 2D strings, the notion of periodicity
-becomes more involved~\cite{Amir1998}, but still remains to be a powerful tool for exact pattern matching~\cite{Amir1992,Galil1996}.
+becomes more involved~\cite{Amir1998}, but remains to be a powerful tool for exact pattern matching~\cite{Amir1992,Galil1996}.
 Some purely combinatorial properties of two-dimensional periodicities have been studied~\cite{Mignosi2003,Gamard2017},
-but generally speaking repetition in two-dimensional strings are inherently more complicated than in one-dimensional strings.
+but generally speaking repetitions in two-dimensional strings are inherently more complicated than in one-dimensional strings.
 For example, compressed pattern matching for two-dimensional strings becomes NP-complete~\cite{Berman2002}, see~\cite{Rytter2000}
 for a more extensive discussion.
 Another example, perhaps less extreme, are the bounds on two-dimensional runs~\cite{Amir2020} and
@@ -173,7 +171,7 @@ soon improved to $\tO((k+m)n^2)$ time~\cite{Ranka1991}, and finally to $\O(kn^2)
 to be the asymptotically fastest algorithm. A number of non-trivial results have been obtained under the assumption
 that the input is random, i.e. for the average time complexity~\cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999}.
 Given that other notions of approximate occurrences, e.g. bounded edit distance, seem less natural in the two-dimensional
-setting~\cite{Baeza-Yates1998a}, the natural challenge is to obtain a better understanding of the complexity
+setting~\cite{Baeza-Yates1998a}, the natural challenge is to better understand the complexity
 of 2D pattern matching with $k$ mismatches. In particular, it would be interesting to design a quasi-linear time
 algorithm for polynomial $k=\O(n^{\epsilon})$ number of mismatches.
 
@@ -182,28 +180,41 @@ all occurrences with at most $k$ mismatches of the former in latter in $\tO((m^2
 This significantly improves on the previously known upper bound of $\O(kn^{2})$ (from over 30 years ago),
 and provides a quasi-linear time algorithm for $k=\O(m^{4/5})$. 
 
-\paragraph{Overview of the techniques}
-The starting point for our algorithm is the algorithm for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
+\paragraph{Overview of the techniques.}
+The starting point for our algorithm is the approach designed for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
 for an optimised version (but the approach is due to~\cite{Clifford2015}), which proceeds as follows.
-First, we approximate the Hamming distance for every position in the ext, by adapting Karloff's~\cite{Karloff1993}
-method to 2D. Then, we can eliminate positions for which the approximated distance is very large.
-If the number of remaining position is small enough, we can essentially adapt the kangaroo jump~\cite{Galil1986}.
-Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a periodicity in the pattern.
-Then, the two-dimensional case becomes significantly more involved (due to the more complex nature of two-dimensional periodicities).
-To construct a functional compressed representation of a periodic string, we require it to have not one, but two periods.
-For technical reasons, the periods (which we associate with vectors) have to be selected with great care and their existance allows us to decompose the pattern into some regularly structured monochromatic fragments.
-The number of such fragments is $\O(k)$ and the positions each of them is defined for are given by some lattice of points restricted to some polygon.
-We call such a set of positions a subparquet.
-After successfully dealing with the pattern, we proceed with the text.
-Although the whole text is not periodic, some of its fragments are similar to the pattern and share the same periods.
-Because of that we can use a modified decomposition approach for the area covered by those fragments specifically.
-Since the complexity of the algorithm depends on how fast we can convolve the pairs of monochromatic fragments that we decompose the pattern and the text into, we need to construct .
-The time needed to aggregate the contribution of a single pair of subparquets is $\tO(1)$, but only in the case when one of them is simple, which translates to an additional condition regarding its structure.
-Accordingly, the text needs to be decomposed into fragments defined for simple subparquets.
-Since the number of such fragments would be too large if we considered them exclusively, we instead introduce a notion of a peripheral set of positions.
-The positions in the peripheral set can overlap with only a small portion of the positions in the pattern, and considering them provides us with an alternative speed-up method.
-We show how to decompose the pattern into fragments, which are either monochromatic and defined for simple subparquets, or peripheral ones.
-With various approaches we then calculate their contributions to the number of mismatches and sum them for each occurrence.
+First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}
+Then, we can eliminate positions for which the approximated distance is very large.
+If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
+Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a small approximate
+the period in the pattern, i.e., an integer $p$ such that aligning the pattern with itself at a distance $p$ incurs few mismatches.
+Then, (for $n=2m$), we can restrict our attention to the middle part of the text with the same approximate period $p$.
+Then, both the pattern and the text compress very well under the simple RLE compression, if we rearrange their characters
+by considering the positions modulo $p$. In other words, they can be both decomposed into few subsequences
+of the form $i, i+p, i+2p, \ldots, i+\alpha p$ consisting of the same character.
+By appropriately plugging in an efficient algorithm for approximate pattern
+matching for RLE-compressed inputs, this allows us to obtain the desired time complexity.
+
+In the two-dimensional case, there is no difficulty in adapting Karloff's algorithm or kangaroo jumps, which allows
+us to focus on the case where there are two possible occurrences with a large overlap. Here, the two-dimensional
+case significantly departs from the one-dimensional case in terms of technical complications. In 2D, a period is
+no longer an integer but a pair of integers, i.e., a vector. However, to obtain a compressed representation of
+a 2D string with small approximate period we actually need two such periods (with some additional properties) and not
+just one. We show that two vectors with the required properties exist with some geometric considerations and
+applying Dilworth's theorem. Then, we show that, similarly to the 1D case, they allow us to decompose the pattern
+into nicely structured monochromatic pieces. There are $\O(k)$ such pieces, and each of them consists of positions
+defined by some lattice of points restricted to a polygon. We call such a set of positions a subparquet.
+The next step is to similarly decompose the text. In 2D it is less clear what would be its middle part that
+admits the same approximate period, however we can build on this idea to partition the relevant part of the text
+into monochromatic pieces. Then, we consider each piece of the pattern and each piece of the text,
+and convolute them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$
+per pair of pieces if one of them admits some additional condition that we call being simple.
+Thus, we actually need to partition the relevant part of the text into simple subparquets. A direct approach
+results in too many pieces, and so we proceed in a more indirect way by introducing the notion of
+a peripheral set of positions of the text. These positions interact with not too many positions in the pattern,
+and can be convoluted differently. All remaining positions of the text are partitioned into not too many simple subparquets,
+and then we convolute every simple subparquet from the text with every subparquet from the pattern.
+Finally, we sum up the number of mismatches for each relevant position in the text.
 
 % PRELIMINARIES
 \section{Preliminaries}
@@ -350,8 +361,8 @@ Unfortunately, the most effective known algorithms for bounded \hd~\cite{Cliffor
 
 
 \begin{observation}\label{dontcare_padding}
-	Every \HD solution which allows don't care symbols (eg. the algorithms from \Cref{sigman2d} and \Cref{approx2d}) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
-	It can be done by padding the text with don't care symbols and it does not change the complexity of the solution.
+	Every \HD solution which allows don't care symbols (e.g. algorithms from \Cref{sigman2d} and \Cref{approx2d}) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
+	This is done by padding the text with don't care symbols and does not change the time complexity.
 \end{observation}
 
 
@@ -538,24 +549,24 @@ In this section we show how to decompose $T$ using a similar, but more nuanced m
 \end{restatable*}
 \begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
 
-\paragraph{Toy solution}
+\paragraph{Warm-up algorithm.}
 An immediate consequence of \Cref{text_decomposition} is that we can partition the active text into $\O(mk)$ monochromatic simple subparquet strings.
-We can construct such partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
+We can construct such a partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
 If we denote the resulting set of monochromatic simple parquet strings as $\S$, we have
 \[ \Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S).\]
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{2})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$.
 This yields us a complete $\tO((m^2 + mk^2)n^2/m^2)$ solution for the \HD problem, which for $k = \O(m ^ {1/2})$, works in optimal time $\tO(n^2)$.
 
-\paragraph{Full solution}
-To obtain the final $\tO(m^2 + mk^{5/4})$ complexity, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
+\paragraph{Main algortihm.}
+To obtain the promised $\tO(m^2 + mk^{5/4})$ complexity, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
 We obtain a set of $\O(mk^{1/4})$ simple subparquet strings $\S$, and a $\O(k^{3 / 4})$-peripheral string $F$.
 For every $q \in Q$ we then have
 \[ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).\]
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
 since similarly we have $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
-In the next section (\ref{periphery_section}) we will introduce \Cref{dense_algo}, which states that for a $d$-peripheral string $F$, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
-By substituting $d = \O(k^{3/4})$, we get the total complexity of $\tO(m^2 + mk^{5/4})$, which ends the main proof.
+In \Cref{periphery_section} we will introduce \Cref{dense_algo}, which states that for a $d$-peripheral string $F$, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
+By substituting $d = \O(k^{3/4})$, we get the total complexity of $\tO(m^2 + mk^{5/4})$ as promised.
 
 
 % BORDER PROXIMITY
