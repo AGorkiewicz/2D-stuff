@@ -73,10 +73,10 @@ res += f'\\draw (-0.5, -0.5) rectangle ({m - 0.5}, {m - 0.5});'
 res += f'\\draw[-, decorate, decoration={{snake, segment length=80pt, amplitude=4pt}}] ({m - 0.5}, {m - 0.5}) -- ({m - d - 0.5}, {m - d - 0.5});'
 res += f'\\draw (-0.5, -0.5) rectangle ({m - d - 0.5}, {m - d - 0.5}) node [pos=.5, scale=50]{{$P_0$}};'
 res += f'\\node [scale=20] at ({(m - 1) / 2}, {m - (d + 1) / 2}) {{$P_3$}};'
-res += f'\\node [scale=20] at ({m - (d + 1) / 2}, {67}) {{$H_i$}};'
-res += f'\\node [scale=20] at ({m - (d + 1) / 2}, {30}) {{$L_i$}};'
+res += f'\\node [scale=20] at ({m - (d + 1) / 2}, {62}) {{$H_i$}};'
+res += f'\\node [scale=20] at ({m - (d + 1) / 2}, {25}) {{$L_i$}};'
 
-h = 20
+h = 31
 res += f'\\draw ({m - d - 0.5}, {m - h - 0.5}) -- ({m - 0.5}, {m - h - 0.5});'
 
 res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({m - 1}, {m - h}) -- ({m - 1}, {m - 1}) node [midway, scale=10, xshift=2.1em]{{$h_i - 1$}};'

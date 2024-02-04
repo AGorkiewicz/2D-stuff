@@ -15,7 +15,8 @@ R = n - 0.5
 z = (n - 1) / 2
 d = 9
 
-random.seed(1)
+random.seed(4)
+#random.seed(10)
 
 @dataclass
 class Point:
@@ -122,19 +123,28 @@ for (i, j) in U[10]:
     res += f'\\draw[fill=green, green] ({i}, {j}) circle (4pt);'
 
 
-h = 0
-p = None
+max_y = 0
+
 for (i, j) in U[10]:
     for k in range(j, n):
         if S[i][k] == 0:
-            if k - j > h:
-                h = k - j
-                p = (i, j)
+            if k > max_y:
+                max_y = k
             break
 
-res += f'\\draw ({p[0]}, {p[1] - 10}) node [scale=10]{{$V_i$}};'
+min_y = min([j for (i, j) in U[10]])
 
-res += f'\\draw[decorate, decoration={{brace, amplitude=200pt, raise=2ex, mirror}}] ({p[0]}, {p[1] + h}) -- ({p[0]}, {p[1]}) node [midway,scale=10, xshift=-2.7em]{{$h_i$}};'
+ax = 10 * d
+bx = 11 * d - 1
+
+h = max_y - min_y
+
+#res += f'\\draw ({ax - 0.5}, {max_y - 0.5}) -- ({bx - 0.5}, {max_y - 0.5});'
+res += f'\\draw [dashed] ({ax - 0.5}, {min_y - 0.5}) -- ({bx + 0.5}, {min_y - 0.5});'
+
+res += f'\\draw ({(ax + bx) / 2}, {82}) node [scale=10]{{$V_i$}};'
+
+res += f'\\draw[decorate, decoration={{brace, amplitude=80pt, raise=2ex, mirror}}] ({ax}, {max_y}) -- ({ax}, {min_y}) node [midway, scale=10, xshift=-1.4em]{{$h_i$}};'
 
 res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=2ex, mirror}}] ({10 * d}, {60}) -- ({11 * d - 1}, {60}) node [midway, scale=10, yshift=-1em]{{$d - 1$}};'
 

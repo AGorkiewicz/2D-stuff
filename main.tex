@@ -552,13 +552,13 @@ In this section we show how to decompose $T$ using a similar, but more nuanced m
 \paragraph{Warm-up algorithm.}
 An immediate consequence of \Cref{text_decomposition} is that we can partition the active text into $\O(mk)$ monochromatic simple subparquet strings.
 We can construct such a partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
-If we denote the resulting set of monochromatic simple parquet strings as $\S$, we have
+If we denote the resulting set of monochromatic simple parquet strings as $\S$, for every $q \in Q$ we have
 \[ \Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S).\]
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{2})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$.
 This yields us a complete $\tO((m^2 + mk^2)n^2/m^2)$ solution for the \HD problem, which for $k = \O(m ^ {1/2})$, works in optimal time $\tO(n^2)$.
 
-\paragraph{Main algortihm.}
+\paragraph{Main algortithm.}
 To obtain the promised $\tO(m^2 + mk^{5/4})$ complexity, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
 We obtain a set of $\O(mk^{1/4})$ simple subparquet strings $\S$, and a $\O(k^{3 / 4})$-peripheral string $F$.
 For every $q \in Q$ we then have
@@ -702,7 +702,8 @@ Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not g
 	\label{figure:pattern_restriction}
 \end{figure}
 
-For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{u}, \y{u} + h_i) \not \in \Ta$ for every $u \in V_i$.
+For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{v}, \y{u} + h_i) \not \in \Ta$ for every $u, v \in V_i$.
+For better understanding, $h_i$ is an upper bound for the height of $V_i$.
 
 The construction is illustrated in \Cref{figure:periphery_decomposition}.
 The points in the gray area are outside of the active text.
@@ -711,11 +712,11 @@ The remaining ones are in the active text, where the red and green represent $\d
 \begin{lemma}\label{sum_of_h}
 	The sum of all $h_i$ is $\O(m)$.
 	\begin{proof}
-		Since for $\ell < 2$, the proof is trivial, we assume $\ell \ge 2$.
-		For every $i$ (since $h_i$ is minimal) there exists a point $u_i \in V_i$, such that $(\x{u_i}, \y{u_i} + h_i - 1) \in \Ta$.
+		Since for $\ell < 2$ the proof is trivial, we assume $\ell \ge 2$.
+		For every $i \in [\ell]$ (since $h_i$ is minimal) there exists a pair of points $u_i, v_i \in V_i$ such that $(\x{v_i}, \y{u_i} + h_i - 1) \in \Ta$.
 		It can be shown that for all $i \ge 2$ we have
 		\[ h_{i} \le \y{u_{i - 2}} - \y{u_{i}} + d,\]
-		since if that was not the case for some $i$, then the points $u_{i - 2}$ and $v = (\x{u_{i}}, \y{u_{i}} + h_{i} - 1)$ would contradict \Cref{border_lemma}.
+		since if that was not the case for some $i$, then the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h_{i} - 1)$ would contradict \Cref{border_lemma}.
 		We can conclude that
 		\[
 			\sum_{i = 0}^{\ell - 1} h_i
@@ -727,11 +728,10 @@ The remaining ones are in the active text, where the red and green represent $\d
 \end{lemma}
 
 \begin{observation}\label{area_bound}
-	For every $i$, the height of $V_i$ is not greater than $h_i$.
-	By \Cref{sum_of_h} we have $|\d{S_1}| = \O(md)$ and by extension $|\d{S}| = \O(md)$.
+	By the above lemma $|\d{S_1}| = \O(md)$ and by extension $|\d{S}| = \O(md)$.
 \end{observation}
 
-For every $i \in [l]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
+For every $i \in [\ell]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
 and the string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$.
 The construction is illustrated in \Cref{figure:pattern_restriction}.
 Since $L_i$ and $H_i$ partition $V_i$, we have
