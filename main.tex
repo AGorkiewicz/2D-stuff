@@ -182,7 +182,7 @@ and provides a quasi-linear time algorithm for $k=\O(m^{4/5})$.
 
 \paragraph{Overview of the techniques.}
 The starting point for our algorithm is the approach designed for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
-for an optimised version (but the approach is due to~\cite{Clifford2015}), which proceeds as follows.
+for an optimized version (but the approach is due to~\cite{Clifford2015}), which proceeds as follows.
 First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}
 Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
@@ -207,13 +207,13 @@ defined by some lattice of points restricted to a polygon. We call such a set of
 The next step is to similarly decompose the text. In 2D it is less clear what would be its middle part that
 admits the same approximate period, however we can build on this idea to partition the relevant part of the text
 into monochromatic pieces. Then, we consider each piece of the pattern and each piece of the text,
-and convolute them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$
+and convolve them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$
 per pair of pieces if one of them admits some additional condition that we call being simple.
 Thus, we actually need to partition the relevant part of the text into simple subparquets. A direct approach
 results in too many pieces, and so we proceed in a more indirect way by introducing the notion of
 a peripheral set of positions of the text. These positions interact with not too many positions in the pattern,
-and can be convoluted differently. All remaining positions of the text are partitioned into not too many simple subparquets,
-and then we convolute every simple subparquet from the text with every subparquet from the pattern.
+and can be convolved differently. All remaining positions of the text are partitioned into not too many simple subparquets,
+and then we convolve every simple subparquet from the text with every subparquet from the pattern.
 Finally, we sum up the number of mismatches for each relevant position in the text.
 
 % PRELIMINARIES
@@ -558,7 +558,7 @@ By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for eve
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$.
 This yields us a complete $\tO((m^2 + mk^2)n^2/m^2)$ solution for the \HD problem, which for $k = \O(m ^ {1/2})$, works in optimal time $\tO(n^2)$.
 
-\paragraph{Main algortithm.}
+\paragraph{Main algorithm.}
 To obtain the promised $\tO(m^2 + mk^{5/4})$ complexity, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
 We obtain a set of $\O(mk^{1/4})$ simple subparquet strings $\S$, and a $\O(k^{3 / 4})$-peripheral string $F$.
 For every $q \in Q$ we then have
