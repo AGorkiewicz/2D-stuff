@@ -108,9 +108,9 @@ A two-dimensional string is simply a square array of characters. Given two such 
 and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$
 mismatches. This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good
 understanding of the best possible time complexity as a function of $n$, $m$, and $k$. In particular, we know that
-for $k=\O\sqrt(m)$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018]. Surprisingly,
-no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$
-time [Amir and Landau, TCS 1991]. We improve on these bounds from 30 years ago with a non-trivial adaptation of tools
+for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
+Surprisingly, no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
+We improve on these bounds from 30 years ago with a non-trivial adaptation of tools
 used to tackle the one-dimensional version and design an $\tO((m^{2}+k^{5/4}m)n^{2}/m^{2})$ time algorithm.
 In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
 \end{abstract}
@@ -154,7 +154,7 @@ any assumption on the size of the alphabet was achieved only in the mid-90s~\cit
 and the time complexity for random inputs, i.e., average time complexity, has been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
 
 \paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is periodicity,
-defined as follows. We say that $p$ is a period of $s[1..n]$ when $s[i]=s[i+p]$, for all $i$ such that the expression is defined.
+defined as follows. We say that $p$ is a period of $s[1 \dd n]$ when $s[i]=s[i+p]$, for all $i$ such that the expression is defined.
 The set of all periods of a given string has a very simple structure~\cite{Fine1965}. For 2D strings, the notion of periodicity
 becomes more involved~\cite{Amir1998}, but remains to be a powerful tool for exact pattern matching~\cite{Amir1992,Galil1996}.
 Some purely combinatorial properties of two-dimensional periodicities have been studied~\cite{Mignosi2003,Gamard2017},
@@ -183,7 +183,7 @@ and provides a quasi-linear time algorithm for $k=\O(m^{4/5})$.
 \paragraph{Overview of the techniques.}
 The starting point for our algorithm is the approach designed for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
 for an optimized version (but the approach is due to~\cite{Clifford2015}), which proceeds as follows.
-First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}
+First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}.
 Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
 Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a small approximate
@@ -241,12 +241,12 @@ In the bounded variants of both \hd and \HD we are only required to calculate th
 	For simplicity we will write $u \in S$ to denote that $u \in \d{S}$.
 	We say that a string $S$ is \textbf{partitioned} into strings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$ and $R_i(u) = S(u)$ for all $u \in R_i$.
 	We call a string $S$ \textbf{monochromatic} when $S(u) = \sigma$ for every $u \in S$ for some $\sigma \in \Sigma$ and we will write $\getchar{S}$ to denote the value $\sigma$.
-	We say that $S$ is $n \times m$ for some $n, m \in \Z^+$ when $\d{S} = [n] \times [m]$.
+	We say that a string $S$ is $n \times m$ for some $n, m \in \Z^+$ when $\d{S} = [n] \times [m]$.
 	Physically we represent a string as a list of point-character pairs.
 \end{definition}
 
 \begin{definition}[Shifting]
-	For a set of points $V \subseteq \Z^2$ and a vector $u \in \Z^2$, we denote $V + u$ as $\set{v + u : v \in V}$.
+	For a set of points $V \subseteq \Z^2$ and a vector $u \in \Z^2$, we denote $V + u$ as a set of points $\set{v + u : v \in V}$.
 	For a string $S$ and a vector $u \in \Z^2$ we denote $S + u$ as a string $R$ such that
 	$\d{R} = \d{S} + u$ and $R(v) = S(v - u)$ for $v \in \d{R}$.
 	Intuitively, we shift the set of points while maintaining their character values.
@@ -272,10 +272,10 @@ for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m
 \newcommand{\h}[1]{\phi \times #1}
 \newcommand{\s}[1]{\psi \times #1}
 \begin{definition}[Vector operators]
-	For any $u \in \Z^2$ we refer to its coordinates as $\x{u}, \y{u}$.
-	For $u, v \in \Z^2$ we denote $u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}$
+	For any vector $u \in \R^2$ we refer to its coordinates as $\x{u}, \y{u}$.
+	For any $u, v \in \R^2$ we denote $u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}$
 	and $u \times v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}$.
-	Note that alternatively $u \cdot v = |u||v| \cos \alpha$ and $u \times v = |u||v| \sin \alpha$ where $\alpha$ is the angle between $u$ and $v$.
+	Note that alternatively $u \cdot v = |u||v| \cos \alpha$ and $u \times v = |u||v| \sin \alpha$, where $\alpha$ is the angle between $u$ and $v$.
 \end{definition}
 
 
