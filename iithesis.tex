@@ -1,16 +1,63 @@
-\documentclass[11pt]{article}
-\pdfoutput=1
-\usepackage[margin=1in,a4paper]{geometry}
-\usepackage{amsthm,amssymb,amsmath}  
-\usepackage{xspace,enumerate}
-\usepackage[dvipsnames]{xcolor}
-\usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
-\usepackage[capitalise]{cleveref}
+\documentclass[shortabstract, english]{iithesis}
+
 \usepackage[utf8]{inputenc}
+
+\englishtitle{Two-dimensional pattern matching \fmlinebreak with $k$ mismatches}
+\polishtitle{Wyszukiwanie dwuwymiarowego wzorca z $k$ niezgodnościami}
+\englishabstract{
+	We consider a natural generalization of the classical approximate pattern matching problem to two-dimensional strings.
+	A two-dimensional string is simply a square array of characters.
+	Given two such arrays, the pattern of size $m\times m$ and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$ mismatches.
+	This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good understanding of the best possible time complexity as a function of $n$, $m$, and $k$.
+	In particular, we know that for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
+	Surprisingly, no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
+	We improve on these bounds from 30 years ago with a non-trivial adaptation of tools used to tackle the one-dimensional version and design an $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm.
+	In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
+}
+\polishabstract{
+	Rozważamy naturalne uogólnienie klasycznego problemu przybliżonego wyszukiwania wzorca w tekście do dwuwymiarowych napisów.
+	Dwuwymiarowy napis to po prostu kwadratowa tablica znaków.
+	Mając dwie takie tablice -- wzorzec o rozmiarze $m \times m$ oraz tekst o rozmiarze $n \times n$ -- naszym celem jest znalezienie wszystkich fragmentow tekstu, w których występuje wzorzec z~co najwyżej $k$ niezgodnościami.
+	Problem ten był dotychczas głównie rozważany dla jednowymiarowych napisów i jego optymalna złożoność czasowa jako funkcja $n$, $m$ i $k$ została szeroko zbadana.
+	W szczególności, wiemy, że dla $k = \O(m)$, możemy osiągnąć złożoność prawie liniową [Gawrychowski i Uznański, ICALP 2018].
+	Co ciekawe, podobne stwierdzenie nie zostało pokazane dla napisów dwuwymiarowych, a najszybszy znany algorytm działa w czasie $\O(kn^2)$ [Amir i Landau, TCS 1991].
+	Nasze rozwiązanie poprawia tę znaną od 30 lat złożoność, stosując niebanalną adaptację narzędzi używanych do rozwiązania przypadku jednowymiarowego i~działa w czasie $\tO((m^2 + mk^{5/4})n^2/m^2)$.
+	Innymi słowy, nasz algorytm ma złożoność $\tO(n^2)$ dla $k = \O(m^{4/5})$.
+}
+
+
+\author{Adam Górkiewicz}
+
+\advisor{dr Paweł Gawrychowski}
+\date{\today} % Data zlozenia pracy
+\transcriptnum{321989} % Numer indeksu
+\advisorgen{dr. Pawła Gawrychowskiego} % Nazwisko promotora w dopelniaczu
+
+\usepackage{amsthm}
+%\usepackage{graphicx,listings,amsmath,amssymb,amsthm,amsfonts,tikz}
+%\usepackage[margin=1in,a4paper]{geometry}
+%\usepackage{amsthm,amssymb,amsmath}  
+\usepackage{xspace,enumerate}
+%\usepackage[dvipsnames]{xcolor}
+%\usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
+%\usepackage[capitalise]{cleveref}
 \usepackage{thmtools}
 \usepackage{thm-restate}
-\usepackage{authblk}
-\usepackage{todonotes}
+\usepackage{amsmath,amsfonts}
+\usepackage[cmbtt]{bold-extra}
+\usepackage[T1]{fontenc}
+\usepackage{makecell}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{diagbox}
+\usepackage[ruled,noline,noend]{algorithm2e}
+\usepackage[capitalise]{cleveref}
+%\usepackage{graphics,adjustbox}
+\usepackage{tabularx}
+\usepackage{epsfig}
+\usepackage{verbatim}
+\usepackage[noadjust]{cite}
+
 
 \def\dd{\mathinner{.\,.}}
 \newcommand{\R}{\mathbb{R}}
@@ -25,36 +72,6 @@
 \newcommand{\Bigset}[1]{\Big \lbrace #1 \Big \rbrace}
 \newcommand{\eq}[1]{\begin{align*} #1 \end{align*}}
 
-\usepackage{microtype} %if unwanted, comment out or use option "draft"
-\usepackage{amsmath,amsfonts}
-\usepackage[cmbtt]{bold-extra}
-\usepackage[T1]{fontenc}
-\usepackage{comment}
-\usepackage{forest}
-\usepackage{makecell}
-\usepackage{listings}
-\usepackage{multirow}
-\usepackage{diagbox}
-\usepackage[ruled,noline,noend]{algorithm2e}
-\usepackage[capitalise]{cleveref}
-\usepackage{graphics,adjustbox}
-\usepackage{tabularx}
-\usepackage{epsfig}
-\usepackage{verbatim}
-\usepackage{braket}
-\usepackage[noadjust]{cite}
-\usepackage{bold-extra}
-
-\pagestyle{myheadings}
-
-\title{Two-dimensional pattern matching with $k$ mismatches}
-\author[1]{Jonas Ellert}
-\author[2]{Paweł Gawrychowski}
-\author[3]{Adam Górkiewicz}
-\author[4]{Tatiana Starikovskaya}
-\affil[1]{Technical University of Dortmund, Germany}
-\affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
-\affil[4]{DI/ENS, PSL Research University}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -84,33 +101,9 @@
 \DeclareMathOperator*{\dom}{dom}
 \DeclareMathOperator*{\charrr}{C}
 
-\newcommand{\jonas}[2][]{\todo[color=green!40, #1]{\textbf{J:} #2}}
-\newcommand{\jonasi}[2][]{\jonas[inline, #1]{#2}}
-
-% BEGIN DOCUMENT
 \begin{document}
 
-\date{}
-\maketitle
-
-\begin{abstract}
-We consider a natural generalization of the classical approximate pattern matching problem to two-dimensional strings.
-A two-dimensional string is simply a square array of characters. Given two such arrays, the pattern of size $m\times m$
-and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$
-mismatches. This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good
-understanding of the best possible time complexity as a function of $n$, $m$, and $k$. In particular, we know that
-for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
-Surprisingly, no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
-We improve on these bounds from 30 years ago with a non-trivial adaptation of tools
-used to tackle the one-dimensional version and design an $\tO((m^{2}+k^{5/4}m)n^{2}/m^{2})$ time algorithm.
-In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
-\end{abstract}
-
-%\thispagestyle{empty}
-%\clearpage
-%\setcounter{page}{1}
-
-\section{Introduction}
+\chapter{Introduction}
 The fundamental algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
 finding one string in another. Efficient linear-time algorithms for this problem are known since the 70s~\cite{Knuth1977}.
 However, from the point of view of possible applications, it is desirable to search for approximate occurrences.
@@ -208,7 +201,7 @@ and then we convolve every simple subparquet from the text with every subparquet
 Finally, we sum up the number of mismatches for each relevant position in the text.
 
 % PRELIMINARIES
-\section{Preliminaries}
+\chapter{Preliminaries}
 
 For our purposes we will not use the standard definition of a two-dimensional string, where we associate it with a two-dimensional array of characters, and instead we will define it more broadly.
 Although we will occasionally use the array notation, we will do it exclusively for $n \times m$ strings.
@@ -270,7 +263,7 @@ for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m
 \end{definition}
 
 
-\section{One-dimensional generalizations}
+\chapter{One-dimensional generalizations}
 
 In this section we explore some of the methods used for one-dimensional strings.
 Specifically, as our goal is to generalize the solution for \hd described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
@@ -358,7 +351,7 @@ Unfortunately, the most effective known algorithms for bounded \hd~\cite{Cliffor
 
 
 % MAIN ALGORITHM
-\section{Main result}
+\chapter{Main result}
 
 In this section we provide a detailed proof of the following theorem:
 
@@ -389,7 +382,7 @@ We are left with the case when $|Q| > 6m + m^2/k$, in which we take advantage of
 
 
 % 2D PERIODICITY
-\subsection{Two-dimensional periodicity} \label{periodicity_section}
+\section{Two-dimensional periodicity} \label{periodicity_section}
 In this section we introduce a range of new tools related to two-dimensional periodicity.
 We then select some special periods of the pattern and show how to decompose it into some regularly structured monochromatic strings.
 
@@ -513,7 +506,7 @@ Specifically, for every character $\sigma \in \Sigma$ present in $P$, we constru
 \begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
 
 % TEXT DECOMPOSITION
-\subsection{Text decomposition}
+\section{Text decomposition}
 Because the text is not necessarily periodic, we unfortunately cannot use the same approach as for the pattern.
 In this section we show how to decompose $T$ using a similar, but more nuanced method.
 
@@ -561,7 +554,7 @@ By substituting $d = \O(k^{3/4})$, we get the total complexity of $\tO(m^2 + mk^
 
 
 % BORDER PROXIMITY
-\subsection{Text periphery}\label{periphery_section}
+\section{Text periphery}\label{periphery_section}
 In this section we explore the properties of peripheral strings.
 We consider any $d > 0$ and a non-empty $d$-peripheral string $S$, such that $\d{S} \subseteq \d{\Ta}$.
 We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
@@ -618,7 +611,7 @@ We now introduce two major theorems regarding peripheral strings, the first of w
 	By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
 \end{proof}
 
-\subsubsection{Peripheral convolution} \label{sigma_border_proof}
+\subsection{Peripheral convolution} \label{sigma_border_proof}
 
 This section serves as the proof of the theorem we just used to prove \Cref{dense_algo}:
 
@@ -744,7 +737,7 @@ which, by \Cref{sum_of_h}, is $\tO(m^2 + md|\Sigma|)$.
 
 
 % PHI PSI FINDER
-\subsection{Period acquisition} \label{get_periods_proof}
+\section{Period acquisition} \label{get_periods_proof}
 
 This section serves as the proof of the theorem, which we used to obtain the periods $\phi$ and $\psi$:
 
@@ -857,7 +850,7 @@ It can be easily shown that $w, w'$ hold the remaining conditions by the definit
 
 % SUBPARQUET CONVOLUTION
 \newcommand{\W}{\mathcal{W}}
-\subsection{Subparquet convolution} \label{subparquet_convolution_proof}
+\section{Subparquet convolution} \label{subparquet_convolution_proof}
 
 Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency}.
 We start by introducing some auxiliary tools, which we later use in the proof of \Cref{sparse_algo}.
@@ -951,7 +944,7 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 
 
 % PARQUET DECOMPOSITION
-\subsection{Periodic parquet partitioning} \label{parquet_decomposition_proof}
+\section{Periodic parquet partitioning} \label{parquet_decomposition_proof}
 In this section we explore the properties of periodic (sub-)parquet strings (recall Definitions \ref{parquet_definition}, \ref{subparquet_definition}, \ref{parquet_string_definition}).
 Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
@@ -1085,7 +1078,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 \end{proof}
 
 % TEXT DECOMPOSITION
-\subsection{Active text decomposition} \label{text_decomposition_proof}
+\section{Active text decomposition} \label{text_decomposition_proof}
 
 This section serves as the proof of the following major theorem:
 
@@ -1293,7 +1286,7 @@ Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-p
 
 
 % PROOF OF SPLIT LEMMA
-\subsubsection{Parallelogram splitting} \label{parallelogram_split_lemma_proof}
+\subsection{Parallelogram splitting} \label{parallelogram_split_lemma_proof}
 
 This section serves as the proof of \Cref{parallelogram_split_lemma}, introduced at the end of the previous section (\ref{text_decomposition_proof}).
 Since for an empty parallelogram the proof is trivial, consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
@@ -1359,7 +1352,7 @@ The constructions for $g^2_i$, $g^3_j$, $g^4_i$ are rotationally symmetric.
 
 
 % PROOF OF DISTANCE BOUND
-\subsubsection{Parallelogram span bounds} \label{distance_bound_lemma_proof}
+\subsection{Parallelogram span bounds} \label{distance_bound_lemma_proof}
 
 In this section we will establish a distance bound for points laying inside or in the proximity of the constructed parallelograms.
 Consider any fixed $p_{i, j}$ for some $i, j \in [\ell]$.
@@ -1402,3 +1395,4 @@ We first show some auxiliary (weaker) lemmas, which we then use to prove \Cref{d
 \bibliography{references}
 
 \end{document}
+
