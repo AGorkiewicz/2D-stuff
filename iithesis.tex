@@ -390,6 +390,15 @@ In this section we introduce a range of new tools related to two-dimensional per
 We then select some special periods of the pattern and show how to decompose it into some regularly structured monochromatic strings.
 
 
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/occurrences}
+	\end{center}
+	\caption{Occurrences with small approximated Hamming distance. Red points belong to $Q$.}
+	\label{figure:occurrences}
+\end{figure}
+
+
 \begin{definition}[Periodicity]
 	Consider any vector $\delta \in \Z^2$.
 	We say that a string $S$ has an $\ell$-period $\delta$ when
@@ -427,7 +436,7 @@ We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m
 We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$, which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
 We will refer to those vectors throughout the rest of the description.
 Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\phi||\psi| = \O(\min\set{m, k})$.
-
+See \Cref{figure:occurrences} for an illustration.
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
 	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
@@ -518,6 +527,7 @@ In this section we show how to decompose $T$ using a similar, but more nuanced m
 \begin{definition}[Active text]
 	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to
 	\[ \bigcup_{q \in Q} \d{P + q}. \]
+	In \Cref{figure:occurrences} the points in the white area form the set $\d{\Ta}$.
 \end{definition}
 
 \begin{observation}
@@ -558,6 +568,13 @@ By substituting $d = \O(k^{3/4})$, we get the total complexity of $\tO(m^2 + mk^
 
 % BORDER PROXIMITY
 \section{Text periphery}\label{periphery_section}
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/quarter_split}
+	\end{center}
+	\caption{Construction of $S_1, \dots, S_4$. The red points represent $\d{S}$.}
+	\label{figure:quarter_split}
+\end{figure}
 In this section we explore the properties of peripheral strings.
 We consider any $d > 0$ and a non-empty $d$-peripheral string $S$, such that $\d{S} \subseteq \d{\Ta}$.
 We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
@@ -568,7 +585,8 @@ Specifically
 	\item $S_3$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$ (lower left quarter),
 	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$ (lower right quarter).
 \end{itemize}
-We will demonstrate some characteristics of $S_1$, and by symmetry, generalize them to $S$.
+See \Cref{figure:quarter_split} for an illustration.
+We will now demonstrate some characteristics of $S_1$, and by symmetry, generalize them to $S$.
 
 \begin{lemma} \label{border_lemma}
 	Assuming $d \le m/4$, there does not exist $u \in S_1$ and $v \in T_a$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.

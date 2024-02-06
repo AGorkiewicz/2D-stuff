@@ -126,16 +126,12 @@ dfs(sx, sy)
 
 res += f'\\draw [white, fill=white] ({ax - 0.5}, {ay - 0.5}) rectangle ({bx + 0.5}, {by + 0.5});'
 
-res += f'\\draw [-{{Stealth[length=20pt]}}] ({sx}, {sy}) -- node [below left, scale = 3] {{$\\varphi$}} ++({phi_x}, {phi_y});'
-res += f'\\draw [-{{Stealth[length=20pt]}}] ({sx}, {sy}) -- node [above left, scale = 3] {{$\\psi$}} ++({psi_x}, {psi_y});'
-
 def inside(p):
     if p.x < x0 or p.x > x1: return False
     if p.y < y0 or p.y > y1: return False
     if p.h < h0 or p.h > h1: return False
     if p.s < s0 or p.s > s1: return False
     return True
-
 
 for x in range(ax, bx + 1):
     for y in range(ay, by + 1):
@@ -149,6 +145,9 @@ for (x, y) in vis:
         res += f'\\draw[red, fill=red] ({x},{y}) circle (4pt);'
     #else:
      #   res += f'\\draw[red, fill=red] ({x},{y}) circle (0.5pt);'
+
+res += f'\\draw [-{{Stealth[length=20pt]}}] ({sx}, {sy}) -- node [below left, scale = 5] {{$\\varphi$}} ++({phi_x}, {phi_y});'
+res += f'\\draw [-{{Stealth[length=20pt]}}] ({sx}, {sy}) -- node [above left, scale = 5] {{$\\psi$}} ++({psi_x}, {psi_y});'
 
 draw_poly(parquet)
 
