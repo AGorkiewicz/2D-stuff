@@ -433,10 +433,12 @@ We then select some special periods of the pattern and show how to decompose it 
 \begin{proof} See \Cref{get_periods_proof}. \end{proof}
 
 We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 6m + m^2/k \ge 12\ell$).
-We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$, which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
+Amongst $w, w', -w, -w'$ we select the vector belonging to $\Q_4$ and denote it with $\phi$.
+Similarly, we select the vector belonging to $\Q_1$ and denote it with $\psi$.
+By \Cref{periodicity_lemma} the vectors $\phi$ and $\psi$ are $\O(k)$-periods of $P$.
 We will refer to those vectors throughout the rest of the description.
 Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\phi||\psi| = \O(\min\set{m, k})$.
-See \Cref{figure:occurrences} for an illustration.
+The construction of $\phi$ and $\psi$ is illustrated in \Cref{figure:occurrences}.
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
 	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
