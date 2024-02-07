@@ -1,49 +1,25 @@
 \documentclass[11pt]{article}
 \pdfoutput=1
 \usepackage[margin=1in,a4paper]{geometry}
-\usepackage{amsthm,amssymb,amsmath}  
+\usepackage{amsthm,amssymb,amsmath,amsmath,amsfonts}  
 \usepackage{xspace,enumerate}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
 \usepackage[capitalise]{cleveref}
-\usepackage[utf8]{inputenc}
 \usepackage{thmtools}
 \usepackage{thm-restate}
-\usepackage{authblk}
-\usepackage{todonotes}
-
-\def\dd{\mathinner{.\,.}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\N}{\mathbb{N}}
-\renewcommand{\O}{\mathcal{O}}
-\newcommand{\tO}{\tilde{\mathcal{O}}}
-\renewcommand{\phi}{\varphi}
-\newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
-\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
-\newcommand{\bigset}[1]{\big \lbrace #1 \big \rbrace}
-\newcommand{\Bigset}[1]{\Big \lbrace #1 \Big \rbrace}
-\newcommand{\eq}[1]{\begin{align*} #1 \end{align*}}
-
-\usepackage{microtype} %if unwanted, comment out or use option "draft"
-\usepackage{amsmath,amsfonts}
 \usepackage[cmbtt]{bold-extra}
 \usepackage[T1]{fontenc}
-\usepackage{comment}
-\usepackage{forest}
 \usepackage{makecell}
 \usepackage{listings}
 \usepackage{multirow}
 \usepackage{diagbox}
 \usepackage[ruled,noline,noend]{algorithm2e}
-\usepackage[capitalise]{cleveref}
-\usepackage{graphics,adjustbox}
 \usepackage{tabularx}
 \usepackage{epsfig}
 \usepackage{verbatim}
-\usepackage{braket}
 \usepackage[noadjust]{cite}
-\usepackage{bold-extra}
+\usepackage{authblk}
 
 \pagestyle{myheadings}
 
@@ -71,21 +47,32 @@
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 
-\sloppy
+\def\dd{\mathinner{.\,.}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\tO}{\tilde{\mathcal{O}}}
+\renewcommand{\phi}{\varphi}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\bigset}[1]{\big \lbrace #1 \big \rbrace}
+\newcommand{\Bigset}[1]{\Big \lbrace #1 \Big \rbrace}
+\newcommand{\eq}[1]{\begin{align*} #1 \end{align*}}
 
 \DeclareMathOperator*{\Edges}{E}
-\DeclareMathOperator*{\Graph}{G}
 \DeclareMathOperator*{\X}{X}
 \DeclareMathOperator*{\Y}{Y}
-\DeclareMathOperator*{\Ext}{Ext}
 \DeclareMathOperator*{\score}{score}
 \DeclareMathOperator*{\Ham}{Ham}
 \DeclareMathOperator*{\ID}{Id}
 \DeclareMathOperator*{\dom}{dom}
-\DeclareMathOperator*{\charrr}{C}
+\DeclareMathOperator*{\chrome}{C}
 
 \newcommand{\jonas}[2][]{\todo[color=green!40, #1]{\textbf{J:} #2}}
 \newcommand{\jonasi}[2][]{\jonas[inline, #1]{#2}}
+
+\sloppy
 
 % BEGIN DOCUMENT
 \begin{document}
@@ -94,21 +81,16 @@
 \maketitle
 
 \begin{abstract}
-We consider a natural generalization of the classical approximate pattern matching problem to two-dimensional strings.
-A two-dimensional string is simply a square array of characters. Given two such arrays, the pattern of size $m\times m$
-and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$
-mismatches. This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good
-understanding of the best possible time complexity as a function of $n$, $m$, and $k$. In particular, we know that
-for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
-Surprisingly, no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
-We improve on these bounds from 30 years ago with a non-trivial adaptation of tools
-used to tackle the one-dimensional version and design an $\tO((m^{2}+k^{5/4}m)n^{2}/m^{2})$ time algorithm.
-In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
+	We consider a natural generalization of the classical approximate pattern matching problem to two-dimensional strings.
+	A two-dimensional string is simply a square array of characters.
+	Given two such arrays, the pattern of size $m\times m$ and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$ mismatches.
+	This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good understanding of the best possible time complexity as a function of $n$, $m$, and $k$.
+	In particular, we know that for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
+	Surprisingly, no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
+	We improve on these bounds from 30 years ago with a non-trivial adaptation of tools used to tackle the one-dimensional version and design an $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm.
+	In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
+	The results described in this thesis have been obtained in a collaboration between Jonas Ellert, Paweł Gawrychowski, Adam Górkiewicz, and Tatiana Starikovskaya, and will form the basis of a later joint publication.
 \end{abstract}
-
-%\thispagestyle{empty}
-%\clearpage
-%\setcounter{page}{1}
 
 \section{Introduction}
 The fundamental algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
@@ -223,7 +205,7 @@ We consider the one-dimensional all-substring Hamming distance problem (\hd), wh
 Next, we consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
 In the bounded variants of both \hd and \HD we are only required to calculate the distances which are not greater than $k$, for some parameter $k$.
 
-\newcommand{\getchar}[1]{\charrr(#1)}
+\newcommand{\getchar}[1]{\chrome(#1)}
 \newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
 \renewcommand{\d}[1]{\dom(#1)}
 \newcommand{\f}[1]{#1^\mathbf{f}}
@@ -270,6 +252,7 @@ for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m
 \end{definition}
 
 
+% ONE DIMENSIONAL GENERALIZATIONS
 \section{One-dimensional generalizations}
 
 In this section we explore some of the methods used for one-dimensional strings.
@@ -315,16 +298,13 @@ Specifically, as our goal is to generalize the solution for \hd described in \ci
 	\end{proof}
 \end{theorem}
 
-
 \begin{lemma}\label{sigman1d}
 	$\hd$ with don't care symbols can be solved in $\tO(n|\Sigma|)$ by running $|\Sigma|$ instances of FFT.
 \end{lemma}
 
-
 \begin{lemma}[\cite{Karloff1993}]\label{approx1d}
 	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd with don't care symbols in $\tO(n)$.
 \end{lemma}
-
 
 \begin{theorem}\label{sigman2d}
 	$\HD$ with don't care symbols can be solved in $\tO(n^2|\Sigma|)$.
@@ -338,7 +318,6 @@ Specifically, as our goal is to generalize the solution for \hd described in \ci
 	\end{proof}
 \end{theorem}
 
-
 \begin{theorem}\label{approx2d}
 	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \HD with don't care symbols in $\tO(n^2)$.
 	\begin{proof}
@@ -346,10 +325,8 @@ Specifically, as our goal is to generalize the solution for \hd described in \ci
 	\end{proof}
 \end{theorem}
 
-
 The same reduction as in \Cref{sigman2d} can be applied for every \hd solution which allows don't care symbols.
 Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
-
 
 \begin{observation}\label{dontcare_padding}
 	Every \HD solution which allows don't care symbols (e.g. algorithms from \Cref{sigman2d} and \Cref{approx2d}) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
@@ -394,6 +371,15 @@ In this section we introduce a range of new tools related to two-dimensional per
 We then select some special periods of the pattern and show how to decompose it into some regularly structured monochromatic strings.
 
 
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/occurrences}
+	\end{center}
+	\caption{Occurrences with small approximated Hamming distance. Red points belong to $Q$.}
+	\label{figure:occurrences}
+\end{figure}
+
+
 \begin{definition}[Periodicity]
 	Consider any vector $\delta \in \Z^2$.
 	We say that a string $S$ has an $\ell$-period $\delta$ when
@@ -428,10 +414,12 @@ We then select some special periods of the pattern and show how to decompose it 
 \begin{proof} See \Cref{get_periods_proof}. \end{proof}
 
 We run the algorithm from \Cref{get_periods} on the set $Q$ (where $\ell = n - m \le m / 2$, thus $|Q| > 6m + m^2/k \ge 12\ell$).
-We obtain vectors $\phi \in \Q_4$ and $\psi \in \Q_1$, which by \Cref{periodicity_lemma} are $\O(k)$-periods of $P$.
+Amongst $w, w', -w, -w'$ we select the vector belonging to $\Q_4$ and denote it with $\phi$.
+Similarly, we select the vector belonging to $\Q_1$ and denote it with $\psi$.
+By \Cref{periodicity_lemma} the vectors $\phi$ and $\psi$ are $\O(k)$-periods of $P$.
 We will refer to those vectors throughout the rest of the description.
 Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\phi||\psi| = \O(\min\set{m, k})$.
-
+The construction of $\phi$ and $\psi$ is illustrated in \Cref{figure:occurrences}.
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
 	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
@@ -522,6 +510,7 @@ In this section we show how to decompose $T$ using a similar, but more nuanced m
 \begin{definition}[Active text]
 	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to
 	\[ \bigcup_{q \in Q} \d{P + q}. \]
+	In \Cref{figure:occurrences} the points in the white area form the set $\d{\Ta}$.
 \end{definition}
 
 \begin{observation}
@@ -562,6 +551,13 @@ By substituting $d = \O(k^{3/4})$, we get the total complexity of $\tO(m^2 + mk^
 
 % BORDER PROXIMITY
 \subsection{Text periphery}\label{periphery_section}
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/quarter_split}
+	\end{center}
+	\caption{Construction of $S_1, \dots, S_4$. The red points represent $\d{S}$.}
+	\label{figure:quarter_split}
+\end{figure}
 In this section we explore the properties of peripheral strings.
 We consider any $d > 0$ and a non-empty $d$-peripheral string $S$, such that $\d{S} \subseteq \d{\Ta}$.
 We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
@@ -572,7 +568,8 @@ Specifically
 	\item $S_3$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$ (lower left quarter),
 	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$ (lower right quarter).
 \end{itemize}
-We will demonstrate some characteristics of $S_1$, and by symmetry, generalize them to $S$.
+See \Cref{figure:quarter_split} for an illustration.
+We will now demonstrate some characteristics of $S_1$, and by symmetry, generalize them to $S$.
 
 \begin{lemma} \label{border_lemma}
 	Assuming $d \le m/4$, there does not exist $u \in S_1$ and $v \in T_a$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
@@ -725,7 +722,7 @@ The remaining ones are in the active text, where the red and green represent $\d
 For every $i \in [\ell]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
 and the string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$.
 The construction is illustrated in \Cref{figure:pattern_restriction}.
-Since $L_i$ and $H_i$ partition $V_i$, we have
+Since $L_i$ and $H_i$ partition $P_2$, we have
 \[ \Ham(P_2 + q, S_1) = \sum_{i = 0}^{\ell - 1} \Ham(P_2 + q, V_i) = \sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) + \sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i). \]
 
 \begin{lemma}\label{pattern_height_reduction}
@@ -1402,3 +1399,4 @@ We first show some auxiliary (weaker) lemmas, which we then use to prove \Cref{d
 \bibliography{references}
 
 \end{document}
+
