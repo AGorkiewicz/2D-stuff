@@ -264,7 +264,7 @@ Specifically, as our goal is to generalize the solution for \hd described in \ci
 	\begin{proof}
 		Let $r = \floor{m / 2}$ and let $n' = r + m - 1$ or $r + m$ if $r + m - 1$ is odd.
 		We see that the set $N = [n']^2$ satisfies the conditions for the text domain.
-		For any vector $q \in [n - m]^2$ we can find a vector $u$ such that $r|u.x, r|u.y$ and $q - u \in [r]^2$,
+		For any vector $q \in [n - m + 1]^2$ we can find a vector $u$ such that $r|u.x, r|u.y$ and $q - u \in [r]^2$,
 		so we have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $T_u$ is the restriction of $T - u$ to $N$.
 		If $T - u$ is not defined for some $v \in N$, we can pad $T_u(v)$ with any character.
 		We see that $\d{P + q - u} \subseteq N = \d{T_u}$.
@@ -532,7 +532,7 @@ In this section we show how to decompose $T$ using a similar, but more nuanced m
 \paragraph{Warm-up algorithm.}
 An immediate consequence of \Cref{text_decomposition} is that we can partition the active text into $\O(mk)$ monochromatic simple subparquet strings.
 We can construct such a partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
-If we denote the resulting set of monochromatic simple parquet strings as $\S$, for every $q \in Q$ we have
+If we denote the resulting set of monochromatic simple subparquet strings as $\S$, for every $q \in Q$ we have
 \[ \Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S).\]
 By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{2})$,
 since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$.
@@ -867,14 +867,14 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 		For every $u \in \Z^2$ let us define $\score(u) = |\set{V : V \in \V, u \in V}|$. Observe that
 		\[ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). \]
 		We start by explicitly calculating the scores.
-		We find the maximum length of a vector that some $V \in \V$ is defined for, which we denote $\ell$.
+		We find the maximum length of a vector that some $V \in \V$ contains, which we denote $\ell$.
 		We construct the set $U \subseteq \Z^2$ of all vectors of length at most $\ell$.
-		By the assumption, we have $\ell = \O(n)$, and thus $|U| = \O(l ^ 2) = \O(n ^ 2)$.
-		We observe that since all the scores are zero for points outside of $U$, we can only calculate them for $u \in U$.
+		By the assumption, we have $\ell = \O(n)$, and thus $|U| = \O(\ell ^ 2) = \O(n ^ 2)$.
+		Since all the scores are zero for points outside of $U$, will only calculate them for $u \in U$.
 		
 		We find the set $\Gamma$ introduced in \Cref{lattice_base} and for every $\gamma \in \Gamma$ we construct $U_\gamma = U \cap (\L + \gamma)$.
 		Consider any $u \in U_\gamma$ for some fixed $\gamma \in \Gamma$ and any $V \in \V$.
-		We observe that if $V \not \equiv \gamma$, then $u \not \in V$ and thus $V$ does not contribute to $\score(u)$.
+		Observe that if $V \not \equiv \gamma$, then $u \not \in V$ and thus $V$ does not contribute to $\score(u)$.
 		If $V \equiv \gamma$, then we can find a parquet $W$ such that $V = W \cap (\L + \gamma)$ and we have
 		$u \in V \Leftrightarrow u \in W \cap (\L + \gamma) \Leftrightarrow u \in W$.
 		Thus, if we denote $\W_\gamma$ as the set of parquets $W$ obtained for every $V \in \V$ such that $V \equiv \gamma$, then $\score(u)$ for $u \in U_\gamma$ is the number of parquets $W \in \W_\gamma$ such that $u \in W$.
@@ -1294,7 +1294,7 @@ Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-p
 
 This section serves as the proof of \Cref{parallelogram_split_lemma}, introduced at the end of the previous section (\ref{text_decomposition_proof}).
 Since for an empty parallelogram the proof is trivial, consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
-We will explore some properties of the part of the text contained in $K_1$ specifically, which can be generalized to other quarters by symmetry.
+We will explore some properties of the part of the text contained in $K_1$ specifically, which then can be generalized to other quarters by symmetry.
 
 \begin{lemma}\label{coverability_condition}
 	Every set $U \subseteq K_1 \cap \Z^2$, such that $(\max \X(U), \max \Y(U)) \in \Ta$ is coverable.
