@@ -209,7 +209,7 @@ In the bounded variants of both \hd and \HD we are only required to calculate th
 \newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
 \renewcommand{\d}[1]{\dom(#1)}
 \newcommand{\f}[1]{#1^\mathbf{f}}
-\begin{definition}[Two-dimensional string]
+\begin{definition}[Two-dimensional string]\label{string_definition}
 	We define a \textbf{string} $S$ as a partial function $\Z^2 \pto \Sigma$ which maps some arbitrary set of integer points, denoted as $\d{S}$, to characters.
 	For simplicity we will write $u \in S$ to denote that $u \in \d{S}$.
 	We say that a string $S$ is \textbf{partitioned} into strings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$ and $R_i(u) = S(u)$ for all $u \in R_i$.
@@ -423,7 +423,7 @@ The construction of $\phi$ and $\psi$ is illustrated in \Cref{figure:occurrences
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
 	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
-	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent} and denote $u \equiv v$ when $u - v \in \L$.
+	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent}, denoted $u \equiv v$, when $u - v \in \L$.
 \end{definition}
 
 
@@ -432,9 +432,9 @@ The construction of $\phi$ and $\psi$ is illustrated in \Cref{figure:occurrences
 	\begin{proof}
 		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$.
 		We construct $\Gamma = p \cap \Z^2$.
-		It is commonly known, that a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its surface area.
+		By Pick's Theorem, a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its area.
 		Observe that the points in $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
-		Since its surface area is $\phi \times \psi = \O(\min\set{m, k})$, we get $|\Gamma| = \O(\min\set{m, k})$.
+		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $|\Gamma| = \O(\min\set{m, k})$.
 		
 		Now consider any point $u \in \Z^2$.
 		There exist some unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
@@ -491,7 +491,7 @@ The construction of $\phi$ and $\psi$ is illustrated in \Cref{figure:occurrences
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
 We partition $P$ into a set of strings $\V$.
 We then group the strings based on the single character they contain.
-Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct the set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
+Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct the set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$ (recall that we defined $\getchar{\cdot}$ in \cref{string_definition}).
 
 \begin{restatable*}{theorem}{SparseAlgo}\label{sparse_algo}
 	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
@@ -670,7 +670,7 @@ We calculate $\Ham(P_2 + q, S_1)$ and $\Ham(P_3 + q, S_1)$ for every $Q$ indepen
 We only show how to calculate $\Ham(P_2 + q, S_1)$, since the other case is symmetric.
 
 We will now partition $S_1$.
-Consider an array of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$, where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
+Consider a sequence of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$, where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
 For the sake of formality (since the maximum/minimum of an empty set is undefined), let $V_0, \dots, V_{\ell - 1}$ consist of all non-empty strings $U_i$, given in the increasing order of $i$.
 Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not greater than $d$.
 
@@ -768,32 +768,33 @@ Observe that the condition (\ref{quadrant_condition}) is equivalent to
 \begin{enumerate}[a')]
 	\item $\alpha \in [-\pi / 4, \pi / 4)$, where $\alpha$ is the angle between $\rho$ and $\delta$.
 \end{enumerate}
-Let $\beta$ be the angle between $k$ and $w$. Similarly, the condition (\ref{angle_condition}) is equivalent to
+Let $\beta$ be the angle between $\rho$ and $w$. Similarly, the condition (\ref{angle_condition}) is equivalent to
 \begin{enumerate}[b')]
 	\item $\alpha \in (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $\rho$ and $\delta$. 
 \end{enumerate}
-Let $r = [-\pi / 4, \pi / 4) \cup (\beta - \pi / 6, \beta + \pi / 6)$. 
+Let $R = [-\pi / 4, \pi / 4) \cup (\beta - \pi / 6, \beta + \pi / 6)$. 
 We can see that the conditions (\ref{quadrant_condition}) and (\ref{angle_condition}) are thus equivalent to a single condition:
 \begin{enumerate}[A)]
-	\item $\alpha \in r$, where $\alpha$ is the angle between $\rho$ and $\delta$. \label{joint_condition}
+	\item $\alpha \in R$, where $\alpha$ is the angle between $\rho$ and $\delta$. \label{joint_condition}
 \end{enumerate}
-Observe that $r \subseteq (-5 \pi / 12, 5 \pi / 12)$.
-Thus, the vectors $\delta$, which hold (\ref{joint_condition}), belong to a single half-plane and they satisfy $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
-Also, since $r$ is a continuous range of angles, for every $\delta_1$ and $\delta_2$ satisfying the condition, $\delta_1 + \delta_2$ also satisfies it.
+Observe that $R \subseteq (-5 \pi / 12, 5 \pi / 12)$ since $\beta \in [-\frac{\pi}{4}, \frac{\pi}{4})$.
+Thus, the vectors $\delta$, which satisfy (\ref{joint_condition}), belong to a single half-plane and they satisfy $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
+Also, since $r$ is a contiguous range of angles, for every $\delta_1$ and $\delta_2$ satisfying the condition, $\delta_1 + \delta_2$ also satisfies it.
 Thus, we can prove that for every $u_1, u_2, u_3 \in \Z^2$, such that $u_1 \le_w u_2$ and $u_2 \le_w u_3$, we have $u_1 \le_w u_3$ (meaning the relation is transitive).
 If $u_1 = u_2$ or $u_2 = u_3$, the proof is trivial.
-If not, observe that $\delta_1 = u_2 - u_1$ and $\delta_2 = u_3 - u_1$ hold the condition, 
+If not, observe that $\delta_1 = u_2 - u_1$ and $\delta_2 = u_3 - u_1$ satisfy the condition, 
 thus it also holds for $u_3 - u_1 = \delta_1 + \delta_2$.
-It is also easy to prove that $\le_w$ is acyclic.
+It is also easy to prove that $\le_w$ is asymmetric.
 
-Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming in $\tO(|U|)$ operations.
+Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming.
+With an appropriate data structure we can do it in $\tO(|U|)$ operations, by using a method resembling LIS calculation.
 
 \begin{lemma}\label{C_ineq}
 	$(|C| - 1) |w| < 6\ell$. 
 	\begin{proof}
 		Let $f = |C| - 1$ and
-		let $c_0, \dots, c_{f}$ denote the consecutive points in $C$, such that we have $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
-		Consider the array $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
+		let $c_0, \dots, c_{f}$ denote the points in $C$, ordered so that $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
+		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
 		By definition of $w$, we have $|\delta_i| \ge |w|$,
 		and since $\delta_i \cdot \rho > |\delta_i| / 4$, we get
 		$\delta_i \cdot \rho > |w| / 4$ for every $i \in [f]$.
@@ -805,11 +806,8 @@ Under the partial order $\le_w$, we find the longest chain $C$ and the longest a
 	\end{proof}
 \end{lemma}
 
-\begin{lemma}\label{dilworth}
+\begin{lemma}[Dilworth's theorem]\label{dilworth}
 	$|U| \le |C| |A|$.
-	\begin{proof}
-		It follows from Dilworth's theorem.
-	\end{proof}
 \end{lemma}
 
 We know that $|C| \ge 2$, since there exists a chain containing $s$ and $t$.
@@ -827,13 +825,13 @@ We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
 	$(|A| - 1) |w'| \le 2\ell$. 
 	\begin{proof}
 		Recall that $(-\pi / 4, \pi / 4) \subseteq r$.
-		Define a range of angles $r' = [-\pi / 4, 3\pi / 4]$.
+		Define a range of angles $R' = [\pi / 4, 3\pi / 4]$.
 		Consider any $u, v \in \Z^2$, such that $u \not \le_w v$ and $v \not \le_w u$.
-		It can be shown that the angle between $\rho$ and $\delta$ is in $r'$ for some $\delta \in \set{u - v, v - u}$.
+		It can be shown that the angle between $\rho$ and $\delta$ is in $R'$ for some $\delta \in \set{u - v, v - u}$.
 		Thus $|(u - v) \times \rho| \ge \sin(\pi / 4) |u - v||\rho| = |u - v|\sqrt{2} / 2$.
 		
 		Let $f = |A| - 1$ and let $a_0, \dots, a_{f}$ be the points in $A$ ordered such that $a_i \times \rho \le a_{i + 1} \times \rho$ for every $i \in [f]$.
-		Consider the array $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
+		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
 		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times \rho| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times \rho = |\delta_i \times \rho| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
 		We have
 		\[ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,\]
@@ -849,7 +847,7 @@ Recall that $|C||w| < 12\ell$ and $|U| \le |C| |A|$. We can multiply the inequal
 \[ |U||w||w'| \le |C||A||w||w'| < 48 \ell^2,\]
 which finally gives us
 \[|w||w'| < \frac{48\ell^2}{|U|} = \O(\ell^2 / |U|). \]
-It can be easily shown that $w, w'$ hold the remaining conditions by the definition of $\le_w$.
+It can be easily shown that $w, w'$ satisfy the remaining conditions by the definition of $\le_w$.
 
 
 % SUBPARQUET CONVOLUTION
@@ -939,8 +937,8 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 \SparseAlgo
 \begin{proof}
 	Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
-	\[ \sum_{S \in \S} \Ham(P + q, S) = |(P + q) \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.\]
-	We can calculate $|(P + q) \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
+	\[ \sum_{S \in \S} \Ham(P + q, S) = |\d{P + q} \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.\]
+	We can calculate $|\d{P + q} \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
 	To calculate the values
 	\[ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| \]
 	we use the algorithm from \Cref{subparquet_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
@@ -1024,7 +1022,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 
 \begin{lemma}\label{monochromacy_condition}
 	A spacious subparquet string $S$ is monochromatic if and only if
-	\[\Ham(S + \phi, S) + \Ham(S + \psi) = 0.\]
+	\[\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0.\]
 	\begin{proof}
 		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
 		Assume the contrary for the other implication.
@@ -1046,7 +1044,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 	\begin{proof}
 		Let us consider option (\ref{partition_a}). We construct the set
 		\[ A = \set{\s{u} : u \in S, u + \phi \in S, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
-		and then sort its elements increasingly, creating an array $a_0, \dots, a_\ell$.
+		and then sort its elements increasingly, creating a sequence $a_0, \dots, a_\ell$.
 		Note that $\ell \le \Ham(S + \phi, S) + 2$.
 		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to
 		$\set{u : u \in S, \s{u} \in [a_i, a_{i + 1})}$ for every $i \in [\ell]$.
@@ -1078,7 +1076,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 	The process is illustrated in \Cref{figure:parquet_decomposition}.
 	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
 	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
-	The total number of operations is $\O(|\d{R}| + k)$.
+	The total number of operations is $\tO(|\d{R}| + k)$.
 \end{proof}
 
 % TEXT DECOMPOSITION
@@ -1099,7 +1097,7 @@ Also, we assume that a parallelogram contains the points laying on its border an
 
 \newcommand{\IQ}{\mathbb{R} \setminus \mathbb{Q}}
 \begin{observation}\label{line_existence}
-	For any given $\ell \in \Z^+$ and $v \in \Z^2$ we can find an array of parallel lines $f_0, f_1, \dots, f_\ell$, where $f_i = \set{u : u \in \R^2, v \times u = c_i}$ for some $c_i \in \IQ$, such that
+	For any given $\ell \in \Z^+$ and $v \in \Z^2$ we can find a sequence of parallel lines $f_0, f_1, \dots, f_\ell$, where $f_i = \set{u : u \in \R^2, v \times u = c_i}$ for some $c_i \in \IQ$, such that
 	\begin{itemize}
 		\item $c_0 < v \times u < c_\ell$ for every $u \in [n]^2$, or namely, the set $[n]^2$ is between $f_0$ and $f_\ell$,
 		\item $0 < c_{i + 1} - c_i = \O(n|v| / \ell)$ for every $i \in [\ell]$, or namely, the distance between every two consecutive lines is $\O(n / \ell)$.
@@ -1177,7 +1175,7 @@ Observe that every parallelogram $p_{i, j} \not \in \I$ must be fully contained 
 \end{lemma}
 
 Now consider any $j \in [\ell]$.
-By \Cref{monotonicity_lemma}, we can find $s, t \in [\ell + 1]$, such that the array $p_{0, j}, \dots, p_{\ell - 1, j}$ is split into three groups:
+By \Cref{monotonicity_lemma}, we can find $s, t \in [\ell + 1]$, such that the sequence $p_{0, j}, \dots, p_{\ell - 1, j}$ is split into three groups:
 \begin{enumerate}[a)]
 	\item $p_{0, j}, \dots, p_{s - 1, j}$, which includes only parallelograms fully contained in $K_3$, \label{full in 3}
 	\item $p_{s, j}, \dots, p_{t - 1, j}$, which does not include any parallelogram fully contained in $K_1$ or $K_3$,
@@ -1193,7 +1191,7 @@ We do it for every $j \in [\ell]$.
 Observe that the sets $g^1_0, \dots, g^1_{\ell - 1}$ are are parallelograms (possibly empty) and that they cover the same area as all the fully contained in $K_1$ parallelograms $p_{i, j}$.
 The same is true for $g^3_0, \dots, g^3_{\ell - 1}$ and the parallelograms in $K_3$. 
 
-Now for every $i \in [\ell]$ we similarly find $s, t \in [\ell + 1]$, such that the array $p_{i, 0}, \dots, p_{i, \ell - 1}$ is split into three groups:
+Now for every $i \in [\ell]$ we similarly find $s, t \in [\ell + 1]$, such that the sequence $p_{i, 0}, \dots, p_{i, \ell - 1}$ is split into three groups:
 \begin{enumerate}[a)]
 	\item $p_{i, 0}, \dots, p_{i, s - 1}$, which includes only parallelograms fully contained in $K_4$,
 	\item $p_{i, s}, \dots, p_{i, t - 1}$, which does not include any parallelogram fully contained in $K_2$ or $K_4$,
