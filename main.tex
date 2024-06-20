@@ -28,9 +28,9 @@
 \author[2]{Paweł Gawrychowski}
 \author[3]{Adam Górkiewicz}
 \author[4]{Tatiana Starikovskaya}
-\affil[1]{Technical University of Dortmund, Germany}
+\affil[1]{DI/ENS, PSL Research University, France}
 \affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
-\affil[4]{DI/ENS, PSL Research University}
+\affil[4]{DI/ENS, PSL Research University, France}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -42,7 +42,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{example}{Example}
 \newtheorem{conjecture}{Conjecture} 
-\newtheorem*{claim}{Claim}
+\newtheorem{claim}{Claim}
 \newtheorem{problem}{Problem}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
@@ -69,6 +69,18 @@
 \DeclareMathOperator*{\dom}{dom}
 \DeclareMathOperator*{\chrome}{C}
 
+\newcommand{\defproblem}[3]{
+\vspace{2mm}
+\noindent\fbox{
+  \begin{minipage}{0.94\textwidth}
+    \textsc{\large #1}\\
+    {\bf{Input:}} #2  \\
+    {\bf{Output:}} #3
+  \end{minipage}
+  }
+\vspace{2mm}
+}
+
 \newcommand{\jonas}[2][]{\todo[color=green!40, #1]{\textbf{J:} #2}}
 \newcommand{\jonasi}[2][]{\jonas[inline, #1]{#2}}
 
@@ -91,6 +103,225 @@
 	In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
 	The results described in this thesis have been obtained in a collaboration between Jonas Ellert, Paweł Gawrychowski, Adam Górkiewicz, and Tatiana Starikovskaya, and will form the basis of a later joint publication.
 \end{abstract}
+
+\section{Introduction}
+
+Our results hold under the standard word-RAM model of computation with words of size $\Omega(\log n)$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Preliminaries}
+\label{sec:preliminaries}
+\newcommand{\x}[1]{#1.x}
+\newcommand{\y}[1]{#1.y}
+\newcommand{\h}[1]{\phi \times #1}
+\newcommand{\s}[1]{\psi \times #1}
+
+\textbf{Geometric notations.} For $n \in \Z^+$, denote $[n] = \set{0, \dots, n - 1}$. For $u \in \R^2$, denote its coordinates as $\x{u}, \y{u}$, i.e. $u = (\x{u}, \y{u})$. Furthermore, for $u, v \in \R^2$, denote 
+\begin{align*}
+&u + v = (\x{u}+\x{v}, \y{u} + \y{v})  & u + v = (\x{u}-\x{v}, \y{u}-\y{v})\\
+&u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}  & u \times v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}
+\end{align*}
+Alternatively, $u \cdot v = |u||v| \cos \alpha$ and $u \times v = |u||v| \sin \alpha$, where $\alpha$ is the angle between $u$ and $v$.
+
+\begin{definition}
+	For a set $U \subseteq \R^2$ we denote
+	\[ \X(U) = \set{\x{u} : u \in U}, \quad \Y(U) = \set{\y{u} : u \in U}.\]
+\end{definition}
+
+%We will use the terms point and vector interchangeably.
+
+\newcommand{\wild}{\texttt{?}}
+\noindent \textbf{String notations.} In this work, $\Sigma$ denotes an \emph{alphabet}, a finite set consisting of integers polynomially bounded in the size of the input strings. The elements of $\Sigma$ are called \emph{characters}. Additionally, we consider a special character denoted by $\wild$ that is not in $\Sigma$ and is called a \emph{wildcard}.
+
+\newcommand{\getchar}[1]{\chrome(#1)}
+\newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
+\renewcommand{\d}[1]{\dom(#1)}
+\newcommand{\f}[1]{#1^\mathbf{f}}
+
+A \emph{one-dimensional string} $S$ is a function $[n] \rightarrow \Sigma \cup \{\wild\}$. We denote its $i$-th character, $i \in [n]$, by $S(i)$, and sometimes we will simply write $S = S(1) S(2) \ldots S(n)$. For two-dimensional strings, we use a slightly more general definition: Namely, we define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. We store strings as lists of point-character pairs. 
+
+For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d(S)) - \min \X(\d(S))$ and the \emph{height} as $\max \Y(\d(S)) - \min \Y(\d(S))$. Finally, we say that $S$ is \emph{partitioned} into strings $R_1, \dots, R_\ell$ if $\d{S} = \sqcup_{i = 1}^\ell \d{R_i}$ and $R_i(u) = S(u)$ for all $1 \le \i \le \ell$ and $u \in \d{R_i}$.
+
+TODO move to a different place?
+A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S} \in \Sigma$ such that for every $u \in \d{S}$ there is $S(u) = \getchar{S}$.  
+
+\newcommand{\hd}{\textsc{HD1D}\xspace}
+\newcommand{\HD}{\textsc{HD2D}\xspace}
+\newcommand{\MI}{\textsc{MI}\xspace}
+
+\begin{definition}[Hamming distance]
+	Two characters $a,b \in \Sigma$ \emph{match} if $a = b$. The wildcard matches itself and all characters in $\Sigma$. 
+	For strings $S, R$ (either both one-dimensional or both two-dimensional), define
+	\begin{align*}
+		&\MI(S, R) = \set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|\\
+		&\Ham(S,R) = |\MI(S,R)|
+	\end{align*}			 
+	We call the elements of $\MI(S,R)$ the \emph{mismatches} between $S$ and $R$.
+\end{definition}
+
+\begin{definition}[Shifting]
+	For a set $V \subseteq \Z$ (resp., $V \subseteq \Z^2$) and $u \in \Z$ (resp., $u \in \Z^2$), denote $V + u := \set{v + u : v \in V}$.
+	For a one-dimensional (resp., two-dimensional) string $S$ and $u \in \Z$ (resp., $u \in \Z^2$), define $S + u$ to be a string $R$ such that
+	$\d{R} = \d{S} + u$ and $R(v) = S(v - u)$ for $v \in \d{R}$.
+	Intuitively, we shift the domain of the string while maintaining the character values corresponding to its elements.
+\end{definition}
+
+
+\defproblem{The text-to-pattern Hamming distances problem}{One-dimensional (resp., two-dimensional) strings $P, T$}{$\Ham(T, P+q)$ for all $q \in \Z$ (resp., $q \in \Z^2$) such that $\d{P + q} \subseteq \d{T}$}
+
+\defproblem{The $k$-mismatch problem}{One-dimensional (resp., two-dimensional) strings $P, T$, an integer $k \in \Z$}{$\min\{k+1,\Ham(T, P+q)\}$ for all $q \in \Z$ (resp., $q \in \Z^2$) such that $\d{P + q} \subseteq \d{T}$}
+
+\subsection{Generalisations of one-dimensional algorithms}
+We start by generalising existing one-dimensional algorithms to two dimensions that we will use as subroutines in the final algorithm for the $k$-mismatch problem. 
+
+For a two-dimensional string $S$ of width $w_S$ and height $h_S$ define its \emph{linearisation} as a one-dimensional string $\bar{S}$ of size $w_S \times h_S$, where $\forall x \in \X(\d{S}), y \in \Y(\d{S})$:
+
+$$
+\bar{S}((x-1) \cdot h_S + y) =
+\begin{cases}
+\wild & \text{ if } S(x,y) \text{ is not defined}\\
+S(x,y) & \text{ otherwise}
+\end{cases}
+$$
+
+Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-defined character values with wilcards, and writing the rectangle two-dimensional string row-by-row. 
+
+\begin{theorem}\label{kangaroos}
+Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ and $\d{T} = [n] \times [n]$ for $m \le n \in \Z^+$. Given a set $Q \subseteq \Z^2$, there is an algorithm that computes $d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\O(n^2 + \sum_{q \in Q} d_q)$.
+\end{theorem}
+\begin{proof}
+For every $i \in [m]$, define a one-dimensional string $P_i = P(i,1) P(i,2) \ldots P(i,m)$. Analogously, for every $i \in [n], j \in [n-m+1]$, define a one-dimensional string $T_{i,j} = T(i,j) T(i,j+1) \ldots T(i,j+m-1)$. 
+
+We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
+
+\begin{fact}[{\cite{Galil1986}}]\label{fact:kangaroo1D}
+Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ times and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
+\end{fact}
+
+Let $\ID(T) = \ID(T_{1,1}) \ID(T_{1,2}) \ldots \ID(T_{1,n-m+1}) \ldots \ID(T_{n,1}) \ID(T_{n,2}) \ldots \ID(T_{n,n-m+1}))$ and $\ID(P) = \ID(P_1)\ID(P_2) \ldots \ID(P_m)$. 
+We build the data structure of \cref{fact:kangaroo1D} for two strings: $\ID(T) \$ \ID(P)$ and $\bar{T} \$ \bar{P}$ (note that neither of the strings contains a wildcard). In total, the construction takes $\O(|\ID(T) \$ \ID(P)| + |\bar{T} \$ \bar{P}|) = \O(n^2)$ time.
+
+Consider now $q \in Q$. To compute $\Ham(T, P+q)$, note that 
+
+\begin{align*}
+&\Ham(T, P+q) = \sum_{i=1}^m \Ham(T_{\x{q}+i, \y{q}+1}, P_i)=\\
+&\sum_{1 \le i \le m \; : \; \ID(T_{\x{q}+i, \y{q}+1}) \neq \ID(P_i)} \Ham(T_{\x{q}+i, \y{q}+1}, P_i) = \\
+&\sum_{x \in \MI(\ID(T_{\x{q}+1, \y{q}+1}) \ldots \ID(T_{\x{q}+1, \y{q}+m}), \ID(P))} \Ham(T_{x, \y{q}+1}, P_{x-\x{q}})\\
+\end{align*}
+
+It follows that we can first use the data structure of \cref{fact:kangaroo1D} for  $\ID(T) \$ \ID(P)$ to compute the set $\MI =  \MI(\ID(T_{\x{q}+1, \y{q}+1}) \ID(T_{\x{q}+1, \y{q}+2}) \ldots \ID(T_{\x{q}+1, \y{q}+m}), \ID(P))$ in $\O(|\MI|) = \O(d_q)$ time, and then for each $x \in \MI$, we use the data structure of  \cref{fact:kangaroo1D}  for $\bar{T} \$ \bar{P}$ to compute 
+$\Ham(T_{x, \y{q}+1}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
+\end{proof}
+
+\begin{fact}[Folklore corollary of \cite{CLIFFORD200753}]\label{fact:sigman1d}
+Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), the text-to-pattern Hamming distances problem can be solved in $\O(\sigma \cdot n \log m)$ time, where $\sigma$ is the number of distinct characters present in $P$ and $T$.
+\end{fact}
+
+\begin{corollary}[of~\cite{Karloff1993}]\label{cor:approx1d}
+Let $\varepsilon > 0$ be a constant. Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in $\O((n/\varepsilon^2)  \log^3 m)$ time.
+\end{corollary}
+\begin{proof}
+Karloff's algorithm~\cite{Karloff1993} solves the text-to-pattern Hamming distances problem for $P,T$ in $\O((n/\varepsilon^2)  \log^3 m)$ time assuming that neither $P$ nor $T$ does not contain a wildcard. We show how to modify it slightly to allow for mismatches. 
+
+The idea of Karloff's algorithm is as follows. For each $1 \le i \le r = (\log m/ \varepsilon)^2$, the algorithm a mapping $\mu_i : \Sigma \rightarrow \{0,1\}$. It then solves the text-to-pattern Hamming distances problem for $\mu_i(T) := \mu_i(T(1))\mu_i(T(2)) \ldots \mu_i(T(n))$ and $\mu_i(P) := \mu_i(P(1))\mu_i(P(2)) \ldots \mu_i(P(m))$. For $1 \le j \le n-m$, define $d_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$. The algorithm returns the value $d(j) = \sum_i d_i(j)$. Karloff showed that $\Ham(T, P+j-1) \le d(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$.
+
+We modify the mappings slightly. For $a \in \Sigma \cup \{\wild\}$, define
+$$
+\tilde{\mu}_i(a) = 
+\begin{cases}
+\mu_i(a) &\text{ if } a \in \Sigma\\
+\wild & \text{ if } a = \wild.
+\end{cases}
+$$
+We then construct $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$ by applying the mapping to the characters of the strings similarly to above, and compute the values $\tilde{d}_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$ and $\tilde{d}(j) = \sum_i d_i(j)$ using \cref{fact:sigman1d} in $\O(r \cdot n \log m) = \O((n/\varepsilon^2) \log^3 m)$ time. It is not difficult to see that wildcards do not contribute to the distances neither between $T$ and $P$, nor between $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$. Therefore, $\Ham(T, P+j-1) \le \tilde{d}(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$, and the algorithm is correct. 
+\end{proof}
+
+We now show a simple embedding from two-dimensional strings to one-dimensional, that is essential for generalising \cref{fact:sigman1d} and \cref{cor:approx1d} to two dimensions.
+
+\begin{claim}
+\label{claim:padding}
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to compute the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
+\end{claim}
+\begin{proof}
+We first construct a two-dimensional string $P'$ such that for all $\min \X(\d{P}) \le i \le \max \X(\d{P})+(w_T-w_P)$ and $\min \Y(\d{P}) \le j \le \max \Y(\d{P})$ there is
+%
+$$
+P'(i,j) = 
+\begin{cases}
+P(i,j) & \text{ if } (i,j) \in \d{P}\\
+\wild & { otherwise}
+\end{cases}
+$$
+%
+Intuitively, we inscribe $P$ into a rectangle, then add $w_T-w_P$ columns to it, and finally fill all non-defined character values with wildcards. Note that for all $q \in \Z^2$ there is $\Ham(T,P+q) = \Ham(T,P'+q)$. We linearise $T$ to obtain a one-dimensional string $\bar{T}$ of size $w_T \times h_T$ and $P'$ to obtain a one-dimensional string $\bar{P'}$ of length $w_T \times h_P$. We then have:
+%
+$$\Ham(T, P+q) = \Ham(T,P'+q) = \Ham(\bar{T}(\x{q} \cdot h_T + (\y{q}+1)) \ldots \bar{T}(\x{q} \cdot h_T + (\y{q}+w_T \times h_P)), \bar{P'})$$
+%
+The claim follows. 
+\end{proof}
+
+\begin{corollary}\label{cor:sigman2d}
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot (w_P + w_T)(h_P + h_T) \log (w_P + w_T)(h_P + h_T))$, where $\sigma$ is the number of different characters present both in $P$ and $T$.
+\end{corollary}
+\begin{proof}
+We replace all characters of $T$ non-present in $P$ with a new character in $\O(w_T\times h_T)$ time. The Hamming distances do not change. The claim then follows immediately from \cref{fact:sigman1d} and \cref{claim:padding}. 
+\end{proof}
+
+
+\begin{corollary}\label{cor:approx2d}
+Let $\varepsilon > 0$ be a constant. Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in time $\O(((w_P+w_T)(h_P+h_T)/\varepsilon^2)  \log^3 m)$.
+\end{corollary}
+\begin{proof}
+The claim then follows from \cref{cor:approx1d} and \cref{claim:padding}. 
+\end{proof}
+
+%Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Technical overview}
+Below, we focus on the text-to-pattern Hamming distances and the $k$-mismatch problem for two-dimensional strings $P$ and $T$, where $\dom{P} = [m] \times [m]$ and $\dom{T} = [n] \times [n]$ for $m, n \in \Z^+$. 
+
+
+
+
+
+	\subsection{Two-dimensional periodicity}
+
+	\subsection{Decomposition of the pattern}
+
+	\subsection{Decomposition of the text}
+
+	\subsection{Algorithm}
+Recall that we focus on the text-to-pattern Hamming distances and the $k$-mismatch problem for two-dimensional strings $P$ and $T$, where $\dom{P} = [m] \times [m]$ and $\dom{T} = [n] \times [n]$ for $m, n \in \Z^+$. Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Two-dimensional periodicity}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Decomposition of the pattern}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Decomposition of the text}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Algorithm}
+
+
+
+
+
 
 \section{Introduction}
 The fundamental algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
@@ -189,149 +420,8 @@ and can be convolved differently. All remaining positions of the text are partit
 and then we convolve every simple subparquet from the text with every subparquet from the pattern.
 Finally, we sum up the number of mismatches for each relevant position in the text.
 
-% PRELIMINARIES
-\section{Preliminaries}
-
-For our purposes we will not use the standard definition of a two-dimensional string, where we associate it with a two-dimensional array of characters, and instead we will define it more broadly.
-Although we will occasionally use the array notation, we will do it exclusively for $n \times m$ strings.
-For any $n \in \Z^+$ we will denote $[n] = \set{0, \dots, n - 1}$.
-We will use the terms point and vector interchangeably.
-Our results hold under the standard word-RAM model of computation with words of size $\Omega(\log n)$.
-
-\newcommand{\hd}{\textsc{HD1D}\xspace}
-\newcommand{\HD}{\textsc{HD2D}\xspace}
-
-We consider the one-dimensional all-substring Hamming distance problem (\hd), where for a given text string $T$ of length $n$ and a string $P$ of length $m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every fragment $T$ of length $m$.
-Next, we consider the two-dimensional all-substring Hamming distance problem (\HD), where for a given 2D string $T$ of size $n \times n$ and a string $P$ of size $m \times m$ ($m < n$), we want to calculate the Hamming distance between $P$ and every $m \times m$ fragment of $T$.
-In the bounded variants of both \hd and \HD we are only required to calculate the distances which are not greater than $k$, for some parameter $k$.
-
-\newcommand{\getchar}[1]{\chrome(#1)}
-\newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
-\renewcommand{\d}[1]{\dom(#1)}
-\newcommand{\f}[1]{#1^\mathbf{f}}
-\begin{definition}[Two-dimensional string]\label{string_definition}
-	We define a \textbf{string} $S$ as a partial function $\Z^2 \pto \Sigma$ which maps some arbitrary set of integer points, denoted as $\d{S}$, to characters.
-	For simplicity we will write $u \in S$ to denote that $u \in \d{S}$.
-	We say that a string $S$ is \textbf{partitioned} into strings $R_1, \dots, R_\ell$ when the sets $\d{R_1}, \dots, \d{R_\ell}$ partition $\d{S}$ and $R_i(u) = S(u)$ for all $u \in R_i$.
-	We call a string $S$ \textbf{monochromatic} when $S(u) = \sigma$ for every $u \in S$ for some $\sigma \in \Sigma$ and we will write $\getchar{S}$ to denote the value $\sigma$.
-	We say that a string $S$ is $n \times m$ for some $n, m \in \Z^+$ when $\d{S} = [n] \times [m]$.
-	Physically we represent a string as a list of point-character pairs.
-\end{definition}
-
-\begin{definition}[Shifting]
-	For a set of points $V \subseteq \Z^2$ and a vector $u \in \Z^2$, we denote $V + u$ as a set of points $\set{v + u : v \in V}$.
-	For a string $S$ and a vector $u \in \Z^2$ we denote $S + u$ as a string $R$ such that
-	$\d{R} = \d{S} + u$ and $R(v) = S(v - u)$ for $v \in \d{R}$.
-	Intuitively, we shift the set of points while maintaining their character values.
-\end{definition}
-
-\begin{definition}[Hamming distance]
-	For a pair of strings $S, R$ we define
-	\[ \Ham(S, R) = |\set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|,\]
-	which corresponds to the number of mismatches between $S$ and $R$.
-\end{definition}
-
-Under such notation, the \HD problem is equivalent to calculating the (bounded or unbounded) values of $ \Ham(P + q, T) $
-for all $q \in \Z^2$ such that $\d{P + q} \subseteq \d{T}$ (so for $q \in [n - m + 1]^2$).
-
-\begin{definition}[Don't care symbol]
-	We define the \textbf{don't care} symbol as a special character which matches with every character.
-	We will denote it with \texttt{?}.
-	Unless stated otherwise, we assume it is not allowed in $\Sigma$ and in both \hd and \HD every character present in $T$ and $P$ matches only with itself.
-\end{definition}
-
-\newcommand{\x}[1]{#1.x}
-\newcommand{\y}[1]{#1.y}
-\newcommand{\h}[1]{\phi \times #1}
-\newcommand{\s}[1]{\psi \times #1}
-\begin{definition}[Vector operators]
-	For any vector $u \in \R^2$ we refer to its coordinates as $\x{u}, \y{u}$.
-	For any $u, v \in \R^2$ we denote $u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}$
-	and $u \times v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}$.
-	Note that alternatively $u \cdot v = |u||v| \cos \alpha$ and $u \times v = |u||v| \sin \alpha$, where $\alpha$ is the angle between $u$ and $v$.
-\end{definition}
 
 
-% ONE DIMENSIONAL GENERALIZATIONS
-\section{One-dimensional generalizations}
-
-In this section we explore some of the methods used for one-dimensional strings.
-Specifically, as our goal is to generalize the solution for \hd described in \cite{Gawrychowski2017}, we are especially interested in two-dimensional variants of the techniques that were used to solve the one-dimensional case.
-
-\begin{theorem}\label{instancing}
-	Consider an algorithm $\mathcal{A}$ which solves \HD (bounded or unbounded), but only when $2|n$ and $n \le \frac{3}{2}m$.
-	If its running time is $\mathcal{T}(m)$, then the general case can be solved in $\O(\mathcal{T}(m) n^2 / m^2)$.
-	\begin{proof}
-		Let $r = \floor{m / 2}$ and let $n' = r + m - 1$ or $r + m$ if $r + m - 1$ is odd.
-		We see that the set $N = [n']^2$ satisfies the conditions for the text domain.
-		For any vector $q \in [n - m + 1]^2$ we can find a vector $u$ such that $r|u.x, r|u.y$ and $q - u \in [r]^2$,
-		so we have $\Ham(P + q, T) = \Ham(P + q - u, T_u)$ where $T_u$ is the restriction of $T - u$ to $N$.
-		If $T - u$ is not defined for some $v \in N$, we can pad $T_u(v)$ with any character.
-		We see that $\d{P + q - u} \subseteq N = \d{T_u}$.
-		There are $\O(n^2 / m^2)$ possible vectors $u$ and we run $\mathcal{A}$ for every pair of $T_u$ and $P$.
-	\end{proof}
-\end{theorem}
-
-\begin{theorem}\label{kangaroos}
-	Consider an $n \times n$ string $T$, $m \times m$ string $P$ and set of vectors $Q$ such that $\d{P + q} \subseteq \d{T}$ for every $q \in Q$.
-	There exists an algorithm which calculates $ d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\tO(n^2 + \sum_{q \in Q} d_q)$.
-	\begin{proof}
-		For the sake of clarity, we will temporarily switch to the classical array notation for strings.
-		Let $T_0, \dots, T_{n - m}$ denote an array of two-dimensional strings (arrays) such that $T_k[0 \dd n - 1, 0 \dd m - 1] = T[0 \dd n - 1, k \dd k + m - 1]$.
-		For every row $P[0], \dots, P[m - 1]$ of $P$ and every row $T_k[0], \dots, T_k[n - 1]$ of every $T_k$ we assign an integer identifier so that $\ID(P[i]) = \ID(T_k[j]) \Leftrightarrow P[i] = T_k[j]$ by using the KMR algorithm (described in \cite{Karp1972}) in $\tO(n^2)$.
-		
-		We use the approach described in \cite{Galil1986}.
-		There exists a data structure (suffix array) which for a given one-dimensional array $S$ allows us to detect all mismatches between any given two of its subarrays of equal length.
-		It can be built in $\tO(|S|)$ and the query time is $\tO(d + 1)$ where $d$ is the number of mismatches.
-		We construct the suffix array for the concatenation of the following arrays:
-		\begin{itemize}
-			\item the rows $P[i]$ for every $i$,
-			\item the rows $T[i]$ for every $i$,
-			\item the array $\ID(P[0]) \ID(P[1]) \dots \ID(P[m - 1])$,
-			\item the arrays $\ID(T_k[0]) \ID(T_k[1]) \dots \ID(T_k[n - 1])$ for every $k$,
-		\end{itemize}
-		the total length of which is $\O(n^2)$.
-		Let us consider a problem of detecting mismatches between $P$ and some $T' = T[j \dd j + m - 1, k \dd k + m - 1]$.
-		We can first find all row indices $i$ for which $P[i] \neq T'[i]$ by finding all mismatches between $\ID(P[0]) \dots \ID(P[m - 1])$ and $\ID(T_k[j]) \dots \ID(T_k[j + m - 1])$, which we do with query to the data structure.
-		For every such $i$ we can then find all mismatches between $P[i]$ and $T'[i]$ by querying $P[i]$ and $T[i + j][k \dd k + m - 1]$.
-		If the distance between $P$ and $T'$ is $d$, the first query takes $\tO(d + 1)$ operations and all subsequent queries take $\tO(d + 1)$ operations in total.
-	\end{proof}
-\end{theorem}
-
-\begin{lemma}\label{sigman1d}
-	$\hd$ with don't care symbols can be solved in $\tO(n|\Sigma|)$ by running $|\Sigma|$ instances of FFT.
-\end{lemma}
-
-\begin{lemma}[\cite{Karloff1993}]\label{approx1d}
-	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \hd with don't care symbols in $\tO(n)$.
-\end{lemma}
-
-\begin{theorem}\label{sigman2d}
-	$\HD$ with don't care symbols can be solved in $\tO(n^2|\Sigma|)$.
-	\begin{proof}
-		We will again use the array notation.
-		We construct one-dimensional strings $\bar{T}$ and $\bar{P}$ by concatenating subsequent rows $T[0], \dots, T[n - 1]$ of $T$ and rows $P[0], \dots, P[m - 1]$ of $P$ padded with don't care symbols:
-		\[ \bar{T} = T[0] \ T[1] \ \dots \ T[n - 1], \]
-		\[ \bar{P} = P[0] \ \texttt{?}^{n - m} \ P[1] \ \texttt{?}^{n - m} \ \dots \ \texttt{?}^{n - m} \ P[m - 1].\]
-		We run the algorithm from \Cref{sigman1d}.
-		The distance between $T[i \dd i + m - 1, j \dd j + m - 1]$ and $P$ is equal to the distance between $\bar{T}[in + j \dd in + j + nm - n + m - 1]$ and $\bar{P}$.
-	\end{proof}
-\end{theorem}
-
-\begin{theorem}\label{approx2d}
-	There exists a $(1 + \varepsilon)$-approximate algorithm which solves \HD with don't care symbols in $\tO(n^2)$.
-	\begin{proof}
-		Identical to \Cref{sigman2d}, but we use the algorithm from \Cref{approx1d} instead of \Cref{sigman1d}.
-	\end{proof}
-\end{theorem}
-
-The same reduction as in \Cref{sigman2d} can be applied for every \hd solution which allows don't care symbols.
-Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
-
-\begin{observation}\label{dontcare_padding}
-	Every \HD solution which allows don't care symbols (e.g. algorithms from \Cref{sigman2d} and \Cref{approx2d}) can be extended to also calculate the Hamming distance for occurrences of $P$ which are not entirely contained in $T$.
-	This is done by padding the text with don't care symbols and does not change the time complexity.
-\end{observation}
 
 
 % MAIN ALGORITHM
@@ -572,19 +662,19 @@ See \Cref{figure:quarter_split} for an illustration.
 We will now demonstrate some characteristics of $S_1$, and by symmetry, generalize them to $S$.
 
 \begin{lemma} \label{border_lemma}
-	Assuming $d \le m/4$, there does not exist $u \in S_1$ and $v \in T_a$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
+	Assuming $d \le m/4$, there does not exist $u \in \d{S_1}$ and $v \in \d{\Ta}$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
 	\begin{proof}
 		Assume the contrary.
-		Since $u \in S_1$, the border distance of $u$ is at most $d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$, such that
+		Since $u \in \d{S_1}$, the border distance of $u$ is at most $d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$, such that
 		$\x{u} - d \le \x{w} \le \x{u} + d$ and
 		$\y{u} - d \le \y{w} \le \y{u} + d$.
-		Since $v \in T_a$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
+		Since $v \in \d{T_a}$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
 		We have
 		\[ \x{w} \ge \x{u} - d \ge n / 2 - m / 4 \ge n - m > \x{q} \]
 		and
 		\[ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. \]
 		Similarly we can show that $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^2 + q$.
-		Since $[m]^2 + q \subseteq \d{\Ta}$ and $w \not \in \Ta$, we get a contradiction.
+		Since $[m]^2 + q \subseteq \d{\Ta}$ and $w \not \in \d{\Ta}$, we get a contradiction.
 	\end{proof}
 \end{lemma}
 
@@ -607,11 +697,11 @@ We now introduce two major theorems regarding peripheral strings, the first of w
 	
 	Observe that the number of different frequent characters is $\O(\sqrt{k})$, and thus, by \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $F$ is $d$-peripheral. 
 	
-	We partition $I$ into $|\d{I}|$ strings, one per every $u \in I$.
-	Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in I$.
-	We have $\Ham(P + q, I) = \sum_{u \in I} \Ham(P + q, I_u)$ for every $q \in Q$.
-	By \Cref{subparquet_definition}, $I_u$ are simple subparquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in I} |\V_{I(u)}|)$.
-	Since $I(u)$ is an infrequent character for every $u \in I$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in I$.
+	We partition $I$ into $|\d{I}|$ strings, one per every $u \in \d{I}$.
+	Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in \d{I}$.
+	We have $\Ham(P + q, I) = \sum_{u \in \d{I}} \Ham(P + q, I_u)$ for every $q \in Q$.
+	By \Cref{subparquet_definition}, $I_u$ are simple subparquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in \d{I}} |\V_{I(u)}|)$.
+	Since $I(u)$ is an infrequent character for every $u \in \d{I}$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in \d{I}$.
 	By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
 \end{proof}
 
@@ -632,18 +722,6 @@ Consider a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a 
 Since the strings $P_0$ and $P_1$ partition $P$, we have
 \[ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).\]
 
-\begin{definition}(width \& height)\label{width_and_height_definition}
-	For a non-empty set $U \subseteq \Z^2$ we define its \textbf{width} as $\max\set{\x{u} - \x{v} + 1 : u, v \in U}$
-	and its \textbf{height} as $\max\set{\y{u} - \y{v} + 1 : u, v \in U}$.
-	For a non-empty string $R$ we define the width and height as the width and height of $\d{R}$.
-\end{definition}
-
-\begin{theorem}\label{general_fft}
-	Given two non-empty strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can calculate $\Ham(P + q, T)$ for every $q \in \Z^2$, for which the result is non-zero, in total time $\tO((|\Sigma| + 1)(w_P + w_T)(h_P + h_T))$, where $|\Sigma|$ denotes the number of different characters present in both $P$ and $T$.
-	\begin{proof}
-		We can prove it by slightly generalizing \Cref{sigman2d}, although following the same method, and utilizing \Cref{dontcare_padding}.
-	\end{proof}
-\end{theorem}
 
 From now we will assume that $d \le m / 4$, since for $d > m / 4$ we can, by \Cref{general_fft}, calculate the results in time $\tO(m^2 + m^2|\Sigma|)$, which is sufficient.
 
@@ -654,7 +732,7 @@ From now we will assume that $d \le m / 4$, since for $d > m / 4$ we can, by \Cr
 		Let us assume the contrary.
 		Select any $q \in Q$ such that $\d{P_0 + q} \cap \d{S_1}$ 
 		contains some point $u$ and consider the point $v = (\x{u} + d, \y{u} + d)$.
-		Since $u \in [m - d]^2 + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus the points $u \in S_1$ and $v \in \Ta$ contradict \Cref{border_lemma}.
+		Since $u \in [m - d]^2 + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus the points $u \in \d{S_1}$ and $v \in \d{\Ta}$ contradict \Cref{border_lemma}.
 	\end{proof}
 \end{lemma}
 
@@ -690,18 +768,18 @@ Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not g
 	\label{figure:pattern_restriction}
 \end{figure}
 
-For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{v}, \y{u} + h_i) \not \in \Ta$ for every $u, v \in V_i$.
+For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{v}, \y{u} + h_i) \not \in \d{\Ta}$ for every $u, v \in V_i$.
 For better understanding, $h_i$ is an upper bound for the height of $V_i$.
 
 The construction is illustrated in \Cref{figure:periphery_decomposition}.
 The points in the gray area are outside of the active text.
-The remaining ones are in the active text, where the red and green represent $\d{S_1}$, and the green belong to some fixed $V_i$.
+The remaining ones are in the active text, where the red and green represent $\d{S_1}$, and the green belong to $\d{V_i}$ some fixed $i$.
 
 \begin{lemma}\label{sum_of_h}
 	The sum of all $h_i$ is $\O(m)$.
 	\begin{proof}
 		Since for $\ell < 2$ the proof is trivial, we assume $\ell \ge 2$.
-		For every $i \in [\ell]$ (since $h_i$ is minimal) there exists a pair of points $u_i, v_i \in V_i$ such that $(\x{v_i}, \y{u_i} + h_i - 1) \in \Ta$.
+		For every $i \in [\ell]$ (since $h_i$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h_i - 1) \in \d{\Ta}$.
 		It can be shown that for all $i \ge 2$ we have
 		\[ h_{i} \le \y{u_{i - 2}} - \y{u_{i}} + d,\]
 		since if that was not the case for some $i$, then the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h_{i} - 1)$ would contradict \Cref{border_lemma}.
@@ -731,7 +809,7 @@ Since $L_i$ and $H_i$ partition $P_2$, we have
 		Let us assume the contrary.
 		Select any $q \in Q$ and $i \in [\ell]$, such that $\d{L_i + q} \cap \d{V_i}$ 
 		contains some point $u$ and consider the point $v = (\x{u}, \y{u} + h_i)$.
-		Since $u \in [m] \times [m - h_i] + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus $v \in \Ta$, which contradicts the definition of $h_i$.
+		Since $u \in [m] \times [m - h_i] + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus $v \in \d{\Ta}$, which contradicts the definition of $h_i$.
 	\end{proof}
 \end{lemma}
 
@@ -1026,7 +1104,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 	\begin{proof}
 		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
 		Assume the contrary for the other implication.
-		Let $u, v \in S$ be such that $S(u) \neq S(v)$.
+		Let $u, v \in \d{S}$ be such that $S(u) \neq S(v)$.
 		Since $\d{S}$ is a spacious subparquet, the graph $(\d{S}, \Edges(\d{S})$ is connected (by \Cref{lattice_graph_connectivity}) and there must exist a path between $u$ and $v$.
 		On that path there must exist a pair of neighbors $w, w'$, such that $S(w) \neq S(w')$ and $w' = w + \delta$ for some $\delta \in \set{\phi, \psi}$.
 		If $\delta = \phi$, then $\Ham(S + \phi, S) \ge 1$ and if $\delta = \psi$, then $\Ham(S + \psi, S) \ge 1$ and we get a contradiction.
@@ -1043,19 +1121,19 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 	All the obtained strings are spacious and if $S$ is simple, they are simple.
 	\begin{proof}
 		Let us consider option (\ref{partition_a}). We construct the set
-		\[ A = \set{\s{u} : u \in S, u + \phi \in S, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
+		\[ A = \set{\s{u} : u \in \d{S}, u + \phi \in \d{S}, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
 		and then sort its elements increasingly, creating a sequence $a_0, \dots, a_\ell$.
 		Note that $\ell \le \Ham(S + \phi, S) + 2$.
 		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to
-		$\set{u : u \in S, \s{u} \in [a_i, a_{i + 1})}$ for every $i \in [\ell]$.
+		$\set{u : u \in \d{S}, \s{u} \in [a_i, a_{i + 1})}$ for every $i \in [\ell]$.
 		Observe that $S_0, \dots, S_{\ell - 1}$ partition $S$ and that $\Ham(S_i + \phi, S_i) = 0$ for every $i \in [\ell]$.
 		Also, is $S$ is spacious, then they are spacious and if $S$ is simple, then they are simple.
 	
 		In the case of option (\ref{partition_b}), we similarly construct
-		\[ A = \set{\h{u} : u \in S, u + \psi \in S, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} \]
+		\[ A = \set{\h{u} : u \in \d{S}, u + \psi \in \d{S}, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} \]
 		and then sort it increasingly, creating $a_0, \dots, a_\ell$, where $\ell \le \Ham(S + \psi, S) + 2$.
 		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to 
-		$\set{u : u \in S, \h{u} \in (a_i, a_{i + 1}]}$.
+		$\set{u : u \in \d{S}, \h{u} \in (a_i, a_{i + 1}]}$.
 	\end{proof}
 \end{lemma}
 
@@ -1090,10 +1168,7 @@ We will use a more geometrical approach and construct some lines and parallelogr
 For the sake of simplicity, we will consider an empty set to be a valid parallelogram.
 Also, we assume that a parallelogram contains the points laying on its border and its vertices.
 
-\begin{definition}
-	For a set of points $U \subseteq \R^2$ we will denote
-	\[ \X(U) = \set{\x{u} : u \in U}, \quad \Y(U) = \set{\y{u} : u \in U}.\]
-\end{definition}
+
 
 \newcommand{\IQ}{\mathbb{R} \setminus \mathbb{Q}}
 \begin{observation}\label{line_existence}
@@ -1230,9 +1305,9 @@ Again observe that for every $u \in [n]^2$ there exists exactly one parallelogra
 		Since the other cases are rotationally symmetric, assume that it intersects with some point $s \in \R^2$, such that $\x{s} = z$ and $\y{s} \ge z$.
 		Let $v = (\floor{\max \X(p), \max \Y(p)})$.
 		We have $\x{v} \ge \floor{z} = n / 2 - 1$ and $\y{v} \ge \floor{z} = n / 2 - 1$.
-		If $v \not \in \Ta$, we can see that by \Cref{distance_bound_lemma},
+		If $v \not \in \d{\Ta}$, we can see that by \Cref{distance_bound_lemma},
 		$|u - v| = \O(n / \ell)$ for every $u \in p \cap \Z^2$, thus $p$ is $\O(n / \ell)$-peripheral.
-		If $v \in \Ta$, there exists $q \in Q$, such that $v \in [m]^2 + q$.
+		If $v \in \d{\Ta}$, there exists $q \in Q$, such that $v \in [m]^2 + q$.
 		Consider any $u \in p \cap \Z^2$.
 		By the assumption that $\max \X(p) - \min \X(p) < m / 4$ and $\max \Y(p) - \min \Y(p) < m / 4$ we get
 		\eq{
@@ -1307,7 +1382,7 @@ We will explore some properties of the part of the text contained in $K_1$ speci
 \end{lemma}
 
 \begin{observation}\label{domination_lemma}
-	By \Cref{coverability_condition}, there does not exist a pair of points $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \Ta$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. 
+	By \Cref{coverability_condition}, there does not exist a pair of points $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. 
 \end{observation}
 
 Recall that there exists $t \in [\ell + 1]$, such that
@@ -1333,9 +1408,9 @@ and thus
 	\max \Y(c \cap \Z^2) &\le \floor{\max \Y(c)} = \floor{\max \Y(p_{f - 1, j})}.
 }
 
-We see that $(\max \X(c \cap \Z^2), \max \Y(c \cap \Z^2)) \in \Ta$, since it would otherwise contradict \Cref{domination_lemma},
+We see that $(\max \X(c \cap \Z^2), \max \Y(c \cap \Z^2)) \in \d{\Ta}$, since it would otherwise contradict \Cref{domination_lemma},
 considering that
-$(\floor{\max \X(p_{f - 1, j})}, \floor{\max \Y(p_{f - 1, j})}) \in \Ta$.
+$(\floor{\max \X(p_{f - 1, j})}, \floor{\max \Y(p_{f - 1, j})}) \in \d{\Ta}$.
 We see that $c \cap \Z^2$ satisfies the conditions of \Cref{coverability_condition}, thus $c \cap \Z^2$ is coverable.
 
 We now show that the set $b \cap \Z^2$ is $\O(n / \ell)$-peripheral.
