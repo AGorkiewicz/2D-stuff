@@ -20,6 +20,7 @@
 \usepackage{verbatim}
 \usepackage[noadjust]{cite}
 \usepackage{authblk}
+\usepackage{todonotes}
 
 \pagestyle{myheadings}
 
@@ -144,7 +145,7 @@ A \emph{one-dimensional string} $S$ is a function $[n] \rightarrow \Sigma \cup \
 
 For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d(S)) - \min \X(\d(S))$ and the \emph{height} as $\max \Y(\d(S)) - \min \Y(\d(S))$. Finally, we say that $S$ is \emph{partitioned} into strings $R_1, \dots, R_\ell$ if $\d{S} = \sqcup_{i = 1}^\ell \d{R_i}$ and $R_i(u) = S(u)$ for all $1 \le \i \le \ell$ and $u \in \d{R_i}$.
 
-TODO move to a different place?
+\todo{move to a different place?}
 A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S} \in \Sigma$ such that for every $u \in \d{S}$ there is $S(u) = \getchar{S}$.  
 
 \newcommand{\hd}{\textsc{HD1D}\xspace}
