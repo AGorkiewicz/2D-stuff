@@ -160,9 +160,6 @@ A \emph{one-dimensional string} $S$ is a function $[n] \rightarrow \Sigma \cup \
 
 For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d(S)) - \min \X(\d(S))$ and the \emph{height} as $\max \Y(\d(S)) - \min \Y(\d(S))$. Finally, we say that $S$ is \emph{partitioned} into strings $R_1, \dots, R_\ell$ if $\d{S} = \sqcup_{i = 1}^\ell \d{R_i}$ and $R_i(u) = S(u)$ for all $1 \le \i \le \ell$ and $u \in \d{R_i}$.
 
-\todo{move to a different place?}
-A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S} \in \Sigma$ such that for every $u \in \d{S}$ there is $S(u) = \getchar{S}$.  
-
 \newcommand{\hd}{\textsc{HD1D}\xspace}
 \newcommand{\HD}{\textsc{HD2D}\xspace}
 \newcommand{\MI}{\textsc{MI}\xspace}
@@ -188,6 +185,8 @@ A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S}
 \defproblem{The text-to-pattern Hamming distances problem}{One-dimensional (resp., two-dimensional) strings $P, T$}{$\Ham(T, P+q)$ for all $q \in \Z$ (resp., $q \in \Z^2$) such that $\d{P + q} \subseteq \d{T}$}
 
 \defproblem{The $k$-mismatch problem}{One-dimensional (resp., two-dimensional) strings $P, T$, an integer $k \in \Z$}{$\min\{k+1,\Ham(T, P+q)\}$ for all $q \in \Z$ (resp., $q \in \Z^2$) such that $\d{P + q} \subseteq \d{T}$}
+
+Traditionally, $P$ is referred to as \emph{the pattern} and $T$ as \emph{the text}.
 
 \subsection{Generalisations of one-dimensional algorithms}
 We start by generalising existing one-dimensional algorithms to two dimensions that we will use as subroutines in the final algorithm for the $k$-mismatch problem. 
@@ -314,11 +313,12 @@ We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and 
 \end{enumerate}
 
 If $|Q| \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $|Q| > 6m + m^2/k$. 
-\todo{is $m^2/k$ important?}
+
+The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, its the area of their intersection.
 
 % 2D PERIODICITY
 \subsection{Two-dimensional periodicity} \label{periodicity_section}
-We now define two-dimensional periods and use them to partition $P$ into one-character strings of regular form.
+We start by defining two-dimensional periods.
 
 %\begin{figure}[!t]
 %	\begin{center}
@@ -355,14 +355,13 @@ Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $\ge 12\ell$. There
 
 Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $|Q| > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\O(|Q|)$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le |\phi||\psi| = \O(\ell^2 / |Q|) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
-\begin{definition}[Lattice congruency]\label{lattice_congruency}
-	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
-	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent}, denoted $u \equiv v$, when $u - v \in \L$.
-\end{definition}
+\subsection{Partitionings of the pattern and the text}
+Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
 
-
+\todo{move below}
 \begin{lemma} \label{lattice_base}
 	There exists a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and every point $u \in \Z^2$ is lattice-congruent to exactly one point $\gamma \in \Gamma$.
+\end{lemma} 
 	\begin{proof}
 		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$.
 		We construct $\Gamma = p \cap \Z^2$.
@@ -376,73 +375,102 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 		It is easy to see that
 		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
 	\end{proof}
-\end{lemma}
 
 
-\begin{figure}[!t]
+\begin{definition}[Lattice congruency]\label{lattice_congruency}
+We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that $u, v \in \Z^2$ are \textbf{congruent}, denoted $u \equiv v$, if $u - v \in \L$. 
+\end{definition}
+
+\begin{figure}[h!]
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/parquet}
 	\end{center}
-	\caption{All the points in the polygon form a parquet and the red points form a subparquet.}
-	\label{figure:parquet}
+	\caption{All the points in the polygon form a tile and the red points form a subtile.}
+	\label{figure:tile}
 \end{figure}
 
+\begin{definition}[Tile]\label{tile_definition}
+We call $U \subseteq \Z^2$ a \emph{tile} if there exist $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, such that
+	\[ U = \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. \]
+Geometrically, $U$ can be viewed as a set of integer points inside a parallelogram with sides collinear to 	$\phi$ and $\psi$. We call the values $\phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ its \emph{signature}. 
+\end{definition}
 
-\begin{definition}[Parquet]\label{parquet_definition}
-	We call a set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
-	\[ U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. \]
-	See \Cref{figure:parquet} for an illustration.
-	\begin{enumerate}[a)]
-		\item If additionally $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, then $U$ is a \textbf{spacious} parquet.
-		\item If additionally $x_0, y_0 = -\infty$ and $x_1, y_1 = +\infty$, then $U$ is a \textbf{simple} parquet.
+\begin{definition}[Truncated tile]
+We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x_1, y_0, y_1 \in \Z$ and $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that 
+	\begin{enumerate}
+		\item $U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}$. (Geometrically, it means that $U$ is a set of integer points in the intersection of an axis-parallel rectangle and a parallelogram with sides collinear to 	$\phi$ and $\psi$.)
+		\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$. (Geometrically, it means that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important.)
 	\end{enumerate}
-	Note that every simple parquet is spacious.
+Analogously to above, we call the values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ its \emph{signature}. 
 \end{definition}
 
-
-\begin{definition}[Subparquet]\label{subparquet_definition}
-	We call a set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
-	\[ V = \set{u : u \in U, u \equiv \gamma}.\]
-	This is also illustrated in \Cref{figure:parquet}.
-	A signature of $V$ consists of a signature of $U$ and the vector $\gamma$.
-	We call $V$ a spacious/simple subparquet when there exists $U$ which is (correspondingly) a spacious/simple parquet.
-	We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$.
-	We similarly define the lattice congruency between two subparquets.
+\begin{definition}[Subtile]\label{subtile_definition}
+We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of a signature of $U$ and the vector $\gamma$.
+%We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$. We similarly define the lattice congruency between two subtiles.
 \end{definition}
 
+See \Cref{figure:tile} for an illustration.
 
-\begin{definition}[Parquet string]\label{parquet_string_definition}
-	We call a string $S$ a spacious/simple (sub-)parquet string when $\d{S}$ is a spacious/simple (sub-)parquet.
+\begin{definition}[Tile string]\label{tile_string_definition}
+We call a string $S$ a \emph{(truncated) (sub)tile string} if $\d{S}$ is a (truncated) (sub)tile.
 \end{definition}
 
+\begin{definition}[Monochromatic string]
+A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S} \in \Sigma$ such that for every $u \in \d{S}$ there is $S(u) = \getchar{S}$.  
+\end{definition}
 
-\begin{restatable*}{theorem}{ParquetDecomposition}\label{parquet_decomposition}
-	A given spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
+\begin{restatable*}{theorem}{tileDecomposition}\label{tile_decomposition}
+	A given (truncated) tile string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
 \end{restatable*}
-\begin{proof} See \Cref{parquet_decomposition_proof}. \end{proof}
+
+Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated tile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct a set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
 
 
-Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
-We partition $P$ into a set of strings $\V$.
-We then group the strings based on the single character they contain.
-Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct the set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$ (recall that we defined $\getchar{\cdot}$ in \cref{string_definition}).
+\todo{T: I changed spacious parquet to tile, and simple parquet to tile. Parquet itself was never used. I need to update everything.}
 
-\begin{restatable*}{theorem}{SparseAlgo}\label{sparse_algo}
-	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
-	\[ \sum_{S \in \S} \Ham(P + q, S) \]
-	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$, assuming that the sets $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
+Because $T$ is not necessarily periodic, we are obliged to use a similar but more sophisticated partitioning.
+
+\newcommand{\Ta}{T_\mathbf{a}}
+\begin{definition}[Active text]
+We define the \emph{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P + q}$. 
+\end{definition}
+
+\begin{observation}\label{obs:active_text}
+$\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
+\end{observation}
+
+\begin{definition}[Peripherality]
+For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
+\end{definition}
+
+\begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
+Given $\ell \in \Z^+$, one can partition $T_a$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and a $\O(m / \ell)$-peripheral string.
 \end{restatable*}
-\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
 
+\subsection{Algorithm}
+In \todo{section}, we show that the Hamming distances between $P$ and a string consisting of a monochromatic subtile strings can be computed efficiently: 
 
+\begin{restatable*}{theorem}{SparseAlgo}
+\label{th:sparse_algo}
+Let $\S$ be a set of monochromatic subtile strings $\S$ with a property the domains $\d{S}$ for $S \in \S$ are pairwise disjoint subsets of $\d{T}$. There is an algorithm that computes
+$\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$.
+\end{restatable*}
 
+As an immediate corollary, we obtain an $\tO(m^2 + mk^2)$-time solution for the $k$-mismatch problem. First, we apply \Cref{text_decomposition} for a large enough value $\ell = \Theta(m)$ to partition the active text $\Ta$ into a set $\S$ of $\O(mk)$ monochromatic subtile strings and a $0$-peripheral string, empty by definition, in time $\tO(m^2 + mk)$. For every $q \in Q$ we then have $\Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S)$, and these values can be computed in $\tO(m^2 + mk^{2})$ total time by \Cref{sparse_algo}, since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$. 
 
-	\subsection{Decomposition of the pattern}
+To improve the complexity further, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
+We obtain a set~$\S$ of $\O(mk^{1/4})$ monochromatic subtile strings $\S$, and a $\O(k^{3 / 4})$-peripheral string $F$. For every $q \in Q$ we then have
 
-	\subsection{Decomposition of the text}
+\[ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).\]
 
-	\subsection{Algorithm}
+By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$, since similarly to above we have $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$. To compute the values $\Ham(P + q, F)$, we apply the following result:
 
+\begin{restatable*}{theorem}{DenseAlgo}
+\label{th:dense_algo}
+Given a $d$-peripheral string $F$, there is an algorithm which computes $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
+\end{restatable*}
+
+By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -452,12 +480,7 @@ Specifically, for every character $\sigma \in \Sigma$ present in $P$, we constru
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Decomposition of the pattern}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Decomposition of the text}
+\section{Partitionings of the pattern and the text}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -553,17 +576,17 @@ a 2D string with small approximate period we actually need two such periods (wit
 just one. We show that two vectors with the required properties exist with some geometric considerations and
 applying Dilworth's theorem. Then, we show that, similarly to the 1D case, they allow us to decompose the pattern
 into nicely structured monochromatic pieces. There are $\O(k)$ such pieces, and each of them consists of positions
-defined by some lattice of points restricted to a polygon. We call such a set of positions a subparquet.
+defined by some lattice of points restricted to a polygon. We call such a set of positions a subtile.
 The next step is to similarly decompose the text. In 2D it is less clear what would be its middle part that
 admits the same approximate period, however we can build on this idea to partition the relevant part of the text
 into monochromatic pieces. Then, we consider each piece of the pattern and each piece of the text,
 and convolve them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$
 per pair of pieces if one of them admits some additional condition that we call being simple.
-Thus, we actually need to partition the relevant part of the text into simple subparquets. A direct approach
+Thus, we actually need to partition the relevant part of the text into simple subtiles. A direct approach
 results in too many pieces, and so we proceed in a more indirect way by introducing the notion of
 a peripheral set of positions of the text. These positions interact with not too many positions in the pattern,
-and can be convolved differently. All remaining positions of the text are partitioned into not too many simple subparquets,
-and then we convolve every simple subparquet from the text with every subparquet from the pattern.
+and can be convolved differently. All remaining positions of the text are partitioned into not too many simple subtiles,
+and then we convolve every simple subtile from the text with every subtile from the pattern.
 Finally, we sum up the number of mismatches for each relevant position in the text.
 
 
@@ -593,7 +616,7 @@ We are left with the case when $|Q| > 6m + m^2/k$, in which we take advantage of
 % 2D PERIODICITY
 \subsection{Two-dimensional periodicity} \label{periodicity_section}
 In this section we introduce a range of new tools related to two-dimensional periodicity.
-We then select some special periods of the pattern and show how to decompose it into some regularly structured monochromatic strings.
+We then select some special periods of the pattern and show how to decompose it into some regularly structured strings.
 
 
 \begin{figure}[!t]
@@ -645,9 +668,9 @@ Note that because $|Q| > 6m + m^2 / k$, we have $0 \le \phi \times \psi \le |\ph
 The construction of $\phi$ and $\psi$ is illustrated in \Cref{figure:occurrences}.
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
-	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
-	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent}, denoted $u \equiv v$, when $u - v \in \L$.
+Define $\L = \set{s\phi + t\psi : s, t \in \Z}$, called a lattice. We say that $u, v \in \Z^2$ are \textbf{lattice-congruent}, denoted $u \equiv v$, if $u - v \in \L$.
 \end{definition}
+
 
 
 \begin{lemma} \label{lattice_base}
@@ -668,108 +691,52 @@ The construction of $\phi$ and $\psi$ is illustrated in \Cref{figure:occurrences
 \end{lemma}
 
 
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/parquet}
-	\end{center}
-	\caption{All the points in the polygon form a parquet and the red points form a subparquet.}
-	\label{figure:parquet}
-\end{figure}
+%\begin{figure}[!t]
+%	\begin{center}
+%		\includegraphics[width=0.8\textwidth]{drawings/parquet}
+%	\end{center}
+%	\caption{All the points in the polygon form a tile and the red points form a subtile.}
+%	\label{figure:tile}
+%\end{figure}
 
 
-\begin{definition}[Parquet]\label{parquet_definition}
-	We call a set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
-	\[ U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. \]
-	See \Cref{figure:parquet} for an illustration.
-	\begin{enumerate}[a)]
-		\item If additionally $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, then $U$ is a \textbf{spacious} parquet.
-		\item If additionally $x_0, y_0 = -\infty$ and $x_1, y_1 = +\infty$, then $U$ is a \textbf{simple} parquet.
-	\end{enumerate}
-	Note that every simple parquet is spacious.
-\end{definition}
 
-
-\begin{definition}[Subparquet]\label{subparquet_definition}
-	We call a set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
+\begin{definition}[Subtile]\label{subtile_definition}
+	We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} when there exists a tile $U$ and a point $\gamma \in \Z^2$ such that
 	\[ V = \set{u : u \in U, u \equiv \gamma}.\]
-	This is also illustrated in \Cref{figure:parquet}.
+	This is also illustrated in \Cref{figure:tile}.
 	A signature of $V$ consists of a signature of $U$ and the vector $\gamma$.
-	We call $V$ a spacious/simple subparquet when there exists $U$ which is (correspondingly) a spacious/simple parquet.
+	We call $V$ a spacious/simple subtile when there exists $U$ which is (correspondingly) a spacious/simple tile.
 	We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$.
-	We similarly define the lattice congruency between two subparquets.
+	We similarly define the lattice congruency between two subtiles.
 \end{definition}
 
 
-\begin{definition}[Parquet string]\label{parquet_string_definition}
-	We call a string $S$ a spacious/simple (sub-)parquet string when $\d{S}$ is a spacious/simple (sub-)parquet.
+\begin{definition}[tile string]\label{tile_string_definition}
+	We call a string $S$ a spacious/simple (sub-)tile string when $\d{S}$ is a spacious/simple (sub-)tile.
 \end{definition}
 
 
-\begin{restatable*}{theorem}{ParquetDecomposition}\label{parquet_decomposition}
-	A given spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
+\begin{restatable*}{theorem}{tileDecomposition}\label{tile_decomposition}
+	A given spacious/simple tile string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic spacious/simple subtile strings, correspondingly.
 \end{restatable*}
-\begin{proof} See \Cref{parquet_decomposition_proof}. \end{proof}
+\begin{proof} See \Cref{tile_decomposition_proof}. \end{proof}
 
 
-Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
+Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious tile string and satisfies the assumptions of \Cref{tile_decomposition}.
 We partition $P$ into a set of strings $\V$.
 We then group the strings based on the single character they contain.
 Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct the set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$ (recall that we defined $\getchar{\cdot}$ in \cref{string_definition}).
 
 \begin{restatable*}{theorem}{SparseAlgo}\label{sparse_algo}
-	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
+	For a given set of monochromatic simple subtile strings $\S$ we can calculate
 	\[ \sum_{S \in \S} \Ham(P + q, S) \]
 	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$, assuming that the sets $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
 \end{restatable*}
-\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
+\begin{proof} See \Cref{subtile_convolution_proof}. \end{proof}
 
 % TEXT DECOMPOSITION
 \subsection{Text decomposition}
-Because the text is not necessarily periodic, we unfortunately cannot use the same approach as for the pattern.
-In this section we show how to decompose $T$ using a similar, but more nuanced method.
-
-
-\newcommand{\Ta}{T_\mathbf{a}}
-\begin{definition}[Active text]
-	We define the \textbf{active text} $\Ta$ as the restriction of $T$ to
-	\[ \bigcup_{q \in Q} \d{P + q}. \]
-	In \Cref{figure:occurrences} the points in the white area form the set $\d{\Ta}$.
-\end{definition}
-
-\begin{observation}
-	$\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
-\end{observation}
-
-\begin{definition}[Peripherality]
-	For every point $u \in \Z^2$ we define its \textbf{border distance} as
-	$\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}} $.
-	We say that a set of points $U \subseteq \Z^2$ is $d$-\textbf{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is not greater than $d$.
-	We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
-\end{definition}
-
-\begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
-	Given any $\ell \in \Z^+$, we can partition the active text in time $\tO(m^2 + \ell k)$ into a set of $\O(\ell k)$ monochromatic simple subparquet strings and an $\O(m / \ell)$-peripheral string.
-\end{restatable*}
-\begin{proof} See \Cref{text_decomposition_proof}. \end{proof}
-
-\paragraph{Warm-up algorithm.}
-An immediate consequence of \Cref{text_decomposition} is that we can partition the active text into $\O(mk)$ monochromatic simple subparquet strings.
-We can construct such a partitioning by substituting a large enough value $\ell = \Theta(m)$, such that the obtained $\O(m / \ell)$-peripheral string is in fact $0$-peripheral, and thus empty.
-If we denote the resulting set of monochromatic simple subparquet strings as $\S$, for every $q \in Q$ we have
-\[ \Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S).\]
-By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{2})$,
-since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$.
-This yields us a complete $\tO((m^2 + mk^2)n^2/m^2)$ solution for the \HD problem, which for $k = \O(m ^ {1/2})$, works in optimal time $\tO(n^2)$.
-
-\paragraph{Main algorithm.}
-To obtain the promised $\tO(m^2 + mk^{5/4})$ complexity, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
-We obtain a set of $\O(mk^{1/4})$ simple subparquet strings $\S$, and a $\O(k^{3 / 4})$-peripheral string $F$.
-For every $q \in Q$ we then have
-\[ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).\]
-By \Cref{sparse_algo}, we can calculate $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$,
-since similarly we have $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$.
-In \Cref{periphery_section} we will introduce \Cref{dense_algo}, which states that for a $d$-peripheral string $F$, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
-By substituting $d = \O(k^{3/4})$, we get the total complexity of $\tO(m^2 + mk^{5/4})$ as promised.
 
 
 % BORDER PROXIMITY
@@ -817,9 +784,7 @@ We now introduce two major theorems regarding peripheral strings, the first of w
 	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + md |\Sigma|)$, where $|\Sigma|$ is the number of different characters present in both $P$ and $S$.
 \end{restatable*}
 
-\begin{theorem}\label{dense_algo}
-	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
-\end{theorem}
+\DenseAlgo
 \begin{proof}
 	Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}.
 	We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
@@ -833,7 +798,7 @@ We now introduce two major theorems regarding peripheral strings, the first of w
 	We partition $I$ into $|\d{I}|$ strings, one per every $u \in \d{I}$.
 	Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in \d{I}$.
 	We have $\Ham(P + q, I) = \sum_{u \in \d{I}} \Ham(P + q, I_u)$ for every $q \in Q$.
-	By \Cref{subparquet_definition}, $I_u$ are simple subparquet strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in \d{I}} |\V_{I(u)}|)$.
+	By \Cref{subtile_definition}, $I_u$ are simple subtile strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in \d{I}} |\V_{I(u)}|)$.
 	Since $I(u)$ is an infrequent character for every $u \in \d{I}$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in \d{I}$.
 	By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
 \end{proof}
@@ -1061,15 +1026,15 @@ which finally gives us
 It can be easily shown that $w, w'$ satisfy the remaining conditions by the definition of $\le_w$.
 
 
-% SUBPARQUET CONVOLUTION
+% SUBtile CONVOLUTION
 \newcommand{\W}{\mathcal{W}}
-\subsection{Subparquet convolution} \label{subparquet_convolution_proof}
+\subsection{Subtile convolution} \label{subtile_convolution_proof}
 
 Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency}.
 We start by introducing some auxiliary tools, which we later use in the proof of \Cref{sparse_algo}.
 
 \begin{lemma}\label{primitive_conv}
-	Given a set of subparquets $\V$ and a set of points $Q$, we can calculate
+	Given a set of subtiles $\V$ and a set of points $Q$, we can calculate
 	\[ \sum_{V \in \V} |(D + q) \cap V| \]
 	for every $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$, assuming that every $V \in \V$ consists of vectors of length $\O(n)$.
 	\begin{proof}
@@ -1084,9 +1049,9 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 		We find the set $\Gamma$ introduced in \Cref{lattice_base} and for every $\gamma \in \Gamma$ we construct $U_\gamma = U \cap (\L + \gamma)$.
 		Consider any $u \in U_\gamma$ for some fixed $\gamma \in \Gamma$ and any $V \in \V$.
 		Observe that if $V \not \equiv \gamma$, then $u \not \in V$ and thus $V$ does not contribute to $\score(u)$.
-		If $V \equiv \gamma$, then we can find a parquet $W$ such that $V = W \cap (\L + \gamma)$ and we have
+		If $V \equiv \gamma$, then we can find a tile $W$ such that $V = W \cap (\L + \gamma)$ and we have
 		$u \in V \Leftrightarrow u \in W \cap (\L + \gamma) \Leftrightarrow u \in W$.
-		Thus, if we denote $\W_\gamma$ as the set of parquets $W$ obtained for every $V \in \V$ such that $V \equiv \gamma$, then $\score(u)$ for $u \in U_\gamma$ is the number of parquets $W \in \W_\gamma$ such that $u \in W$.
+		Thus, if we denote $\W_\gamma$ as the set of tiles $W$ obtained for every $V \in \V$ such that $V \equiv \gamma$, then $\score(u)$ for $u \in U_\gamma$ is the number of tiles $W \in \W_\gamma$ such that $u \in W$.
 		We calculate $\score(u)$ for every $u \in U_\gamma$ by sweeping $U_\gamma$ and $\W_\gamma$ in time $\tO(|U_\gamma| + |\W_\gamma|)$.
 		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|U| + |\V|) = \tO(n^2 + |\V|)$ operations in total.
 
@@ -1100,7 +1065,7 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 \end{lemma}
 
 \begin{lemma}\label{primitive}
-	For any simple subparquet $U$ we can find $w_0, \dots, w_3 \in \Z^2$, such that
+	For any simple subtile $U$ we can find $w_0, \dots, w_3 \in \Z^2$, such that
 	\[ |U \cap X| = \sum_{j = 0}^3 (-1)^j |(D + w_j) \cap X|\]
 	for every $X \subseteq \Z^2$.
 	If $U$ consists of vectors of length $\O(n)$, then $w_0, \dots, w_3$ are of length $\O(n)$.
@@ -1112,7 +1077,7 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 			\psi_1 = \max\set{{\s{u} : u \in U}}.
 		}
 		Note that these values can be extracted from the signature.
-		Since $U$ is a parquet, there exist unique points $u_0, \dots, u_3 \in U$, such that
+		Since $U$ is a tile, there exist unique points $u_0, \dots, u_3 \in U$, such that
 		\begin{itemize}
 			\item $\h{u_0} = \phi_0$ and $\s{u_0} = \psi_0$,
 			\item $\h{u_1} = \phi_1$ and $\s{u_1} = \psi_0$,
@@ -1129,10 +1094,10 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 	\end{proof}
 \end{lemma}
 
-\begin{theorem}\label{subparquet_convolution}
-	For a given list of signatures of simple subparquets $U_0, \dots, U_{\ell - 1}$, list of signatures of subparquets $V_0, \dots, V_{\ell - 1}$ and a set of vectors $Q$ we can calculate
+\begin{theorem}\label{subtile_convolution}
+	For a given list of signatures of simple subtiles $U_0, \dots, U_{\ell - 1}$, list of signatures of subtiles $V_0, \dots, V_{\ell - 1}$ and a set of vectors $Q$ we can calculate
 	\[ \sum_{i = 0}^{\ell - 1} |(U_i + q) \cap V_i| \]
-	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$, assuming that the subparquets only contain vectors of length $\O(m)$.
+	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$, assuming that the subtiles only contain vectors of length $\O(m)$.
 	\begin{proof}
 		We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$, so that we have
 		\eq{
@@ -1152,13 +1117,13 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 	We can calculate $|\d{P + q} \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
 	To calculate the values
 	\[ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| \]
-	we use the algorithm from \Cref{subparquet_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
+	we use the algorithm from \Cref{subtile_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
 \end{proof}
 
 
-% PARQUET DECOMPOSITION
-\subsection{Periodic parquet partitioning} \label{parquet_decomposition_proof}
-In this section we explore the properties of periodic (sub-)parquet strings (recall Definitions \ref{parquet_definition}, \ref{subparquet_definition}, \ref{parquet_string_definition}).
+% tile DECOMPOSITION
+\subsection{Periodic tile partitioning} \label{tile_decomposition_proof}
+In this section we explore the properties of periodic (sub-)tile strings (recall Definitions \ref{tile_definition}, \ref{subtile_definition}, \ref{tile_string_definition}).
 Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
 \begin{definition}[Lattice graph]
@@ -1169,7 +1134,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 
 
 \begin{lemma}\label{lattice_graph_connectivity}
-	If $U$ is a spacious subparquet, then $(U, \Edges(U))$ is connected.
+	If $U$ is a spacious subtile, then $(U, \Edges(U))$ is connected.
 	\begin{proof}
 		Assume the contrary.
 		Consider any pair of points $u, v \in U$, such that
@@ -1185,7 +1150,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 			\item $ U = [x_0, x_1] \times [y_0, y_1] \cap \set{w : w \in \Z^2, \h{w} \in [\phi_0, \phi_1], \s{w} \in [\psi_0, \psi_1], w \equiv u}$,
 			\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$.
 		\end{itemize}
-		They exist by definition of a spacious subparquet.
+		They exist by definition of a spacious subtile.
 		Recall that $\x{\phi} \ge 0$, $\y{\phi} \le 0$, $\x{\psi} \ge 0$, $\y{\psi} \ge 0$.
 		We have the following cases:
 		\begin{enumerate}[$1^\circ$]
@@ -1226,19 +1191,19 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
 	\end{center}
-	\caption{The partitioning of a simple subparquet string into monochromatic simple subparquet strings. Different colors represent different characters assigned to a point.}
-	\label{figure:parquet_decomposition}
+	\caption{The partitioning of a simple subtile string into monochromatic simple subtile strings. Different colors represent different characters assigned to a point.}
+	\label{figure:tile_decomposition}
 \end{figure}
 
 
 \begin{lemma}\label{monochromacy_condition}
-	A spacious subparquet string $S$ is monochromatic if and only if
+	A spacious subtile string $S$ is monochromatic if and only if
 	\[\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0.\]
 	\begin{proof}
 		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
 		Assume the contrary for the other implication.
 		Let $u, v \in \d{S}$ be such that $S(u) \neq S(v)$.
-		Since $\d{S}$ is a spacious subparquet, the graph $(\d{S}, \Edges(\d{S})$ is connected (by \Cref{lattice_graph_connectivity}) and there must exist a path between $u$ and $v$.
+		Since $\d{S}$ is a spacious subtile, the graph $(\d{S}, \Edges(\d{S})$ is connected (by \Cref{lattice_graph_connectivity}) and there must exist a path between $u$ and $v$.
 		On that path there must exist a pair of neighbors $w, w'$, such that $S(w) \neq S(w')$ and $w' = w + \delta$ for some $\delta \in \set{\phi, \psi}$.
 		If $\delta = \phi$, then $\Ham(S + \phi, S) \ge 1$ and if $\delta = \psi$, then $\Ham(S + \psi, S) \ge 1$ and we get a contradiction.
 	\end{proof}
@@ -1246,7 +1211,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 
 
 \begin{lemma}\label{cut_partitioning}
-	A spacious subparquet string $S$ can be partitioned in time $\tO(|\d{S}| + 1)$ into both the following sets of strings (we have two options):
+	A spacious subtile string $S$ can be partitioned in time $\tO(|\d{S}| + 1)$ into both the following sets of strings (we have two options):
 	\begin{enumerate}[a)]
 		\item a set of $\O(\Ham(S + \phi, S) + 1)$ strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
 		\item a set of $\O(\Ham(S + \psi, S) + 1)$ strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
@@ -1270,21 +1235,21 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 	\end{proof}
 \end{lemma}
 
-\ParquetDecomposition
+\tileDecomposition
 \begin{proof}
-	We partition $R$ into a set of subparquet strings $\S$, such that $|\S| = \O(\min\set{m, k})$.
+	We partition $R$ into a set of subtile strings $\S$, such that $|\S| = \O(\min\set{m, k})$.
 	Specifically, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a restriction of $R$ to $\d{R} \cap (\L + \gamma)$.
 	Observe that if $R$ is spacious, then all $S \in \S$ are spacious and if $R$ is simple, then all $S \in \S$ are simple.
 	We now partition each $S \in \S$ independently by using \Cref{cut_partitioning} (\ref{partition_a})
-	and construct a set of subparquet strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
+	and construct a set of subtile strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
 	Note that
 	\[ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),\]
 	since $R$ has an $\O(k)$-period $\phi$.
-	We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subparquet strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
+	We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subtile strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
 	Again we have
 	\[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
 	since $R$ has an $\O(k)$-period $\psi$.
-	The process is illustrated in \Cref{figure:parquet_decomposition}.
+	The process is illustrated in \Cref{figure:tile_decomposition}.
 	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
 	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
 	The total number of operations is $\tO(|\d{R}| + k)$.
@@ -1481,7 +1446,7 @@ We construct the set $\C$ consisting of all the obtained parallelograms $c$ and 
 We similarly divide the parallelograms in $\I$ (by \Cref{I_division}) and construct the sets $\C' = \set{p : p \in \I, p \cap \Z^2 \text{ is coverable}}$ and $\B' = \I \setminus \C'$.
 
 Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup \B'} b \cap \d{\Ta}$.
-Observe that all sets $U \in \U$ are coverable simple parquets, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
+Observe that all sets $U \in \U$ are coverable simple tiles, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
 
 The decomposition is illustrated in \Cref{figure:text_decomposition}.
 The points in the gray area are outside of the active text.
@@ -1489,7 +1454,7 @@ The parallelograms from $\C$ and $\C'$ are colored blue and green, respectively.
 The points outside of them (in the white area) form the peripheral set $V$.
 
 For each $U \in \U$ we construct the restriction of $T$ to $U$.
-By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{parquet_decomposition}, it can be partitioned into $\O(k)$ monochromatic simple subparquet strings.
+By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned into $\O(k)$ monochromatic simple subtile strings.
 Since $|\C'| \le |\I| = \O(\ell)$ (by \Cref{I_size_bound}) and $|\C| \le |\G| = \O(\ell)$, we have $|\U| = |\C| + |\C'| = \O(\ell)$, thus the total number of constructed strings is $\O(\ell k)$.
 
 Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-peripheral string.
