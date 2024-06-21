@@ -54,6 +54,16 @@
 \newcommand{\N}{\mathbb{N}}
 \renewcommand{\O}{\mathcal{O}}
 \newcommand{\tO}{\tilde{\mathcal{O}}}
+
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\T}{\mathcal{T}}
+\renewcommand{\S}{\mathcal{S}}
+\renewcommand{\P}{\mathcal{P}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\F}{\mathcal{F}}
+\renewcommand{\L}{\mathcal{L}}
+
 \renewcommand{\phi}{\varphi}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
 \newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
@@ -107,7 +117,12 @@
 
 \section{Introduction}
 
-Our results hold under the standard word-RAM model of computation with words of size $\Omega(\log n)$.
+We assume the standard word-RAM model of computation with words of size $\Omega(\log n)$.
+
+
+\begin{theorem}[Informal version of \cref{th:main}]
+Given a two-dimensional $m \times m$ string $P$ and a two-dimensional $n \times n$ string $T$, where $m,n \in \Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+\end{theorem}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -198,7 +213,7 @@ For every $i \in [m]$, define a one-dimensional string $P_i = P(i,1) P(i,2) \ldo
 We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
 
 \begin{fact}[{\cite{Galil1986}}]\label{fact:kangaroo1D}
-Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ times and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
+Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
 \end{fact}
 
 Let $\ID(T) = \ID(T_{1,1}) \ID(T_{1,2}) \ldots \ID(T_{1,n-m+1}) \ldots \ID(T_{n,1}) \ID(T_{n,2}) \ldots \ID(T_{n,n-m+1}))$ and $\ID(P) = \ID(P_1)\ID(P_2) \ldots \ID(P_m)$. 
@@ -264,7 +279,7 @@ The claim follows.
 \end{proof}
 
 \begin{corollary}\label{cor:sigman2d}
-Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot (w_P + w_T)(h_P + h_T) \log (w_P + w_T)(h_P + h_T))$, where $\sigma$ is the number of different characters present both in $P$ and $T$.
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot N \log N)$, where $\sigma$ is the number of different characters present both in $P$ and $T$ and $N = (w_P + w_T)(h_P + h_T)$.
 \end{corollary}
 \begin{proof}
 We replace all characters of $T$ non-present in $P$ with a new character in $\O(w_T\times h_T)$ time. The Hamming distances do not change. The claim then follows immediately from \cref{fact:sigman1d} and \cref{claim:padding}. 
@@ -272,7 +287,7 @@ We replace all characters of $T$ non-present in $P$ with a new character in $\O(
 
 
 \begin{corollary}\label{cor:approx2d}
-Let $\varepsilon > 0$ be a constant. Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in time $\O(((w_P+w_T)(h_P+h_T)/\varepsilon^2)  \log^3 m)$.
+Let $\varepsilon > 0$ be a constant. Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in time $\O((N/\varepsilon^2)  \log^3 N)$, where $N = (w_P + w_T)(h_P + h_T)$.
 \end{corollary}
 \begin{proof}
 The claim then follows from \cref{cor:approx1d} and \cref{claim:padding}. 
@@ -284,20 +299,150 @@ The claim then follows from \cref{cor:approx1d} and \cref{claim:padding}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Technical overview}
-Below, we focus on the text-to-pattern Hamming distances and the $k$-mismatch problem for two-dimensional strings $P$ and $T$, where $\dom{P} = [m] \times [m]$ and $\dom{T} = [n] \times [n]$ for $m, n \in \Z^+$. 
+We can now give a formal statement of our result:
+
+\begin{restatable}{theorem}{MainResult}\label{th:main}
+Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+\end{restatable}
+
+Below, we present the technical main ideas behind our result. Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+
+We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
+\begin{enumerate}
+\item For all $q \in \Z^2$ such that $\Ham(T, P+q) \le k$, we have $q \in Q$;
+\item For all $q \in Q$, we have $\Ham(T, P+q) \le 2 k$.
+\end{enumerate}
+
+If $|Q| \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $|Q| > 6m + m^2/k$. 
+\todo{is $m^2/k$ important?}
+
+% 2D PERIODICITY
+\subsection{Two-dimensional periodicity} \label{periodicity_section}
+We now define two-dimensional periods and use them to partition $P$ into one-character strings of regular form.
+
+%\begin{figure}[!t]
+%	\begin{center}
+%		\includegraphics[width=0.8\textwidth]{drawings/occurrences}
+%	\end{center}
+%	\caption{Occurrences with small approximated Hamming distance. Red points belong to $Q$.}
+%	\label{figure:occurrences}
+%\end{figure}
+
+
+\begin{definition}[Two-dimensional approximate period]
+We say that a string $S$ has an \emph{$\ell$-period} $\delta \in \Z^2$ when $\Ham(S + \delta, S) \le \ell$.
+\end{definition}
+
+
+\begin{claim} \label{periodicity_lemma}
+For all $u, v \in Q$, we have that $u - v \in \Z^2$ is a $\O(k)$-period of $P$.
+\end{claim}	
+\begin{proof}
+$\Ham(P + u - v, P) = \Ham(P + u, P + v) \le \Ham(P + u, T) + \Ham(T,P + v) = \O(k)$.
+\end{proof}
+
+As $Q$ is big, it generates two $\O(k)$-periods with a big angle between them and such that they and their negations belong to distinct quadrants of $\Z^2$: 
+
+\begin{restatable*}{theorem}{GetPeriods}\label{get_periods}
+Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $\ge 12\ell$. There is an $\tO(|U|)$-time algorithm that finds $u, v, u', v' \in U$, such that the following conditions hold for $\psi = u - v$ and $\phi = u' - v'$:
+	\begin{itemize}
+		\item $\psi \in (0, +\infty) \times [0, +\infty)$, $\phi \in [0, +\infty) \times (-\infty, 0)$;
+		\item $0 < |\psi||\phi| = \O(\ell^2 / |U|)$,
+		\item $\sin \alpha \ge \frac{1}{2}$, where $\alpha$ is the angle between $\psi$ and $\phi$.
+\todo{update the proof}
+	\end{itemize}
+\end{restatable*}
+
+Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $|Q| > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\O(|Q|)$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le |\phi||\psi| = \O(\ell^2 / |Q|) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
+
+\begin{definition}[Lattice congruency]\label{lattice_congruency}
+	We define $\L = \set{s\phi + t\psi : s, t \in \Z}$.
+	We say that two vectors $u, v \in \Z^2$ are \textbf{lattice-congruent}, denoted $u \equiv v$, when $u - v \in \L$.
+\end{definition}
+
+
+\begin{lemma} \label{lattice_base}
+	There exists a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and every point $u \in \Z^2$ is lattice-congruent to exactly one point $\gamma \in \Gamma$.
+	\begin{proof}
+		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$.
+		We construct $\Gamma = p \cap \Z^2$.
+		By Pick's Theorem, a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its area.
+		Observe that the points in $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
+		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $|\Gamma| = \O(\min\set{m, k})$.
+		
+		Now consider any point $u \in \Z^2$.
+		There exist some unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
+		$u = (s + s') \phi + (t + t') \psi$.
+		It is easy to see that
+		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
+	\end{proof}
+\end{lemma}
+
+
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/parquet}
+	\end{center}
+	\caption{All the points in the polygon form a parquet and the red points form a subparquet.}
+	\label{figure:parquet}
+\end{figure}
+
+
+\begin{definition}[Parquet]\label{parquet_definition}
+	We call a set $U \subseteq \Z^2$ a \textbf{parquet} when there exist some values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, which we will call its \textbf{signature}, such that
+	\[ U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. \]
+	See \Cref{figure:parquet} for an illustration.
+	\begin{enumerate}[a)]
+		\item If additionally $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, then $U$ is a \textbf{spacious} parquet.
+		\item If additionally $x_0, y_0 = -\infty$ and $x_1, y_1 = +\infty$, then $U$ is a \textbf{simple} parquet.
+	\end{enumerate}
+	Note that every simple parquet is spacious.
+\end{definition}
+
+
+\begin{definition}[Subparquet]\label{subparquet_definition}
+	We call a set $V \subseteq \Z^2$ a \textbf{subparquet} when there exists a parquet $U$ and a point $\gamma \in \Z^2$ such that
+	\[ V = \set{u : u \in U, u \equiv \gamma}.\]
+	This is also illustrated in \Cref{figure:parquet}.
+	A signature of $V$ consists of a signature of $U$ and the vector $\gamma$.
+	We call $V$ a spacious/simple subparquet when there exists $U$ which is (correspondingly) a spacious/simple parquet.
+	We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$.
+	We similarly define the lattice congruency between two subparquets.
+\end{definition}
+
+
+\begin{definition}[Parquet string]\label{parquet_string_definition}
+	We call a string $S$ a spacious/simple (sub-)parquet string when $\d{S}$ is a spacious/simple (sub-)parquet.
+\end{definition}
+
+
+\begin{restatable*}{theorem}{ParquetDecomposition}\label{parquet_decomposition}
+	A given spacious/simple parquet string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic spacious/simple subparquet strings, correspondingly.
+\end{restatable*}
+\begin{proof} See \Cref{parquet_decomposition_proof}. \end{proof}
+
+
+Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the $m \times m$ string $P$ is a spacious parquet string and satisfies the assumptions of \Cref{parquet_decomposition}.
+We partition $P$ into a set of strings $\V$.
+We then group the strings based on the single character they contain.
+Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct the set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$ (recall that we defined $\getchar{\cdot}$ in \cref{string_definition}).
+
+\begin{restatable*}{theorem}{SparseAlgo}\label{sparse_algo}
+	For a given set of monochromatic simple subparquet strings $\S$ we can calculate
+	\[ \sum_{S \in \S} \Ham(P + q, S) \]
+	for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$, assuming that the sets $\d{S}$ for $S \in \S$ are some pairwise disjoint subsets of $\d{T}$.
+\end{restatable*}
+\begin{proof} See \Cref{subparquet_convolution_proof}. \end{proof}
 
 
 
-
-
-	\subsection{Two-dimensional periodicity}
 
 	\subsection{Decomposition of the pattern}
 
 	\subsection{Decomposition of the text}
 
 	\subsection{Algorithm}
-Recall that we focus on the text-to-pattern Hamming distances and the $k$-mismatch problem for two-dimensional strings $P$ and $T$, where $\dom{P} = [m] \times [m]$ and $\dom{T} = [n] \times [n]$ for $m, n \in \Z^+$. Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -430,9 +575,7 @@ Finally, we sum up the number of mismatches for each relevant position in the te
 
 In this section we provide a detailed proof of the following theorem:
 
-\begin{restatable}{theorem}{MainResult}\label{main result}
-	Bounded \HD can be solved in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
-\end{restatable}
+
 
 We show an algorithm which works in time $\tO(m^2 + mk^{5/4})$, assuming $2|n$ and $m < n \le \frac{3}{2}m$.
 The solution for the general case follows from \Cref{instancing}. 
@@ -445,15 +588,6 @@ The next step is to calculate the exact value of $\Ham(P + q, T)$ for every $q \
 Let us consider the case when $|Q| \le 6m + m^2/k$.
 We can run the algorithm from \Cref{kangaroos} and by the fact that $\Ham(P + q, T) \le 4k$ for every $q \in Q$, it will perform $\tO(m^2 + mk)$ operations.
 We are left with the case when $|Q| > 6m + m^2/k$, in which we take advantage of the fact that some strings $P + q$ for $q \in Q$ must have a large overlap and small Hamming distance from each other, and thus $P$ must be periodic.
-
-
-\newcommand{\T}{\mathcal{T}}
-\renewcommand{\S}{\mathcal{S}}
-\renewcommand{\P}{\mathcal{P}}
-\newcommand{\U}{\mathcal{U}}
-\newcommand{\V}{\mathcal{V}}
-\newcommand{\F}{\mathcal{F}}
-\renewcommand{\L}{\mathcal{L}}
 
 
 % 2D PERIODICITY
@@ -485,8 +619,6 @@ We then select some special periods of the pattern and show how to decompose it 
 	\end{proof}
 \end{lemma}
 
-
-\newcommand{\Q}{\mathcal{Q}}
 \begin{restatable*}{theorem}{GetPeriods}\label{get_periods}
 	For a given $\ell \in \Z^+$ and a set of points $U \subseteq [\ell + 1]^2$, such that $|U| > 12\ell$, there exist $s, t, s', t' \in U$, such that the following conditions hold for $w = t - s$ and $w' = t' - s'$:
 	\begin{itemize}
