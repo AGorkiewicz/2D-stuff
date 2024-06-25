@@ -679,10 +679,10 @@ It can be easily shown that $w, w'$ satisfy the remaining conditions by the defi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Partitioning of the pattern and the text}
-
-
+The goal of this section is to show \cref{tile_decomposition} (which explains how to partition the pattern into monochromatic truncated subtile strings) and \cref{text_decomposition} (which explains how to partition the text). We start with a technical \cref{sec:lattices_subtiles}, which describes necessary properties of lattices and subtiles. 
+ 
 % tile DECOMPOSITION
-\subsection{Properties of lattices and truncated subtiles} \label{tile_decomposition_proof}
+\subsection{Properties of lattices and subtiles} \label{sec:lattices_subtiles}
 In this section we explore the properties of periodic (sub-)tile strings (recall Definitions \ref{tile_definition}, \ref{subtile_definition}, \ref{tile_string_definition}).
 Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
@@ -836,32 +836,29 @@ We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $|\
 \end{proof}
 
 
-\subsection{Text partitioning: Proof of \cref{text_decomposition}}
+\subsection{Text partitioning}
 While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\phi$ and $\psi$ as $\O(k)$-periods) into monochromatic truncated subtile strings, $T$ is not necessarily periodic, and we are obliged to extend \cref{tile_decomposition} further to obtain a partitioning for $T$. In this section, we show the following result:
 
 \TextDecomposition
 
-We will use a more geometrical approach and construct some lines and parallelograms.
-For the sake of simplicity, we will consider an empty set to be a valid parallelogram.
-Also, we assume that a parallelogram contains the points laying on its border and its vertices.
-
-
+\subsection{Proof of \cref{text_decomposition}}
+%We consider an empty set as a (triv) parallelogram.
+%Also, we assume that a parallelogram contains the points laying on its border and its vertices.
 
 \newcommand{\IQ}{\mathbb{R} \setminus \mathbb{Q}}
 \begin{observation}\label{line_existence}
-	For any given $\ell \in \Z^+$ and $v \in \Z^2$ we can find a sequence of parallel lines $f_0, f_1, \dots, f_\ell$, where $f_i = \set{u : u \in \R^2, v \times u = c_i}$ for some $c_i \in \IQ$, such that
+	For all $\ell \in \Z^+$ and $v \in \Z^2$ we can find a sequence of parallel lines $f_0, f_1, \dots, f_\ell$, where $f_i = \set{u : u \in \R^2, v \times u = c_i}$ for some $c_i \in \IQ$, such that
 	\begin{itemize}
 		\item $c_0 < v \times u < c_\ell$ for every $u \in [n]^2$, or namely, the set $[n]^2$ is between $f_0$ and $f_\ell$,
-		\item $0 < c_{i + 1} - c_i = \O(n|v| / \ell)$ for every $i \in [\ell]$, or namely, the distance between every two consecutive lines is $\O(n / \ell)$.
+		\item $0 < c_{i + 1} - c_i = \O(n|v| / \ell)$ for every $i \in [\ell]$. (Geometrically, this property implies that the distance between every two consecutive lines is $\O(n / \ell)$.)
 	\end{itemize}
 \end{observation}
 
 We use \Cref{line_existence} with $v = \phi$ to construct the lines $h_0, \dots, h_\ell$ and with $v = \psi$ to construct the lines $s_0, \dots, s_\ell$.
 For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as an intersection of $h_i$ and $s_j$ (since $\phi$ and $\psi$ are not colinear, $h_i$ and $s_j$ are not parallel).
-For every $i, j \in [\ell]$ we construct a parallelogram $p_{i, j}$ defined as the area between $s_i$ and $s_{i + 1}$ intersected with the area between $h_j$ and $h_{j + 1}$.
-Specifically,
-\[p_{i, j} = \set{u : u \in \R^2, \h{u} \in [\h{w_{i, j}}, \h{w_{i + 1, j + 1}}], \s{u} \in [\s{w_{i, j}}, \s{w_{i + 1, j + 1}}]}.\]
-For better reference, the vertices of $p_{i, j}$ are $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$.
+For every $i, j \in [\ell]$ we construct a parallelogram $p_{i, j}$ with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. 
+
+
 Observe that every $u \in [n]^2$ is contained strictly in the interior of exactly one parallelogram $p_{i, j}$.
 
 \begin{lemma}\label{monotonicity_lemma}
