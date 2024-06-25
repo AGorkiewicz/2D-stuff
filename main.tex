@@ -359,27 +359,8 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 \subsection{Partitionings of the pattern and the text}
 Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
 
-\todo{move below}
-\begin{lemma} \label{lattice_base}
-	There exists a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and every point $u \in \Z^2$ is lattice-congruent to exactly one point $\gamma \in \Gamma$.
-\end{lemma} 
-	\begin{proof}
-		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$.
-		We construct $\Gamma = p \cap \Z^2$.
-		By Pick's Theorem, a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its area.
-		Observe that the points in $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
-		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $|\Gamma| = \O(\min\set{m, k})$.
-		
-		Now consider any point $u \in \Z^2$.
-		There exist some unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
-		$u = (s + s') \phi + (t + t') \psi$.
-		It is easy to see that
-		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
-	\end{proof}
-
-
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
-We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that $u, v \in \Z^2$ are \textbf{congruent}, denoted $u \equiv v$, if $u - v \in \L$. 
+We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that $u, v \in \Z^2$ are \emph{congruent}, denoted $u \equiv v$, if $u - v \in \L$. 
 \end{definition}
 
 \begin{figure}[h!]
@@ -393,20 +374,24 @@ We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that
 \begin{definition}[Tile]\label{tile_definition}
 We call $U \subseteq \Z^2$ a \emph{tile} if there exist $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, such that
 	\[ U = \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. \]
-Geometrically, $U$ can be viewed as a set of integer points inside a parallelogram with sides collinear to 	$\phi$ and $\psi$. We call the values $\phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ its \emph{signature}. 
+We call the values $\phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ its \emph{signature}. 
 \end{definition}
+
+Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides collinear to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
 
 \begin{definition}[Truncated tile]
-We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x_1, y_0, y_1 \in \Z$ and $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that 
+We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x_1, y_0, y_1 \in \Z \cup \{-\infty, +\infty\}$ and $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that 
 	\begin{enumerate}
-		\item $U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}$. (Geometrically, it means that $U$ is a set of integer points in the intersection of an axis-parallel rectangle and a parallelogram with sides collinear to 	$\phi$ and $\psi$.)
-		\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$. (Geometrically, it means that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important.)
+		\item $U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}$. 
+		\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$. 
 	\end{enumerate}
-Analogously to above, we call the values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ its \emph{signature}. 
+The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are called its \emph{signature}. 
 \end{definition}
 
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possible, infinite) and a parallelogram with sides collinear to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
+
 \begin{definition}[Subtile]\label{subtile_definition}
-We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of a signature of $U$ and the vector $\gamma$.
+We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$.
 %We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$. We similarly define the lattice congruency between two subtiles.
 \end{definition}
 
@@ -421,7 +406,7 @@ A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S}
 \end{definition}
 
 \begin{restatable*}{theorem}{tileDecomposition}\label{tile_decomposition}
-	A given (truncated) tile string $R$ with $\O(k)$-periods $\phi$ and $\psi$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
+Assume to be given a (truncated) tile string $R$ such that $\phi, \psi$ are its $\O(k)$-periods. After $\O((\min\set{k,m})^2)$-time preprocessing of $\phi, \psi$, the string $R$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
 \end{restatable*}
 
 Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated tile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct a set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
@@ -476,13 +461,287 @@ By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Two-dimensional periodicity}
+\section{Two-dimensional periodicity: Proof of \cref{get_periods}}
+In this section, we show the following result that allows us to select two ``good'' periods of the pattern:
+
+\GetPeriods
+\begin{proof}
+We start by finding the closest pair of points in $U$.
+Specifically, we select any pair of different points $s, t \in U$, which minimizes $|t - s|$. 
+Such a pair can be obtained in $\O(|U| \log |U|)$ time~\cite{Clarkson1983}.
+We construct $w = t - s$.
+
+Denote the quadrants of the plane as follows:
+
+\begin{align*}
+&\Q_1 = (0,+\infty) \times [0,+\infty] \quad & \Q_2 = [-\infty,0] \times (0,+\infty)\\
+&\Q_3 = (-\infty,0) \times [-\infty,0] \quad & \Q_4 = [0,+\infty] \times (-\infty,0)
+\end{align*}
+
+Further, define a relation $\le_{w}$ on $\Z^2$ as follows. First, $u \le_w u$ for all $u \in \Z^2$ (i.e., the relation is \emph{reflexive}). Second, for $u \neq v$, $u, v \in \Z^2$, we have $v \le_w u$ iff at least one condition holds for $\delta = u - v$:
+\begin{enumerate}[(a)]
+	\item $w$ and $\delta$ belong to the same quadrant, \label{quadrant_condition}
+	\item The angle $\alpha$ between $w$ and $\delta$ is in $(-\pi / 6, \pi / 6)$. \label{angle_condition}
+\end{enumerate}
+
+Consider a vector $\rho$, where
+
+\begin{enumerate}
+	\item if $w \in \Q_1$, then $\rho = (+\sqrt{2} / 2, +\sqrt{2} / 2)$,
+	\item if $w \in \Q_2$, then $\rho = (-\sqrt{2} / 2, +\sqrt{2} / 2)$,
+	\item if $w \in \Q_3$, then $\rho = (-\sqrt{2} / 2, -\sqrt{2} / 2)$,
+	\item if $w \in \Q_4$, then $\rho = (+\sqrt{2} / 2, -\sqrt{2} / 2)$.
+\end{enumerate}
+
+Observe that the condition (\ref{quadrant_condition}) is equivalent to
+
+\begin{enumerate}[(a')]
+	\item $\alpha \in [-\pi / 4, \pi / 4)$, where $\alpha$ is the angle between $\rho$ and $\delta$.
+\end{enumerate}
+
+Let $\beta$ be the angle between $\rho$ and $w$. Similarly, the condition (\ref{angle_condition}) is equivalent to
+\begin{enumerate}[(b')]
+	\item $\alpha \in (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $\rho$ and $\delta$. 
+\end{enumerate}
+
+Hence, $\delta$ satisfies at least one of the conditions (\ref{quadrant_condition}) and (\ref{angle_condition}) iff 
+
+\begin{enumerate}[(c)]
+	\item $\alpha \in R = [-\pi / 4, \pi / 4) \cup (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $\rho$ and $\delta$. \label{joint_condition}
+\end{enumerate}
+
+Observe that $R$ is a continuous range of angles and $R \subseteq (-5 \pi / 12, 5 \pi / 12)$ since $\beta \in [-\frac{\pi}{4}, \frac{\pi}{4})$.  Hence, for all $\delta_1$ and $\delta_2$ satisfying (\ref{joint_condition}), $\delta_1 + \delta_2$ also satisfies it, and consequently $\le_w$ is a \emph{transitive} relation. It is also an \emph{antisymmetric} relation as we cannot have that both $\alpha$ and $\pi-\alpha$ belong to~$R$, and hence  $\le_w$ is a partial order.
+
+Hence, all $\delta \in \Z^2$ satisfying (\ref{joint_condition}) belong to a single half-plane and $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
+
+Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming.
+With an appropriate data structure we can do it in $\tO(|U|)$ operations, by using a method resembling LIS calculation. \todo{I couldn't find a reference. Haven't touched what's below.}
+
+\begin{lemma}\label{C_ineq}
+	$(|C| - 1) |w| < 6\ell$. 
+	\begin{proof}
+		Let $f = |C| - 1$ and
+		let $c_0, \dots, c_{f}$ denote the points in $C$, ordered so that $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
+		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
+		By definition of $w$, we have $|\delta_i| \ge |w|$,
+		and since $\delta_i \cdot \rho > |\delta_i| / 4$, we get
+		$\delta_i \cdot \rho > |w| / 4$ for every $i \in [f]$.
+		We have
+		\[ \sum_{i = 0}^{f - 1} \delta_i = c_f - c_0,\]
+		and thus
+		\[ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot \rho = (c_f - c_0) \cdot \rho \le \ell \sqrt{2}, \]
+		which gives us $(|C| - 1)|w| < 4\ell \sqrt{2} < 6\ell$.
+	\end{proof}
+\end{lemma}
+
+\begin{lemma}[Dilworth's theorem]\label{dilworth}
+	$|U| \le |C| |A|$.
+\end{lemma}
+
+We know that $|C| \ge 2$, since there exists a chain containing $s$ and $t$.
+By \cref{C_ineq}, we have
+\[ |C||w| / 2 \le (|C| - 1)|w| < 6\ell, \]
+and thus
+\[ |C| \le |C||w| < 12\ell. \]
+By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}
+\[12 \ell < |U| \le |C| |A| < 12\ell|A|,\]
+thus $|A| > 1$, which means $|A| \ge 2$.
+We select any pair of different vectors $s', t' \in A$, which minimizes $|t' - s'|$ and construct $w' = t' - s'$.
+We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
+
+\begin{lemma}\label{A_ineq}
+	$(|A| - 1) |w'| \le 2\ell$. 
+	\begin{proof}
+		Recall that $(-\pi / 4, \pi / 4) \subseteq r$.
+		Define a range of angles $R' = [\pi / 4, 3\pi / 4]$.
+		Consider any $u, v \in \Z^2$, such that $u \not \le_w v$ and $v \not \le_w u$.
+		It can be shown that the angle between $\rho$ and $\delta$ is in $R'$ for some $\delta \in \set{u - v, v - u}$.
+		Thus $|(u - v) \times \rho| \ge \sin(\pi / 4) |u - v||\rho| = |u - v|\sqrt{2} / 2$.
+		
+		Let $f = |A| - 1$ and let $a_0, \dots, a_{f}$ be the points in $A$ ordered such that $a_i \times \rho \le a_{i + 1} \times \rho$ for every $i \in [f]$.
+		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
+		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times \rho| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times \rho = |\delta_i \times \rho| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
+		We have
+		\[ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,\]
+		and thus
+		\[ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times \rho = (c_f - c_0) \times \rho \le \ell \sqrt{2}, \]
+		which gives us $(|A| - 1)|w| \le 2\ell$.
+	\end{proof}
+\end{lemma}
+
+By \Cref{A_ineq}, and since $|A| \ge 2$, we have
+\[|A||w'| \le 2(|A| - 1) |w'| \le 4\ell.\]
+Recall that $|C||w| < 12\ell$ and $|U| \le |C| |A|$. We can multiply the inequalities and obtain
+\[ |U||w||w'| \le |C||A||w||w'| < 48 \ell^2,\]
+which finally gives us
+\[|w||w'| < \frac{48\ell^2}{|U|} = \O(\ell^2 / |U|). \]
+It can be easily shown that $w, w'$ satisfy the remaining conditions by the definition of $\le_w$.
+\end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Partitionings of the pattern and the text}
+\section{Partitioning of the pattern and the text}
 
+
+% tile DECOMPOSITION
+\subsection{Properties of lattices and truncated subtiles} \label{tile_decomposition_proof}
+In this section we explore the properties of periodic (sub-)tile strings (recall Definitions \ref{tile_definition}, \ref{subtile_definition}, \ref{tile_string_definition}).
+Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
+
+\begin{lemma} \label{lattice_base}
+	There exists an algorithm that constructs in $\O((\min\set{k,m})^2)$ time a set of points $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists! \gamma \in \Gamma : u \equiv \gamma$.
+\end{lemma} 
+	\begin{proof}
+		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$ and $\Gamma = p \cap \Z^2$.
+		By Pick's Theorem, a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its area.
+		Observe that the elements of $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
+		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $|\Gamma| = \O(\min\set{m, k})$.
+		
+		Now consider any $u \in \Z^2$.
+		As $\phi, \psi$ are not collinear, there exist unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
+		$u = (s + s') \phi + (t + t') \psi$.
+		By definition, 
+		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
+		
+		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\psi},\y{\phi}]$. We have $|\Gamma'| = \O((|\x{\phi}|+|\x{\psi}|) \cdot (|\y{\phi}|+|\y{\psi}|)) = \O((\min\set{k,m})^2)$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
+	\end{proof}
+
+\begin{definition}[Lattice graph]
+	For a set $U \subseteq \Z^2$ we define its \emph{lattice graph} $(U, \Edges(U))$, where
+	\[ \Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U}\].
+\end{definition}
+Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi, \psi, -\phi, -\psi$ if they are contained in $U$.
+
+\begin{lemma}\label{lattice_graph_connectivity}
+	If $U$ is a truncated subtile, then $(U, \Edges(U))$ is connected.
+	\begin{proof}
+		Assume the contrary.
+		Consider $u, v = u + s \phi + t \psi \in U$ such that
+		\begin{itemize}
+			\item $u$ and $v$ belong to different connected components of $(U, \Edges(U))$,
+			\item $|s| + |t|$ is minimized.
+		\end{itemize}
+		W.l.o.g $s \ge 0$, since in the other case $u$ and $v$ can be swapped.
+		We now show that there exists $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $|s'| + |t'| < |s| + |t|$, which contradicts the minimality of $|s| + |t|$. 
+	
+		Let $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ and $\gamma \in \Z^2$ be the signature of $U$, meaning that
+		\begin{itemize}
+			\item $ U = [x_0, x_1] \times [y_0, y_1] \cap \set{z : z \in \Z^2, \h{z} \in [\phi_0, \phi_1], \s{z} \in [\psi_0, \psi_1], \gamma \equiv u}$,
+			\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$.
+		\end{itemize}
+		
+		Recall that $\x{\phi} \ge 0$, $\y{\phi} \le 0$, $\x{\psi} \ge 0$, $\y{\psi} \ge 0$. We have the following cases:
+		\begin{enumerate}[(a)]
+			\item \label{it:s0_tneg} If $s = 0$, then w.l.o.g. (up to swapping $u$ and $v$) $t > 0$. Let $w := u + \psi$. Observe that
+				\eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} \le \y{v}, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				and since $w \equiv u$, we get $w \in U$. 
+			
+			\item If $s > 0$ and $t = 0$, let $w := u + \phi$. Analogously, 
+				\eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} \le \y{v}, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				and since $w \equiv u$, we get $w \in U$. 
+			
+			\item If $s > 0$ and $t > 0$, let $w' := u + \phi$. \label{case_pos}
+				We have \eq{
+					\x{u} \le \x{w'} \le \x{v}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
+				}
+				If $w' \in U$, let $w = w'$.
+				If $w' \not \in U$, then since all other requirements are satisfied, we must have $\y{w'} \not \in [y_0, y_1]$.
+				Since $\y{w'} = \y{u} + \y{\phi} \le \y{u}$, we have $\y{u} + \y{\phi} \le y_0 - 1$, and
+				considering $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, we get $y_1 \ge \y{u} + \y{\psi}$.
+				Now let $w =: u + \psi$.
+				We have \eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} = \y{u} + \y{\psi} \le y_1, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				thus $w \in U$.
+			\item If $s > 0$ and $t < 0$, consider $w' = u + \phi$.
+				We have \eq{
+					\y{v} \le \y{w'} \le \y{u}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
+				}
+				If $w' \in U$, then $w = w'$.
+				Otherwise we can (similarly to (\ref{case_pos})) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$. 
+		\end{enumerate}
+		In all these cases, which are clearly exhaustive, either $|s| \ge |s'| = 0$ and $|t| > |t'| = 1$ or $|s| > |s'| = 1$ and $|t| \ge |t'| = 0$ and hence $|s'|+|t'| \le |s|+|t|$, a contradiction. 
+	\end{proof}
+\end{lemma}
+
+
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
+	\end{center}
+	\caption{The partitioning of a subtile string into monochromatic subtile strings. Different colors represent different characters.}
+	\label{figure:tile_decomposition}
+\end{figure}
+
+
+\begin{lemma}\label{monochromacy_condition}
+	A truncated subtile string $S$ is monochromatic iff
+	\[\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0.\]
+	\begin{proof}
+		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
+		Assume the contrary for the other implication.
+		Let $u, v \in \d{S}$ be such that $S(u) \neq S(v)$.
+		Since $\d{S}$ is a truncated subtile, the graph $(\d{S}, \Edges(\d{S})$ is connected by \Cref{lattice_graph_connectivity} and there must exist a path between $u$ and $v$.
+		On that path there must exist a pair of neighbors $w, w'$, such that $S(w) \neq S(w')$ and $w' = w + \delta$ for some $\delta \in \set{\phi, \psi}$.
+		If $\delta = \phi$, then $\Ham(S + \phi, S) \ge 1$ and if $\delta = \psi$, then $\Ham(S + \psi, S) \ge 1$ and we get a contradiction.
+	\end{proof}
+\end{lemma}
+
+
+\begin{lemma}\label{cut_partitioning}
+Given a truncated subtile string $S$. There is an algorithm that runs in time $\tO(|\d{S}| + 1)$ and constructs two partitionings:
+	\begin{enumerate}[(a)]
+		\item A partitioning of $S$ into a set of $\O(\Ham(S + \phi, S) + 1)$ (truncated) subtile strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
+		\item A partitioning of $S$ into a set of $\O(\Ham(S + \psi, S) + 1)$ strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
+	\end{enumerate}
+	\begin{proof}
+		First, consider option (\ref{partition_a}). We construct the set
+		\[ A = \set{\s{u} : u \in \d{S}, u + \phi \in \d{S}, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
+		and then sort its elements increasingly, creating a sequence $a_0, \dots, a_\ell$.
+		Note that $\ell \le \Ham(S + \phi, S) + 2$.
+		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to
+		$\set{u : u \in \d{S}, \s{u} \in [a_i, a_{i + 1})}$ for every $i \in [\ell]$.
+		Observe that $S_0, \dots, S_{\ell - 1}$ partition $S$ and that $\Ham(S_i + \phi, S_i) = 0$ for every $i \in [\ell]$.
+		If $S$ is a (truncated) subtile string, then the created strings are (truncated) subtile strings as well.
+	
+		Second, consider option (\ref{partition_b}). Similarly to above, we construct
+		\[ A = \set{\h{u} : u \in \d{S}, u + \psi \in \d{S}, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} \]
+		and then sort it increasingly, creating $a_0, \dots, a_\ell$, where $\ell \le \Ham(S + \psi, S) + 2$.
+		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to 
+		$\set{u : u \in \d{S}, \h{u} \in (a_i, a_{i + 1}]}$.
+	\end{proof}
+\end{lemma}
+
+
+\subsection{Partitioning of a periodic string}
+
+\tileDecomposition
+\begin{proof}
+We construct 
+
+	We partition $R$ into a set of subtile strings $\S$, such that $|\S| = \O(\min\set{m, k})$.
+	Specifically, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a restriction of $R$ to $\d{R} \cap (\L + \gamma)$.
+	Observe that if $R$ is spacious, then all $S \in \S$ are spacious and if $R$ is simple, then all $S \in \S$ are simple.
+	We now partition each $S \in \S$ independently by using \Cref{cut_partitioning} (\ref{partition_a})
+	and construct a set of subtile strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
+	Note that
+	\[ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),\]
+	since $R$ has an $\O(k)$-period $\phi$.
+	We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subtile strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
+	Again we have
+	\[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
+	since $R$ has an $\O(k)$-period $\psi$.
+	The process is illustrated in \Cref{figure:tile_decomposition}.
+	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
+	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
+	The total number of operations is $\tO(|\d{R}| + k)$.
+\end{proof}
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -781,110 +1040,6 @@ which, by \Cref{sum_of_h}, is $\tO(m^2 + md|\Sigma|)$.
 
 This section serves as the proof of the theorem, which we used to obtain the periods $\phi$ and $\psi$:
 
-\GetPeriods
-
-We start by finding the closest pair of points in $U$.
-Specifically, we select any pair of different points $s, t \in U$, which minimizes $|t - s|$. 
-Such pair can be obtained in $\tO(|U|)$ operations, for example with a sweep line method.
-We construct $w = t - s$.
-
-We define a partial order $\le_{w}$ on $\Z^2$, where we have $u \le_w u$ for every $u \in \Z^2$ and $v \le_w u$ for some pair of different points $u, v \in \Z^2$, when at least one condition holds for $\delta = u - v$:
-\begin{enumerate}[a)]
-	\item $w$ and $\delta$ belong to the same quadrant, \label{quadrant_condition}
-	\item $\alpha \in (-\pi / 6, \pi / 6)$, where $\alpha$ is the angle between $w$ and $\delta$. \label{angle_condition}
-\end{enumerate}
-Consider a vector $\rho$, where
-\begin{enumerate}[$1^\circ$]
-	\item if $w \in \Q_1$, then $\rho = (+\sqrt{2} / 2, +\sqrt{2} / 2)$,
-	\item if $w \in \Q_2$, then $\rho = (-\sqrt{2} / 2, +\sqrt{2} / 2)$,
-	\item if $w \in \Q_3$, then $\rho = (-\sqrt{2} / 2, -\sqrt{2} / 2)$,
-	\item if $w \in \Q_4$, then $\rho = (+\sqrt{2} / 2, -\sqrt{2} / 2)$.
-\end{enumerate}
-Observe that the condition (\ref{quadrant_condition}) is equivalent to
-\begin{enumerate}[a')]
-	\item $\alpha \in [-\pi / 4, \pi / 4)$, where $\alpha$ is the angle between $\rho$ and $\delta$.
-\end{enumerate}
-Let $\beta$ be the angle between $\rho$ and $w$. Similarly, the condition (\ref{angle_condition}) is equivalent to
-\begin{enumerate}[b')]
-	\item $\alpha \in (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $\rho$ and $\delta$. 
-\end{enumerate}
-Let $R = [-\pi / 4, \pi / 4) \cup (\beta - \pi / 6, \beta + \pi / 6)$. 
-We can see that the conditions (\ref{quadrant_condition}) and (\ref{angle_condition}) are thus equivalent to a single condition:
-\begin{enumerate}[A)]
-	\item $\alpha \in R$, where $\alpha$ is the angle between $\rho$ and $\delta$. \label{joint_condition}
-\end{enumerate}
-Observe that $R \subseteq (-5 \pi / 12, 5 \pi / 12)$ since $\beta \in [-\frac{\pi}{4}, \frac{\pi}{4})$.
-Thus, the vectors $\delta$, which satisfy (\ref{joint_condition}), belong to a single half-plane and they satisfy $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
-Also, since $r$ is a contiguous range of angles, for every $\delta_1$ and $\delta_2$ satisfying the condition, $\delta_1 + \delta_2$ also satisfies it.
-Thus, we can prove that for every $u_1, u_2, u_3 \in \Z^2$, such that $u_1 \le_w u_2$ and $u_2 \le_w u_3$, we have $u_1 \le_w u_3$ (meaning the relation is transitive).
-If $u_1 = u_2$ or $u_2 = u_3$, the proof is trivial.
-If not, observe that $\delta_1 = u_2 - u_1$ and $\delta_2 = u_3 - u_1$ satisfy the condition, 
-thus it also holds for $u_3 - u_1 = \delta_1 + \delta_2$.
-It is also easy to prove that $\le_w$ is asymmetric.
-
-Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming.
-With an appropriate data structure we can do it in $\tO(|U|)$ operations, by using a method resembling LIS calculation.
-
-\begin{lemma}\label{C_ineq}
-	$(|C| - 1) |w| < 6\ell$. 
-	\begin{proof}
-		Let $f = |C| - 1$ and
-		let $c_0, \dots, c_{f}$ denote the points in $C$, ordered so that $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
-		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
-		By definition of $w$, we have $|\delta_i| \ge |w|$,
-		and since $\delta_i \cdot \rho > |\delta_i| / 4$, we get
-		$\delta_i \cdot \rho > |w| / 4$ for every $i \in [f]$.
-		We have
-		\[ \sum_{i = 0}^{f - 1} \delta_i = c_f - c_0,\]
-		and thus
-		\[ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot \rho = (c_f - c_0) \cdot \rho \le \ell \sqrt{2}, \]
-		which gives us $(|C| - 1)|w| < 4\ell \sqrt{2} < 6\ell$.
-	\end{proof}
-\end{lemma}
-
-\begin{lemma}[Dilworth's theorem]\label{dilworth}
-	$|U| \le |C| |A|$.
-\end{lemma}
-
-We know that $|C| \ge 2$, since there exists a chain containing $s$ and $t$.
-By \cref{C_ineq}, we have
-\[ |C||w| / 2 \le (|C| - 1)|w| < 6\ell, \]
-and thus
-\[ |C| \le |C||w| < 12\ell. \]
-By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}
-\[12 \ell < |U| \le |C| |A| < 12\ell|A|,\]
-thus $|A| > 1$, which means $|A| \ge 2$.
-We select any pair of different vectors $s', t' \in A$, which minimizes $|t' - s'|$ and construct $w' = t' - s'$.
-We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
-
-\begin{lemma}\label{A_ineq}
-	$(|A| - 1) |w'| \le 2\ell$. 
-	\begin{proof}
-		Recall that $(-\pi / 4, \pi / 4) \subseteq r$.
-		Define a range of angles $R' = [\pi / 4, 3\pi / 4]$.
-		Consider any $u, v \in \Z^2$, such that $u \not \le_w v$ and $v \not \le_w u$.
-		It can be shown that the angle between $\rho$ and $\delta$ is in $R'$ for some $\delta \in \set{u - v, v - u}$.
-		Thus $|(u - v) \times \rho| \ge \sin(\pi / 4) |u - v||\rho| = |u - v|\sqrt{2} / 2$.
-		
-		Let $f = |A| - 1$ and let $a_0, \dots, a_{f}$ be the points in $A$ ordered such that $a_i \times \rho \le a_{i + 1} \times \rho$ for every $i \in [f]$.
-		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
-		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times \rho| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times \rho = |\delta_i \times \rho| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
-		We have
-		\[ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,\]
-		and thus
-		\[ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times \rho = (c_f - c_0) \times \rho \le \ell \sqrt{2}, \]
-		which gives us $(|A| - 1)|w| \le 2\ell$.
-	\end{proof}
-\end{lemma}
-
-By \Cref{A_ineq}, and since $|A| \ge 2$, we have
-\[|A||w'| \le 2(|A| - 1) |w'| \le 4\ell.\]
-Recall that $|C||w| < 12\ell$ and $|U| \le |C| |A|$. We can multiply the inequalities and obtain
-\[ |U||w||w'| \le |C||A||w||w'| < 48 \ell^2,\]
-which finally gives us
-\[|w||w'| < \frac{48\ell^2}{|U|} = \O(\ell^2 / |U|). \]
-It can be easily shown that $w, w'$ satisfy the remaining conditions by the definition of $\le_w$.
-
 
 % SUBtile CONVOLUTION
 \newcommand{\W}{\mathcal{W}}
@@ -981,139 +1136,7 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 \end{proof}
 
 
-% tile DECOMPOSITION
-\subsection{Periodic tile partitioning} \label{tile_decomposition_proof}
-In this section we explore the properties of periodic (sub-)tile strings (recall Definitions \ref{tile_definition}, \ref{subtile_definition}, \ref{tile_string_definition}).
-Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
-\begin{definition}[Lattice graph]
-	For a set $U \subseteq \Z^2$ we define its \textbf{lattice graph} $(U, \Edges(U))$, where
-	\[ \Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U},\] 
-	so every vector is connected with its translations by $\phi, \psi, -\phi, -\psi$, which are contained in $U$.
-\end{definition}
-
-
-\begin{lemma}\label{lattice_graph_connectivity}
-	If $U$ is a spacious subtile, then $(U, \Edges(U))$ is connected.
-	\begin{proof}
-		Assume the contrary.
-		Consider any pair of points $u, v \in U$, such that
-		\begin{itemize}
-			\item $u$ and $v$ belong to different connected components,
-			\item if we let $s, t \in \Z$ be such that $v = u + s \phi + t \psi$, then $|s| + |t|$ is minimized.
-		\end{itemize}
-		Let us assume that for such $u$ and $v = u + s \phi + t \psi$ we have $s \ge 0$, since in the other case they can be swapped.
-		We now show that there exists a point $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $|s'| + |t'| < |s| + |t|$, which contradicts the minimality of $|s| + |t|$. 
-	
-		Let $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ be such that
-		\begin{itemize}
-			\item $ U = [x_0, x_1] \times [y_0, y_1] \cap \set{w : w \in \Z^2, \h{w} \in [\phi_0, \phi_1], \s{w} \in [\psi_0, \psi_1], w \equiv u}$,
-			\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$.
-		\end{itemize}
-		They exist by definition of a spacious subtile.
-		Recall that $\x{\phi} \ge 0$, $\y{\phi} \le 0$, $\x{\psi} \ge 0$, $\y{\psi} \ge 0$.
-		We have the following cases:
-		\begin{enumerate}[$1^\circ$]
-			\item If $s = 0$ and $t > 0$, then $w = u + \psi$. Observe that
-				\eq{
-					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} \le \y{v}, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
-				}
-				and since $w \equiv u$, we get $w \in U$.
-			\item If $s = 0$ and $t < 0$, then $w = u - \psi$ and we can similarly show that $w \in U$, since
-				\[\x{v} \le \x{w} \le \x{u}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} \le \h{w} \le \h{u}, \quad \s{w} = \s{u}.\]
-			\item If $s > 0$ and $t = 0$, then $w = u + \phi$ and we get $w \in U$, since
-				\[\x{u} \le \x{w} \le \x{v}, \quad \y{v} \le \y{w} \le \y{u}, \quad \h{v} = \h{u}, \quad \s{v} \le \s{w} \le \s{u}.\]
-			\item If $s > 0$ and $t > 0$, consider the point $w' = u + \phi$. \label{case_pos}
-				We have \eq{
-					\x{u} \le \x{w'} \le \x{v}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
-				}
-				If $w' \in U$, then $w = w'$.
-				If $w' \not \in U$, then since all other requirements are satisfied, we must have $\y{w'} \not \in [y_0, y_1]$.
-				Since $\y{w'} = \y{u} + \y{\phi} \le \y{u}$, we have $\y{u} + \y{\phi} \le y_0 - 1$, and
-				considering $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, we get $y_1 \ge \y{u} + \y{\psi}$.
-				Now let $w = u + \psi$.
-				We have \eq{
-					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} = \y{u} + \y{\psi} \le y_1, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
-				}
-				thus $w \in U$.
-			\item If $s > 0$ and $t < 0$, consider $w' = u + \phi$.
-				We have \eq{
-					\y{v} \le \y{w'} \le \y{u}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
-				}
-				If $w' \in U$, then $w = w'$.
-				Otherwise we can (similarly to $\ref{case_pos}^\circ$) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$. \qedhere
-		\end{enumerate}
-	\end{proof}
-\end{lemma}
-
-
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
-	\end{center}
-	\caption{The partitioning of a simple subtile string into monochromatic simple subtile strings. Different colors represent different characters assigned to a point.}
-	\label{figure:tile_decomposition}
-\end{figure}
-
-
-\begin{lemma}\label{monochromacy_condition}
-	A spacious subtile string $S$ is monochromatic if and only if
-	\[\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0.\]
-	\begin{proof}
-		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
-		Assume the contrary for the other implication.
-		Let $u, v \in \d{S}$ be such that $S(u) \neq S(v)$.
-		Since $\d{S}$ is a spacious subtile, the graph $(\d{S}, \Edges(\d{S})$ is connected (by \Cref{lattice_graph_connectivity}) and there must exist a path between $u$ and $v$.
-		On that path there must exist a pair of neighbors $w, w'$, such that $S(w) \neq S(w')$ and $w' = w + \delta$ for some $\delta \in \set{\phi, \psi}$.
-		If $\delta = \phi$, then $\Ham(S + \phi, S) \ge 1$ and if $\delta = \psi$, then $\Ham(S + \psi, S) \ge 1$ and we get a contradiction.
-	\end{proof}
-\end{lemma}
-
-
-\begin{lemma}\label{cut_partitioning}
-	A spacious subtile string $S$ can be partitioned in time $\tO(|\d{S}| + 1)$ into both the following sets of strings (we have two options):
-	\begin{enumerate}[a)]
-		\item a set of $\O(\Ham(S + \phi, S) + 1)$ strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
-		\item a set of $\O(\Ham(S + \psi, S) + 1)$ strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
-	\end{enumerate}
-	All the obtained strings are spacious and if $S$ is simple, they are simple.
-	\begin{proof}
-		Let us consider option (\ref{partition_a}). We construct the set
-		\[ A = \set{\s{u} : u \in \d{S}, u + \phi \in \d{S}, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
-		and then sort its elements increasingly, creating a sequence $a_0, \dots, a_\ell$.
-		Note that $\ell \le \Ham(S + \phi, S) + 2$.
-		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to
-		$\set{u : u \in \d{S}, \s{u} \in [a_i, a_{i + 1})}$ for every $i \in [\ell]$.
-		Observe that $S_0, \dots, S_{\ell - 1}$ partition $S$ and that $\Ham(S_i + \phi, S_i) = 0$ for every $i \in [\ell]$.
-		Also, is $S$ is spacious, then they are spacious and if $S$ is simple, then they are simple.
-	
-		In the case of option (\ref{partition_b}), we similarly construct
-		\[ A = \set{\h{u} : u \in \d{S}, u + \psi \in \d{S}, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} \]
-		and then sort it increasingly, creating $a_0, \dots, a_\ell$, where $\ell \le \Ham(S + \psi, S) + 2$.
-		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to 
-		$\set{u : u \in \d{S}, \h{u} \in (a_i, a_{i + 1}]}$.
-	\end{proof}
-\end{lemma}
-
-\tileDecomposition
-\begin{proof}
-	We partition $R$ into a set of subtile strings $\S$, such that $|\S| = \O(\min\set{m, k})$.
-	Specifically, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a restriction of $R$ to $\d{R} \cap (\L + \gamma)$.
-	Observe that if $R$ is spacious, then all $S \in \S$ are spacious and if $R$ is simple, then all $S \in \S$ are simple.
-	We now partition each $S \in \S$ independently by using \Cref{cut_partitioning} (\ref{partition_a})
-	and construct a set of subtile strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
-	Note that
-	\[ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),\]
-	since $R$ has an $\O(k)$-period $\phi$.
-	We now partition each $S' \in \S'$ by using \Cref{cut_partitioning} (\ref{partition_b}) and construct a set of subtile strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
-	Again we have
-	\[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
-	since $R$ has an $\O(k)$-period $\psi$.
-	The process is illustrated in \Cref{figure:tile_decomposition}.
-	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
-	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
-	The total number of operations is $\tO(|\d{R}| + k)$.
-\end{proof}
 
 % TEXT DECOMPOSITION
 \subsection{Active text decomposition} \label{text_decomposition_proof}
