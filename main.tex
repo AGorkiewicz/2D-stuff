@@ -527,7 +527,7 @@ For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{|
 \end{definition}
 
 \begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
-Given $\ell \in \Z^+$, one can partition $T_a$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and a $\O(m / \ell)$-peripheral string.
+Given $\ell \in [2m]$, one can partition $T_a$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and a $\O(m / \ell)$-peripheral string.
 \end{restatable*}
 
 \subsection{Algorithm}
@@ -841,310 +841,127 @@ While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\phi$
 
 \TextDecomposition
 
+
 \subsection{Proof of \cref{text_decomposition}}
-%We consider an empty set as a (triv) parallelogram.
-%Also, we assume that a parallelogram contains the points laying on its border and its vertices.
+We assume that a parallelogram contains its border and its vertices.
 
-\newcommand{\IQ}{\mathbb{R} \setminus \mathbb{Q}}
-\begin{observation}\label{line_existence}
-	For all $\ell \in \Z^+$ and $v \in \Z^2$ we can find a sequence of parallel lines $f_0, f_1, \dots, f_\ell$, where $f_i = \set{u : u \in \R^2, v \times u = c_i}$ for some $c_i \in \IQ$, such that
-	\begin{itemize}
-		\item $c_0 < v \times u < c_\ell$ for every $u \in [n]^2$, or namely, the set $[n]^2$ is between $f_0$ and $f_\ell$,
-		\item $0 < c_{i + 1} - c_i = \O(n|v| / \ell)$ for every $i \in [\ell]$. (Geometrically, this property implies that the distance between every two consecutive lines is $\O(n / \ell)$.)
-	\end{itemize}
-\end{observation}
+\begin{definition}[Parallelogram grid]
+For $\ell \in \Z^+$, consider a sequence of $\ell+1$  distinct lines $h_0, \dots, h_\ell$ parallel to $\psi$ and a sequence of $\ell+1$ distinct lines $v_0, \dots, v_\ell$ parallel to $\phi$. For every $i, j \in [\ell + 1]$ let $w_{i, j}$ be the intersection of $h_i$ and $v_j$ (since $\phi$ and $\psi$ are not collinear, it is well-defined). For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i-1, j-1}, w_{i, j-1}, w_{i-1, j}, w_{i, j }$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
+\end{definition}
 
-We use \Cref{line_existence} with $v = \phi$ to construct the lines $h_0, \dots, h_\ell$ and with $v = \psi$ to construct the lines $s_0, \dots, s_\ell$.
-For every $i, j \in [\ell + 1]$ we construct a point $w_{i, j}$ as an intersection of $h_i$ and $s_j$ (since $\phi$ and $\psi$ are not colinear, $h_i$ and $s_j$ are not parallel).
-For every $i, j \in [\ell]$ we construct a parallelogram $p_{i, j}$ with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. 
+\begin{restatable}{lemma}{parallelogram_grid}\label{lm:parallelogram_grid}
+For all $\ell \in \Z^+$, we can construct in $\O(\ell)$ time two sequences of lines defining a parallelogram grid $p_{i,j}$, where $i,j \in [\ell+1]$, which satisfies each of the following:
+\begin{enumerate}[(a)]
+\item \label{it:unique} For all $u \in [n] \times [n]$, there exist unique $i,j$ such that $u \in p_{i,j}$.
 
+\item \label{it:small_parallelogram} For all $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $|u - v| = \O(n / \ell)$.
 
-Observe that every $u \in [n]^2$ is contained strictly in the interior of exactly one parallelogram $p_{i, j}$.
-
-\begin{lemma}\label{monotonicity_lemma}
-	For every $i \in [\ell - 1]$ and $j \in [\ell]$ we have
+\item \label{it:monotonicity} For all $i \in [\ell - 1]$ and $j \in [\ell]$ we have
 	\eq{
-	\min \X(p_{i, j}) < \min \X(p_{i + 1, j}), \quad
-	&\min \Y(p_{i, j}) \le \min \Y(p_{i + 1, j}), \\
-	\max \X(p_{i, j}) < \max \X(p_{i + 1, j}), \quad
-	&\max \Y(p_{i, j}) \le \max \Y(p_{i + 1, j})
+	&\min \X(p_{i, j}) < \min \X(p_{i + 1, j}) &\min \Y(p_{i, j}) \le \min \Y(p_{i + 1, j}) \\
+	&\max \X(p_{i, j}) < \max \X(p_{i + 1, j})  &\max \Y(p_{i, j}) \le \max \Y(p_{i + 1, j})
 	}
-	and for every $i \in [\ell]$ and $j \in [\ell - 1]$ we have
+	
+For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
 	\eq{
-		\min \X(p_{i, j}) \ge \min \X(p_{i, j + 1}), \quad
-		&\min \Y(p_{i, j}) < \min \Y(p_{i, j + 1}), \\
-		\max \X(p_{i, j}) \ge \max \X(p_{i, j + 1}), \quad
-		&\max \Y(p_{i, j}) < \max \Y(p_{i, j + 1}).
+		&\min \X(p_{i, j}) \ge \min \X(p_{i, j + 1})  &\min \Y(p_{i, j}) < \min \Y(p_{i, j + 1}) \\
+		&\max \X(p_{i, j}) \ge \max \X(p_{i, j + 1})  &\max \Y(p_{i, j}) < \max \Y(p_{i, j + 1})
 	}
+\end{enumerate}
+\end{restatable}
+
+\todo{we need a picture here}
+
+Intuitively, it suffices to take a sequence of $\ell+1$ equispaced lines parallel to $\psi$ and a sequence of $\ell+1$ equispaced lines parallel to $\phi$ (see \todo{reference the figure}). The first property then follows from the fact that the angle between $\psi$ and $\varphi$ is in $[\pi/3,2\pi/3]$ (hence, the parallelograms in the grid cannot be too ``stretched out''). The second property is implied by the fact that $\psi$ is in the first quarter and $\phi$ in the forth quarter. A formal proof, which uses nothing but standard arithmetic, can be found in Appendix.  
+
+We apply \Cref{lm:parallelogram_grid} to construct a parallelogram grid $\{p_{i,j}\}$ of size $\ell$. If $\exists i, j \in [\ell] : \max \X(p_{i, j}) - \min \X(p_{i, j}) \ge m / 4$, then by \Cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}) we have $m / 4 \le \max \X(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$. In this case, we can return a trivial partitioning where the set of monochromatic subtile strings is empty and $F = \Ta$, since $\Ta$ is $\O(m)$-peripheral. We can use an analogous argument if $\exists i,j \in \ell : \max \Y(p_{i, j}) - \min \Y(p_{i, j}) \ge m / 4$. Below we assume $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. 
+
+%Again observe that for every $u \in [n]^2$ there exists exactly one parallelogram $p \in \G \cup \I$, such that $u \in p$, and since the sides of $p$ do not contain integer points, $u$ lays strictly inside $p$.
+
+\begin{definition}
+A set $U \subseteq \Z^2$ is \emph{coverable} if $U \subseteq \d{P + q}$ for some $q \in Q$.
+\end{definition}
+
+The following claim gives the intuition behind this definition:
+
+\begin{claim}\label{coverable is periodic}
+	The restriction of $T$ to a coverable set has $\O(k)$-periods $\phi$ and $\psi$.
+\end{claim}	
 	\begin{proof}
-		It follows from the fact that we selected $\phi \in [0, +\infty) \times (-\infty, 0)$ and $\psi \in (0, +\infty) \times [0, +\infty)$.
-		For example, to prove the first inequality, we can consider a point $u \in p_{i + 1, j}$, such that $\x{u} = \min \X(p_{i + 1, j})$
-		and then construct a point $v \in p_{i, j}$, such that $v = u - t\psi$ for some $t > 0$, and thus $\min \X(p_{i, j}) \le \x{v} < \x{u} = \min \X(p_{i + 1, j})$.
-		The other inequalities can be proven analogously.
-	\end{proof}
-\end{lemma}
+		Let $R$ denote the restriction. For $q \in Q$, such that $\d{R} \subseteq \d{P + q}$ we have
+\begin{align*}
+&\Ham(R + \phi, R) \le \\
+&\Ham(R + \phi, P + q + \phi) + \Ham(P + q + \phi, P + q) + \Ham(P + q, R) \le \\
+&\Ham(T, P + q) + \Ham(P + \phi, P) + \Ham(P + q, T) = \O(k)
+\end{align*}
+and identically $\Ham(R + \psi, R) = \O(k)$.
+\end{proof}
 
-\begin{restatable*}{lemma}{DistanceBoundLemma}\label{distance_bound_lemma}
-	For every $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $|u - v| = \O(n / \ell)$.
-\end{restatable*}
-\begin{proof} See \Cref{distance_bound_lemma_proof}. \end{proof}
-
-Consider the case when $\max \X(p_{i, j}) - \min \X(p_{i, j}) \ge m / 4$ for some $i, j \in [\ell]$.
-By \Cref{distance_bound_lemma}, we would have $m / 4 \le \max \X(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$.
-In that case we can return a trivial partitioning where $F = \Ta$ and the set of monochromatic strings is empty, since $\Ta$ is $\O(m)$-peripheral.
-We can use the same argument if we have $\max \Y(p_{i, j}) - \min \Y(p_{i, j}) \ge m / 4$ for some $i, j \in [\ell]$.
-Thus, from now on we will assume that $\max X_{i, j} - \min X_{i, j} < m / 4$ and $\max Y_{i, j} - \min Y_{i, j} < m / 4$ for every $i, j \in [\ell]$. 
-
-Let $z = \frac{n - 1}{2}$. 
-We split the plane with two lines $x = z$ and $y = z$ into four quarters:
+Let $z = \frac{n - 1}{2}$. Split the 2D plane with two lines $x = z$ and $y = z$ into four quarters:
 \begin{enumerate}[1)]
 	\item $K_1 = (z, +\infty) \times (z, +\infty)$,
 	\item $K_2 = (-\infty, z) \times (z, +\infty)$,
 	\item $K_3 = (-\infty, z) \times (-\infty, z)$,
 	\item $K_4 = (z, +\infty) \times (-\infty, z)$.
 \end{enumerate}
+
 \newcommand{\I}{\mathcal{I}}
 \newcommand{\G}{\mathcal{G}}
 \newcommand{\C}{\mathcal{C}}
-Let us denote by $\I$ the set of all parallelograms $p_{i, j}$, such that they intersect with the line $x = z$ or with the line $y = z$ (or both).
-Observe that every parallelogram $p_{i, j} \not \in \I$ must be fully contained in one of the quarters, meaning $p_{i, j} \subseteq K_d$ for some $d \in \set{1, \dots, 4}$.
 
-\begin{lemma}\label{I_size_bound}
-	$|\I| = \O(\ell).$
-	\begin{proof}
-		Consider the line $x = z$, denoted $f$.
-		It intersects with every line $h_0, \dots, h_\ell$ at most once (and does not overlap with any of them).
-		Similarly, it intersects with every line $s_0, \dots, s_\ell$ at most once.
-		Denote the set of such intersections as $U$.
-		For every parallelogram $p \in \I$, there must exist $u \in U$, such that $u \in p$.
-		For every $u \in U$, there are at most four parallelograms $p \in \I$, such that $u \in p$,
-		thus the number of parallelograms intersecting with $f$ is at most $4|U| = \O(\ell)$.
-		We can identically bound the number of parallelograms intersecting with the line $y = z$, and thus get $|\I| = \O(\ell)$.
-	\end{proof}
-\end{lemma}
-
-Now consider any $j \in [\ell]$.
-By \Cref{monotonicity_lemma}, we can find $s, t \in [\ell + 1]$, such that the sequence $p_{0, j}, \dots, p_{\ell - 1, j}$ is split into three groups:
-\begin{enumerate}[a)]
-	\item $p_{0, j}, \dots, p_{s - 1, j}$, which includes only parallelograms fully contained in $K_3$, \label{full in 3}
-	\item $p_{s, j}, \dots, p_{t - 1, j}$, which does not include any parallelogram fully contained in $K_1$ or $K_3$,
-	\item $p_{t, j}, \dots, p_{\ell - 1, j}$, which includes only parallelograms fully contained in $K_1$. \label{full in 1}
-\end{enumerate}
-We now ''merge together'' the parallelograms from group (\ref{full in 3}) and from group (\ref{full in 1}).
-Specifically, we construct
-\[
-g^3_j = \bigcup_{i = 0}^{s - 1} p_{i, j}, \quad 
-g^1_j = \bigcup_{i = t}^{\ell - 1} p_{i, j}.
-\]
-We do it for every $j \in [\ell]$.
-Observe that the sets $g^1_0, \dots, g^1_{\ell - 1}$ are are parallelograms (possibly empty) and that they cover the same area as all the fully contained in $K_1$ parallelograms $p_{i, j}$.
-The same is true for $g^3_0, \dots, g^3_{\ell - 1}$ and the parallelograms in $K_3$. 
-
-Now for every $i \in [\ell]$ we similarly find $s, t \in [\ell + 1]$, such that the sequence $p_{i, 0}, \dots, p_{i, \ell - 1}$ is split into three groups:
-\begin{enumerate}[a)]
-	\item $p_{i, 0}, \dots, p_{i, s - 1}$, which includes only parallelograms fully contained in $K_4$,
-	\item $p_{i, s}, \dots, p_{i, t - 1}$, which does not include any parallelogram fully contained in $K_2$ or $K_4$,
-	\item $p_{i, t}, \dots, p_{i, \ell - 1}$, which includes only parallelograms fully contained in $K_2$,
-\end{enumerate}
-and then construct
-\[
-g^4_i = \bigcup_{j = 0}^{s - 1} p_{i, j}, \quad 
-g^2_i = \bigcup_{j = t}^{\ell - 1} p_{i, j}.
-\]
-We denote
-\[
-\G = \set{g^1_0, \dots, g^1_{\ell - 1}}  
-\cup \set{g^2_0, \dots, g^2_{\ell - 1}}
-\cup \set{g^3_0, \dots, g^3_{\ell - 1}}
-\cup \set{g^4_0, \dots, g^4_{\ell - 1}}.
-\]
-Again observe that for every $u \in [n]^2$ there exists exactly one parallelogram $p \in \G \cup \I$, such that $u \in p$, and since the sides of $p$ do not contain integer points, $u$ lays strictly inside $p$.
-
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/text_decomposition}
-	\end{center}
-	\caption{The parallelograms from $\C$ (blue) and $\C'$ (green).}
-	\label{figure:text_decomposition}
-\end{figure}
-
-\begin{definition}[Coverability]
-	We say that a set $U \subseteq \Z^2$ is \textbf{coverable} if $U \subseteq \d{P + q}$ for some $q \in Q$.
-\end{definition}
-
-\begin{lemma}\label{I_division}
-	For every $p \in \I$, the set $p \cap \Z^2$ is either coverable or $\O(n / \ell)$-peripheral.
-	\begin{proof}
-		Consider any $p \in \I$.
-		Since the other cases are rotationally symmetric, assume that it intersects with some point $s \in \R^2$, such that $\x{s} = z$ and $\y{s} \ge z$.
-		Let $v = (\floor{\max \X(p), \max \Y(p)})$.
-		We have $\x{v} \ge \floor{z} = n / 2 - 1$ and $\y{v} \ge \floor{z} = n / 2 - 1$.
-		If $v \not \in \d{\Ta}$, we can see that by \Cref{distance_bound_lemma},
-		$|u - v| = \O(n / \ell)$ for every $u \in p \cap \Z^2$, thus $p$ is $\O(n / \ell)$-peripheral.
-		If $v \in \d{\Ta}$, there exists $q \in Q$, such that $v \in [m]^2 + q$.
-		Consider any $u \in p \cap \Z^2$.
-		By the assumption that $\max \X(p) - \min \X(p) < m / 4$ and $\max \Y(p) - \min \Y(p) < m / 4$ we get
-		\eq{
-			\x{u} \ge n / 2 - m / 4 \ge n - m \ge \x{q},\\ 
-			\y{u} \ge n / 2 - m / 4 \ge n - m \ge \y{q},
-		}
-		and since $\x{u} \le \x{v} \le \x{q} + m - 1$ and $\y{u} \le \y{v} \le \y{q} + m - 1$, we get $u \in [m]^2 + q$, thus $U \subseteq [m]^2 + q$.
-	\end{proof}
-\end{lemma}
-
-\begin{lemma}\label{coverable is periodic}
-	The restriction of $T$ to a coverable set has $\O(k)$-periods $\phi$ and $\psi$.
-	\begin{proof}
-		Let $R$ denote the restriction. For $q \in Q$, such that $\d{R} \subseteq \d{P + q}$ we have
-		\eq{
-			\Ham(R + \phi, R) \le \Ham(R + \phi, P + q + \phi) + \Ham(P + q + \phi, P + q) + \Ham(P + q, R) \le \\
-			\le \Ham(T, P + q) + \Ham(P + \phi, P) + \Ham(P + q, T) = \O(k)
-		}
-		and identically $\Ham(R + \psi, R) = \O(k)$.
-	\end{proof}
-\end{lemma}
-
-\begin{lemma}\label{parallelogram_split_lemma}
-	For every $g \in \G$ we can construct two parallelograms $c$ and $b$, such that
-	\begin{itemize}
-		\item $c \cap \Z^2$ is coverable,
-		\item $b \cap \Z^2$ is $\O(n / \ell)$-peripheral,
-		\item $g \cap \Z^2$ is partitioned into $b \cap \Z^2$ and $c \cap \Z^2$.
-	\end{itemize}
-	\begin{proof} See the next section (\ref{parallelogram_split_lemma_proof}). \end{proof}
-\end{lemma}
-
-\newcommand{\B}{\mathcal{B}}
-
-We split every non-empty parallelogram $g \in \G$ (by \Cref{parallelogram_split_lemma}) into parallelograms $c$ and $b$.
-We construct the set $\C$ consisting of all the obtained parallelograms $c$ and a set $\B$ consisting of all the obtained parallelograms $b$.
-
-We similarly divide the parallelograms in $\I$ (by \Cref{I_division}) and construct the sets $\C' = \set{p : p \in \I, p \cap \Z^2 \text{ is coverable}}$ and $\B' = \I \setminus \C'$.
-
-Now construct $\U = \set{c \cap \Z^2 : c \in \C \cup \C'}$ and $V = \bigcup_{b \in \B \cup \B'} b \cap \d{\Ta}$.
-Observe that all sets $U \in \U$ are coverable simple tiles, the set $V$ is $\O(n / \ell)$-peripheral, and $\d{\Ta}$ is partitioned into sets $\U \cup \set{V}$.
-
-The decomposition is illustrated in \Cref{figure:text_decomposition}.
-The points in the gray area are outside of the active text.
-The parallelograms from $\C$ and $\C'$ are colored blue and green, respectively.
-The points outside of them (in the white area) form the peripheral set $V$.
-
-For each $U \in \U$ we construct the restriction of $T$ to $U$.
-By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned into $\O(k)$ monochromatic simple subtile strings.
-Since $|\C'| \le |\I| = \O(\ell)$ (by \Cref{I_size_bound}) and $|\C| \le |\G| = \O(\ell)$, we have $|\U| = |\C| + |\C'| = \O(\ell)$, thus the total number of constructed strings is $\O(\ell k)$.
-
-Finally, we construct the restriction of $T$ to $V$, which is a $\O(n / \ell)$-peripheral string.
-
-
-% PROOF OF SPLIT LEMMA
-\subsubsection{Parallelogram splitting} \label{parallelogram_split_lemma_proof}
-
-This section serves as the proof of \Cref{parallelogram_split_lemma}, introduced at the end of the previous section (\ref{text_decomposition_proof}).
-Since for an empty parallelogram the proof is trivial, consider a non-empty set $g^1_j$ for some $j \in [\ell]$.
-We will explore some properties of the part of the text contained in $K_1$ specifically, which then can be generalized to other quarters by symmetry.
-
-\begin{lemma}\label{coverability_condition}
-	Every set $U \subseteq K_1 \cap \Z^2$, such that $(\max \X(U), \max \Y(U)) \in \Ta$ is coverable.
-	\begin{proof}
-		Let $v = (\max \X(U), \max \Y(U))$.
-		By assumption, there exists $q \in Q$, such that $v \in [m]^2 + q$.
-		For every $u \in U$ we have
-		$\x{q} \le n - m \le n / 2 \le \x{u} \le \x{v} < \x{q} + m$
-		and $\y{q} \le n - m \le n / 2 \le \y{u} \le \y{v} < \y{q} + m$,
-		thus $u \in [m]^2 + q$.
-	\end{proof}
-\end{lemma}
-
-\begin{observation}\label{domination_lemma}
-	By \Cref{coverability_condition}, there does not exist a pair of points $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. 
-\end{observation}
-
-Recall that there exists $t \in [\ell + 1]$, such that
-$ g^1_j = \bigcup_{i = t}^{\ell - 1} p_{i, j}.$
-We find 
-\[ f = \min\set{i : i \in \set{t, \dots, \ell - 1}, (\floor{\max \X(p_{i, j})}, \floor{\max \Y(p_{i, j})}) \in \Z^2 \setminus \d{\Ta}}.\]
-If the minimum does not exist, we consider $f = \ell$.
-We then construct the parallelograms
-\[c = \bigcup_{i = 0}^{f - 1} p_{i, j}, \quad b = \bigcup_{i = f}^{\ell - 1} p_{i, j}.\]
-
-We now show that the set $c \cap \Z^2$ is coverable.
-If $c \cap \Z^2$ is empty, then it is coverable, so let us assume it is not.
-In that case $f > 0$.
-It is clear that $c \cap \Z^2 \subseteq K_1$.
-By \Cref{monotonicity_lemma}, we have 
-\eq{
-	\max \X(c) = \max \X(p_{f - 1, j}), \\
-	\max \X(c) = \max \Y(p_{f - 1, j}),
-}
-and thus
-\eq{
-	\max \X(c \cap \Z^2) &\le \floor{\max \X(c)} = \floor{\max \X(p_{f - 1, j})}, \\
-	\max \Y(c \cap \Z^2) &\le \floor{\max \Y(c)} = \floor{\max \Y(p_{f - 1, j})}.
-}
-
-We see that $(\max \X(c \cap \Z^2), \max \Y(c \cap \Z^2)) \in \d{\Ta}$, since it would otherwise contradict \Cref{domination_lemma},
-considering that
-$(\floor{\max \X(p_{f - 1, j})}, \floor{\max \Y(p_{f - 1, j})}) \in \d{\Ta}$.
-We see that $c \cap \Z^2$ satisfies the conditions of \Cref{coverability_condition}, thus $c \cap \Z^2$ is coverable.
-
-We now show that the set $b \cap \Z^2$ is $\O(n / \ell)$-peripheral.
-If it is empty, then the proof is trivial, so let us assume it is not.
-In that case $f < \ell$.
-Denote $v = (\floor{\max \X(p_{f, j})}, \floor{\max \Y(p_{f, j})})$.
-By definition, $v \in \Z^2 \setminus \d{\Ta}$.
-Consider any point $u \in b \cap \Z^2$.
-There exists exactly one $i \in \set{f, \dots, \ell - 1}$, such that $u$ lays strictly inside $p_{i, j}$.
-Let $w = (\floor{\max \X(p_{i, j})}, \floor{\max \Y(p_{i, j})})$.
-By \Cref{monotonicity_lemma}, we have $\x{w} \ge \x{v}$ and $\y{w} \ge \y{v}$, and by considering \Cref{domination_lemma},
-we get $w \in \Z^2 \setminus \d{\Ta}$.
-Finally, by \Cref{distance_bound_lemma}, we get $|u - w| = \O(n / \ell)$.
-
-The constructions for $g^2_i$, $g^3_j$, $g^4_i$ are rotationally symmetric.
-
-
-% PROOF OF DISTANCE BOUND
-\subsubsection{Parallelogram span bounds} \label{distance_bound_lemma_proof}
-
-In this section we will establish a distance bound for points laying inside or in the proximity of the constructed parallelograms.
-Consider any fixed $p_{i, j}$ for some $i, j \in [\ell]$.
-We first show some auxiliary (weaker) lemmas, which we then use to prove \Cref{distance_bound_lemma}.
-
-\begin{lemma}\label{distance_bound_aux}
-	For every $u, v \in p_{i, j}$, we have $|u - v| = \O(n / \ell)$.
-	\begin{proof}
-		Consider any $u, v \in p_{i, j}$ and denote $w = u - v$.
-		By definition of $p_{i, j}$, we have
-		\[ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| = \O(n|\phi| / \ell) \]
-		and similarly $|\s{w}| = \O(n|\psi| / \ell)$.
-		Since $\phi$ and $\psi$ are not colinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$.
-		Recall that by \Cref{get_periods} we have $|\phi \times \psi| \ge \frac{1}{2}|\phi||\psi|$ (since $|\sin \alpha| \ge 1/2$), thus
-		\[ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), \]
-		which gives us $|t\phi| = \O(n / \ell)$.
-		We can similarly prove that $|s\psi| = \O(n / \ell)$ and finally
-		\[ |w| = |s\phi + t\psi| \le |s\phi| + |t\psi| = \O(n / \ell). \]
-	\end{proof}
-\end{lemma}
-
-\begin{lemma}\label{distance_bound_aux2}
-	For every point $u \in \X(p_{i, j}) \times \Y(p_{i, j})$ there exists a point $v \in p_{i, j}$, such that $|u - v| = \O(n / \ell)$.
-	\begin{proof}
-		There exists a point $w \in p_{i, j}$, such that $\x{u} = \x{w}$, and a point $v \in p_{i, j}$, such that $\y{u} = \y{v}$.
-		By \Cref{distance_bound_aux}, we have
-		\[|u - v| = |\x{u} - \x{v}| = |\x{w} - \x{v}| \le |w - v| = \O(n / \ell).\] 
-	\end{proof}
-\end{lemma}
-
-\DistanceBoundLemma
+\begin{claim}\label{coverable}
+Let $P$ be a union of parallelograms which have a non-empty intersection with $K_1$. If $v = (\max \X(P), \max \Y(P)) \in \d{\Ta}$, then $U = P \cap \Z^2$ is coverable. (For $K_2$, an analogous claim is true with $v: = (\min \X(P), \max \Y(P))$, for $K_3$ with $v : = (\min \X(P), \min \Y(P))$, and for $K^4$ with $v : = (\max \X(P), \min \Y(P))$.)
+\end{claim}
 \begin{proof}
-	Consider any $u, v \in p_{i, j}$.
-	By \Cref{distance_bound_aux2}, there exist $u', v' \in p_{i, j}$ such that $|u - u'| = \O(n / \ell)$ and $|v - v'| = \O(n / \ell)$.
-	By \Cref{distance_bound_aux}, we have
-	\[ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). \]
+As $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. Let $z = \frac{n - 1}{2}$. As $P$ is a union of parallelograms which have a non-empty intersection with $K_1$, we have $\x{v} \ge z$ and $\y{v} \ge z$. Recall that we assume $n \le \frac{3}{2} m$ and $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. Therefore, for all $u \in U$ we have
+\begin{align}
+&\x{q} \le n-m \le n/2-m/4 \le \x{u} \le \x{v} \le \x{q} + m-1\\
+&\y{q} \le n-m \le n/2-m/4 \le \y{u} \le \y{v} \le \y{q} + m-1 
+\end{align}
+\noindent Consequently, $U \subseteq [m]^2+q$ and hence coverable.
 \end{proof}
 
+\begin{claim}\label{peripheral}
+For all $i,j \in [\ell]$, the set $U = p_{i,j} \cap \Z^2$ is $\O(n / \ell)$-peripheral if one of the points $(\min \X(P), \min \Y(i,j))$, $(\min \X(P), \max \Y(i,j))$, $(\max \X(P), \min \Y(i,j))$, $(\max \X(P), \max \Y(i,j))$ is not in $\d{\Ta}$.
+\end{claim}
+\begin{proof}
+W.l.o.g., $v = (\max \X(P), \max \Y(i,j)) \notin \d{\Ta}$. For all $u \in U$, we have $|u-v| = \O(n / \ell)$ by \cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}), and hence $U$ is $\O(n / \ell)$-peripheral.
+\end{proof}
 
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}\label{lm:parallelogram_merge}
+Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\mathcal{P}$ of $\O(\ell)$ parallelograms such that for every $p \in \mathcal{P}$ the set $p \cap Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
+\end{lemma}
+\begin{proof}
+By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid} (\ref{it:monotonicity}), and \ref{coverable_peripheral}, for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
+\begin{enumerate}
+	\item A parallelogram $P_j^1 = \bigcup_{i=1}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
+	\item A parallelogram $P_j^2 = \bigcup_{i=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
+	\item Parallelograms $p_{s, j}, \dots, p_{t - 1, j}$ are not fully contained neither in $K_1$ nor in $K_3$,
+	\item A parallelogram $P_j^3 = \bigcup_{i=t}^{t'-1} p_{i, j} \cup \Z^2$ is coverable,
+	\item A parallelogram $P_j^4 = \bigcup_{i=t'}^{\ell} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral.
+\end{enumerate}
+
+Similarly, for every $i \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
+\begin{enumerate}
+	\item A parallelogram $R_i^1 = \bigcup_{j=0}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
+	\item A parallelogram $R_i^2 = \bigcup_{j=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
+	\item Parallelograms $p_{i, s}, \dots, p_{i, t-1}$ are not fully contained neither in $K_1$ nor in $K_3$,
+	\item A parallelogram $R_i^3 = \bigcup_{j=t}^{t'-1} p_{i, j} \cup \Z^2$ is coverable,
+	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
+\end{enumerate}
+
+Note that there are $\O(\ell)$ parallelograms $P_j^x$ and $R_i^x$ for $i,j \in [\ell]$ and $x \in [4]$ and that they cover all parallelograms $p_{i,j}$ but those that are not fully contained in any of the quarters, in other words, the parallelograms $p_{i, j}$ intersecting  at least one of the lines $x = z$ and $y = z$. Denote the set of such parallelograms by $\I$. 
+
+By \cref{coverable} and \cref{peripheral}, for each parallelogram $p_{i,j} \in \I$ the set $p_{i,j} \cap Z^2$ is either coverable or $\O(n/\ell)$-peripheral. Furthermore, $|\I| = \O(\ell)$. Consider a set $U_x$ of intersections of grid lines different from $x=z$ with the line and a set $U_y$ of intersections of grid lines different from $y=z$. Every parallelogram in $\I$ contains $u \in U_x \cup U_y$, and every $u \in \Z^2$ can be contained in at most four parallelograms, implying the bound. 
+
+The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in [4]\} \cup \{R_j^x : j \in [\ell], x \in [4]\}$ satisfies the claim of the lemma. It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
+\end{proof}
+
+We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(|\d{R}| + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P_2}} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
+
+This concludes the proof of \cref{text_decomposition}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Algorithm}
@@ -1214,7 +1031,7 @@ We now introduce two major theorems regarding peripheral strings, the first of w
 
 \subsubsection{Peripheral convolution} \label{sigma_border_proof}
 
-This section serves as the proof of the theorem we just used to prove \Cref{dense_algo}:
+This section serves as the proof of the theorem we just used to prove \Cref{dense_algo}: 
 
 \SigmaBorder
 
@@ -1421,22 +1238,91 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 	we use the algorithm from \Cref{subtile_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
 \end{proof}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \bibliographystyle{plainurl}
 \bibliography{references}
+\appendix
+\section{Parallelogram grid}
+\todo{Rewrite this}
+\begin{observation}\label{line_existence}
+	For all $\ell \in \Z^+$ and $v \in \Z^2$ we can find a sequence of parallel lines $f_0, f_1, \dots, f_\ell$, where $f_i = \set{u : u \in \R^2, v \times u = c_i}$ for some $c_i$, such that
+	\begin{itemize}
+		\item $c_0 < v \times u < c_\ell$ for every $u \in [n]^2$, or namely, the set $[n]^2$ is between $f_0$ and $f_\ell$,
+		\item $0 < c_{i + 1} - c_i = \O(n|v| / \ell)$ for every $i \in [\ell]$. (Geometrically, this property implies that the distance between every two consecutive lines is $\O(n / \ell)$.)
+	\end{itemize}
+\end{observation}
 
+We use \Cref{line_existence} with $v = \phi$ to construct the lines $h_0, \dots, h_\ell$ and with $v = \psi$ to construct the lines $s_0, \dots, s_\ell$.
+
+
+
+Observe that every $u \in [n]^2$ is contained strictly in the interior of exactly one parallelogram $p_{i, j}$.
+
+\begin{lemma}\label{monotonicity_lemma}
+	For every $i \in [\ell - 1]$ and $j \in [\ell]$ we have
+	\eq{
+	\min \X(p_{i, j}) < \min \X(p_{i + 1, j}), \quad
+	&\min \Y(p_{i, j}) \le \min \Y(p_{i + 1, j}), \\
+	\max \X(p_{i, j}) < \max \X(p_{i + 1, j}), \quad
+	&\max \Y(p_{i, j}) \le \max \Y(p_{i + 1, j})
+	}
+	and for every $i \in [\ell]$ and $j \in [\ell - 1]$ we have
+	\eq{
+		\min \X(p_{i, j}) \ge \min \X(p_{i, j + 1}), \quad
+		&\min \Y(p_{i, j}) < \min \Y(p_{i, j + 1}), \\
+		\max \X(p_{i, j}) \ge \max \X(p_{i, j + 1}), \quad
+		&\max \Y(p_{i, j}) < \max \Y(p_{i, j + 1}).
+	}
+	\begin{proof}
+		It follows from the fact that we selected $\phi \in [0, +\infty) \times (-\infty, 0)$ and $\psi \in (0, +\infty) \times [0, +\infty)$.
+		For example, to prove the first inequality, we can consider a point $u \in p_{i + 1, j}$, such that $\x{u} = \min \X(p_{i + 1, j})$
+		and then construct a point $v \in p_{i, j}$, such that $v = u - t\psi$ for some $t > 0$, and thus $\min \X(p_{i, j}) \le \x{v} < \x{u} = \min \X(p_{i + 1, j})$.
+		The other inequalities can be proven analogously.
+	\end{proof}
+\end{lemma}
+
+\begin{restatable*}{lemma}{DistanceBoundLemma}\label{distance_bound_lemma}
+	For every $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $|u - v| = \O(n / \ell)$.
+\end{restatable*}
+\begin{proof} See \Cref{distance_bound_lemma_proof}. \end{proof}
+
+% PROOF OF DISTANCE BOUND
+\subsubsection{Parallelogram span bounds} \label{distance_bound_lemma_proof}
+
+In this section we will establish a distance bound for points laying inside or in the proximity of the constructed parallelograms.
+Consider any fixed $p_{i, j}$ for some $i, j \in [\ell]$.
+We first show some auxiliary (weaker) lemmas, which we then use to prove \Cref{distance_bound_lemma}.
+
+\begin{lemma}\label{distance_bound_aux}
+	For every $u, v \in p_{i, j}$, we have $|u - v| = \O(n / \ell)$.
+	\begin{proof}
+		Consider any $u, v \in p_{i, j}$ and denote $w = u - v$.
+		By definition of $p_{i, j}$, we have
+		\[ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| = \O(n|\phi| / \ell) \]
+		and similarly $|\s{w}| = \O(n|\psi| / \ell)$.
+		Since $\phi$ and $\psi$ are not colinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$.
+		Recall that by \Cref{get_periods} we have $|\phi \times \psi| \ge \frac{1}{2}|\phi||\psi|$ (since $|\sin \alpha| \ge 1/2$), thus
+		\[ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), \]
+		which gives us $|t\phi| = \O(n / \ell)$.
+		We can similarly prove that $|s\psi| = \O(n / \ell)$ and finally
+		\[ |w| = |s\phi + t\psi| \le |s\phi| + |t\psi| = \O(n / \ell). \]
+	\end{proof}
+\end{lemma}
+
+\begin{lemma}\label{distance_bound_aux2}
+	For every point $u \in \X(p_{i, j}) \times \Y(p_{i, j})$ there exists a point $v \in p_{i, j}$, such that $|u - v| = \O(n / \ell)$.
+	\begin{proof}
+		There exists a point $w \in p_{i, j}$, such that $\x{u} = \x{w}$, and a point $v \in p_{i, j}$, such that $\y{u} = \y{v}$.
+		By \Cref{distance_bound_aux}, we have
+		\[|u - v| = |\x{u} - \x{v}| = |\x{w} - \x{v}| \le |w - v| = \O(n / \ell).\] 
+	\end{proof}
+\end{lemma}
+
+\DistanceBoundLemma
+\begin{proof}
+	Consider any $u, v \in p_{i, j}$.
+	By \Cref{distance_bound_aux2}, there exist $u', v' \in p_{i, j}$ such that $|u - u'| = \O(n / \ell)$ and $|v - v'| = \O(n / \ell)$.
+	By \Cref{distance_bound_aux}, we have
+	\[ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). \]
+\end{proof}
 \end{document}
 
