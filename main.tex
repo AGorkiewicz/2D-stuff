@@ -49,6 +49,9 @@
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 
+%\crefname{claim}{claim}{claims}
+\crefname{claim}{Claim}{Claims}
+
 \def\dd{\mathinner{.\,.}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -80,6 +83,8 @@
 \DeclareMathOperator*{\ID}{Id}
 \DeclareMathOperator*{\dom}{dom}
 \DeclareMathOperator*{\chrome}{C}
+
+\newcommand{\absolute}[1]{\lvert#1\rvert}
 
 \newcommand{\defproblem}[3]{
 \vspace{2mm}
@@ -561,118 +566,94 @@ By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO
 \section{Two-dimensional periodicity: Proof of \cref{get_periods}}
 In this section, we show the following result that allows us to select two ``good'' periods of the pattern:
 
+%\def\newrel{\le_{\rho, z}}
+%\begin{lemma}
+%Let $\ell \in \mathbb Z^+$ and $U \subseteq [\ell + 1]^2$. Let $z \in [0, \pi/2]$, $\rho \in \mathbb Z^2$, and let $R = [-z, +z]$. Let $\newrel$ be a relation defined as follows. For every $u \in U$, it holds $u \newrel u$. For $u, v \in U$ with $u \neq v$, it holds $u \newrel v$ if and only if the angle between $(v - u)$ and $\rho$ is within $R$. Then $\newrel$ is a partial order.
+%\end{lemma}
+
 \GetPeriods
 \begin{proof}
 We start by finding the closest pair of points in $U$.
 Specifically, we select any pair of different points $s, t \in U$, which minimizes $|t - s|$. 
 Such a pair can be obtained in $\O(|U| \log |U|)$ time~\cite{Clarkson1983}.
 We construct $w = t - s$.
-
-Denote the quadrants of the plane as follows:
-
+%
+Denote the quadrants of the plane as follows:%
+%
 \begin{align*}
-&\Q_1 = (0,+\infty) \times [0,+\infty] \quad & \Q_2 = [-\infty,0] \times (0,+\infty)\\
-&\Q_3 = (-\infty,0) \times [-\infty,0] \quad & \Q_4 = [0,+\infty] \times (-\infty,0)
+&\Q_1 = (0,\ell+1] \times [0,\ell+1], \quad & \Q_2 = [-(\ell+1),0] \times (0,\ell+1),\\
+&\Q_3 = [-(\ell+1),0) \times [-(\ell+1),0], \quad & \Q_4 = [0,\ell+1] \times [-(\ell+1),0).
 \end{align*}
+%
+We will compute a vector $w'$ with the following properties. If $w \in \Q_i$, then $w' \in \Q_{(i \bmod 4) + 1}$, i.e., $w'$ is in the counterclockwise neighbouring quadrant of $w$. Further, it holds $0 < |w||w'| = \O(\ell^2 / |U|)$, and $\sin \alpha \ge \frac{1}{2}$, where $\alpha$ is the angle between $w$ and $w'$. Depending on $i$, we then report $\psi$ and $\phi$ as follows. If $i = 1$, then $\psi = w$ and $\phi = -w'$. If $i = 2$, then $\psi = -w'$ and $\phi = -w$. If $i = 3$, then $\psi = -w$ and $\phi = w'$. If $i = 4$, then $\psi = w'$ and $\phi = w$. Clearly, this satisfies the claimed properties.
 
-Further, define a relation $\le_{w}$ on $\Z^2$ as follows. First, $u \le_w u$ for all $u \in \Z^2$ (i.e., the relation is \emph{reflexive}). Second, for $u \neq v$, $u, v \in \Z^2$, we have $v \le_w u$ iff at least one condition holds for $\delta = u - v$:
-\begin{enumerate}[(a)]
-	\item $w$ and $\delta$ belong to the same quadrant, \label{quadrant_condition}
-	\item The angle $\alpha$ between $w$ and $\delta$ is in $(-\pi / 6, \pi / 6)$. \label{angle_condition}
-\end{enumerate}
 
-Consider a vector $\rho$, where
+Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are symmetric). 
+Let $\rho = ({\sqrt{2}} / 2,{\sqrt{2}} / 2)$ be the diagonal that splits $\Q_1$ in half, truncated to unit length.
+We define a relation $\le_{w}$ on $\Z^2$ as follows. First, $u \le_w u$ for all $u \in \Z^2$ (i.e., the relation is \emph{reflexive}). Second, for $u, v \in \Z^2$ with $u \neq v$, we have $u \le_w v$ if and only if the angle $\beta$ between $\rho$ and $\delta = (v - u)$ is in $R = [-5\pi/12, 5\pi/12]$. Geometrically speaking, this is the case if $\delta$ points into $\Q_1$ extended with the respective adjacent 30 degrees of $\Q_2$ and $\Q_4$, which is visualized in \cref{TODO}.
 
-\begin{enumerate}
-	\item if $w \in \Q_1$, then $\rho = (+\sqrt{2} / 2, +\sqrt{2} / 2)$,
-	\item if $w \in \Q_2$, then $\rho = (-\sqrt{2} / 2, +\sqrt{2} / 2)$,
-	\item if $w \in \Q_3$, then $\rho = (-\sqrt{2} / 2, -\sqrt{2} / 2)$,
-	\item if $w \in \Q_4$, then $\rho = (+\sqrt{2} / 2, -\sqrt{2} / 2)$.
-\end{enumerate}
+Assume that there is a third vector $v' \in \Z^2$ such that $u \leq v \leq_{w} v'$ and $u \neq v \neq v'$. Let $\delta' = (v' - v)$, then the angle $\beta'$ between $\rho$ and $\delta'$ is in $R$.
+Due to $\{\beta, \beta'\} \subseteq R$, and since $R$ is a consecutive range, it is clear that the angle $(\beta + \beta')/2$ between $(v' - u) = \delta + \delta'$ and $\rho$ is also in $R$. Thus, it holds $u \le_{w} v'$ and the relation $\le_{w}$ is \emph{transitive}.
+It is also an \emph{antisymmetric} relation as it cannot be that both $\beta$ and $\pi-\beta$ belong to~$R$. We have shown that $\le_w$ is a partial order.
+Note that, if $u \le_{w} v$ with $u \neq v$, then $\delta = (v - u)$ satisfies
+%
+$$%
+%2\sqrt{2} \cdot (\delta.x + \delta.y) = 
+4 \cdot (\delta \cdot \rho) \geq 
+4 \cdot \cos(5\pi/12)\absolute{\delta}\absolute{\rho} = 
+4 \cdot \cos(5\pi/12)\absolute{\delta} > \absolute{\delta} \geq \absolute{w},$$
+%
+where the last inequality holds by design of $w$. In a moment, we will show that we can compute the longest chain $C$ and antichain $A$ with respect to $U$ and $\le_{w}$ in $\tO(\absolute{U})$ time. Now we show that, given $A$ and $C$, we can find the vector $w'$ with the desired properties in $\tO(U)$ time.
 
-Observe that the condition (\ref{quadrant_condition}) is equivalent to
+%Hence, all $\delta \in \Z^2$ satisfying (\ref{joint_condition}) belong to a single half-plane and $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
 
-\begin{enumerate}[(a')]
-	\item $\alpha \in [-\pi / 4, \pi / 4)$, where $\alpha$ is the angle between $\rho$ and $\delta$.
-\end{enumerate}
+%Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming.
+%With an appropriate data structure we can do it in $\tO(|U|)$ operations, by using a method resembling LIS calculation. \todo{I couldn't find a reference. Haven't touched what's below.}
 
-Let $\beta$ be the angle between $\rho$ and $w$. Similarly, the condition (\ref{angle_condition}) is equivalent to
-\begin{enumerate}[(b')]
-	\item $\alpha \in (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $\rho$ and $\delta$. 
-\end{enumerate}
-
-Hence, $\delta$ satisfies at least one of the conditions (\ref{quadrant_condition}) and (\ref{angle_condition}) iff 
-
-\begin{enumerate}[(c)]
-	\item $\alpha \in R = [-\pi / 4, \pi / 4) \cup (\beta - \pi / 6, \beta + \pi / 6)$, where $\alpha$ is the angle between $\rho$ and $\delta$. \label{joint_condition}
-\end{enumerate}
-
-Observe that $R$ is a continuous range of angles and $R \subseteq (-5 \pi / 12, 5 \pi / 12)$ since $\beta \in [-\frac{\pi}{4}, \frac{\pi}{4})$.  Hence, for all $\delta_1$ and $\delta_2$ satisfying (\ref{joint_condition}), $\delta_1 + \delta_2$ also satisfies it, and consequently $\le_w$ is a \emph{transitive} relation. It is also an \emph{antisymmetric} relation as we cannot have that both $\alpha$ and $\pi-\alpha$ belong to~$R$, and hence  $\le_w$ is a partial order.
-
-Hence, all $\delta \in \Z^2$ satisfying (\ref{joint_condition}) belong to a single half-plane and $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
-
-Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming.
-With an appropriate data structure we can do it in $\tO(|U|)$ operations, by using a method resembling LIS calculation. \todo{I couldn't find a reference. Haven't touched what's below.}
-
-\begin{lemma}\label{C_ineq}
-	$(|C| - 1) |w| < 6\ell$. 
+\begin{claim}\label{C_ineq}
+	$\absolute{C} \cdot \absolute{w} < 12\ell$. 
 	\begin{proof}
 		Let $f = |C| - 1$ and
 		let $c_0, \dots, c_{f}$ denote the points in $C$, ordered so that $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
 		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
-		By definition of $w$, we have $|\delta_i| \ge |w|$,
-		and since $\delta_i \cdot \rho > |\delta_i| / 4$, we get
-		$\delta_i \cdot \rho > |w| / 4$ for every $i \in [f]$.
-		We have
-		\[ \sum_{i = 0}^{f - 1} \delta_i = c_f - c_0,\]
-		and thus
-		\[ f|w| / 4 < \sum_{i = 0}^{f - 1} \delta_i \cdot \rho = (c_f - c_0) \cdot \rho \le \ell \sqrt{2}, \]
-		which gives us $(|C| - 1)|w| < 4\ell \sqrt{2} < 6\ell$.
-	\end{proof}
-\end{lemma}
+		We have already shown $4 \cdot (\rho \cdot \delta_i) > \absolute{w}$. Since dot-product commutes with addition, it holds
+		$$f \cdot \absolute{w} < 4 \cdot (\rho \cdot \sum_{i = 0}^{f - 1} \delta_i) = 4 \cdot (\rho \cdot (c_f - c_0)) = 2\sqrt{2} \cdot (c_{f}.x - c_{0}.x + c_{f}.y - c_{0}.y) \leq 2\sqrt{2} \cdot 2\ell < 6\ell.$$%
+		%
+		We know that $|C| \ge 2$ because there is a chain containing $s$ and $t$. Hence $\absolute{C} - 1 = f \geq \absolute{C}/2$, and $f \cdot \absolute{w} < 6\ell$ implies $\absolute{C}\cdot\absolute{w} < 12\ell$.
+	\end{proof}%
+\end{claim}
 
 \begin{lemma}[Dilworth's theorem]\label{dilworth}
 	$|U| \le |C| |A|$.
 \end{lemma}
 
-We know that $|C| \ge 2$, since there exists a chain containing $s$ and $t$.
-By \cref{C_ineq}, we have
-\[ |C||w| / 2 \le (|C| - 1)|w| < 6\ell, \]
-and thus
-\[ |C| \le |C||w| < 12\ell. \]
-By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}
+By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}, it holds
 \[12 \ell < |U| \le |C| |A| < 12\ell|A|,\]
 thus $|A| > 1$, which means $|A| \ge 2$.
-We select any pair of different vectors $s', t' \in A$, which minimizes $|t' - s'|$ and construct $w' = t' - s'$.
+We select any pair of different vectors $s', t' \in A$ that minimizes $|t' - s'|$. If $s'.x \leq t'.x$, then we construct $w' = s' - t'$. Otherwise, we construct $w' = t' - s'$.
 We will now show that $|w||w'| = \O(\ell^2 / |U|)$.
 
-\begin{lemma}\label{A_ineq}
-	$(|A| - 1) |w'| \le 2\ell$. 
+\begin{claim}\label{A_ineq}
+	$\absolute{A}\cdot \absolute{w'} < 12\ell$. 
 	\begin{proof}
-		Recall that $(-\pi / 4, \pi / 4) \subseteq r$.
-		Define a range of angles $R' = [\pi / 4, 3\pi / 4]$.
-		Consider any $u, v \in \Z^2$, such that $u \not \le_w v$ and $v \not \le_w u$.
-		It can be shown that the angle between $\rho$ and $\delta$ is in $R'$ for some $\delta \in \set{u - v, v - u}$.
-		Thus $|(u - v) \times \rho| \ge \sin(\pi / 4) |u - v||\rho| = |u - v|\sqrt{2} / 2$.
+		We define the range $R' = (5\pi/12, 7\pi/12)$, and a corresponding relation $\le_{w}'$ defined such that $u \le_{w}' u$ for any $u \in U$, and $u \le_{w}' v$ for $u, v \in U$ with $u \neq v$ if and only if the angle between $\rho$ and $(v - u)$ is in $R'$. By the same reasoning as above (for $\le_w$), we can argue that $\le_{w}'$ is a partial order.
+		Consider any $u, v \in U$ with $u \neq v$, and let $\beta$ be the angle between $(v - u)$ and $\rho$.
+		If $\beta \in R \cup R' = [5\pi/12, 7\pi/12) = [0-5\pi/12, \pi - 5\pi/12)$, i.e., $(v - u)$ points into the half-plane defined by the range of angles, then it clearly holds exactly one of $u \le_w v$ and $u \le_w' v$, and none of $v \le_w u$ and $v \le_w' u$. Otherwise, $(u - v)$ points into the half-plane defined by the ranges, and it holds exactly one of $v \le_w u$ and $v \le_w' u$, and none of $u \le_w v$ and $u \le_w' v$. This means that any antichain with respect to $\le_{w}$ is a chain with respect to $\le_{w}'$ and vice versa.
 		
-		Let $f = |A| - 1$ and let $a_0, \dots, a_{f}$ be the points in $A$ ordered such that $a_i \times \rho \le a_{i + 1} \times \rho$ for every $i \in [f]$.
-		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = a_{i + 1} - a_i$ for every $i \in [f]$.
-		By definition of $w'$, we have $|\delta_i| \le |w'|$ and since $|\delta_i \times \rho| \ge |\delta_i|\sqrt{2} / 2$, we get $\delta_i \times \rho = |\delta_i \times \rho| \ge |w| \sqrt{2} / 2$ for every $i \in [f]$.
-		We have
-		\[ \sum_{i = 0}^{f - 1} \delta_i = a_f - a_0,\]
-		and thus
-		\[ f|w'| \sqrt{2}/2 \le \sum_{i = 0}^{f - 1} \delta_i \times \rho = (c_f - c_0) \times \rho \le \ell \sqrt{2}, \]
-		which gives us $(|A| - 1)|w| \le 2\ell$.
+		If $u, v \in U$ with $u \neq v$ satisfy $u \le_w' v$, then $\delta = (v - u)$ satisfies
+		%
+		$$%
+4 \cdot (\delta \cdot \rho) \geq 
+4 \cdot \cos(5\pi/12)\absolute{\delta}\absolute{\rho} = 
+4 \cdot \cos(5\pi/12)\absolute{\delta} > \absolute{\delta} \geq \absolute{w}',$$	
+		%
+		where the last inequality holds by design of $w'$. Hence we can simply reproduce the proof of \cref{C_ineq} for $\le_w'$ and show that the longest chain $C'$ with respect to $\le_w'$ satisfies $\absolute{C'}\cdot \absolute{w'} < 12\ell$. This concludes the proof because $C'$ is the longest antichain with respect to $\le_w$.
 	\end{proof}
-\end{lemma}
+\end{claim}
 
-By \Cref{A_ineq}, and since $|A| \ge 2$, we have
-\[|A||w'| \le 2(|A| - 1) |w'| \le 4\ell.\]
-Recall that $|C||w| < 12\ell$ and $|U| \le |C| |A|$. We can multiply the inequalities and obtain
-\[ |U||w||w'| \le |C||A||w||w'| < 48 \ell^2,\]
-which finally gives us
-\[|w||w'| < \frac{48\ell^2}{|U|} = \O(\ell^2 / |U|). \]
-It can be easily shown that $w, w'$ satisfy the remaining conditions by the definition of $\le_w$.
+By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{A}\absolute{C}\absolute{w}\absolute{w'} < 144\ell^2$. Finally, applying \cref{dilworth} and dividing both sides by $\absolute{U}$, we obtain the final statement $\absolute{w}\absolute{w'} < 144\ell/\absolute{U}$.
+
+It remains to be shown that $w' \in \Q_2$, and how to compute $A$ and $C$ in $\tO(\absolute{U})$ time. \jonasi{work in progress.. }
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -687,7 +668,7 @@ In this section we explore the properties of periodic (sub-)tile strings (recall
 Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
 \begin{lemma} \label{lattice_base}
-	There exists an algorithm that constructs in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists! \gamma \in \Gamma : u \equiv \gamma$.
+	There exists an algorithm that constructs in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$.
 \end{lemma} 
 	\begin{proof}
 		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$ and $\Gamma = p \cap \Z^2$.
@@ -791,7 +772,7 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 
 
 \begin{lemma}\label{cut_partitioning}
-Given a truncated subtile string $S$. There is an algorithm that runs in time $\tO(|\d{S}| + 1)$ and constructs two partitionings:
+Given a truncated subtile string $S$, there is an algorithm that runs in time $\tO(|\d{S}| + 1)$ and constructs the following two partitionings.
 	\begin{enumerate}[(a)]
 		\item A partitioning of $S$ into a set of $\O(\Ham(S + \phi, S) + 1)$ (truncated) subtile strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
 		\item A partitioning of $S$ into a set of $\O(\Ham(S + \psi, S) + 1)$ strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
@@ -819,7 +800,7 @@ The next theorem is used both to partition the pattern $P$ and the active text $
 
 \tileDecomposition
 \begin{proof}
-We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists! \gamma \in \Gamma : u \equiv \gamma$ (\Cref{lattice_base}). Next, we use it to partition $R$ into a set of (truncated) subtile strings $\S$, such that $|\S| = \O(\min\set{m, k})$: Namely, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a (truncated) subtile string defined as the restriction of $R$ to $\d{R} \cap (\L + \gamma)$. For that, we consider each $u \in \d{R}$, construct its basis decomposition $u = s\cdot \phi + t\cdot \psi$, where $s,t\in \R$ by solving a system of linear equations in $\O(1)$ time, and add $u$ into the restriction corresponding to $\gamma = (s-\floor{s}) \cdot \phi + (t-\floor{t}) \cdot \psi \in \Gamma$. 
+We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$ (\Cref{lattice_base}). Next, we use it to partition $R$ into a set of (truncated) subtile strings $\S$, such that $|\S| = \O(\min\set{m, k})$: Namely, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a (truncated) subtile string defined as the restriction of $R$ to $\d{R} \cap (\L + \gamma)$. For that, we consider each $u \in \d{R}$, construct its basis decomposition $u = s\cdot \phi + t\cdot \psi$, where $s,t\in \R$ by solving a system of linear equations in $\O(1)$ time, and add $u$ into the restriction corresponding to $\gamma = (s-\floor{s}) \cdot \phi + (t-\floor{t}) \cdot \psi \in \Gamma$. 
 
 	We now apply \Cref{cut_partitioning} (\ref{partition_a}) to partition each $S \in \S$  into a set of (truncated) subtile strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
 	Note that
@@ -937,7 +918,7 @@ g^3_j = \bigcup_{i = 0}^{s - 1} p_{i, j}, \quad
 g^1_j = \bigcup_{i = t}^{\ell - 1} p_{i, j}.
 \]
 We do it for every $j \in [\ell]$.
-Observe that the sets $g^1_0, \dots, g^1_{\ell - 1}$ are are parallelograms (possibly empty) and that they cover the same area as all the fully contained in $K_1$ parallelograms $p_{i, j}$.
+Observe that the sets $g^1_0, \dots, g^1_{\ell - 1}$ are parallelograms (possibly empty) and that they cover the same area as all the fully contained in $K_1$ parallelograms $p_{i, j}$.
 The same is true for $g^3_0, \dots, g^3_{\ell - 1}$ and the parallelograms in $K_3$. 
 
 Now for every $i \in [\ell]$ we similarly find $s, t \in [\ell + 1]$, such that the sequence $p_{i, 0}, \dots, p_{i, \ell - 1}$ is split into three groups:
