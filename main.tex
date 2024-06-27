@@ -19,6 +19,8 @@
 \usepackage[noadjust]{cite}
 \usepackage{authblk}
 \usepackage{todonotes}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows,arrows.meta}
 
 \usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
 \usepackage[capitalise]{cleveref}
@@ -570,7 +572,6 @@ In this section, we show the following result that allows us to select two ``goo
 %\begin{lemma}
 %Let $\ell \in \mathbb Z^+$ and $U \subseteq [\ell + 1]^2$. Let $z \in [0, \pi/2]$, $\rho \in \mathbb Z^2$, and let $R = [-z, +z]$. Let $\newrel$ be a relation defined as follows. For every $u \in U$, it holds $u \newrel u$. For $u, v \in U$ with $u \neq v$, it holds $u \newrel v$ if and only if the angle between $(v - u)$ and $\rho$ is within $R$. Then $\newrel$ is a partial order.
 %\end{lemma}
-
 \GetPeriods
 \begin{proof}
 We start by finding the closest pair of points in $U$.
@@ -589,11 +590,91 @@ We will compute a vector $w' = t' - s'$ with $s', t' \in U$ and the following pr
 
 
 Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are entirely symmetric). 
-We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ and $\Q_4$, and restrict $\Q_2$ to $\Q_2^-$ by restricting it to points strictly contained in its central 30 degrees, formally
+We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ and $\Q_4$, and restrict $\Q_2$ to $\Q_2^-$ by limiting it to points strictly contained in its central 30 degrees, formally
+
+
+\begin{center}
+\def\fontscaler{.8}
+\def\imagescaler{.55}
+\let\oldrotatebox\rotatebox
+\renewcommand{\rotatebox}[2]{\oldrotatebox{#1}{\scalebox{\fontscaler}{#2}}}
+\begin{tikzpicture}[x=\imagescaler em, y=\imagescaler em] 
+
+\pgfmathparse{10/sqrt(3)}
+\edef\line{\pgfmathresult}
+
+\draw[thick] (-10, \line) to (10, -\line);
+\draw[thick] (-\line, 10) to (\line, -10);
+
+\fill[blue!10!white] (-10,-10) rectangle (10,10);
+\fill[red!10!white] (-10, \line) to (-10, 10) to (-\line, 10) to (0,0) to (-10, \line);
+\fill[red!10!white] (10, -\line) to (10, -10) to (\line, -10) to (0,0) to (10, -\line);
+
+
+\path (-10, \line) to node[midway] {$\Q_2^-$} (-\line, 10);
+\path (10, -\line) to node[midway] {$\Q_4^-$} (\line, -10);
+\node at (5,5) {$\Q_1^+$};
+\node at (-5,-5) {$\Q_3^+$};
+
+\draw[thick, blue] (-10, \line) to (0,0);
+\draw[thick, blue] (-\line, 10) to (0,0);
+\draw[thick, blue] (0,0) to (10, -\line);
+\draw[thick, blue] (0,0) to (\line, -10);
+
+
+\node[circle, fill=white, inner sep=1pt] at (0,0) {};
+\draw[densely dotted, -Latex] (0,-10) to node[pos=1, below right] {$y$} (0,+10);
+\draw[densely dotted, -Latex] (-10,0) to node[pos=1, above left] {$x$} (+10,0);
+
+
+
+
+\path (10, -\line) to node[fill=blue!10!white, pos=1, above right=0 and .2em, rotate=-30, anchor=south west] {\scalebox{\fontscaler}{\enskip $y = -x/\sqrt{3}$}} (0,0);
+
+
+\path (\line, -10) to node[fill=blue!10!white, pos=1, below right=.2em and 0, rotate=-60, anchor=north west] {\scalebox{\fontscaler}{\enskip $y = -x \cdot \sqrt{3}$}} (0,0);
+
+
+\draw (-7,0) to[out=90, in=180] %
+node[pos=.0] (t0) {}
+node[pos=.03333] (t1) {}
+node[pos=.33333] (t2) {} 
+node[pos=.36667] (t3) {} 
+node[pos=.66667] (t4) {}
+node[pos=.7] (t5) {}
+node[pos=.1666666] (l1) {}
+node[pos=.5] (l2) {}
+node[pos=.8333333] (l3) {}
+(0,7);
+
+
+\draw[-Latex] (t1.center) to (t0.center);
+\draw[-Latex] (t3.center) to (t2.center);
+\draw[-Latex] (t5.center) to (t4.center);
+
+\node at (l1) {\rotatebox{-15}{\rlap{\ $30^{\circ}$}}};
+\node at (l2) {\rotatebox{-45}{\rlap{\ $30^{\circ}$}}};
+\node at (l3) {\rotatebox{-75}{\rlap{\ $30^{\circ}$}}};
+
+
+\draw (-10,0) node[above left=.25em and 1em] {%
 %
-$$\Q_1^+ = \{ (x,y) \in \mathbb Z^2{\ \setminus \{(0,0)\}} \mid y \geq -x / \sqrt{3}\text{ and }y \geq -x \cdot \sqrt{3} \},$$
+$\Q_1^+ = \{ (x,y) \in \mathbb Z^2{\ \setminus \{(0,0)\}} \mid y \geq -x / \sqrt{3}\text{ and }y \geq -x \cdot \sqrt{3} \},$%
+};
+
+\draw (-10,0) node[below left=.25em and 1em] {%
 %
-$$\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\},$$
+$\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\}.$%
+};
+
+\end{tikzpicture}
+\end{center}
+
+
+%$$\Q_1^+ = \{ (x,y) \in \mathbb Z^2{\ \setminus \{(0,0)\}} \mid y \geq -x / \sqrt{3}\text{ and }y \geq -x \cdot \sqrt{3} \},$$
+%
+%$$\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\},$$
+
 %
 Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees, and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq 0.5$ by design.
 
