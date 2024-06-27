@@ -589,36 +589,21 @@ We will compute a vector $w' = t' - s'$ with $s', t' \in U$ and the following pr
 
 
 Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are symmetric). 
-We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ and $\Q_4$, formally
+We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ and $\Q_4$, and restrict $\Q_2$ to $\Q_2^-$ by restricting it to points strictly contained in its central 30 degrees, formally
 %
-$$\Q_1^+ = \{ z \in \mathbb Z^2 \mid (z.x + z.y) \geq \sqrt{2} \cdot \cos(5\pi/12) \cdot \absolute{z} \},$$
+$$\Q_1^+ = \{ (x,y) \in \mathbb Z^2{\ \setminus \{(0,0)\}} \mid y \geq -x / \sqrt{3}\text{ and }y \geq -x \cdot \sqrt{3} \},$$
 %
-$$\Q_2^- = \{ z \in \mathbb Z^2 \mid (z.y - z.x) > \sqrt{2} \cdot \cos(\pi/12) \cdot \absolute{z} \}.\phantom{5}$$
-Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_2$ and $\Q_4$ as $\Q_2^- = \Q_2 \setminus (\Q_1^+ \cup \Q_3^+)$ and  $\Q_4^- = \Q_4 \setminus (\Q_1^+ \cup \Q_3^+)$. We define two relations $\le_1$ and $\le_2$ over $U$, where, for every $u \in U$, it holds $u \le_1 u$ and $u \le_2 u$ (i.e., the relation is \emph{reflexive}). For $u, v \in U$ with $u \neq v$, it holds $u \le_1 v$ if and only if $(v - u) \in \Q_1^+$, and $u \le_2 v$ if and only if $(v - u) \in \Q_2^-$.
-Note that two distinct points $u,v \in U$ are comparible with $\le_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparible with $\le_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$, where $(\Q_1^+ \cup \Q_3^+)$ and $\Q_2^- \cup \Q_4^-$ are a bipartition of $\mathbb Z^2 \setminus (0,0)$. Hence they are comparible with $\le_1$ if and only if they are not comparible with $\le_2$.
-In a moment, we will show that $\le_1$ and $\le_2$ are partial orders. By the previous argument, every antichain with respect to $\le_1$ is a chain with respect to $\le_2$ and vice versa.
-
-Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are symmetric). 
-Let $\rho = ({\sqrt{2}} / 2,{\sqrt{2}} / 2)$ be the diagonal that splits $\Q_1$ in half, truncated to unit length.
-We define a relation $\le_{w}$ on $\Z^2$ as follows. First, $u \le_w u$ for all $u \in \Z^2$ (i.e., the relation is \emph{reflexive}). Second, for $u, v \in \Z^2$ with $u \neq v$, we have $u \le_w v$ if and only if the angle $\beta$ between $\rho$ and $\delta = (v - u)$ is in $R = [-5\pi/12, 5\pi/12]$. Geometrically speaking, this is the case if $\delta$ points into $\Q_1$ extended with the respective adjacent 30 degrees of $\Q_2$ and $\Q_4$, which is visualized in \cref{TODO}.
-
-Assume that there is a third vector $v' \in \Z^2$ such that $u \leq v \leq_{w} v'$ and $u \neq v \neq v'$. Let $\delta' = (v' - v)$, then the angle $\beta'$ between $\rho$ and $\delta'$ is in $R$.
-Due to $\{\beta, \beta'\} \subseteq R$, and since $R$ is a consecutive range, it is clear that the angle $(\beta + \beta')/2$ between $(v' - u) = \delta + \delta'$ and $\rho$ is also in $R$. Thus, it holds $u \le_{w} v'$ and the relation $\le_{w}$ is \emph{transitive}.
-It is also an \emph{antisymmetric} relation as it cannot be that both $\beta$ and $\pi-\beta$ belong to~$R$. We have shown that $\le_w$ is a partial order.
-Note that, if $u \le_{w} v$ with $u \neq v$, then $\delta = (v - u)$ satisfies
+$$\Q_2^- = \{ (x,y)\phantom{\ \setminus \{(0,0)\}} \in \mathbb Z^2 \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\},$$
 %
-$$%
-%2\sqrt{2} \cdot (\delta.x + \delta.y) = 
-4 \cdot (\delta \cdot \rho) \geq 
-4 \cdot \cos(5\pi/12)\absolute{\delta}\absolute{\rho} = 
-4 \cdot \cos(5\pi/12)\absolute{\delta} > \absolute{\delta} \geq \absolute{w},$$
-%
-where the last inequality holds by design of $w$. In a moment, we will show that we can compute the longest chain $C$ and antichain $A$ with respect to $\le_{w}$ in $\tO(\absolute{U})$ time. Now we show that, given $A$ and $C$, we can find the vector $w'$ with the desired properties in $\tO(U)$ time.
+Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees, and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq 0.5$ by design.
 
-%Hence, all $\delta \in \Z^2$ satisfying (\ref{joint_condition}) belong to a single half-plane and $\delta \cdot \rho > \cos(5\pi / 12)|\delta||\rho| > |\delta| / 4$.
+We define two relations $<_1$ and $<_2$ over $U$. For $u, v \in U$, it holds $u <_1 v$ if and only if $(v - u) \in \Q_1^+$, and $u <_2 v$ if and only if $(v - u) \in \Q_2^-$. In a moment, we will show that both $\le_1$ and $\le_2$ are strict partial orders. 
+Note that two distinct points $u,v \in U$ are comparible with $\le_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparible with $\le_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$. 
+By definition of the sets, it is clear that $\Q_1^+ \cup \Q_3^+$ and $\Q_2^- \cup \Q_4^-$ form a bipartition of $\mathbb Z^2 \setminus \{(0,0)\}$ (they resemble half-planes defined by the line $y = -x / \sqrt{3}$, with a simple case distinction for points on the line). By the previous observation, it is clear that every antichain with respect to $<_1$ is a chain with respect to $<_2$ and vice versa.
 
-%Under the partial order $\le_w$, we find the longest chain $C$ and the longest antichain $A$ using dynamic programming.
-%With an appropriate data structure we can do it in $\tO(|U|)$ operations, by using a method resembling LIS calculation. \todo{I couldn't find a reference. Haven't touched what's below.}
+Now we show that $<_1$ is a strict partial order (the proof for $\le_2$ works analogously). First, note that $(0,0 \notin \Q_1^+$, and thus it cannot be that $u <_1 u$, i.e., the relation is \emph{irreflexive}. It is easy to see that the intersection of $\Q_1^+$ and $\Q_3^+$ is empty. This means that, if $u <_1 v$, then it cannot also be that $v <_1 u$, i.e., the relation is \emph{asymmetric}. Finally, given $u <_1 v$ and $v <_1 v'$, it holds $(v.y - u.y) \geq -(v.x-u.x)/\sqrt{3}$ and $(v'.y - v.y) \geq -(v'.x-v.x)/\sqrt{3}$ by the definition of $\Q_1^+$. By summing the inequalities, we get $(v'.y - u.y) \geq -(v'.x-u.x)/\sqrt{3}$. The same reasoning applys to the second inequality of the definition, und thus it holds $(v' - u) \in \Q_1^+$ and therefore $u < v'$, i.e., the relation is \emph{transitive}.
+
+We have shown that $<_1$ is a strict partial order. We will show how to compute the longest chain $C$ and antichain $A$ with respect to $<_1$ in $\tO(\absolute{U})$ time. Now we show that, given $A$ and $C$, we can find the vector $w'$ with the desired properties in $\tO(U)$ time.
 
 \begin{claim}\label{C_ineq}
 	$\absolute{C} \cdot \absolute{w} < 12\ell$. 
@@ -640,7 +625,7 @@ where the last inequality holds by design of $w$. In a moment, we will show that
 By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}, it holds
 $12 \ell \le |U| \le |C| |A| < 12\ell|A|$,
 thus $|A| \ge 2$.
-We select any pair of different vectors $s', t' \in A$ that minimizes $|t' - s'|$. W.l.o.g., we assume $s'.x \geq t'.x$ (otherwise swap $s'$ and $t'$), and we construct $w' = t' - s'$.
+We select any pair of different vectors $s', t' \in A$ that minimizes $|t' - s'|$. Since $s'$ and $t'$ are in an antichain with respect to $<_1$, they are in a chain with respect to $<_2$. Hence either $s' <_2 t'$ or $t' <_2 s'$. W.l.o.g., we assume $s' <_2 t'$ (otherwise swap $s'$ and $t'$), and we construct $w' = t' - s'$, which is in $\Q_2^-$ as required.
 Next, we show $|w||w'| = \O(\ell^2 / |U|)$.
 
 \begin{claim}\label{A_ineq}
