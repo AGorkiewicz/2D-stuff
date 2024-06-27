@@ -590,7 +590,7 @@ We will compute a vector $w' = t' - s'$ with $s', t' \in U$ and the following pr
 
 
 Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are entirely symmetric). 
-We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ and $\Q_4$, and restrict $\Q_2$ to $\Q_2^-$ by limiting it to points strictly contained in its central 30 degrees, formally
+We extend $\Q_1$ to $\Q_1^+$ by adding the neighbouring $30$ degrees of $\Q_2$ and $\Q_4$, and we restrict $\Q_2$ to $\Q_2^-$ by limiting it to points strictly contained in its central 30 degrees, formally
 
 
 \begin{center}
@@ -610,11 +610,10 @@ We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ an
 \fill[red!10!white] (-10, \line) to (-10, 10) to (-\line, 10) to (0,0) to (-10, \line);
 \fill[red!10!white] (10, -\line) to (10, -10) to (\line, -10) to (0,0) to (10, -\line);
 
-
-\path (-10, \line) to node[midway] {$\Q_2^-$} (-\line, 10);
-\path (10, -\line) to node[midway] {$\Q_4^-$} (\line, -10);
-\node at (5,5) {$\Q_1^+$};
-\node at (-5,-5) {$\Q_3^+$};
+\path (10,10) node[below left] {$\Q_1^+$};
+\path (-10,10) node[below right] {$\Q_2^-$};
+\path (-10,-10) node[above right] {$\Q_3^+$};
+\path (10,-10) node[above left] {$\Q_4^-$};
 
 \draw[thick, blue] (-10, \line) to (0,0);
 \draw[thick, blue] (-\line, 10) to (0,0);
@@ -635,7 +634,7 @@ We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ an
 \path (\line, -10) to node[fill=blue!10!white, pos=1, below right=.2em and 0, rotate=-60, anchor=north west] {\scalebox{\fontscaler}{\enskip $y = -x \cdot \sqrt{3}$}} (0,0);
 
 
-\draw (-7,0) to[out=90, in=180] %
+\draw[gray] (-7,0) to[out=90, in=180] %
 node[pos=.0] (t0) {}
 node[pos=.03333] (t1) {}
 node[pos=.33333] (t2) {} 
@@ -648,13 +647,13 @@ node[pos=.8333333] (l3) {}
 (0,7);
 
 
-\draw[-Latex] (t1.center) to (t0.center);
-\draw[-Latex] (t3.center) to (t2.center);
-\draw[-Latex] (t5.center) to (t4.center);
+\draw[gray, -Latex] (t1.center) to (t0.center);
+\draw[gray, -Latex] (t3.center) to (t2.center);
+\draw[gray, -Latex] (t5.center) to (t4.center);
 
-\node at (l1) {\rotatebox{-15}{\rlap{\ $30^{\circ}$}}};
-\node at (l2) {\rotatebox{-45}{\rlap{\ $30^{\circ}$}}};
-\node at (l3) {\rotatebox{-75}{\rlap{\ $30^{\circ}$}}};
+\node[gray] at (l1) {\rotatebox{-15}{\rlap{\ $30^{\circ}$}}};
+\node[gray] at (l2) {\rotatebox{-45}{\rlap{\ $30^{\circ}$}}};
+\node[gray] at (l3) {\rotatebox{-75}{\rlap{\ $30^{\circ}$}}};
 
 
 \draw (-10,0) node[above left=.25em and 1em] {%
@@ -667,6 +666,9 @@ $\Q_1^+ = \{ (x,y) \in \mathbb Z^2{\ \setminus \{(0,0)\}} \mid y \geq -x / \sqrt
 $\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\}.$%
 };
 
+\node[inner sep=0pt] (w) at (2,5) {};
+\draw[-Latex] (0,0) to (w) node[above right] {$w$};
+
 \end{tikzpicture}
 \end{center}
 
@@ -676,16 +678,18 @@ $\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / 
 %$$\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\},$$
 
 %
-Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees, and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq 0.5$ by design.
+Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $\Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq 0.5$ by design.
 
 We define two relations $<_1$ and $<_2$ over $U$. For $u, v \in U$, it holds $u <_1 v$ if and only if $(v - u) \in \Q_1^+$, and $u <_2 v$ if and only if $(v - u) \in \Q_2^-$. In a moment, we will show that both $<_1$ and $<_2$ are strict partial orders. 
 Note that two distinct points $u,v \in U$ are comparible with $<_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparible with $<_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$. 
-By definition of the sets, it is clear that $\Q_1^+ \cup \Q_3^+$ and $\Q_2^- \cup \Q_4^-$ form a bipartition of $\mathbb Z^2 \setminus \{(0,0)\}$ (they resemble half-planes defined by the line $y = -x / \sqrt{3}$, with a simple case distinction for points on the line). By the previous observation, it is clear that every antichain with respect to $<_1$ is a chain with respect to $<_2$ and vice versa.
+By the definition of the sets, it is clear that $\Q_1^+ \cup \Q_3^+$ and $\Q_2^- \cup \Q_4^-$ form a bipartition of $\mathbb Z^2 \setminus \{(0,0)\}$.
+%(they resemble half-planes defined by the line $y = -x / \sqrt{3}$, with a simple case distinction for points on the line). 
+Thus, it is clear that every antichain with respect to $<_1$ is a chain with respect to $<_2$ and vice versa.
 
 Now we show that $<_1$ is a strict partial order. The proof for $<_2$ works analogously. First, note that $(0,0) \notin \Q_1^+$, and thus it cannot be that $u <_1 u$, i.e., the relation is \emph{irreflexive}. It is easy to see that the intersection of $\Q_1^+$ and $\Q_3^+$ is empty. This means that, if $u <_1 v$, then it cannot be that $v <_1 u$, i.e., the relation is \emph{asymmetric}. Finally, given $u <_1 v$ and $v <_1 v'$, it holds $(v.y - u.y) \geq -(v.x-u.x)/\sqrt{3}$ and $(v'.y - v.y) \geq -(v'.x-v.x)/\sqrt{3}$ by the definition of $\Q_1^+$. By summing the inequalities, we get $(v'.y - u.y) \geq -(v'.x-u.x)/\sqrt{3}$. The same reasoning applys to the second inequality of the definition. Therefore, it holds $(v' - u) \in \Q_1^+$ and hence $u <_1 v'$, i.e., the relation is \emph{transitive}.
 
 We have shown that $<_1$ and $<_2$ are strict partial orders, with a one-to-one correspondence between antichains of $<_1$ and chains of $<_2$.
-Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $<_1$, or equivalently the longest chain of $<_2$. We show how to compute $A$ and $C$ later. First, we show upper limits for $\absolute{C}$ and $\absolute{A}$ using Dilworth's theorem.
+Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $<_1$, or equivalently the longest chain of $<_2$. We show how to compute $A$ and $C$ later. First, we show upper bounds for $\absolute{C}$ and $\absolute{A}$ using Dilworth's theorem.
 
 \begin{lemma}[Dilworth's theorem]\label{dilworth}
 	$|U| \le |C| |A|$.
