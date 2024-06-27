@@ -447,7 +447,7 @@ $\Ham(P + u - v, P) = \Ham(P + u, P + v) \le \Ham(P + u, T) + \Ham(T,P + v) = \O
 As $Q$ is big, it generates two $\O(k)$-periods with a big angle between them and such that they and their negations belong to distinct quadrants of $\Z^2$: 
 
 \begin{restatable*}{theorem}{GetPeriods}\label{get_periods}
-Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $\ge 12\ell$. There is an $\tO(|U|)$-time algorithm that finds $u, v, u', v' \in U$, such that the following conditions hold for $\psi = u - v$ and $\phi = u' - v'$:
+Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There is an $\tO(|U|)$-time algorithm that finds $u, v, u', v' \in U$, such that the following conditions hold for $\psi = u - v$ and $\phi = u' - v'$:
 	\begin{itemize}
 		\item $\psi \in (0, +\infty) \times [0, +\infty)$, $\phi \in [0, +\infty) \times (-\infty, 0)$;
 		\item $0 < |\psi||\phi| = \O(\ell^2 / |U|)$,
@@ -581,74 +581,89 @@ We construct $w = t - s$.
 Denote the quadrants of the plane as follows:%
 %
 \begin{align*}
-&\Q_1 = (0,\ell+1] \times [0,\ell+1], \quad & \Q_2 = [-(\ell+1),0] \times (0,\ell+1),\\
-&\Q_3 = [-(\ell+1),0) \times [-(\ell+1),0], \quad & \Q_4 = [0,\ell+1] \times [-(\ell+1),0).
+&\Q_1 = (0,+\infty) \times [0,+\infty), \quad & \Q_2 = (-\infty,0] \times (0,+\infty),\\
+&\Q_3 = (-\infty,0) \times (-\infty,0], \quad & \Q_4 = [0,+\infty) \times (-\infty,0).
 \end{align*}
 %
 We will compute a vector $w' = t' - s'$ with $s', t' \in U$ and the following properties. If $w \in \Q_i$, then $w' \in \Q_{(i \bmod 4) + 1}$, i.e., $w'$ is in the counterclockwise neighbouring quadrant of $w$. Further, it holds $0 < |w||w'| = \O(\ell^2 / |U|)$, and $\sin \alpha \ge \frac{1}{2}$, where $\alpha$ is the angle between $w$ and $w'$. Depending on $i$, we then report $\psi$ and $\phi$ as follows. If $i = 1$, then $\psi = w$ and $\phi = -w'$. If $i = 2$, then $\psi = -w'$ and $\phi = -w$. If $i = 3$, then $\psi = -w$ and $\phi = w'$. If $i = 4$, then $\psi = w'$ and $\phi = w$. Clearly, this satisfies the claimed properties, and we can easily output the corresponding nodes $u,v,u',v'$.
 
 
-Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are symmetric). 
+Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are entirely symmetric). 
 We define $\Q_1^+$ by adding to $Q_1$ the neighbouring $30$ degrees of $\Q_2$ and $\Q_4$, and restrict $\Q_2$ to $\Q_2^-$ by restricting it to points strictly contained in its central 30 degrees, formally
 %
 $$\Q_1^+ = \{ (x,y) \in \mathbb Z^2{\ \setminus \{(0,0)\}} \mid y \geq -x / \sqrt{3}\text{ and }y \geq -x \cdot \sqrt{3} \},$$
 %
-$$\Q_2^- = \{ (x,y)\phantom{\ \setminus \{(0,0)\}} \in \mathbb Z^2 \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\},$$
+$$\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\},$$
 %
 Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees, and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq 0.5$ by design.
 
-We define two relations $<_1$ and $<_2$ over $U$. For $u, v \in U$, it holds $u <_1 v$ if and only if $(v - u) \in \Q_1^+$, and $u <_2 v$ if and only if $(v - u) \in \Q_2^-$. In a moment, we will show that both $\le_1$ and $\le_2$ are strict partial orders. 
-Note that two distinct points $u,v \in U$ are comparible with $\le_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparible with $\le_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$. 
+We define two relations $<_1$ and $<_2$ over $U$. For $u, v \in U$, it holds $u <_1 v$ if and only if $(v - u) \in \Q_1^+$, and $u <_2 v$ if and only if $(v - u) \in \Q_2^-$. In a moment, we will show that both $<_1$ and $<_2$ are strict partial orders. 
+Note that two distinct points $u,v \in U$ are comparible with $<_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparible with $<_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$. 
 By definition of the sets, it is clear that $\Q_1^+ \cup \Q_3^+$ and $\Q_2^- \cup \Q_4^-$ form a bipartition of $\mathbb Z^2 \setminus \{(0,0)\}$ (they resemble half-planes defined by the line $y = -x / \sqrt{3}$, with a simple case distinction for points on the line). By the previous observation, it is clear that every antichain with respect to $<_1$ is a chain with respect to $<_2$ and vice versa.
 
-Now we show that $<_1$ is a strict partial order (the proof for $\le_2$ works analogously). First, note that $(0,0 \notin \Q_1^+$, and thus it cannot be that $u <_1 u$, i.e., the relation is \emph{irreflexive}. It is easy to see that the intersection of $\Q_1^+$ and $\Q_3^+$ is empty. This means that, if $u <_1 v$, then it cannot also be that $v <_1 u$, i.e., the relation is \emph{asymmetric}. Finally, given $u <_1 v$ and $v <_1 v'$, it holds $(v.y - u.y) \geq -(v.x-u.x)/\sqrt{3}$ and $(v'.y - v.y) \geq -(v'.x-v.x)/\sqrt{3}$ by the definition of $\Q_1^+$. By summing the inequalities, we get $(v'.y - u.y) \geq -(v'.x-u.x)/\sqrt{3}$. The same reasoning applys to the second inequality of the definition, und thus it holds $(v' - u) \in \Q_1^+$ and therefore $u < v'$, i.e., the relation is \emph{transitive}.
+Now we show that $<_1$ is a strict partial order. The proof for $<_2$ works analogously. First, note that $(0,0) \notin \Q_1^+$, and thus it cannot be that $u <_1 u$, i.e., the relation is \emph{irreflexive}. It is easy to see that the intersection of $\Q_1^+$ and $\Q_3^+$ is empty. This means that, if $u <_1 v$, then it cannot be that $v <_1 u$, i.e., the relation is \emph{asymmetric}. Finally, given $u <_1 v$ and $v <_1 v'$, it holds $(v.y - u.y) \geq -(v.x-u.x)/\sqrt{3}$ and $(v'.y - v.y) \geq -(v'.x-v.x)/\sqrt{3}$ by the definition of $\Q_1^+$. By summing the inequalities, we get $(v'.y - u.y) \geq -(v'.x-u.x)/\sqrt{3}$. The same reasoning applys to the second inequality of the definition. Therefore, it holds $(v' - u) \in \Q_1^+$ and hence $u <_1 v'$, i.e., the relation is \emph{transitive}.
 
-We have shown that $<_1$ is a strict partial order. We will show how to compute the longest chain $C$ and antichain $A$ with respect to $<_1$ in $\tO(\absolute{U})$ time. Now we show that, given $A$ and $C$, we can find the vector $w'$ with the desired properties in $\tO(U)$ time.
-
-\begin{claim}\label{C_ineq}
-	$\absolute{C} \cdot \absolute{w} < 12\ell$. 
-	\begin{proof}
-		Let $f = |C| - 1$ and
-		let $c_0, \dots, c_{f}$ denote the points in $C$, ordered so that $c_i \le_w c_{i + 1}$ for every $i \in [f]$.
-		Consider the sequence $\delta_0, \dots, \delta_{f - 1}$, where $\delta_i = c_{i + 1} - c_i$ for every $i \in [f]$.
-		We have already shown $4 \cdot (\rho \cdot \delta_i) > \absolute{w}$. Since dot-product commutes with addition, it holds
-		$$f \cdot \absolute{w} < 4 \cdot (\rho \cdot \sum_{i = 0}^{f - 1} \delta_i) = 4 \cdot (\rho \cdot (c_f - c_0)) = 2\sqrt{2} \cdot (c_{f}.x - c_{0}.x + c_{f}.y - c_{0}.y) \leq 2\sqrt{2} \cdot 2\ell < 6\ell.$$%
-		%
-		We know that $|C| \ge 2$ because there is a chain containing $s$ and $t$. Hence $\absolute{C} - 1 = f \geq \absolute{C}/2$, and $f \cdot \absolute{w} < 6\ell$ implies $\absolute{C}\cdot\absolute{w} < 12\ell$.
-	\end{proof}%
-\end{claim}
+We have shown that $<_1$ and $<_2$ are strict partial orders, with a one-to-one correspondence between antichains of $<_1$ and chains of $<_2$.
+Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $<_1$, or equivalently the longest chain of $<_2$. We show how to compute $A$ and $C$ later. First, we show upper limits for $\absolute{C}$ and $\absolute{A}$ using Dilworth's theorem.
 
 \begin{lemma}[Dilworth's theorem]\label{dilworth}
 	$|U| \le |C| |A|$.
 \end{lemma}
 
-By the assumption $|U| \ge 12\ell$ and \Cref{dilworth}, it holds
-$12 \ell \le |U| \le |C| |A| < 12\ell|A|$,
+\begin{claim}\label{C_ineq}
+	$\absolute{C} \cdot \absolute{w} \leq 16\ell$. 
+	\begin{proof}
+		Let $f = |C| - 1$ and
+		let $c_0, \dots, c_{f}$ denote the points in $C$, ordered so that $c_i <_1 c_{i + 1}$ for every $i \in [f]$.
+		Consider any $u = c_i$ and $v = c_{i + 1}$ with $i \in [f]$. We will show that $v.x + v.y \geq u.x + u.y + \frac14\absolute{w}$. 		
+		Let $w'' = (v - u)$, which is in $\Q_1^+$ due to $u <_1 v$. Assume $v.x + v.y < u.x + u.y + \frac14\absolute{w}$, or equivalently $(w''.x + w''.y) < \frac14\absolute{w}$. From now on, let $x = w''.x$ and $y = w''.y$. It then holds $$\absolute{w''} \geq \absolute{w} > 4(x + y).$$
+		
+		This is already a contradiction if both $x$ and $y$ are non-negative, since then it should hold $\sqrt{x^2 + y^2} \leq \absolute{x} + \absolute{y}$. If both $x$ and $y$ are negative, then they contradict $y \geq -x/\sqrt{3} \geq 0$ in the definition of $\Q_1^-$. Hence exactly one of them is negative. If $x \geq 0$ and $y < 0$, then $y \geq -x / \sqrt{3}$ in the definiton of $\Q_1^-$ implies $\absolute{x} \geq \absolute{y}\cdot \sqrt{3}$ and thus $\frac34\absolute{x} > \frac54\absolute{y}$. Similarly, if $x < 0$ and $y \geq 0$, then $y \geq -x \cdot \sqrt{3}$ implies $\frac34\absolute{y} > \frac54\absolute{x}$. Hence we have
+		%
+	\begin{alignat*}{1}	
+		\absolute{w''} > 4(x + y) = 
+		4(\absolute{x} - \absolute{y}) > 
+		4(\tfrac14\absolute{x} + \tfrac14\absolute{y}) = 
+		\absolute{x} + \absolute{y}&\text{\quad if $x \geq 0$ and $y < 0$, and}\\
+		%
+		%
+		\absolute{w''} > 4(x + y) = 
+		4(\absolute{y} - \absolute{x}) > 
+		4(\tfrac14\absolute{y} + \tfrac14\absolute{x}) = 
+		\absolute{x} + \absolute{y}&\text{\quad if $x < 0$ and $y \geq 0$,}
+	\end{alignat*}
+	which is a contradiction.
+	We have shown that $c_{i + 1}.x + c_{i + 1}.y \geq c_i.x + c_i.y + \frac14\absolute{w}$ for all $i \in [f]$. By chaining the inequality for all $i$, we get $$2\ell \geq c_f.x + c_f.y \geq c_0.x + c_0.y + \sum\nolimits_{i = 0}^{f - 1} \tfrac14\absolute{w} \geq \tfrac14f\cdot{\absolute{w}},$$ and thus $\absolute{w} \cdot f \leq 8\ell$. Note that $w = (t - s) \in \Q_1^+$, and thus $t$ and $s$ belong to a chain, which implies $\absolute{C} > 1$. Thus $\absolute{w} \cdot \absolute{C} \leq 2\absolute{w} \cdot f \leq 16\ell$, which concludes the proof.
+	\end{proof}%
+\end{claim}
+
+By the assumption $|U| \ge 16\ell$ and \Cref{dilworth}, it holds
+$16 \ell \le |U| \le |C| |A| < 16\ell|A|$,
 thus $|A| \ge 2$.
-We select any pair of different vectors $s', t' \in A$ that minimizes $|t' - s'|$. Since $s'$ and $t'$ are in an antichain with respect to $<_1$, they are in a chain with respect to $<_2$. Hence either $s' <_2 t'$ or $t' <_2 s'$. W.l.o.g., we assume $s' <_2 t'$ (otherwise swap $s'$ and $t'$), and we construct $w' = t' - s'$, which is in $\Q_2^-$ as required.
-Next, we show $|w||w'| = \O(\ell^2 / |U|)$.
+We select any pair of different vectors $s', t' \in A$ that minimizes $|t' - s'|$. Since $s'$ and $t'$ are in a chain of $<_2$, it holds either $s' <_2 t'$ or $t' <_2 s'$. W.l.o.g., we assume $s' <_2 t'$ (otherwise swap $s'$ and $t'$), and we construct $w' = t' - s'$, which is in $\Q_2^-$ as required.
 
 \begin{claim}\label{A_ineq}
-	$\absolute{A}\cdot \absolute{w'} < 12\ell$. 
+	$\absolute{A}\cdot \absolute{w'} \leq 16\ell$. 
 	\begin{proof}
-		We define the range $R' = (5\pi/12, 7\pi/12)$, and a corresponding relation $\le_{w}'$ defined such that $u \le_{w}' u$ for any $u \in U$, and $u \le_{w}' v$ for $u, v \in U$ with $u \neq v$ if and only if the angle between $\rho$ and $(v - u)$ is in $R'$. By the same reasoning as above (for $\le_w$), we can argue that $\le_{w}'$ is a partial order.
-		Consider any $u, v \in U$ with $u \neq v$, and let $\beta$ be the angle between $(v - u)$ and $\rho$.
-		If $\beta \in R \cup R' = [-5\pi/12, 7\pi/12) = [0-5\pi/12, \pi - 5\pi/12)$, i.e., $(v - u)$ points into the half-plane defined by the range of angles, then it clearly holds exactly one of $u \le_w v$ and $u \le_w' v$, and none of $v \le_w u$ and $v \le_w' u$. Otherwise, $(u - v)$ points into the half-plane defined by the ranges, and it holds exactly one of $v \le_w u$ and $v \le_w' u$, and none of $u \le_w v$ and $u \le_w' v$. This means that any antichain with respect to $\le_{w}$ is a chain with respect to $\le_{w}'$ and vice versa.
-		
-		If $u, v \in A$ with $u \neq v$ satisfy $u \le_w' v$, then $\delta = (v - u)$ satisfies
-		%
-		$$%
-4 \cdot (\delta \cdot \rho) \geq 
-4 \cdot \cos(5\pi/12)\absolute{\delta}\absolute{\rho} = 
-4 \cdot \cos(5\pi/12)\absolute{\delta} > \absolute{\delta} \geq \absolute{w}',$$	
-		%
-		where the last inequality holds by design of $w'$. Hence we can simply reproduce the proof of \cref{C_ineq} for $\le_w'$ and show that the longest chain $C'$ with respect to $\le_w'$ satisfies $\absolute{C'}\cdot \absolute{w'} < 12\ell$. This concludes the proof because $C'$ is the longest antichain with respect to $\le_w$.
+	
+		Let $f = |C| - 1$ and
+		let $c_0, \dots, c_{f}$ denote the points in $A$, ordered so that $c_i <_2 c_{i + 1}$ for every $i \in [f]$ (recall that $A$ is a chain with respect to $<_2$).
+		Consider any $u = c_i$ and $v = c_{i + 1}$ with $i \in [f]$. We will show that $v.x + v.y \geq u.x + u.y + \frac14\absolute{w'}$. 		
+		Let $w'' = (v - u)$, which is in $\Q_2^-$ due to $u <_2 v$. From now on, let $x = w''.x$ and $y = w''.y$
+		Note that $-x/\sqrt{3} < y < -x \sqrt{3}$ in the definition of $\Q_2^-$ implies that $x$ is negative and $y$ is positive.
+		Therefore, $y > -x/\sqrt{3}$ implies $\sqrt{3}\absolute{y} < \absolute{x}$, and thus $\frac 5 4\absolute{y} < \frac 3 4\absolute{x}$.
+		Assume $v.x + v.y < u.x + u.y + \frac14\absolute{w'}$, or equivalently $(\absolute{x} - \absolute{y}) = (x + y) < \frac14\absolute{w'}$. Then $$\absolute{w''} \geq \absolute{w'} > 4(x + y) = 4(\absolute{x} - \absolute{y}) > 4(\tfrac14\absolute{x} + \tfrac14\absolute{y}) = 
+		\absolute{x} + \absolute{y},$$
+		which contradicts $\sqrt{x^2 + y^2} \leq \absolute{x} + \absolute{y}$. We have shown that $c_{i + 1}.x + c_{i + 1}.y \geq c_i.x + c_i.y + \frac14\absolute{w}$ for all $i \in [f]$. Hence we can finish the proof exactly like in \cref{C_ineq} and obtain $\absolute{A}\cdot \absolute{w'} \leq 16\ell$.
 	\end{proof}
 \end{claim}
 
-By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{A}\absolute{C}\absolute{w}\absolute{w'} < 144\ell^2$. Finally, applying \cref{dilworth} and dividing both sides by $\absolute{U}$, we obtain the final statement $\absolute{w}\absolute{w'} < 144\ell/\absolute{U}$.
+By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{A}\absolute{C}\absolute{w}\absolute{w'} \leq 256\ell^2$. Finally, applying \cref{dilworth} and dividing both sides by $\absolute{U}$, we obtain the final statement $\absolute{w}\absolute{w'} \leq 256\ell^2/\absolute{U}$.
 
-It remains to be shown that $w' \in \Q_2$, and how to compute $A$ and $C$ in $\tO(\absolute{U})$ time. \jonasi{work in progress.. }
+We have shown that $w$ and $w'$ satisfy the claimed properties. 
+It remains to be shown how to compute $w'$. 
+If the longest antichain $A$ is given, then it is easy to sort the chain according to $<_2$ and select the desired $w'$ in $\tO(\absolute{A})$ time. To compute the antichain, we recall from the proof of \cref{A_ineq} that $u <_2 v$ (equivalently $v - u \in \Q_2^-$) implies that $(v.x - u.x)$ is negative, while $(v.y - u.y)$ is positive (this also readily follows from the fact that $\Q_2^-$ is a subset of $\Q_2$). This means that $v.y - v.x > u.y - u.x$. We sort $U$ in increasing order of $y - x$. Thus, if $u <_2 v$, then $u$ precedes $v$ in the sorted $U$. 
+Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2 v$. We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$. This takes $\tO(\absolute{U})$ time and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
