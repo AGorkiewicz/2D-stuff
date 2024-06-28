@@ -19,6 +19,7 @@
 \usepackage[noadjust]{cite}
 \usepackage{authblk}
 \usepackage{todonotes}
+\usepackage{subcaption}
 
 \usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
 \usepackage[capitalise]{cleveref}
@@ -511,7 +512,7 @@ A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S}
 Assume to be given a (truncated) tile string $R$ such that $\phi, \psi$ are its $\O(k)$-periods. After $\O(m^2)$-time preprocessing of $\phi, \psi$, the string $R$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
 \end{restatable*}
 
-Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated tile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct a set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
+Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct a set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
 
 
 \todo{T: I changed spacious parquet to tile, and simple parquet to tile. Parquet itself was never used. I need to update everything.}
@@ -538,11 +539,11 @@ Given $\ell \in [2m]$, one can partition $T_a$ in time $\tO(m^2 + \ell k)$ into 
 \subsection{Algorithm}
 In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a string consisting of a monochromatic subtile strings can be computed efficiently: 
 
-\begin{restatable*}{theorem}{SparseAlgo}
+\begin{restatable}{theorem}{SparseAlgo}
 \label{th:sparse_algo}
-Let $\S$ be a set of monochromatic subtile strings $\S$ with a property the domains $\d{S}$ for $S \in \S$ are pairwise disjoint subsets of $\d{T}$. There is an algorithm that computes
+Let $\S$ be a set of monochromatic subtile strings $\S$ with a property that the domains $\d{S}$ for $S \in \S$ are pairwise disjoint subsets of $\d{T}$. There is an algorithm that computes
 $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$.
-\end{restatable*}
+\end{restatable}
 
 As an immediate corollary, we obtain an $\tO(m^2 + mk^2)$-time solution for the $k$-mismatch problem. First, we apply \Cref{text_decomposition} for a large enough value $\ell = \Theta(m)$ to partition the active text $\Ta$ into a set $\S$ of $\O(mk)$ monochromatic subtile strings and a $0$-peripheral string, empty by definition, in time $\tO(m^2 + mk)$. For every $q \in Q$ we then have $\Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S)$, and these values can be computed in $\tO(m^2 + mk^{2})$ total time by \cref{sparse_algo}, since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$. 
 
@@ -877,12 +878,14 @@ and identically $\Ham(R + \psi, R) = \O(k)$.
 \end{proof}
 
 Let $z = \frac{n - 1}{2}$. Split the 2D plane with two lines $x = z$ and $y = z$ into four quarters:
-\begin{enumerate}[1)]
-	\item $K_1 = (z, +\infty) \times (z, +\infty)$,
-	\item $K_2 = (-\infty, z) \times (z, +\infty)$,
-	\item $K_3 = (-\infty, z) \times (-\infty, z)$,
-	\item $K_4 = (z, +\infty) \times (-\infty, z)$.
-\end{enumerate}
+\begin{align}
+\label{eq:quarters}
+\begin{split}
+&K_1 = (z, +\infty) \times (z, +\infty) \quad\quad K_2 = (-\infty, z) \times (z, +\infty)\\
+&K_3 = (-\infty, z) \times (-\infty, z) \quad\quad K_4 = (z, +\infty) \times (-\infty, z)
+\end{split}
+\end{align}
+
 
 \newcommand{\I}{\mathcal{I}}
 \newcommand{\G}{\mathcal{G}}
@@ -945,200 +948,69 @@ This concludes the proof of \cref{text_decomposition}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Algorithm}
 \label{sec:algorithm}
+In this section, we prove two main components of our algorithm, \cref{th:sparse_algo} and \cref{th:dense_algo}. \cref{th:sparse_algo} gives an efficient algorithm for computing the Hamming distances between $P$ and a text partitioned into a small number of monochromatic subtile strings, and \cref{th:dense_algo} gives an efficient algorithm for computing the Hamming distances between $P$ and a $d$-peripheral string.
 
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/quarter_split}
-	\end{center}
-	\caption{Construction of $S_1, \dots, S_4$. The red points represent $\d{S}$.}
-	\label{figure:quarter_split}
-\end{figure}
-In this section we explore the properties of peripheral strings.
-We consider any $d > 0$ and a non-empty $d$-peripheral string $S$, such that $\d{S} \subseteq \d{\Ta}$.
-We define a partitioning of $S$ into strings $S_1, \dots, S_4$, by splitting it through the middle with a horizontal and vertical line. 
-Specifically
-\begin{itemize}
-	\item $S_1$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{n / 2, \dots, n - 1}$ (upper right quarter),
-	\item $S_2$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{n / 2, \dots, n - 1}$ (upper left quarter),
-	\item $S_3$ is the restriction of $S$ to $\set{0, \dots, n / 2 - 1} \times \set{0, \dots, n / 2 - 1}$ (lower left quarter),
-	\item $S_4$ is the restriction of $S$ to $\set{n / 2, \dots, n - 1} \times \set{0, \dots, n / 2 - 1}$ (lower right quarter).
-\end{itemize}
-See \Cref{figure:quarter_split} for an illustration.
-We will now demonstrate some characteristics of $S_1$, and by symmetry, generalize them to $S$.
+\subsection{Proof of \cref{th:sparse_algo}}
+\SparseAlgo
 
-\begin{lemma} \label{border_lemma}
-	Assuming $d \le m/4$, there does not exist $u \in \d{S_1}$ and $v \in \d{\Ta}$ such that $\x{v} - \x{u} \ge d$ and $\y{v} - \y{u} \ge d$.
-	\begin{proof}
-		Assume the contrary.
-		Since $u \in \d{S_1}$, the border distance of $u$ is at most $d$, so there exists $w \in \Z^2 \setminus \d{\Ta}$, such that
-		$\x{u} - d \le \x{w} \le \x{u} + d$ and
-		$\y{u} - d \le \y{w} \le \y{u} + d$.
-		Since $v \in \d{T_a}$, there exists $q \in Q$ such that $v \in [m]^2 + q$.
-		We have
-		\[ \x{w} \ge \x{u} - d \ge n / 2 - m / 4 \ge n - m > \x{q} \]
-		and
-		\[ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. \]
-		Similarly we can show that $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^2 + q$.
-		Since $[m]^2 + q \subseteq \d{\Ta}$ and $w \not \in \d{\Ta}$, we get a contradiction.
-	\end{proof}
-\end{lemma}
+Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
+\begin{align}
+\label{eq:sparse}
+\sum_{S \in \S} \Ham(P + q, S) = |\d{P + q} \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.
+\end{align}
 
-We now introduce two major theorems regarding peripheral strings, the first of which is proven in the next section (\ref{sigma_border_proof}):
+To compute $|\d{P + q} \cap U|$ for all $q \in Q$, we replace all characters in $P$ with $0$ and all characters in $U$ with $1$, and then run \ref{cor:sigman2d}. As $\d{U} \subseteq \d{\Ta}$, this step takes $\tO(m^2)$ time. It remains to show how to compute the second term, let it be $\tau$. On a high level, the algorithm computes the area of the intersection of a subtile $S \in \S$ and every truncated subtile $V \in \V_{\getchar{S}}$, which is not hard as the two figures have a very regular shape, and then sums up the results together. 
 
-\begin{restatable*}{theorem}{SigmaBorder}\label{sigma_border}
-	We can calculate $\Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + md |\Sigma|)$, where $|\Sigma|$ is the number of different characters present in both $P$ and $S$.
-\end{restatable*}
+For a (truncated) subtile string $U$, there is $\gamma(U) \in \Z^2$ such that $\forall u \in \d{U}$ we have $u \equiv \gamma$. As the intersection of the domains of two subtile strings $U,U'$ such that $\gamma(U) \neq \gamma(U')$ is empty, we can rewrite the term $\tau$ in \cref{eq:sparse} as follows:
 
-\DenseAlgo
-\begin{proof}
-	Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}.
-	We define $\sigma \in \Sigma$ to be a \textbf{frequent} character if $|\V_\sigma| \ge \sqrt{k}$ and if $|\V_\sigma| < \sqrt{k}$, we call it an \textbf{infrequent} character.
-	We partition $S$ into two strings $F$ and $I$, based on character frequency,
-	so that $F$ consists of only the frequent characters and $I$ consists of only the infrequent ones.
-	For every $q \in Q$ we then have 
-	\[\Ham(P + q, S) = \Ham(P + q, F) + \Ham(P + q, I).\]
-	
-	Observe that the number of different frequent characters is $\O(\sqrt{k})$, and thus, by \Cref{sigma_border}, we can calculate $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$, since $F$ is $d$-peripheral. 
-	
-	We partition $I$ into $|\d{I}|$ strings, one per every $u \in \d{I}$.
-	Specifically, let $I_u$ be the restriction of $I$ to $\set{u}$ for every $u \in \d{I}$.
-	We have $\Ham(P + q, I) = \sum_{u \in \d{I}} \Ham(P + q, I_u)$ for every $q \in Q$.
-	By \Cref{subtile_definition}, $I_u$ are simple subtile strings, and thus, we can by \Cref{sparse_algo} calculate the results in $\tO(m^2 + \sum_{u \in \d{I}} |\V_{I(u)}|)$.
-	Since $I(u)$ is an infrequent character for every $u \in \d{I}$, we have $|\V_{I(u)}| < k^{1/2}$ for every $u \in \d{I}$.
-	By \Cref{area_bound} we have $|\d{I}| = \O(md)$, and thus the total complexity is $\tO(m^2 + mdk^{1/2})$.
-\end{proof}
+\begin{align}
+\label{eq:sparse_group_by_gamma}
+\tau = \sum_{\gamma \in Z^2} \sum_{S \in \S : \gamma(S) = \gamma} \sum_{V \in \V_{\getchar{S}} : \gamma(V) = \gamma - q} |\d{V + q} \cap \d{S}|
+\end{align}
 
-\subsubsection{Peripheral convolution} \label{sigma_border_proof}
+%Note that the sets $\S_\gamma = \{S \in \S : \gamma(S) = \gamma\}$ are disjoint, and the same holds for the sets $\sum_{V \in \V_{\getchar{S}} : \gamma(V) = \gamma - q}$. We can consequently focus on computing 
 
-This section serves as the proof of the theorem we just used to prove \Cref{dense_algo}: 
+%\begin{align}
+%\label{eq:sparse_one_gamma}
+%\tau_\gamma = \sum_{S \in \S_\gamma} \sum_{V \in \V_{\getchar{S}} : \gamma(V) = \gamma - q} |\d{V + q} \cap \d{S}|
+%\end{align}
 
-\SigmaBorder
+Let $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and $\varphi$).
 
-We base our approach on the simple method of calculating the Hamming distance by running an instance of FFT for each unique character.
-We will again utilize partitioning to reduce the problem to some smaller ones and then solve them naively.
-We will take advantage of the fact that the points close to the border can overlap only with a small subset of points from the pattern when considering the occurrences fully contained in the active text.
-
-Recall that 
-$\Ham(P + q, S) = \Ham(P + q, S_1) + \dots + \Ham(P + q, S_4)$.
-We will only show how to calculate $\Ham(P + q, S_1)$ for every $q \in Q$, since the other cases are symmetric.
-Consider a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
-Since the strings $P_0$ and $P_1$ partition $P$, we have
-\[ \Ham(P + q, S_1) = \Ham(P_0 + q, S_1) + \Ham(P_1 + q, S_1).\]
-
-
-From now we will assume that $d \le m / 4$, since for $d > m / 4$ we can, by \Cref{general_fft}, calculate the results in time $\tO(m^2 + m^2|\Sigma|)$, which is sufficient.
-
-
-\begin{lemma}\label{border_hamming_reduction}
-	$\d{P_0 + q} \cap \d{S_1} = \emptyset$ for every $q \in Q$.
-	\begin{proof}
-		Let us assume the contrary.
-		Select any $q \in Q$ such that $\d{P_0 + q} \cap \d{S_1}$ 
-		contains some point $u$ and consider the point $v = (\x{u} + d, \y{u} + d)$.
-		Since $u \in [m - d]^2 + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus the points $u \in \d{S_1}$ and $v \in \d{\Ta}$ contradict \Cref{border_lemma}.
-	\end{proof}
-\end{lemma}
-
-\begin{observation}\label{border_hamming_split}
-	$P_1$ can be partitioned into two strings $P_2$ and $P_3$ such that the width of $P_2$ and the height of $P_3$ are equal to $d$.
+\begin{observation}\label{primitive}
+Let $U$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$ and $X \subseteq \Z^2$. There exist $w_{i,j} \in \Z^2$, $i,j \in \{0,1\}$ such that
+\[ |U \cap X| = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} |(D + w_{i,j}) \cap X|\]
+In more detail, $w_{i,j}$'s are defined as follows: 
+\begin{enumerate}
+\item $w_{0,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$;
+\item $w_{1,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$ shifted by $\psi$;
+\item $w_{0,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi$;
+\item $w_{1,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi$.
+\end{enumerate}
+(Note that $\forall u \in D + w_{i,j}$, we have $u \equiv \gamma$). We can compute $w_{i,j}$ in $\O(1)$ time given $U$'s signature and if $\max \{|u| : u \in U\} = \O(n)$, then $|w_{i,j}| = \O(n)$ as well. 
 \end{observation}
 
-By \Cref{border_hamming_reduction}, $\Ham(P_0 + q, S_1) = 0$ for every $q \in Q$
-and by \Cref{border_hamming_split} we have 
-\[\Ham(P + q, S_1) = \Ham(P_1 + q, S_1) = \Ham(P_2 + q, S_1) + \Ham(P_3 + q, S_1) \]
-for some strings $P_2$ and $P_3$ partitioning $P_1$, such that the width of $P_2$ and the height of $P_3$ are equal to $d$.
-We calculate $\Ham(P_2 + q, S_1)$ and $\Ham(P_3 + q, S_1)$ for every $Q$ independently and sum the results.
-We only show how to calculate $\Ham(P_2 + q, S_1)$, since the other case is symmetric.
+\todo{figure would be good}
 
-We will now partition $S_1$.
-Consider a sequence of strings $U_0, \dots, U_{\lceil n / d \rceil - 1}$, where $U_i$ is the restriction of $S_1$ to $\set{id, \dots, id + d - 1} \times [n] \cap \d{S_1}$.
-For the sake of formality (since the maximum/minimum of an empty set is undefined), let $V_0, \dots, V_{\ell - 1}$ consist of all non-empty strings $U_i$, given in the increasing order of $i$.
-Observe that $V_0, \dots, V_{\ell - 1}$ partition $S_1$ and their width is not greater than $d$.
+We apply \Cref{primitive} to each $S\in S$ to obtain in $\O(1)$ time $w_{i, j}(S)$, where $i,j \in \{0,1\}$. We then have:
 
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/periphery_decomposition}
-	\end{center}
-	\caption{The decomposition of $S_1$.}
-	\label{figure:periphery_decomposition}
-\end{figure}
+\begin{align}
+\tau &= \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \sum_{i,j \in \{0,1\}} (-1)^{i+j} |\d{V + q} \cap \d{D+w_{i, j}(S)}| \\
+&=\sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} |\d{V} \cap \d{D+w_{i, j}(S)-q}|
+\end{align}
 
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/pattern_restriction}
-	\end{center}
-	\caption{Pattern partitioning.}
-	\label{figure:pattern_restriction}
-\end{figure}
-
-For each $i \in [\ell]$ we find $h_i \in \Z^+$, which we define as the minimal number such that $(\x{v}, \y{u} + h_i) \not \in \d{\Ta}$ for every $u, v \in V_i$.
-For better understanding, $h_i$ is an upper bound for the height of $V_i$.
-
-The construction is illustrated in \Cref{figure:periphery_decomposition}.
-The points in the gray area are outside of the active text.
-The remaining ones are in the active text, where the red and green represent $\d{S_1}$, and the green belong to $\d{V_i}$ some fixed $i$.
-
-\begin{lemma}\label{sum_of_h}
-	The sum of all $h_i$ is $\O(m)$.
-	\begin{proof}
-		Since for $\ell < 2$ the proof is trivial, we assume $\ell \ge 2$.
-		For every $i \in [\ell]$ (since $h_i$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h_i - 1) \in \d{\Ta}$.
-		It can be shown that for all $i \ge 2$ we have
-		\[ h_{i} \le \y{u_{i - 2}} - \y{u_{i}} + d,\]
-		since if that was not the case for some $i$, then the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h_{i} - 1)$ would contradict \Cref{border_lemma}.
-		We can conclude that
-		\[
-			\sum_{i = 0}^{\ell - 1} h_i
-			\le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d)
-			= h_0 + h_1 + \y{u_0} + \y{u_1} - \y{u_{\ell - 2}} - \y{u_{\ell - 1}} + (\ell - 2)d 
-			= \O(m).
-		\]
-	\end{proof}
-\end{lemma}
-
-\begin{observation}\label{area_bound}
-	By the above lemma $|\d{S_1}| = \O(md)$ and by extension $|\d{S}| = \O(md)$.
-\end{observation}
-
-For every $i \in [\ell]$ we construct the string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$
-and the string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$.
-The construction is illustrated in \Cref{figure:pattern_restriction}.
-Since $L_i$ and $H_i$ partition $P_2$, we have
-\[ \Ham(P_2 + q, S_1) = \sum_{i = 0}^{\ell - 1} \Ham(P_2 + q, V_i) = \sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) + \sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i). \]
-
-\begin{lemma}\label{pattern_height_reduction}
-	$\d{L_i + q} \cap \d{V_i} = \emptyset$ for every $q \in Q$ and $i \in [\ell]$.
-	\begin{proof}
-		Let us assume the contrary.
-		Select any $q \in Q$ and $i \in [\ell]$, such that $\d{L_i + q} \cap \d{V_i}$ 
-		contains some point $u$ and consider the point $v = (\x{u}, \y{u} + h_i)$.
-		Since $u \in [m] \times [m - h_i] + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus $v \in \d{\Ta}$, which contradicts the definition of $h_i$.
-	\end{proof}
-\end{lemma}
-
-By \Cref{pattern_height_reduction}, for every $q \in Q$ we have $\sum_{i = 0}^{\ell - 1} \Ham(L_i + q, V_i) = 0$, thus our result is equal to $\sum_{i = 0}^{\ell - 1} \Ham(H_i + q, V_i)$.
-We run the algorithm from \Cref{general_fft} for every pair of $H_i$ and $V_i$ and, since both $H_i$ and $V_i$ have widths not greater than $d$ and heights not greater than $h_i$, we obtain the total complexity of $\tO(\sum_{i = 0}^{\ell - 1} (|\Sigma| + 1)dh_i)$, 
-which, by \Cref{sum_of_h}, is $\tO(m^2 + md|\Sigma|)$.
-
-
-
-
-% SUBtile CONVOLUTION
 \newcommand{\W}{\mathcal{W}}
-\subsection{Subtile convolution} \label{subtile_convolution_proof}
-
-Throughout this section we will denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency}.
-We start by introducing some auxiliary tools, which we later use in the proof of \Cref{sparse_algo}.
-
 \begin{lemma}\label{primitive_conv}
-	Given a set of subtiles $\V$ and a set of points $Q$, we can calculate
-	\[ \sum_{V \in \V} |(D + q) \cap V| \]
-	for every $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$, assuming that every $V \in \V$ consists of vectors of length $\O(n)$.
-	\begin{proof}
-		For every $u \in \Z^2$ let us define $\score(u) = |\set{V : V \in \V, u \in V}|$. Observe that
-		\[ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). \]
-		We start by explicitly calculating the scores.
+Let $\V$ be a set of subtiles such that $\forall u \in \cup_{V \in \V} : |u| = \O(n)$. There is an algorithm that computes
+\[ \sum_{V \in \V} |(D + q) \cap V| \]
+for all $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$. 
+\end{lemma}
+\begin{proof}
+For $u \in \Z^2$, define $\score(u)$ to be the number of subtiles in $\V$ containing $u$. Observe that
+\[ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). \]
+We start by explicitly calculating the scores.
 		We find the maximum length of a vector that some $V \in \V$ contains, which we denote $\ell$.
+		
 		We construct the set $U \subseteq \Z^2$ of all vectors of length at most $\ell$.
 		By the assumption, we have $\ell = \O(n)$, and thus $|U| = \O(\ell ^ 2) = \O(n ^ 2)$.
 		Since all the scores are zero for points outside of $U$, will only calculate them for $u \in U$.
@@ -1158,64 +1030,150 @@ We start by introducing some auxiliary tools, which we later use in the proof of
 		Since $(D + q) \cap U = (D + q) \cap U_\gamma$, we see that the result is the sum of scores for such $u \in U_\gamma$, for which $\h{u} \ge \h{q}$ and $\s{u} \ge \s{q}$.
 		If we denote $Q_\gamma = Q \cap (\L + \gamma)$, we see that we can calculate the results for all $q \in Q_\gamma$ by sweeping $Q_\gamma$ and $U_\gamma$ in time $\tO(|Q_\gamma| + |U_\gamma|)$.
 		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|Q| + |U|) = \tO(n^2 + |Q|)$ operations in total.
-	\end{proof}
-\end{lemma}
-
-\begin{lemma}\label{primitive}
-	For any simple subtile $U$ we can find $w_0, \dots, w_3 \in \Z^2$, such that
-	\[ |U \cap X| = \sum_{j = 0}^3 (-1)^j |(D + w_j) \cap X|\]
-	for every $X \subseteq \Z^2$.
-	If $U$ consists of vectors of length $\O(n)$, then $w_0, \dots, w_3$ are of length $\O(n)$.
-	\begin{proof}
-		Let \eq{
-			\phi_0 = \min\set{{\h{u} : u \in U}}, \quad 
-			\phi_1 = \max\set{{\h{u} : u \in U}},\\
-			\psi_0 = \min\set{{\s{u} : u \in U}}, \quad
-			\psi_1 = \max\set{{\s{u} : u \in U}}.
-		}
-		Note that these values can be extracted from the signature.
-		Since $U$ is a tile, there exist unique points $u_0, \dots, u_3 \in U$, such that
-		\begin{itemize}
-			\item $\h{u_0} = \phi_0$ and $\s{u_0} = \psi_0$,
-			\item $\h{u_1} = \phi_1$ and $\s{u_1} = \psi_0$,
-			\item $\h{u_2} = \phi_1$ and $\s{u_2} = \psi_1$,
-			\item $\h{u_3} = \phi_0$ and $\s{u_3} = \psi_1$.
-		\end{itemize}
-		We construct \eq{
-			w_0 = u_0, \quad 
-			w_1 = u_1 + \psi, \quad
-			w_2 = u_2 + \phi + \psi, \quad
-			w_3 = u_3 + \phi.
-		}
-		It can be proven that the condition is satisfied.
-	\end{proof}
-\end{lemma}
-
-\begin{theorem}\label{subtile_convolution}
-	For a given list of signatures of simple subtiles $U_0, \dots, U_{\ell - 1}$, list of signatures of subtiles $V_0, \dots, V_{\ell - 1}$ and a set of vectors $Q$ we can calculate
-	\[ \sum_{i = 0}^{\ell - 1} |(U_i + q) \cap V_i| \]
-	for every $q \in Q$ in total time $\tO(m^2 + \ell + |Q|)$, assuming that the subtiles only contain vectors of length $\O(m)$.
-	\begin{proof}
-		We apply \Cref{primitive} to every $U_i$ and find $w_{i, 0}, \dots, w_{i, 3}$, so that we have
-		\eq{
-			\sum_{i = 0}^{\ell - 1}|(U_i + q) \cap V_i| 
-			= \sum_{i = 0}^{\ell - 1}|U_i \cap (V_i - q)| 
-			= \sum_{i = 0}^{\ell - 1} \sum_{j = 0}^3 (-1)^j |(D + w_{i, j}) \cap (V_i - q)| = \\
-			= \sum_{j = 0}^3 (-1)^j \sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|.
-		}
-		By \Cref{primitive_conv} we can independently calculate the values $\sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in [\ell]}$ and $Q$.
-	\end{proof}
-\end{theorem}
-
-\SparseAlgo
-\begin{proof}
-	Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
-	\[ \sum_{S \in \S} \Ham(P + q, S) = |\d{P + q} \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.\]
-	We can calculate $|\d{P + q} \cap U|$ for every $q \in Q$ with a single instance of FFT (see \Cref{sigman2d}) or by using prefix sums in time $\tO(m^2)$.
-	To calculate the values
-	\[ \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}| \]
-	we use the algorithm from \Cref{subtile_convolution} (where $\ell = \sum_{S \in \S} |\V_{\getchar{S}}|$).
 \end{proof}
+	
+
+		
+By \Cref{primitive_conv}, we can independently calculate the values $\sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in [\ell]}$ and $Q$.
+
+
+\todo{in progress}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proof of \cref{th:dense_algo}}
+In this section, we show how to compute the Hamming distances between $P$ and a $d$-peripheral string efficiently:
+
+\DenseAlgo
+
+Partition $F$ into four roughly equal $d$-peripheral strings $F_i$, $i \in [4]$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
+%
+$$\Ham(P + q, F) = \sum_{i \in [4]} \Ham(P + q, F_i)$$
+%
+Below we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$, the other cases are symmetric. 
+
+For a string $V$, define a value $h(V)$, which is an upper bound on $V$'s height, as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h : \forall u,v \in V, (\x{v}, \y{v} + h) \notin \d{\Ta}\}$. We start with the following technical claim:
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        
+        \includegraphics[width=0.9\textwidth]{drawings/quarter_split}
+        \caption{Strings $F_i$ in the partitioning of $F$. The red points constitute $\d{F}$.}
+        \label{figure:quarter_split}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{drawings/periphery_decomposition}
+        \caption{Strings $V_i$ in the partitioning of $F_1$. The red and green points constitute $\d{F_1}$.}
+        \label{figure:periphery_decomposition}
+    \end{subfigure}
+    \caption{Partitioning of $F$. }
+\end{figure}
+
+\todo{change S to F in figures. frame figures.}
+
+\begin{claim}\label{border_lemma}
+Let $F_1$ be a $d$-peripheral string with $\d{F_1} \subseteq K_1$. For all $u \in \d{F_1}$ and $v \in \d{\Ta}$, either $\x{v} - \x{u} < d$ or $\y{v} - \y{u} < d$.  
+\end{claim}
+\begin{proof}
+Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $|\x{u} - \x{w}| \le |u-w| \le d$ and $|\y{u} - \y{w}| \le |u-w| \le d$. Since $v \in \d{T_a}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
+\[ \x{w} \ge \x{u} - d \ge n/2 - m/4 \ge n - m > \x{q}\]
+and
+\[ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. \]
+Similarly, we can show $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^2 + q \subseteq \d{\Ta}$, a contradiction.
+\end{proof}
+
+\begin{lemma}\label{lm:partitioning}
+A $d$-peripheral string $F_1$ with $\d{F_1} \subseteq K_1$ can be partitioned into $\ell = \O(m/d)$ strings $V_i$ with width at most $d$ and $\sum_{i \in [\ell]} h(V_i) = \O(m)$. (See \cref{figure:quarter_split}.)
+\end{lemma}
+\begin{proof}
+Let $\ell = \lceil n / d \rceil - 1$ and partition $F_1$ into strings $V_i$, $i \in [\ell]$, where $V_i$ is the restriction of $F_1$ to $\set{i \cdot d, \dots, i \cdot d + d - 1} \times [n] \cap \d{F_1}$. (See \cref{figure:periphery_decomposition}.) 
+For each $i$, the width of $V_i$ is at most $d$. 
+
+We now show that $\sum_{i \in [\ell]} h(V_i) = \O(m)$. For $\ell < 2$ the claim is trivial. Assume $\ell \ge 2$. For every $i \in [\ell]$ (since $h(V_i)$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h(V_i) - 1) \in \d{\Ta}$. For all $i \ge 2$, we have
+\[ h(V_i) \le \y{u_{i - 2}} - \y{u_{i}} + d.\]
+since if that were not the case for some $i$, the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h(V_i) - 1)$ would have contradicted \cref{border_lemma}. We conclude that the sum $h_i$ can be upper-bounded by a telescoping series:
+%
+$$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d) = \O(m)$$
+\end{proof}
+
+As an immediate corollary, we obtain
+
+\begin{corollary}\label{cor:area_F}
+$|\dom{F_1}| = \O(dm)$. 
+\end{corollary}
+
+Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $|\V_a| \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F$ into two strings $F_1$ and $F_2$, where $F_1$ contains only infrequent characters and $F_2$ frequent ones. For every $q \in Q$ we then have 
+
+\[\Ham(P + q, S) = \Ham(P + q, F_1') + \Ham(P + q, F_1'').\]
+
+For all $u \in \d{F_1'}$ let $I_u$ a subtile string defined as the restriction of $F_1'$ to $\set{u}$. We have $\Ham(P + q, F_1') = \sum_{u \in \d{F_1'}} \Ham(P + q, I_u)$ for every $q \in Q$. Consequently, we can compute these values in $\tO(m^2 + \sum_{u \in \d{I}} |\V_{I(u)}|)$ time by \cref{th:sparse_algo}. For all $u \in \d{F_1'}$, $I(u)$ is an infrequent character and consequently, $|\V_{I(u)}| < k^{1/2}$. Furthermore, \cref{cor:area_F}, we have $|\d{F_1'}| = \O(md)$, and thus the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
+To compute the values $\Ham(P + q, F_1'')$, we apply the following lemma:
+
+\begin{restatable}{lemma}{SigmaBorder}\label{lm:sigma_border}
+Let $X$ be a $d$-peripheral string such that $\d{X} \subseteq K_1$. There is an algorithm that computes, for all $q \in Q$, the distance $\Ham(P + q, F)$ in total time $\tO(m^2 + (\sigma+1) \cdot md)$, where $\sigma$ is the total number of distinct characters in $P$ and $F$.
+\end{restatable}
+
+Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k + m^2) = \tO(m^2)$ time, we replace all characters in $P$ not present in $F_1''$ with a new character. This operation does not change the Hamming distances, and we now have that the total number of distinct characters in $P$ and $F$ is $\O(\sqrt{k})$. We then apply \cref{lm:sigma_border} to compute $\Ham(P + q, F_1'')$ for all $q \in Q$ in $\tO(m^2 + \sqrt k \cdot md)$ time, which completes the proof of \ref{th:dense_algo}. 
+
+\begin{proof}[{Proof of \cref{lm:sigma_border}}]
+If $d > m/4$, we can apply \cref{cor:sigman2d} to compute the distances in $\tO(m^2 + (\sigma+1) \cdot m^2) = \tO(m^2 + (\sigma+1) \cdot dm)$ time. From now on, we assume $d \le m / 4$. 
+
+We first partition $F_1''$ into $\ell$ strings $V_i$, $\ell = \O(m/d)$ by \ref{lm:partitioning}. For all $q \in Q$, we have 
+
+\[ \Ham(P + q, F_1'') = \sum_{i \in [\ell]} \Ham(P_0 + q, V_i).\]
+
+Next, we partition the pattern. We start by partitioning $P$ into a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$. (See \cref{figure:pattern_restriction}.) For all $q \in Q$ and $i \in [\ell]$, we have
+
+\[ \Ham(P + q, V_i) = \Ham(P_0 + q, V_i) + \Ham(P_1 + q, V_i).\]
+
+\begin{claim}\label{border_hamming_reduction}
+For all $q \in Q$, there is $\d{P_0 + q} \cap \d{V_i} = \emptyset$.
+\end{claim}
+\begin{proof}
+Assume towards a contradiction that for some $q \in Q$ there exist $u \in \d{P_0 + q} \cap \d{V_i}$. Define $v = (\x{u} + d, \y{u} + d)$. Since $u \in [m - d]^2 + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$. Consequently, we have $u \in \d{V_i}$, $v \in \d{\Ta}$, and $\x{v} - \x{u} = \y{v} - \y{u}$, a contradiction with \Cref{border_lemma}.
+\end{proof}
+
+Furthermore, partition $P_1$ into a string $P_2$ of width $d$, which is a restriction of $P$ onto $[m-d+1,m]\times [m]$ and a string $P_3$ of height $d$,  which is a restriction of $P$ onto $[m] \times [m-d+1,m]$. (See \cref{figure:pattern_restriction}.) By \cref{border_hamming_reduction}, we have, for all $q \in Q$ and $i \in [\ell]$, 
+
+\[\Ham(P + q, V_i) = \Ham(P_1 + q, V_i) = \Ham(P_2 + q, V_i) + \Ham(P_3 + q, V_i) \]
+
+We compute $\Ham(P_2 + q, V_i)$ and $\Ham(P_3 + q, V_i)$ for every $Q$ independently and sum the results. We only show how to calculate $\Ham(P_2 + q, V_i)$, since the other case is symmetric. 
+
+\begin{figure}[!t]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{drawings/pattern_restriction}
+	\end{center}
+	\caption{Pattern partitioning.}
+	\label{figure:pattern_restriction}
+\end{figure}
+
+For every $i \in [\ell]$, let $h_i = h(V_i)$ and construct a string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$ and a string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$. (See \Cref{figure:pattern_restriction}.) Since $L_i$ and $H_i$ partition $P_2$, we have
+
+\[\Ham(P_2 + q, V_i) = \Ham(L_i + q, V_i) + \Ham(H_i + q, V_i). \]
+
+\begin{claim}\label{pattern_height_reduction}
+For all $q \in Q$ and $i \in [\ell]$, we have $\d{L_i + q} \cap \d{V_i} = \emptyset$ .
+\end{claim}
+\begin{proof}
+Assume towards a contradiction that there exist $q \in Q$ and $i \in [\ell]$ such that $\d{L_i + q} \cap \d{V_i}$ contains $u \in \Z^2$. Define $v = (\x{u}, \y{u} + h_i)$.
+Since $u \in [m] \times [m - h_i] + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$, thus $v \in \d{\Ta}$, which contradicts the definition of $h_i$.
+\end{proof}
+
+By \Cref{pattern_height_reduction}, we have for all $q \in Q$:
+
+\[\Ham(P_2 + q, V_i) = \Ham(H_i + q, V_i). \]
+
+\paragraph*{Wrapping up.}
+We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ by \cref{cor:area_F}. Additionally, we naively compute ${q : \d{H_i+q} \subseteq \d{V_i}}$ for all $i \in [\ell]$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \O(dm)$ (again, by \cref{cor:area_F}). We finally compute $Q' = Q \cup \cup_i {q : \d{H_i+q} \subseteq \d{V_i}}$ by sorting the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $|Q'| = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\O(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
+\end{proof}
+
+
 
 \bibliographystyle{plainurl}
 \bibliography{references}
