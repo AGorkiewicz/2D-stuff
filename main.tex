@@ -455,13 +455,13 @@ Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There i
 		\item $\psi \in (0, +\infty) \times [0, +\infty)$, $\phi \in [0, +\infty) \times (-\infty, 0)$;
 		\item $0 < |\psi||\phi| = \O(\ell^2 / |U|)$,
 		\item $\sin \alpha \ge \frac{1}{2}$, where $\alpha$ is the angle between $\psi$ and $\phi$.
-\todo{update the proof}
 	\end{itemize}
 \end{restatable*}
 
 Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $|Q| > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\O(|Q|)$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le |\phi||\psi| = \O(\ell^2 / |Q|) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
 \subsection{Partitionings of the pattern and the text}
+\label{sec:partitioning}
 Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
 
 \begin{definition}[Lattice congruency]\label{lattice_congruency}
@@ -496,8 +496,7 @@ The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are
 Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possible, infinite) and a parallelogram with sides collinear to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
 
 \begin{definition}[Subtile]\label{subtile_definition}
-We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$.
-%We say that $V$ is lattice-congruent to some $v \in \Z^2$ (denoted as $V \equiv v$) when $v \equiv \gamma$. We similarly define the lattice congruency between two subtiles.
+We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$. Abusing notation, we write $V \equiv v$ for $v \in \Z^2$ if $v \equiv \gamma$ and for two (truncated) subtiles $U,V$ we write $U \equiv V$ if there exists $v \in \Z^2$ such that $U \equiv v$ and $V \equiv v$.
 \end{definition}
 
 See \Cref{figure:tile} for an illustration.
@@ -514,10 +513,7 @@ A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S}
 Assume to be given a (truncated) tile string $R$ such that $\phi, \psi$ are its $\O(k)$-periods. After $\O(m^2)$-time preprocessing of $\phi, \psi$, the string $R$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
 \end{restatable*}
 
-Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $\sigma \in \Sigma$ present in $P$, we construct a set $\V_\sigma = \set{V : V \in \V, \getchar{V} = \sigma}$.
-
-
-\todo{T: I changed spacious parquet to tile, and simple parquet to tile. Parquet itself was never used. I need to update everything.}
+Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
 
 Because $T$ is not necessarily periodic, we are obliged to use a similar but more sophisticated partitioning.
 
@@ -1018,7 +1014,7 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 	\item A parallelogram $P_j^4 = \bigcup_{i=t'}^{\ell} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral.
 \end{enumerate}
 
-Similarly, for every $i \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
+\noindent Similarly, for every $i \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
 \begin{enumerate}
 	\item A parallelogram $R_i^1 = \bigcup_{j=0}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
 	\item A parallelogram $R_i^2 = \bigcup_{j=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
@@ -1047,30 +1043,16 @@ In this section, we prove two main components of our algorithm, \cref{th:sparse_
 
 \subsection{Proof of \cref{th:sparse_algo}}
 \SparseAlgo
-
-Let $U = \bigcup_{S \in \S} \d{S}$. Observe that
+Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings which partition $P$ and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \ref{sec:partitioning}).
+ Observe that
 \begin{align}
 \label{eq:sparse}
-\sum_{S \in \S} \Ham(P + q, S) = |\d{P + q} \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{V + q} \cap \d{S}|.
+\sum_{S \in \S} \Ham(P + q, S) = |\d{P + q} \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{S} \cap \d{V + q}|.
 \end{align}
 
-To compute $|\d{P + q} \cap U|$ for all $q \in Q$, we replace all characters in $P$ with $0$ and all characters in $U$ with $1$, and then run \ref{cor:sigman2d}. As $\d{U} \subseteq \d{\Ta}$, this step takes $\tO(m^2)$ time. It remains to show how to compute the second term, let it be $\tau$. On a high level, the algorithm computes the area of the intersection of a subtile $S \in \S$ and every truncated subtile $V \in \V_{\getchar{S}}$, which is not hard as the two figures have a very regular shape, and then sums up the results together. 
+To compute $|\d{P + q} \cap U|$ for all $q \in Q$, we replace all characters in $P$ with $0$ and all characters in $U$ with $1$, and then apply \cref{cor:sigman2d}. As $\d{U} \subseteq \d{\Ta}$, this step takes $\tO(m^2)$ time. It remains to show how to compute the second term, let it be $\tau_q$. 
 
-For a (truncated) subtile string $U$, there is $\gamma(U) \in \Z^2$ such that $\forall u \in \d{U}$ we have $u \equiv \gamma$. As the intersection of the domains of two subtile strings $U,U'$ such that $\gamma(U) \neq \gamma(U')$ is empty, we can rewrite the term $\tau$ in \cref{eq:sparse} as follows:
-
-\begin{align}
-\label{eq:sparse_group_by_gamma}
-\tau = \sum_{\gamma \in Z^2} \sum_{S \in \S : \gamma(S) = \gamma} \sum_{V \in \V_{\getchar{S}} : \gamma(V) = \gamma - q} |\d{V + q} \cap \d{S}|
-\end{align}
-
-%Note that the sets $\S_\gamma = \{S \in \S : \gamma(S) = \gamma\}$ are disjoint, and the same holds for the sets $\sum_{V \in \V_{\getchar{S}} : \gamma(V) = \gamma - q}$. We can consequently focus on computing 
-
-%\begin{align}
-%\label{eq:sparse_one_gamma}
-%\tau_\gamma = \sum_{S \in \S_\gamma} \sum_{V \in \V_{\getchar{S}} : \gamma(V) = \gamma - q} |\d{V + q} \cap \d{S}|
-%\end{align}
-
-Let $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and $\varphi$).
+Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\varphi$).
 
 \begin{observation}\label{primitive}
 Let $U$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$ and $X \subseteq \Z^2$. There exist $w_{i,j} \in \Z^2$, $i,j \in \{0,1\}$ such that
@@ -1080,60 +1062,79 @@ In more detail, $w_{i,j}$'s are defined as follows:
 \item $w_{0,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$;
 \item $w_{1,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$ shifted by $\psi$;
 \item $w_{0,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi$;
-\item $w_{1,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi$.
+\item $w_{1,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi+\psi$.
 \end{enumerate}
-(Note that $\forall u \in D + w_{i,j}$, we have $u \equiv \gamma$). We can compute $w_{i,j}$ in $\O(1)$ time given $U$'s signature and if $\max \{|u| : u \in U\} = \O(n)$, then $|w_{i,j}| = \O(n)$ as well. 
+(Note that $\forall u \in D + w_{i,j}$, we have $u \equiv \gamma$). We can compute $w_{i,j}$ in $\O(1)$ time given $U$'s signature and if $\max \{|u| : u \in U\} = \O(m)$, then $|w_{i,j}| = \O(m)$ as well. 
 \end{observation}
 
 \todo{figure would be good}
 
-We apply \Cref{primitive} to each $S\in S$ to obtain in $\O(1)$ time $w_{i, j}(S)$, where $i,j \in \{0,1\}$. We then have:
+We apply \Cref{primitive} to each $S\in \S$ to obtain in $\O(|\S|)$ total time $w_{i, j}(S)$, where $i,j \in \{0,1\}$. We then have:
 
 \begin{align}
-\tau &= \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \sum_{i,j \in \{0,1\}} (-1)^{i+j} |\d{V + q} \cap \d{D+w_{i, j}(S)}| \\
-&=\sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} |\d{V} \cap \d{D+w_{i, j}(S)-q}|
+\label{eq:S_replaced_by_shifted_angles}
+\begin{split}
+\tau_q &= \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \sum_{i,j \in \{0,1\}} (-1)^{i+j} |\d{D+w_{i, j}(S)} \cap \d{V + q}| \\
+& = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} |\d{D-q} \cap \d{V-w_{i, j}(S)}|
+\end{split}
+\end{align}
+%
+Now, fix $i,j \in \{0,1\}$, and let 
+%
+\begin{equation}
+\label{eq:fixed_ij}
+\tau_q^{i,j} = (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} |\d{D-q} \cap \d{V-w_{i, j}(S)}|
+\end{equation}
+
+Below we explain how to compute the values $\tau_q^{i,j}$ for all $q \in Q$ and all $i,j \in \{0,1\}$ in time $\tO(m^2 + \sum{S \in \S} |\V_{\getchar{S}}|)$. It is easy to see from \cref{eq:S_replaced_by_shifted_angles} that the values $\tau_q$ can then be computed in $\O(|Q|) = \O(m^2)$ time. 
+
+Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V \in \V_{\getchar{S}}\}$.  Note that $|\S \odot \V| = \O(\sum{S \in \S} |\V_{\getchar{S}}|)$ and for all $u \in \S \odot \V$, we have $|u| = \O(m)$. We can then simplify \cref{eq:fixed_ij} as follows:
+
+\begin{align}
+\label{eq:group_by_gamma}
+\tau_q^{i,j} = \sum_{V \in \S \odot \V} |\d{D-q} \cap \d{V}|
 \end{align}
 
 \newcommand{\W}{\mathcal{W}}
 \begin{lemma}\label{primitive_conv}
-Let $\V$ be a set of subtiles such that $\forall u \in \cup_{V \in \V} : |u| = \O(n)$. There is an algorithm that computes
-\[ \sum_{V \in \V} |(D + q) \cap V| \]
-for all $q \in Q$ in total time $\tO(n^2 + |Q| + |\V|)$. 
+There is an algorithm that computes the values $\tau_q^{i,j}$ for all $q \in Q$ in total time $\tO(m^2 + \sum{S \in \S} |\V_{\getchar{S}}|)$. 
 \end{lemma}
 \begin{proof}
-For $u \in \Z^2$, define $\score(u)$ to be the number of subtiles in $\V$ containing $u$. Observe that
-\[ \sum_{V \in \V} |(D + q) \cap V| = \sum_{u \in D + q} \score(u). \]
-We start by explicitly calculating the scores.
-		We find the maximum length of a vector that some $V \in \V$ contains, which we denote $\ell$.
-		
-		We construct the set $U \subseteq \Z^2$ of all vectors of length at most $\ell$.
-		By the assumption, we have $\ell = \O(n)$, and thus $|U| = \O(\ell ^ 2) = \O(n ^ 2)$.
-		Since all the scores are zero for points outside of $U$, will only calculate them for $u \in U$.
-		
-		We find the set $\Gamma$ introduced in \Cref{lattice_base} and for every $\gamma \in \Gamma$ we construct $U_\gamma = U \cap (\L + \gamma)$.
-		Consider any $u \in U_\gamma$ for some fixed $\gamma \in \Gamma$ and any $V \in \V$.
-		Observe that if $V \not \equiv \gamma$, then $u \not \in V$ and thus $V$ does not contribute to $\score(u)$.
-		If $V \equiv \gamma$, then we can find a tile $W$ such that $V = W \cap (\L + \gamma)$ and we have
-		$u \in V \Leftrightarrow u \in W \cap (\L + \gamma) \Leftrightarrow u \in W$.
-		Thus, if we denote $\W_\gamma$ as the set of tiles $W$ obtained for every $V \in \V$ such that $V \equiv \gamma$, then $\score(u)$ for $u \in U_\gamma$ is the number of tiles $W \in \W_\gamma$ such that $u \in W$.
-		We calculate $\score(u)$ for every $u \in U_\gamma$ by sweeping $U_\gamma$ and $\W_\gamma$ in time $\tO(|U_\gamma| + |\W_\gamma|)$.
-		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|U| + |\V|) = \tO(n^2 + |\V|)$ operations in total.
+For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $(\S \odot \V)$ containing $u$. Observe that
+%
+\begin{equation}
+\begin{split}
+&\tau_q^{i,j} =\\
+&\sum_{V \in \S \odot \V} |u \in \Z^2 : u \in (D-q), u \in V| = \sum_{V \in \S \odot \V} \sum_{u \in D-q}  |u \in V| =  \\
+&\sum_{u \in D-q} \sum_{V \in \S \odot \V} |u \in V| = \sum_{u \in D-q} \score(u)
+\end{split}
+\end{equation}
+We now explain how to compute $\tau_q^{i,j}$. We start by computing in $\O(\S \odot \V) = \tO(\sum{S \in \S} |\V_{\getchar{S}}|)$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
+an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. We therefore can construct the set $\W = \{w \in \Z^2 : |w| \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
 
-		Now consider a query vector $q \in Q$.
-		Let $\gamma \in \Gamma$ be such that $q \equiv \gamma$.
-		We have already shown that the sum of scores for $u \in D + q$ is equal to the sum of scores for $u \in (D + q) \cap U$.
-		Since $(D + q) \cap U = (D + q) \cap U_\gamma$, we see that the result is the sum of scores for such $u \in U_\gamma$, for which $\h{u} \ge \h{q}$ and $\s{u} \ge \s{q}$.
-		If we denote $Q_\gamma = Q \cap (\L + \gamma)$, we see that we can calculate the results for all $q \in Q_\gamma$ by sweeping $Q_\gamma$ and $U_\gamma$ in time $\tO(|Q_\gamma| + |U_\gamma|)$.
-		We do it independently for every $\gamma \in \Gamma$, performing $\tO(|Q| + |U|) = \tO(n^2 + |Q|)$ operations in total.
+We then construct in $\O(m^2)$ the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. By \cref{subtile_definition}, that if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$ we can refine the definition of score:
+%
+$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} |u \in V|$$
+%
+Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with a signature $x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. We have $\W_\gamma \ni w = (\x{w}, \y{w}) \in V$ iff 
+\begin{equation}
+\label{eq:range}
+x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
+\end{equation}
+(we don't need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(|(\S \odot \V) |_\gamma|)$ time a $6$-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
+%
+$$\{(x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1) : x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, 'gamma \text{ is a signature of } V \in V \in (\S \odot \V) |_\gamma\}$$
+Using the range tree, it then follows from \cref{eq:range} that we can compute $\score(w)$ for every $w \in \W_\gamma$ in time $\tO(|\W_\gamma|)$. 
+
+Now, note that the following recursive formula holds for all $w \in \W_\gamma$:
+%
+$$\sum_{u \in D+w} \score{u} = \sum_{u \in D+w+\phi} \score{u} + \sum_{u \in D+w+\psi} \score{u} -\sum_{u \in D+w+\phi+\psi} \score{u}$$
+%
+Furthermore, if $w \in \W_\gamma$, then $w+\phi, w+\psi, w+\phi+\psi \in \Gamma$ as well. Consequently, we can compute $\sum_{u \in D+w} \score{u}$ for all $w \in \W_\gamma$ in $\O(|W_\gamma|)$ time. 
+
+In total over all $\gamma$, the computation takes $\sum_{\gamma \in \Gamma} \tO(|\W_\gamma| + |(\S \odot \V) |_\gamma|) = \tO(|\W| + |\S \odot \V|) = \tO(m^2 + |Q| + \sum{S \in \S} |\V_{\getchar{S}}|)$ time. We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $|Q| = \O(m^2)$ time, concluding the proof. 
 \end{proof}
 	
-
-		
-By \Cref{primitive_conv}, we can independently calculate the values $\sum_{i = 0}^{\ell - 1} |(D + q) \cap (V_i - w_{i, j})|$ for every $j$ by running the algorithm for $\V_j = \set{V_i - w_{i, j} : i \in [\ell]}$ and $Q$.
-
-
-\todo{in progress}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
