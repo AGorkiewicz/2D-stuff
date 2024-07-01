@@ -142,11 +142,11 @@ h = max_y - min_y
 #res += f'\\draw ({ax - 0.5}, {max_y - 0.5}) -- ({bx - 0.5}, {max_y - 0.5});'
 res += f'\\draw [dashed] ({ax - 0.5}, {min_y - 0.5}) -- ({bx + 0.5}, {min_y - 0.5});'
 
-res += f'\\draw ({(ax + bx) / 2}, {82}) node [scale=10]{{$V_i$}};'
+res += f'\\draw ({(ax + bx) / 2-0.5}, {92.5}) node [scale=10]{{$V_i$}};'
 
-res += f'\\draw[decorate, decoration={{brace, amplitude=80pt, raise=2ex, mirror}}] ({ax}, {max_y}) -- ({ax}, {min_y}) node [midway, scale=10, xshift=-1.4em]{{$h_i$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=80pt, raise=2ex, mirror}}] ({ax-1}, {max_y}) -- ({ax-1}, {min_y}) node [midway, scale=10, xshift=-1.4em]{{$h_i$}};'
 
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=2ex, mirror}}] ({10 * d}, {60}) -- ({11 * d - 1}, {60}) node [midway, scale=10, yshift=-1em]{{$d - 1$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=2ex, mirror}}] ({10 * d}, {78}) -- ({11 * d - 1}, {78}) node [midway, scale=10, yshift=-1em]{{$d - 1$}};'
 
 res += '\\end{tikzpicture}\n\\end{document}'
 

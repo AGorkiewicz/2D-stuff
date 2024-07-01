@@ -149,14 +149,15 @@ for (i, j) in dom:
 
 c = 13
 
-res += f'\\draw ({z + c}, {z + c}) node [scale=10]{{$S_1$}};'
-res += f'\\draw ({z - c}, {z + c}) node [scale=10]{{$S_2$}};'
-res += f'\\draw ({z - c}, {z - c}) node [scale=10]{{$S_3$}};'
-res += f'\\draw ({z + c}, {z - c}) node [scale=10]{{$S_4$}};'
+res += f'\\draw ({z + c}, {z + c}) node [scale=10]{{$F_1$}};'
+res += f'\\draw ({z - c}, {z + c}) node [scale=10]{{$F_2$}};'
+res += f'\\draw ({z - c}, {z - c}) node [scale=10]{{$F_3$}};'
+res += f'\\draw ({z + c}, {z - c}) node [scale=10]{{$F_4$}};'
 
 res += f'\\draw [] ({z}, {L}) -- ({z}, {R});'
 res += f'\\draw [] ({L}, {z}) -- ({R}, {z});'
 
+res += '\\useasboundingbox (0,0) rectangle (30,30);'
 
 res += '\\end{tikzpicture}\n\\end{document}'
 print(res)
