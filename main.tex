@@ -1,6 +1,7 @@
 \documentclass[11pt, letterpaper]{article}
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
 \pdfoutput=1
+\usepackage[utf8]{inputenc}
 \usepackage{amsthm,amssymb,amsmath,amsmath,amsfonts}  
 \usepackage{xspace,enumerate}
 \usepackage[dvipsnames]{xcolor}
@@ -336,7 +337,9 @@ It follows that we can first use the data structure of \cref{fact:kangaroo1D} fo
 $\Ham(T_{x, \y{q}+1}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
 \end{proof}
 
-\begin{fact}[Folklore corollary of \cite{CLIFFORD200753}]\label{fact:sigman1d}
+The following fact is folklore, and follows by applying a separate FFT for every distinct character present in $P$ and $T$.
+
+\begin{fact}\label{fact:sigman1d}
 Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), the text-to-pattern Hamming distances problem can be solved in $\O(\sigma \cdot n \log m)$ time, where $\sigma$ is the number of distinct characters present in $P$ and $T$.
 \end{fact}
 
@@ -344,7 +347,7 @@ Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both ca
 Let $\varepsilon > 0$ be a constant. Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in $\O((n/\varepsilon^2)  \log^3 m)$ time.
 \end{corollary}
 \begin{proof}
-Karloff's algorithm~\cite{Karloff1993} solves the text-to-pattern Hamming distances problem for $P,T$ in $\O((n/\varepsilon^2)  \log^3 m)$ time assuming that neither $P$ nor $T$ does not contain a wildcard. We show how to modify it slightly to allow for mismatches. 
+Karloff's algorithm~\cite{Karloff1993} solves the text-to-pattern Hamming distances problem for $P,T$ in $\O((n/\varepsilon^2)  \log^3 m)$ time assuming that neither $P$ nor $T$ does not contain a wildcard. We show how to modify it slightly to allow for wildcards. 
 
 The idea of Karloff's algorithm is as follows. For each $1 \le i \le r = (\log m/ \varepsilon)^2$, the algorithm a mapping $\mu_i : \Sigma \rightarrow \{0,1\}$. It then solves the text-to-pattern Hamming distances problem for $\mu_i(T) := \mu_i(T(1))\mu_i(T(2)) \ldots \mu_i(T(n))$ and $\mu_i(P) := \mu_i(P(1))\mu_i(P(2)) \ldots \mu_i(P(m))$. For $1 \le j \le n-m$, define $d_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$. The algorithm returns the value $d(j) = \sum_i d_i(j)$. Karloff showed that $\Ham(T, P+j-1) \le d(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$.
 
