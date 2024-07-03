@@ -141,30 +141,48 @@ Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm, so $\t
 
 \section{Introduction}
 Finite sequences of characters, or strings, are basic objects used to store and manipulate data, readily available in any popular
-programming language.The fundamental algorithmic problem on such objects is pattern matching: finding one string in another.
-Efficient linear-time algorithms for this problem are known since the 70s~\cite{Knuth1977}, and dozens 
+programming language. The fundamental algorithmic problem on such objects is pattern matching: finding one string in another.
+Traditionally, the former is called the pattern and the latter is the text.
+An asymptotically optimal linear time algorithm for this problem is known since the 70s~\cite{Knuth1977}, and multiple dozens
+efficient algorithms have been described in the literature since then~\cite{DBLP:books/daglib/0025563}. However, 
+from the point of view of possible applications, in particular those in computational biology, where we work with chromosomes
+that can be described by finite strings over the alphabet $\{A,C,G,T\}$, is to search for approximate occurrences, that is,
+allow some slack when defining when two such strings are equal.
 
+From a theoretical point of view, a particular clean notion of an approximate occurrence is that of bounded Hamming distance.
+Then, given an integer parameter $k$ together with the text of length $n$ and the pattern of length $m$, we want to find all
+positions in the text where the pattern matches with at most $k$ mismatches. This is known as pattern matching with $k$
+mismatches. The natural assumption is that $k$ is not too large,
+and the running time should be close to linear when $k$ is small. Indeed, from the point of view of potential applications we do
+not want positions where there are many mismatches, as they would not be very meaningful.
 
+Pattern matching with $k$ mismatches was already studied in the 80s, when a technique informally known as
+the ``kangaroo jumping'' was introduced~\cite{Landau1986,Galil1986}. In this approach,
+each position in the text is considered one-by-one, and we calculate the number of mismatches
+by jumping over regions where there is no mismatch, moving to the next position when it exceeds $k$.
+A single jump can be implemented in constant time with a data structure for the longest common extensions, such
+as a suffix tree augmented with a lowest common ancestors structure (or some of the earlier simpler structures with slightly worse
+parameters). This results in an $\O(nk)$ time algorithm, which is efficient for small values of $k$.
+Another early discovery, efficient when there are very few distinct characters present in the input,
+is to run FFT for each distinct character, resulting in $\O(n|\Sigma|\log n)$ running time~\cite{FischerP74}.
+While, in principle, this is possibly quite bad for a general input, in the late 80s Abrahamson showed
+how to apply the so-called heavy-light trick to guarantee that the time complexity is always
+$\O(n \sqrt{m \log m})$ time~\cite{Abrahamson1987}. This clearly established that the $\O(nk)$ time complexity
+can't be the right answer for the whole range values of $k$.
 
-However, from the point of view of possible applications, it is desirable to search for approximate occurrences.
-A clean and yet possibly useful in practice notion of an approximate occurrence is that of bounded Hamming distance,
-where given a parameter $k$, we want to find all positions in the text where the pattern matches with at most $k$
-mismatches. The natural assumption is that $k$ is not too large, and the running time should be close to linear
-when $k$ is small. The first algorithms~\cite{Landau1986,Galil1986} that achieved such a goal in the 80s used the technique
-informally called ``kangaroo jumping'': they consider each position in the text and calculate the number of mismatches
-by jumping over regions where there is no mismatch. A single jump can be implemented in constant time with a
-data structure for the longest common extensions, such as a suffix tree augmented with a lowest common ancestors structure,
-and after having found more than $k$ mismatches we can move to the next position in the text. Thus, the overall
-time becomes $\O(nk)$. For very large values of $k$ this is not better than the naive algorithm. However, another
-approach based on the fast Fourier transform works in $\O(n \sqrt{m \log m})$ time~\cite{Abrahamson1987},
-suggesting that the $\O(nk)$ bound is not optimal for the whole range of values of $k$. It was only in 2004 that
-both bounds were unified to obtain an $\O(n\sqrt{k \log k})$ time algorithm~\cite{Amir2004}. This complexity
-was later improved to $\tO(n + k^2n/m)$~\cite{Clifford2016a}, and then further refined to $\tO(n + kn/\sqrt{m})$~\cite{Gawrychowski2018},
+It was only in 2004 that both bounds were unified to obtain an $\O(n\sqrt{k \log k})$ time algorithm~\cite{Amir2004},
+by combining FFT with a purely combinatorial reasoning that allows for eliminating all but a few relevant positions
+in the text. It might have seen at the time that such a complexity is the best possible as a function of $n$, $m$, and $k$,
+but surprisingly in 2016 Clifford et al.~\cite{Clifford2016a} designed another algorithm that works
+in $\tO(n + k^2n/m)$ time. In particular, this is almost-linear when $k=\O(\sqrt{m})$. Later, their
+approach was refined to work in $\tO(n + kn/\sqrt{m})$ time~\cite{Gawrychowski2018},
 which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We write $\tO$ to hide factors polylogarithmic in $n$.}. 
 It is known that a significantly faster algorithm implies fast boolean matrix multiplication~\cite{Gawrychowski2018},
 and the time complexity can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020} (at the expense
 of allowing Monte Carlo randomization). In a very recent exciting improvement, it was shown how to slightly improve
-these time complexities by leveraging a connection to the 3-SUM problem~\cite{Chan0WX23}. Thus, the time complexity of one-dimensional pattern matching with bounded Hamming distance is fairly well understood.
+these time complexities by leveraging a connection to the 3-SUM problem~\cite{Chan0WX23}.
+While further improvements might be still possible, it is certainly the case that one-dimensional pattern matching with
+bounded Hamming distance is a fairly well-understood problem.
 This is also the case from the more combinatorial point of view: we know that occurrences of the pattern with $k$ mismatches
 either have a simple and exploitable structure, or the pattern is close to being periodic~\cite{Bringmann2019,Charalampopoulos2020a}.
 
