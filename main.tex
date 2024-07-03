@@ -725,7 +725,7 @@ $\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / 
 %$$\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / \sqrt{3}\text{ and }y < -x \cdot \sqrt{3}\},$$
 
 %
-Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $\Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq 0.5$ by design.
+Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $\Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq \frac12$ by design.
 
 We define two relations $<_1$ and $<_2$ over $U$. For $u, v \in U$, it holds $u <_1 v$ if and only if $(v - u) \in \Q_1^+$, and $u <_2 v$ if and only if $(v - u) \in \Q_2^-$. In a moment, we will show that both $<_1$ and $<_2$ are strict partial orders. 
 Note that two distinct points $u,v \in U$ are comparible with $<_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparible with $<_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$. 
@@ -795,7 +795,7 @@ By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{
 We have shown that $w$ and $w'$ satisfy the claimed properties. 
 It remains to be shown how to compute $w'$. 
 If the longest antichain $A$ is given, then it is easy to sort the chain according to $<_2$ and select the desired $w'$ in $\tO(\absolute{A})$ time. To compute the antichain, we recall from the proof of \cref{A_ineq} that $u <_2 v$ (equivalently $v - u \in \Q_2^-$) implies that $(v.x - u.x)$ is negative, while $(v.y - u.y)$ is positive (this also readily follows from the fact that $\Q_2^-$ is a subset of $\Q_2$). This means that $v.y - v.x > u.y - u.x$. We sort $U$ in increasing order of $y - x$. Thus, if $u <_2 v$, then $u$ precedes $v$ in the sorted $U$. 
-Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2 v$. We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$. This takes $\tO(\absolute{U})$ time and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
+Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2 v$. We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$. This takes $\tO(\absolute{U})$ time \cite{TODO} and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1236,24 +1236,29 @@ For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $\S \od
 =&\sum_{u \in \dom(D-q)}\ \sum_{V \in \S \odot \V} \absolute{\{u\} \cap \dom(V)} = \sum_{u \in \dom(D-q)} \score(u).
 \end{split}
 \end{equation}
-We now explain how to compute $\tau_q^{i,j}$. We start by computing in $\O(\S \odot \V) = \tO(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
-an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. We therefore can construct the set $\W = \{w \in \Z^2 : \absolute{w} \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
+We now explain how to compute $\tau_q^{i,j}$. 
+We start by computing an upper bound $\ell = \O(m)$ such that $\score(u) = 0$ for any $u$ with $\absolute{u} > \ell$. Note that $\score(u)>0$ requires that $u \in \dom(V - w_{i,j}(S))$ for some $V \in \V$ and $S \in \S$. Since $\dom(V) \subseteq \dom(P) = [m]^2$, we can use $\ell = \absolute{(m,m)} + \max_{S \in \S}(\absolute{w_{i, j}(S)})$, computable in $\O(\absolute{S})$ time, where $\ell = \O(m)$ due to $\absolute{w_{i,j}(S)} = \O(m)$.
+%
+%We start by computing in $\O(\S \odot \V) = \tO(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
+%an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. 
+We therefore can construct the set $\W = \{w \in \Z^2 : \absolute{w} \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
 
-We then construct in $\O(m^2)$ time the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. By \cref{subtile_definition}, that if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$ we can refine the definition of score:
+We then construct in $\O(m^2)$ time the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in \W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. 
+By \cref{subtile_definition}, if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$, we can refine the definition of score:
 %
-$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{u \in V}$$
+$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{\{u\} \cap \dom(V)}$$
 %
-Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with a signature $x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. We have $\W_\gamma \ni w = (\x{w}, \y{w}) \in V$ iff 
+Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. For any $w = (\x{w}, \y{w}) \in \W_\gamma$, it holds $w \in V$ if and only if
 \begin{equation}
 \label{eq:range}
 x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
 \end{equation}
-(we don't need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a $6$-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
+(where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a $6$-dimensional range tree~\cite{BENTLEY1979244}\jonas{this should probably be a 3d interval tree with counting queries?} for the set of points 
 %
-$$\{(x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1) : x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, 'gamma \text{ is a signature of } V \in V \in (\S \odot \V) |_\gamma\}$$
-Using the range tree, it then follows from \cref{eq:range} that we can compute $\score(w)$ for every $w \in \W_\gamma$ in time $\tO(\absolute{\W_\gamma})$. 
+$$\{(x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
+For every $w = (w.x, w.y) \in \W_\gamma$, we compute the query $(w.x, w.y, \phi \times w, \psi \times w)$, and count the $\V \in (\S \odot \V) |_\gamma$ containing the query in $\tO(1)$ time using the range tree. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time is $\O(m^2 + \absolute{(\S \odot \V)})$.
 
-Now, note that the following recursive formula holds for all $w \in \W_\gamma$:
+Now, note that the following recursive formula holds for all $w \in \W_\gamma$:\jonas{TODO}
 %
 $$\sum_{u \in D+w} \score{u} = \sum_{u \in D+w+\phi} \score{u} + \sum_{u \in D+w+\psi} \score{u} -\sum_{u \in D+w+\phi+\psi} \score{u}$$
 %
