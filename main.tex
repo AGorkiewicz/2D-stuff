@@ -1053,9 +1053,12 @@ Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic t
 \sum_{S \in \S} \Ham(P + q, S) = |\d{P + q} \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{S} \cap \d{V + q}|.
 \end{align}
 
-To compute $|\d{P + q} \cap U|$ for all $q \in Q$, we replace all characters in $P$ with $0$ and all characters in $U$ with $1$, and then apply \cref{cor:sigman2d}. As $\d{U} \subseteq \d{\Ta}$, this step takes $\tO(m^2)$ time. It remains to show how to compute the second term, let it be $\tau_q$. 
+To compute $|\d{P + q} \cap U|$ for all $q \in Q$, we create strings $P'$ and $T'$ with respective domains $\dom(P)$ and $\dom(T)$. Both strings are filled with character $0$. 
+In $T'$, we then replace all positions from $\dom(U)$ with character $1$. 
+We observe that $|\d{P + q} \cap U| = \Ham(P' + q, T')$, which can be computed for all $q \in Q$ in $\tO(m^2)$ time with \cref{cor:sigman2d}.
+It remains to shown how to compute the second term, let it be $\tau_q$. 
 
-Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\varphi$).
+Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\psi$).
 
 \begin{observation}\label{primitive}
 Let $U$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$ and $X \subseteq \Z^2$. There exist $w_{i,j} \in \Z^2$, $i,j \in \{0,1\}$ such that
