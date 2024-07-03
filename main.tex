@@ -88,7 +88,7 @@
 \DeclareMathOperator*{\dom}{dom}
 \DeclareMathOperator*{\chrome}{C}
 
-\newcommand{\absolute}[1]{\lvert#1\rvert}
+\newcommand{\absolute}[1]{\left\lvert#1\right\rvert}
 
 \newcommand{\defproblem}[3]{
 \vspace{2mm}
@@ -246,7 +246,7 @@ Given a two-dimensional $m \times m$ string $P$ and a two-dimensional $n \times 
 &u + v = (\x{u}+\x{v}, \y{u} + \y{v})  & u + v = (\x{u}-\x{v}, \y{u}-\y{v})\\
 &u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}  & u \times v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}
 \end{align*}
-Alternatively, $u \cdot v = |u||v| \cos \alpha$ and $u \times v = |u||v| \sin \alpha$, where $\alpha$ is the angle between $u$ and $v$.
+Alternatively, $u \cdot v = \absolute{u}\absolute{v} \cos \alpha$ and $u \times v = \absolute{u}\absolute{v} \sin \alpha$, where $\alpha$ is the angle between $u$ and $v$.
 
 \begin{definition}
 	For a set $U \subseteq \R^2$ we denote
@@ -276,7 +276,7 @@ For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size 
 	For strings $S, R$ (either both one-dimensional or both two-dimensional), define
 	\begin{align*}
 		&\MI(S, R) = \set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|\\
-		&\Ham(S,R) = |\MI(S,R)|
+		&\Ham(S,R) = \absolute{\MI(S,R)}
 	\end{align*}			 
 	We call the elements of $\MI(S,R)$ the \emph{mismatches} between $S$ and $R$.
 \end{definition}
@@ -323,7 +323,7 @@ Given a one-dimensional string $S$ of size $\ell$ such that none of its characte
 \end{fact}
 
 Let $\ID(T) = \ID(T_{1,1}) \ID(T_{1,2}) \ldots \ID(T_{1,n-m+1}) \ldots \ID(T_{n,1}) \ID(T_{n,2}) \ldots \ID(T_{n,n-m+1}))$ and $\ID(P) = \ID(P_1)\ID(P_2) \ldots \ID(P_m)$. 
-We build the data structure of \cref{fact:kangaroo1D} for two strings: $\ID(T) \$ \ID(P)$ and $\bar{T} \$ \bar{P}$ (note that neither of the strings contains a wildcard). In total, the construction takes $\O(|\ID(T) \$ \ID(P)| + |\bar{T} \$ \bar{P}|) = \O(n^2)$ time.
+We build the data structure of \cref{fact:kangaroo1D} for two strings: $\ID(T) \$ \ID(P)$ and $\bar{T} \$ \bar{P}$ (note that neither of the strings contains a wildcard). In total, the construction takes $\O(\absolute{\ID(T) \$ \ID(P)} + \absolute{\bar{T} \$ \bar{P}}) = \O(n^2)$ time.
 
 Consider now $q \in Q$. To compute $\Ham(T, P+q)$, note that 
 
@@ -333,7 +333,7 @@ Consider now $q \in Q$. To compute $\Ham(T, P+q)$, note that
 &\sum_{x \in \MI(\ID(T_{\x{q}+1, \y{q}+1}) \ldots \ID(T_{\x{q}+1, \y{q}+m}), \ID(P))} \Ham(T_{x, \y{q}+1}, P_{x-\x{q}})\\
 \end{align*}
 
-It follows that we can first use the data structure of \cref{fact:kangaroo1D} for  $\ID(T) \$ \ID(P)$ to compute the set $\MI =  \MI(\ID(T_{\x{q}+1, \y{q}+1}) \ID(T_{\x{q}+1, \y{q}+2}) \ldots \ID(T_{\x{q}+1, \y{q}+m}), \ID(P))$ in $\O(|\MI|) = \O(d_q)$ time, and then for each $x \in \MI$, we use the data structure of  \cref{fact:kangaroo1D}  for $\bar{T} \$ \bar{P}$ to compute 
+It follows that we can first use the data structure of \cref{fact:kangaroo1D} for  $\ID(T) \$ \ID(P)$ to compute the set $\MI =  \MI(\ID(T_{\x{q}+1, \y{q}+1}) \ID(T_{\x{q}+1, \y{q}+2}) \ldots \ID(T_{\x{q}+1, \y{q}+m}), \ID(P))$ in $\O(\absolute{\MI}) = \O(d_q)$ time, and then for each $x \in \MI$, we use the data structure of  \cref{fact:kangaroo1D}  for $\bar{T} \$ \bar{P}$ to compute 
 $\Ham(T_{x, \y{q}+1}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
 \end{proof}
 
@@ -421,7 +421,7 @@ We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and 
 \item For all $q \in Q$, we have $\Ham(T, P+q) \le 2 k$.
 \end{enumerate}
 
-If $|Q| \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $|Q| > 6m + m^2/k$. 
+If $\absolute{Q} \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $\absolute{Q} > 6m + m^2/k$. 
 
 The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, its the area of their intersection.
 
@@ -453,15 +453,15 @@ $\Ham(P + u - v, P) = \Ham(P + u, P + v) \le \Ham(P + u, T) + \Ham(T,P + v) = \O
 As $Q$ is big, it generates two $\O(k)$-periods with a big angle between them and such that they and their negations belong to distinct quadrants of $\Z^2$: 
 
 \begin{restatable*}{theorem}{GetPeriods}\label{get_periods}
-Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There is an $\tO(|U|)$-time algorithm that finds $u, v, u', v' \in U$, such that the following conditions hold for $\psi = u - v$ and $\phi = u' - v'$:
+Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There is an $\tO(\absolute{U})$-time algorithm that finds $u, v, u', v' \in U$, such that the following conditions hold for $\psi = u - v$ and $\phi = u' - v'$:
 	\begin{itemize}
 		\item $\psi \in (0, +\infty) \times [0, +\infty)$, $\phi \in [0, +\infty) \times (-\infty, 0)$;
-		\item $0 < |\psi||\phi| = \O(\ell^2 / |U|)$,
+		\item $0 < \absolute{\psi}\absolute{\phi} = \O(\ell^2 / \absolute{U})$,
 		\item $\sin \alpha \ge \frac{1}{2}$, where $\alpha$ is the angle between $\psi$ and $\phi$.
 	\end{itemize}
 \end{restatable*}
 
-Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $|Q| > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\O(|Q|)$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le |\phi||\psi| = \O(\ell^2 / |Q|) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
+Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\O(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
 \subsection{Partitionings of the pattern and the text}
 \label{sec:partitioning}
@@ -491,7 +491,7 @@ Geometrically, a tile $U$ can be viewed as a set of integer points inside a para
 We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x_1, y_0, y_1 \in \Z \cup \{-\infty, +\infty\}$ and $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that 
 	\begin{enumerate}
 		\item $U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}$. 
-		\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$. 
+		\item $x_1 - x_0 + 1 \ge \absolute{\x{\phi}} + \absolute{\x{\psi}}$ and $y_1 - y_0 + 1 \ge \absolute{\y{\phi}} + \absolute{\y{\psi}}$. 
 	\end{enumerate}
 The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are called its \emph{signature}. 
 \end{definition}
@@ -513,10 +513,10 @@ A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S}
 \end{definition}
 
 \begin{restatable*}{theorem}{tileDecomposition}\label{tile_decomposition}
-Assume to be given a (truncated) tile string $R$ such that $\phi, \psi$ are its $\O(k)$-periods. After $\O(m^2)$-time preprocessing of $\phi, \psi$, the string $R$ can be partitioned in time $\tO(|\d{R}| + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
+Assume to be given a (truncated) tile string $R$ such that $\phi, \psi$ are its $\O(k)$-periods. After $\O(m^2)$-time preprocessing of $\phi, \psi$, the string $R$ can be partitioned in time $\tO(\absolute{\d{R}} + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
 \end{restatable*}
 
-Since $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
+Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
 
 Because $T$ is not necessarily periodic, we are obliged to use a similar but more sophisticated partitioning.
 
@@ -530,7 +530,7 @@ $\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
 \end{observation}
 
 \begin{definition}[Peripherality]
-For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{|u - v| : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
+For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{\absolute{u - v} : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
 \end{definition}
 
 \begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
@@ -543,17 +543,17 @@ In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a st
 \begin{restatable}{theorem}{SparseAlgo}
 \label{th:sparse_algo}
 Let $\S$ be a set of monochromatic subtile strings $\S$ with a property that the domains $\d{S}$ for $S \in \S$ are pairwise disjoint subsets of $\d{T}$. There is an algorithm that computes
-$\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} |\V_{\getchar{S}}|)$.
+$\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$.
 \end{restatable}
 
-As an immediate corollary, we obtain an $\tO(m^2 + mk^2)$-time solution for the $k$-mismatch problem. First, we apply \Cref{text_decomposition} for a large enough value $\ell = \Theta(m)$ to partition the active text $\Ta$ into a set $\S$ of $\O(mk)$ monochromatic subtile strings and a $0$-peripheral string, empty by definition, in time $\tO(m^2 + mk)$. For every $q \in Q$ we then have $\Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S)$, and these values can be computed in $\tO(m^2 + mk^{2})$ total time by \cref{sparse_algo}, since $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk \cdot k)$. 
+As an immediate corollary, we obtain an $\tO(m^2 + mk^2)$-time solution for the $k$-mismatch problem. First, we apply \Cref{text_decomposition} for a large enough value $\ell = \Theta(m)$ to partition the active text $\Ta$ into a set $\S$ of $\O(mk)$ monochromatic subtile strings and a $0$-peripheral string, empty by definition, in time $\tO(m^2 + mk)$. For every $q \in Q$ we then have $\Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S)$, and these values can be computed in $\tO(m^2 + mk^{2})$ total time by \cref{sparse_algo}, since $\sum_{S \in \S} \absolute{\V_{\getchar{S}}} \le \absolute{\S} \absolute{\V} = \O(mk \cdot k)$. 
 
 To improve the complexity further, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
 We obtain a set~$\S$ of $\O(mk^{1/4})$ monochromatic subtile strings $\S$, and a $\O(k^{3 / 4})$-peripheral string $F$. For every $q \in Q$ we then have
 
 \[ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).\]
 
-By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$, since similarly to above we have $\sum_{S \in \S} |\V_{\getchar{S}}| \le |\S| |\V| = \O(mk^{5/4})$. To compute the values $\Ham(P + q, F)$, we apply the following result:
+By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$, since similarly to above we have $\sum_{S \in \S} \absolute{\V_{\getchar{S}}} \le \absolute{\S} \absolute{\V} = \O(mk^{5/4})$. To compute the values $\Ham(P + q, F)$, we apply the following result:
 
 \begin{restatable*}{theorem}{DenseAlgo}
 \label{th:dense_algo}
@@ -575,8 +575,8 @@ In this section, we show the following result that allows us to select two ``goo
 \GetPeriods
 \begin{proof}
 We start by finding the closest pair of points in $U$.
-Specifically, we select any pair of different points $s, t \in U$ that minimizes $|t - s|$. 
-Such a pair can be obtained in $\O(|U| \log |U|)$ time~\cite{Clarkson1983}.
+Specifically, we select any pair of different points $s, t \in U$ that minimizes $\absolute{t - s}$. 
+Such a pair can be obtained in $\O(\absolute{U} \log \absolute{U})$ time~\cite{Clarkson1983}.
 We construct $w = t - s$.
 %
 Denote the quadrants of the plane as follows:%
@@ -586,7 +586,7 @@ Denote the quadrants of the plane as follows:%
 &\Q_3 = (-\infty,0) \times (-\infty,0], \quad & \Q_4 = [0,+\infty) \times (-\infty,0).
 \end{align*}
 %
-We will compute a vector $w' = t' - s'$ with $s', t' \in U$ and the following properties. If $w \in \Q_i$, then $w' \in \Q_{(i \bmod 4) + 1}$, i.e., $w'$ is in the counterclockwise neighbouring quadrant of $w$. Further, it holds $0 < |w||w'| = \O(\ell^2 / |U|)$, and $\sin \alpha \ge \frac{1}{2}$, where $\alpha$ is the angle between $w$ and $w'$. Depending on $i$, we then report $\psi$ and $\phi$ as follows. If $i = 1$, then $\psi = w$ and $\phi = -w'$. If $i = 2$, then $\psi = -w'$ and $\phi = -w$. If $i = 3$, then $\psi = -w$ and $\phi = w'$. If $i = 4$, then $\psi = w'$ and $\phi = w$. Clearly, this satisfies the claimed properties, and we can easily output the corresponding nodes $u,v,u',v'$.
+We will compute a vector $w' = t' - s'$ with $s', t' \in U$ and the following properties. If $w \in \Q_i$, then $w' \in \Q_{(i \bmod 4) + 1}$, i.e., $w'$ is in the counterclockwise neighbouring quadrant of $w$. Further, it holds $0 < \absolute{w}\absolute{w'} = \O(\ell^2 / \absolute{U})$, and $\sin \alpha \ge \frac{1}{2}$, where $\alpha$ is the angle between $w$ and $w'$. Depending on $i$, we then report $\psi$ and $\phi$ as follows. If $i = 1$, then $\psi = w$ and $\phi = -w'$. If $i = 2$, then $\psi = -w'$ and $\phi = -w$. If $i = 3$, then $\psi = -w$ and $\phi = w'$. If $i = 4$, then $\psi = w'$ and $\phi = w$. Clearly, this satisfies the claimed properties, and we can easily output the corresponding nodes $u,v,u',v'$.
 
 
 Assume w.l.o.g.\ that $w \in \Q_1$ (the other cases are entirely symmetric). 
@@ -692,13 +692,13 @@ We have shown that $<_1$ and $<_2$ are strict partial orders, with a one-to-one 
 Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $<_1$, or equivalently the longest chain of $<_2$. We show how to compute $A$ and $C$ later. First, we show upper bounds for $\absolute{C}$ and $\absolute{A}$ using Dilworth's theorem.
 
 \begin{lemma}[Dilworth's theorem]\label{dilworth}
-	$|U| \le |C| |A|$.
+	$\absolute{U} \le \absolute{C} \absolute{A}$.
 \end{lemma}
 
 \begin{claim}\label{C_ineq}
 	$\absolute{C} \cdot \absolute{w} \leq 16\ell$. 
 	\begin{proof}
-		Let $f = |C| - 1$ and
+		Let $f = \absolute{C} - 1$ and
 		let $c_0, \dots, c_{f}$ denote the points in $C$, ordered so that $c_i <_1 c_{i + 1}$ for every $i \in [f]$.
 		Consider any $u = c_i$ and $v = c_{i + 1}$ with $i \in [f]$. We will show that $v.x + v.y \geq u.x + u.y + \frac14\absolute{w}$. 		
 		Let $w'' = (v - u)$, which is in $\Q_1^+$ due to $u <_1 v$. Assume $v.x + v.y < u.x + u.y + \frac14\absolute{w}$, or equivalently $(w''.x + w''.y) < \frac14\absolute{w}$. From now on, let $x = w''.x$ and $y = w''.y$. It then holds $$\absolute{w''} \geq \absolute{w} > 4(x + y).$$
@@ -722,16 +722,16 @@ Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $
 	\end{proof}%
 \end{claim}
 
-By the assumption $|U| \ge 16\ell$ and \Cref{dilworth}, it holds
-$16 \ell \le |U| \le |C| |A| < 16\ell|A|$,
-thus $|A| \ge 2$.
-We select any pair of different vectors $s', t' \in A$ that minimizes $|t' - s'|$. Since $s'$ and $t'$ are in a chain of $<_2$, it holds either $s' <_2 t'$ or $t' <_2 s'$. W.l.o.g., we assume $s' <_2 t'$ (otherwise swap $s'$ and $t'$), and we construct $w' = t' - s'$, which is in $\Q_2^-$ as required.
+By the assumption $\absolute{U} \ge 16\ell$ and \Cref{dilworth}, it holds
+$16 \ell \le \absolute{U} \le \absolute{C} \absolute{A} < 16\ell\absolute{A}$,
+thus $\absolute{A} \ge 2$.
+We select any pair of different vectors $s', t' \in A$ that minimizes $\absolute{t' - s'}$. Since $s'$ and $t'$ are in a chain of $<_2$, it holds either $s' <_2 t'$ or $t' <_2 s'$. W.l.o.g., we assume $s' <_2 t'$ (otherwise swap $s'$ and $t'$), and we construct $w' = t' - s'$, which is in $\Q_2^-$ as required.
 
 \begin{claim}\label{A_ineq}
 	$\absolute{A}\cdot \absolute{w'} \leq 16\ell$. 
 	\begin{proof}
 	
-		Let $f = |C| - 1$ and
+		Let $f = \absolute{C} - 1$ and
 		let $c_0, \dots, c_{f}$ denote the points in $A$, ordered so that $c_i <_2 c_{i + 1}$ for every $i \in [f]$ (recall that $A$ is a chain with respect to $<_2$).
 		Consider any $u = c_i$ and $v = c_{i + 1}$ with $i \in [f]$. We will show that $v.x + v.y \geq u.x + u.y + \frac14\absolute{w'}$. 		
 		Let $w'' = (v - u)$, which is in $\Q_2^-$ due to $u <_2 v$. From now on, let $x = w''.x$ and $y = w''.y$
@@ -763,13 +763,13 @@ In this section we explore the properties of periodic (sub-)tile strings (recall
 Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
 \begin{lemma} \label{lattice_base}
-	There exists an algorithm that constructs in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$.
+	There exists an algorithm that constructs in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\absolute{\Gamma} = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$.
 \end{lemma} 
 	\begin{proof}
 		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$ and $\Gamma = p \cap \Z^2$.
 		By Pick's Theorem, a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its area.
 		Observe that the elements of $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
-		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $|\Gamma| = \O(\min\set{m, k})$.
+		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $\absolute{\Gamma} = \O(\min\set{m, k})$.
 		
 		Now consider any $u \in \Z^2$.
 		As $\phi, \psi$ are not collinear, there exist unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
@@ -777,7 +777,7 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 		By definition, 
 		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
 		
-		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\psi},\y{\phi}]$. We have $|\Gamma'| = \O((|\x{\phi}|+|\x{\psi}|) \cdot (|\y{\phi}|+|\y{\psi}|)) = \O(m^2)$ as $|\x{\phi}|, |\y{\phi}|, |\x{\psi}|, |\y{\psi}| \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
+		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\psi},\y{\phi}]$. We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
 	\end{proof}
 
 \begin{definition}[Lattice graph]
@@ -793,15 +793,15 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 		Consider $u, v = u + s \phi + t \psi \in U$ such that
 		\begin{itemize}
 			\item $u$ and $v$ belong to different connected components of $(U, \Edges(U))$,
-			\item $|s| + |t|$ is minimized.
+			\item $\absolute{s} + \absolute{t}$ is minimized.
 		\end{itemize}
 		W.l.o.g $s \ge 0$, since in the other case $u$ and $v$ can be swapped.
-		We now show that there exists $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $|s'| + |t'| < |s| + |t|$, which contradicts the minimality of $|s| + |t|$. 
+		We now show that there exists $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $\absolute{s'} + \absolute{t'} < \absolute{s} + \absolute{t}$, which contradicts the minimality of $\absolute{s} + \absolute{t}$. 
 	
 		Let $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ and $\gamma \in \Z^2$ be the signature of $U$, meaning that
 		\begin{itemize}
 			\item $ U = [x_0, x_1] \times [y_0, y_1] \cap \set{z : z \in \Z^2, \h{z} \in [\phi_0, \phi_1], \s{z} \in [\psi_0, \psi_1], \gamma \equiv u}$,
-			\item $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$ and $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$.
+			\item $x_1 - x_0 + 1 \ge \absolute{\x{\phi}} + \absolute{\x{\psi}}$ and $y_1 - y_0 + 1 \ge \absolute{\y{\phi}} + \absolute{\y{\psi}}$.
 		\end{itemize}
 		
 		Recall that $\x{\phi} \ge 0$, $\y{\phi} \le 0$, $\x{\psi} \ge 0$, $\y{\psi} \ge 0$. We have the following cases:
@@ -825,7 +825,7 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 				If $w' \in U$, let $w = w'$.
 				If $w' \not \in U$, then since all other requirements are satisfied, we must have $\y{w'} \not \in [y_0, y_1]$.
 				Since $\y{w'} = \y{u} + \y{\phi} \le \y{u}$, we have $\y{u} + \y{\phi} \le y_0 - 1$, and
-				considering $y_1 - y_0 + 1 \ge |\y{\phi}| + |\y{\psi}|$, we get $y_1 \ge \y{u} + \y{\psi}$.
+				considering $y_1 - y_0 + 1 \ge \absolute{\y{\phi}} + \absolute{\y{\psi}}$, we get $y_1 \ge \y{u} + \y{\psi}$.
 				Now let $w =: u + \psi$.
 				We have \eq{
 					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} = \y{u} + \y{\psi} \le y_1, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
@@ -836,9 +836,9 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 					\y{v} \le \y{w'} \le \y{u}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
 				}
 				If $w' \in U$, then $w = w'$.
-				Otherwise we can (similarly to (\ref{case_pos})) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge |\x{\phi}| + |\x{\psi}|$. 
+				Otherwise we can (similarly to (\ref{case_pos})) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge \absolute{\x{\phi}} + \absolute{\x{\psi}}$. 
 		\end{enumerate}
-		In all these cases, which are clearly exhaustive, either $|s| \ge |s'| = 0$ and $|t| > |t'| = 1$ or $|s| > |s'| = 1$ and $|t| \ge |t'| = 0$ and hence $|s'|+|t'| \le |s|+|t|$, a contradiction. 
+		In all these cases, which are clearly exhaustive, either $\absolute{s} \ge \absolute{s'} = 0$ and $\absolute{t} > \absolute{t'} = 1$ or $\absolute{s} > \absolute{s'} = 1$ and $\absolute{t} \ge \absolute{t'} = 0$ and hence $\absolute{s'}+\absolute{t'} \le \absolute{s}+\absolute{t}$, a contradiction. 
 	\end{proof}
 \end{lemma}
 
@@ -867,7 +867,7 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 
 
 \begin{lemma}\label{cut_partitioning}
-Given a truncated subtile string $S$, there is an algorithm that runs in time $\tO(|\d{S}| + 1)$ and constructs the following two partitionings.
+Given a truncated subtile string $S$, there is an algorithm that runs in time $\tO(\absolute{\d{S}} + 1)$ and constructs the following two partitionings.
 	\begin{enumerate}[(a)]
 		\item A partitioning of $S$ into a set of $\O(\Ham(S + \phi, S) + 1)$ (truncated) subtile strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
 		\item A partitioning of $S$ into a set of $\O(\Ham(S + \psi, S) + 1)$ strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
@@ -895,20 +895,20 @@ The next theorem is used both to partition the pattern $P$ and the active text $
 
 \tileDecomposition
 \begin{proof}
-We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $|\Gamma| = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$ (\Cref{lattice_base}). Next, we use it to partition $R$ into a set of (truncated) subtile strings $\S$, such that $|\S| = \O(\min\set{m, k})$: Namely, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a (truncated) subtile string defined as the restriction of $R$ to $\d{R} \cap (\L + \gamma)$. For that, we consider each $u \in \d{R}$, construct its basis decomposition $u = s\cdot \phi + t\cdot \psi$, where $s,t\in \R$ by solving a system of linear equations in $\O(1)$ time, and add $u$ into the restriction corresponding to $\gamma = (s-\floor{s}) \cdot \phi + (t-\floor{t}) \cdot \psi \in \Gamma$. 
+We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\absolute{\Gamma} = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$ (\Cref{lattice_base}). Next, we use it to partition $R$ into a set of (truncated) subtile strings $\S$, such that $\absolute{\S} = \O(\min\set{m, k})$: Namely, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a (truncated) subtile string defined as the restriction of $R$ to $\d{R} \cap (\L + \gamma)$. For that, we consider each $u \in \d{R}$, construct its basis decomposition $u = s\cdot \phi + t\cdot \psi$, where $s,t\in \R$ by solving a system of linear equations in $\O(1)$ time, and add $u$ into the restriction corresponding to $\gamma = (s-\floor{s}) \cdot \phi + (t-\floor{t}) \cdot \psi \in \Gamma$. 
 
 	We now apply \Cref{cut_partitioning} (\ref{partition_a}) to partition each $S \in \S$  into a set of (truncated) subtile strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
 	Note that
-	\[ |S'| = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + |\S|) = \O(k),\]
+	\[ \absolute{S'} = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + \absolute{\S}) = \O(k),\]
 	since $\phi$ is a $\O(k)$-period of $R$.
 	Finally, we apply  \Cref{cut_partitioning} (\ref{partition_b}) to partition each $S' \in \S'$ into a set of (truncated) subtile strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \phi, S'') = 0$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
 	Again we have
-	\[ |S''| = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + |\S'|) = \O(k),\]
+	\[ \absolute{S''} = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + \absolute{\S'}) = \O(k),\]
 	since $R$ has an $\O(k)$-period $\psi$.
 	since $\psi$ is a $\O(k)$-period of $R$.
 	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
 	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
-	Apart from the $\O((\min\{k,m\})^2)$-time preprocessing of $\phi$ and $\psi$ during which the algorithm constructs $\Gamma$, the algorithm spends $\tO(|\d{R}| + k)$ time.
+	Apart from the $\O((\min\{k,m\})^2)$-time preprocessing of $\phi$ and $\psi$ during which the algorithm constructs $\Gamma$, the algorithm spends $\tO(\absolute{\d{R}} + k)$ time.
 \end{proof}
 
 
@@ -930,7 +930,7 @@ For all $\ell \in [2m]$, one can construct in $\O(m^2)$ time a parallelogram gri
 \begin{enumerate}[(a)]
 \item \label{it:unique} For all $u \in [n] \times [n]$, there exist unique $i,j$ such that $u \in p_{i,j}$.
 
-\item \label{it:small_parallelogram} For all $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $|u - v| = \O(n / \ell)$.
+\item \label{it:small_parallelogram} For all $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $\absolute{u - v} = \O(n / \ell)$.
 
 \item \label{it:monotonicity} For all $i \in [\ell - 1]$ and $j \in [\ell]$ we have
 	\eq{
@@ -1001,7 +1001,7 @@ As $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. Let $z =
 For all $i,j \in [\ell]$, the set $U = p_{i,j} \cap \Z^2$ is $\O(n / \ell)$-peripheral if one of the points $(\min \X(P), \min \Y(i,j))$, $(\min \X(P), \max \Y(i,j))$, $(\max \X(P), \min \Y(i,j))$, $(\max \X(P), \max \Y(i,j))$ is not in $\d{\Ta}$.
 \end{claim}
 \begin{proof}
-W.l.o.g., $v = (\max \X(P), \max \Y(i,j)) \notin \d{\Ta}$. For all $u \in U$, we have $|u-v| = \O(n / \ell)$ by \cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}), and hence $U$ is $\O(n / \ell)$-peripheral.
+W.l.o.g., $v = (\max \X(P), \max \Y(i,j)) \notin \d{\Ta}$. For all $u \in U$, we have $\absolute{u-v} = \O(n / \ell)$ by \cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}), and hence $U$ is $\O(n / \ell)$-peripheral.
 \end{proof}
 
 \begin{lemma}\label{lm:parallelogram_merge}
@@ -1028,12 +1028,12 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 
 Note that there are $\O(\ell)$ parallelograms $P_j^x$ and $R_i^x$ for $i,j \in [\ell]$ and $x \in [4]$ and that they cover all parallelograms $p_{i,j}$ but those that are not fully contained in any of the quarters, in other words, the parallelograms $p_{i, j}$ intersecting  at least one of the lines $x = z$ and $y = z$. Denote the set of such parallelograms by $\I$. 
 
-By \cref{coverable} and \cref{peripheral}, for each parallelogram $p_{i,j} \in \I$ the set $p_{i,j} \cap Z^2$ is either coverable or $\O(n/\ell)$-peripheral. Furthermore, $|\I| = \O(\ell)$. Consider a set $U_x$ of intersections of grid lines different from $x=z$ with the line and a set $U_y$ of intersections of grid lines different from $y=z$. Every parallelogram in $\I$ contains $u \in U_x \cup U_y$, and every $u \in \Z^2$ can be contained in at most four parallelograms, implying the bound. 
+By \cref{coverable} and \cref{peripheral}, for each parallelogram $p_{i,j} \in \I$ the set $p_{i,j} \cap Z^2$ is either coverable or $\O(n/\ell)$-peripheral. Furthermore, $\absolute{\I} = \O(\ell)$. Consider a set $U_x$ of intersections of grid lines different from $x=z$ with the line and a set $U_y$ of intersections of grid lines different from $y=z$. Every parallelogram in $\I$ contains $u \in U_x \cup U_y$, and every $u \in \Z^2$ can be contained in at most four parallelograms, implying the bound. 
 
 The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in [4]\} \cup \{R_j^x : j \in [\ell], x \in [4]\}$ satisfies the claim of the lemma. It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
 \end{proof}
 
-We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(|\d{R}| + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P_2}} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
+We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(\absolute{\d{R}} + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P_2}} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
 
 This concludes the proof of \cref{text_decomposition}.
 
@@ -1050,19 +1050,19 @@ Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic t
  Observe that
 \begin{align}
 \label{eq:sparse}
-\sum_{S \in \S} \Ham(P + q, S) = |\d{P + q} \cap U| - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} |\d{S} \cap \d{V + q}|.
+\sum_{S \in \S} \Ham(P + q, S) = \absolute{\d{P + q} \cap U} - \sum_{S \in \S}\sum_{V \in \V_{\getchar{S}}} \absolute{\d{S} \cap \d{V + q}}.
 \end{align}
 
-To compute $|\d{P + q} \cap U|$ for all $q \in Q$, we create strings $P'$ and $T'$ with respective domains $\dom(P)$ and $\dom(T)$. Both strings are filled with character $0$. 
+To compute $\absolute{\d{P + q} \cap U}$ for all $q \in Q$, we create strings $P'$ and $T'$ with respective domains $\dom(P)$ and $\dom(T)$. Both strings are filled with character $0$. 
 In $T'$, we then replace all positions from $\dom(U)$ with character $1$. 
-We observe that $|\d{P + q} \cap U| = \Ham(P' + q, T')$, which can be computed for all $q \in Q$ in $\tO(m^2)$ time with \cref{cor:sigman2d}.
+We observe that $\absolute{\d{P + q} \cap U} = \Ham(P' + q, T')$, which can be computed for all $q \in Q$ in $\tO(m^2)$ time with \cref{cor:sigman2d}.
 It remains to shown how to compute the second term, let it be $\tau_q$. 
 
 Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\psi$).
 
 \begin{observation}\label{primitive}
 Let $U$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$ and $X \subseteq \Z^2$. There exist $w_{i,j} \in \Z^2$, $i,j \in \{0,1\}$ such that
-\[ |U \cap X| = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} |(D + w_{i,j}) \cap X|\]
+\[ \absolute{U \cap X} = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \absolute{(D + w_{i,j}) \cap X}\]
 In more detail, $w_{i,j}$'s are defined as follows: 
 \begin{enumerate}
 \item $w_{0,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$;
@@ -1070,18 +1070,18 @@ In more detail, $w_{i,j}$'s are defined as follows:
 \item $w_{0,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi$;
 \item $w_{1,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi+\psi$.
 \end{enumerate}
-(Note that $\forall u \in D + w_{i,j}$, we have $u \equiv \gamma$). We can compute $w_{i,j}$ in $\O(1)$ time given $U$'s signature and if $\max \{|u| : u \in U\} = \O(m)$, then $|w_{i,j}| = \O(m)$ as well. 
+(Note that $\forall u \in D + w_{i,j}$, we have $u \equiv \gamma$). We can compute $w_{i,j}$ in $\O(1)$ time given $U$'s signature and if $\max \{\absolute{u} : u \in U\} = \O(m)$, then $\absolute{w_{i,j}} = \O(m)$ as well. 
 \end{observation}
 
 \todo{figure would be good}
 
-We apply \Cref{primitive} to each $S\in \S$ to obtain in $\O(|\S|)$ total time $w_{i, j}(S)$, where $i,j \in \{0,1\}$. We then have:
+We apply \Cref{primitive} to each $S\in \S$ to obtain in $\O(\absolute{\S})$ total time $w_{i, j}(S)$, where $i,j \in \{0,1\}$. We then have:
 
 \begin{align}
 \label{eq:S_replaced_by_shifted_angles}
 \begin{split}
-\tau_q &= \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \sum_{i,j \in \{0,1\}} (-1)^{i+j} |\d{D+w_{i, j}(S)} \cap \d{V + q}| \\
-& = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} |\d{D-q} \cap \d{V-w_{i, j}(S)}|
+\tau_q &= \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \sum_{i,j \in \{0,1\}} (-1)^{i+j} \absolute{\d{D+w_{i, j}(S)} \cap \d{V + q}} \\
+& = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \absolute{\d{D-q} \cap \d{V-w_{i, j}(S)}}
 \end{split}
 \end{align}
 %
@@ -1089,21 +1089,21 @@ Now, fix $i,j \in \{0,1\}$, and let
 %
 \begin{equation}
 \label{eq:fixed_ij}
-\tau_q^{i,j} = (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} |\d{D-q} \cap \d{V-w_{i, j}(S)}|
+\tau_q^{i,j} = (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \absolute{\d{D-q} \cap \d{V-w_{i, j}(S)}}
 \end{equation}
 
-Below we explain how to compute the values $\tau_q^{i,j}$ for all $q \in Q$ and all $i,j \in \{0,1\}$ in time $\tO(m^2 + \sum{S \in \S} |\V_{\getchar{S}}|)$. It is easy to see from \cref{eq:S_replaced_by_shifted_angles} that the values $\tau_q$ can then be computed in $\O(|Q|) = \O(m^2)$ time. 
+Below we explain how to compute the values $\tau_q^{i,j}$ for all $q \in Q$ and all $i,j \in \{0,1\}$ in time $\tO(m^2 + \sum{S \in \S} \absolute{\V_{\getchar{S}}})$. It is easy to see from \cref{eq:S_replaced_by_shifted_angles} that the values $\tau_q$ can then be computed in $\O(\absolute{Q}) = \O(m^2)$ time. 
 
-Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V \in \V_{\getchar{S}}\}$.  Note that $|\S \odot \V| = \O(\sum{S \in \S} |\V_{\getchar{S}}|)$ and for all $u \in \S \odot \V$, we have $|u| = \O(m)$. We can then simplify \cref{eq:fixed_ij} as follows:
+Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V \in \V_{\getchar{S}}\}$.  Note that $\absolute{\S \odot \V} = \O(\sum{S \in \S} \absolute{\V_{\getchar{S}}})$ and for all $u \in \S \odot \V$, we have $\absolute{u} = \O(m)$. We can then simplify \cref{eq:fixed_ij} as follows:
 
 \begin{align}
 \label{eq:group_by_gamma}
-\tau_q^{i,j} = \sum_{V \in \S \odot \V} |\d{D-q} \cap \d{V}|
+\tau_q^{i,j} = \sum_{V \in \S \odot \V} \absolute{\d{D-q} \cap \d{V}}
 \end{align}
 
 \newcommand{\W}{\mathcal{W}}
 \begin{lemma}\label{primitive_conv}
-There is an algorithm that computes the values $\tau_q^{i,j}$ for all $q \in Q$ in total time $\tO(m^2 + \sum{S \in \S} |\V_{\getchar{S}}|)$. 
+There is an algorithm that computes the values $\tau_q^{i,j}$ for all $q \in Q$ in total time $\tO(m^2 + \sum{S \in \S} \absolute{\V_{\getchar{S}}})$. 
 \end{lemma}
 \begin{proof}
 For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $(\S \odot \V)$ containing $u$. Observe that
@@ -1111,34 +1111,34 @@ For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $(\S \o
 \begin{equation}
 \begin{split}
 &\tau_q^{i,j} =\\
-&\sum_{V \in \S \odot \V} |u \in \Z^2 : u \in (D-q), u \in V| = \sum_{V \in \S \odot \V} \sum_{u \in D-q}  |u \in V| =  \\
-&\sum_{u \in D-q} \sum_{V \in \S \odot \V} |u \in V| = \sum_{u \in D-q} \score(u)
+&\sum_{V \in \S \odot \V} \absolute{u \in \Z^2 : u \in (D-q), u \in V} = \sum_{V \in \S \odot \V} \sum_{u \in D-q}  \absolute{u \in V} =  \\
+&\sum_{u \in D-q} \sum_{V \in \S \odot \V} \absolute{u \in V} = \sum_{u \in D-q} \score(u)
 \end{split}
 \end{equation}
-We now explain how to compute $\tau_q^{i,j}$. We start by computing in $\O(\S \odot \V) = \tO(\sum{S \in \S} |\V_{\getchar{S}}|)$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
-an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. We therefore can construct the set $\W = \{w \in \Z^2 : |w| \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
+We now explain how to compute $\tau_q^{i,j}$. We start by computing in $\O(\S \odot \V) = \tO(\sum{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
+an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. We therefore can construct the set $\W = \{w \in \Z^2 : \absolute{w} \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
 
 We then construct in $\O(m^2)$ the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. By \cref{subtile_definition}, that if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$ we can refine the definition of score:
 %
-$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} |u \in V|$$
+$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{u \in V}$$
 %
 Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with a signature $x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. We have $\W_\gamma \ni w = (\x{w}, \y{w}) \in V$ iff 
 \begin{equation}
 \label{eq:range}
 x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
 \end{equation}
-(we don't need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(|(\S \odot \V) |_\gamma|)$ time a $6$-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
+(we don't need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a $6$-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
 %
 $$\{(x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1) : x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, 'gamma \text{ is a signature of } V \in V \in (\S \odot \V) |_\gamma\}$$
-Using the range tree, it then follows from \cref{eq:range} that we can compute $\score(w)$ for every $w \in \W_\gamma$ in time $\tO(|\W_\gamma|)$. 
+Using the range tree, it then follows from \cref{eq:range} that we can compute $\score(w)$ for every $w \in \W_\gamma$ in time $\tO(\absolute{\W_\gamma})$. 
 
 Now, note that the following recursive formula holds for all $w \in \W_\gamma$:
 %
 $$\sum_{u \in D+w} \score{u} = \sum_{u \in D+w+\phi} \score{u} + \sum_{u \in D+w+\psi} \score{u} -\sum_{u \in D+w+\phi+\psi} \score{u}$$
 %
-Furthermore, if $w \in \W_\gamma$, then $w+\phi, w+\psi, w+\phi+\psi \in \Gamma$ as well. Consequently, we can compute $\sum_{u \in D+w} \score{u}$ for all $w \in \W_\gamma$ in $\O(|W_\gamma|)$ time. 
+Furthermore, if $w \in \W_\gamma$, then $w+\phi, w+\psi, w+\phi+\psi \in \Gamma$ as well. Consequently, we can compute $\sum_{u \in D+w} \score{u}$ for all $w \in \W_\gamma$ in $\O(\absolute{W_\gamma})$ time. 
 
-In total over all $\gamma$, the computation takes $\sum_{\gamma \in \Gamma} \tO(|\W_\gamma| + |(\S \odot \V) |_\gamma|) = \tO(|\W| + |\S \odot \V|) = \tO(m^2 + |Q| + \sum{S \in \S} |\V_{\getchar{S}}|)$ time. We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $|Q| = \O(m^2)$ time, concluding the proof. 
+In total over all $\gamma$, the computation takes $\sum_{\gamma \in \Gamma} \tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma}) = \tO(\absolute{\W} + \absolute{\S \odot \V}) = \tO(m^2 + \absolute{Q} + \sum{S \in \S} \absolute{\V_{\getchar{S}}})$ time. We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q} = \O(m^2)$ time, concluding the proof. 
 \end{proof}
 	
 
@@ -1181,7 +1181,7 @@ For a string $V$, define a value $h(V)$, which is an upper bound on $V$'s height
 Let $F_1$ be a $d$-peripheral string with $\d{F_1} \subseteq K_1$. For all $u \in \d{F_1}$ and $v \in \d{\Ta}$, either $\x{v} - \x{u} < d$ or $\y{v} - \y{u} < d$.  
 \end{claim}
 \begin{proof}
-Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $|\x{u} - \x{w}| \le |u-w| \le d$ and $|\y{u} - \y{w}| \le |u-w| \le d$. Since $v \in \d{T_a}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
+Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $\absolute{\x{u} - \x{w}} \le \absolute{u-w} \le d$ and $\absolute{\y{u} - \y{w}} \le \absolute{u-w} \le d$. Since $v \in \d{T_a}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
 \[ \x{w} \ge \x{u} - d \ge n/2 - m/4 \ge n - m > \x{q}\]
 and
 \[ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. \]
@@ -1205,14 +1205,14 @@ $$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i -
 As an immediate corollary, we obtain
 
 \begin{corollary}\label{cor:area_F}
-$|\dom{F_1}| = \O(dm)$. 
+$\absolute{\dom{F_1}} = \O(dm)$. 
 \end{corollary}
 
-Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $|\V_a| \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F$ into two strings $F_1$ and $F_2$, where $F_1$ contains only infrequent characters and $F_2$ frequent ones. For every $q \in Q$ we then have 
+Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F$ into two strings $F_1$ and $F_2$, where $F_1$ contains only infrequent characters and $F_2$ frequent ones. For every $q \in Q$ we then have 
 
 \[\Ham(P + q, S) = \Ham(P + q, F_1') + \Ham(P + q, F_1'').\]
 
-For all $u \in \d{F_1'}$ let $I_u$ a subtile string defined as the restriction of $F_1'$ to $\set{u}$. We have $\Ham(P + q, F_1') = \sum_{u \in \d{F_1'}} \Ham(P + q, I_u)$ for every $q \in Q$. Consequently, we can compute these values in $\tO(m^2 + \sum_{u \in \d{I}} |\V_{I(u)}|)$ time by \cref{th:sparse_algo}. For all $u \in \d{F_1'}$, $I(u)$ is an infrequent character and consequently, $|\V_{I(u)}| < k^{1/2}$. Furthermore, \cref{cor:area_F}, we have $|\d{F_1'}| = \O(md)$, and thus the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
+For all $u \in \d{F_1'}$ let $I_u$ a subtile string defined as the restriction of $F_1'$ to $\set{u}$. We have $\Ham(P + q, F_1') = \sum_{u \in \d{F_1'}} \Ham(P + q, I_u)$ for every $q \in Q$. Consequently, we can compute these values in $\tO(m^2 + \sum_{u \in \d{I}} \absolute{\V_{I(u)}})$ time by \cref{th:sparse_algo}. For all $u \in \d{F_1'}$, $I(u)$ is an infrequent character and consequently, $\absolute{\V_{I(u)}} < k^{1/2}$. Furthermore, \cref{cor:area_F}, we have $\absolute{\d{F_1'}} = \O(md)$, and thus the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
 To compute the values $\Ham(P + q, F_1'')$, we apply the following lemma:
 
 \begin{restatable}{lemma}{SigmaBorder}\label{lm:sigma_border}
@@ -1270,7 +1270,7 @@ By \Cref{pattern_height_reduction}, we have for all $q \in Q$:
 \[\Ham(P_2 + q, V_i) = \Ham(H_i + q, V_i). \]
 
 \paragraph*{Wrapping up.}
-We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ by \cref{cor:area_F}. Additionally, we naively compute ${q : \d{H_i+q} \subseteq \d{V_i}}$ for all $i \in [\ell]$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \O(dm)$ (again, by \cref{cor:area_F}). We finally compute $Q' = Q \cup \cup_i {q : \d{H_i+q} \subseteq \d{V_i}}$ by sorting the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $|Q'| = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\O(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
+We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ by \cref{cor:area_F}. Additionally, we naively compute ${q : \d{H_i+q} \subseteq \d{V_i}}$ for all $i \in [\ell]$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \O(dm)$ (again, by \cref{cor:area_F}). We finally compute $Q' = Q \cup \cup_i {q : \d{H_i+q} \subseteq \d{V_i}}$ by sorting the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $\absolute{Q'} = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\O(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
 \end{proof}
 
 
@@ -1284,11 +1284,11 @@ We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances prob
 Recall that the grid is defined by a sequence of $\ell+1$ lines $v_0, v_1, \ldots, v_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ lines $h_0, h_1, \ldots, h_\ell$ parallel to $\psi$. 
 
 To construct the lines $h_0, h_1, \ldots, h_\ell$, we first compute $\h{u}$ for all $u \in [n^2]$ in $\O(n^2) = \O(m^2)$ time. As $\phi \in (0,+\infty) \times [0,+\infty]$, we have 
-$$|\phi| \cdot n \le \h{u} = \x{u} \cdot \y{\phi} - \y{u} \cdot \x{\phi} \le |\phi| \cdot n.$$
-We then sort these values in $\O(n^2 \log n) = \O(m^2 \log m)$ time and delete duplicates. Let $-|\phi| \cdot n \le c_1 < \ldots < c_{N} \le |\phi| \cdot n$, where $1 \le N \le n^2$, be the resulting values. Let $\delta = (\min_{i=1}^{n^2-1} (c_{i+1}-c_i))/2\ell = \O(n/\ell)$. Define $\alpha_0 = c_1 -\delta$ and $\alpha_\ell = c_{n^2}$. Next, choose equispaced values $\alpha_1, \alpha_2, \ldots, \alpha_{\ell-1}$ (necessarily rational) in the interval $[\alpha_0, \alpha_{\ell+1}]$. If for some $i, j$ we have $\alpha_i = c_j$, set $\alpha_i = \alpha_i + \delta$. We now have that for all $i$, each of the following is satisfied:
+$$\absolute{\phi} \cdot n \le \h{u} = \x{u} \cdot \y{\phi} - \y{u} \cdot \x{\phi} \le \absolute{\phi} \cdot n.$$
+We then sort these values in $\O(n^2 \log n) = \O(m^2 \log m)$ time and delete duplicates. Let $-\absolute{\phi} \cdot n \le c_1 < \ldots < c_{N} \le \absolute{\phi} \cdot n$, where $1 \le N \le n^2$, be the resulting values. Let $\delta = (\min_{i=1}^{n^2-1} (c_{i+1}-c_i))/2\ell = \O(n/\ell)$. Define $\alpha_0 = c_1 -\delta$ and $\alpha_\ell = c_{n^2}$. Next, choose equispaced values $\alpha_1, \alpha_2, \ldots, \alpha_{\ell-1}$ (necessarily rational) in the interval $[\alpha_0, \alpha_{\ell+1}]$. If for some $i, j$ we have $\alpha_i = c_j$, set $\alpha_i = \alpha_i + \delta$. We now have that for all $i$, each of the following is satisfied:
 \begin{enumerate}
 \item $\alpha_i \notin \{\h{u} : u \in [n^2]\}$;
-\item $\alpha_{i+1}-\alpha_i = \O(|\phi| n / \ell)$;
+\item $\alpha_{i+1}-\alpha_i = \O(\absolute{\phi} n / \ell)$;
 \item For all $u \in [n^2]$, there is $\alpha_0 < \h{u} < \alpha_\ell$.
 \end{enumerate}
 Finally, we define $v_i = \{u: u \in \R^2, \h{u} = \alpha_i\}$. In total construction of the lines $v_i$ takes $\O(m^2 \log m)$ time.
@@ -1296,7 +1296,7 @@ Finally, we define $v_i = \{u: u \in \R^2, \h{u} = \alpha_i\}$. In total constru
 We construct the lines $v_0, v_1, \ldots, v_\ell$ analogously. Namely, we select in $\O(m^2 \log m)$ time rational values $\beta_i$, $0 \le i \le \ell+1$, satisfying each of the following:
 \begin{enumerate}
 \item $\beta_i \notin \{\s{u} : u \in [n^2]\}$;
-\item $\beta_{i+1}-\beta_i = \O(|\psi| n / \ell)$;
+\item $\beta_{i+1}-\beta_i = \O(\absolute{\psi} n / \ell)$;
 \item For all $u \in [n^2]$, there is $\beta_0 < \s{u} < \beta_\ell$.
 \end{enumerate}
 We then define $v_i = \{u: u \in \R^2, \s{u} = \beta_i\}$. 
@@ -1304,19 +1304,19 @@ We then define $v_i = \{u: u \in \R^2, \s{u} = \beta_i\}$.
 For $0 \le i,j \le \ell+1$ let $w_{i,j}$ be the intersection of $h_i$ and $v_j$ (defined correctly as they are not collinear). For $i,j \in [\ell]$ define a parallelogram $p_{i,j}$ as the parallelogram with vertices $w_{i-1,j-1}$, $w_{i-1,j}$, $w_{i,j-1}$, $w_{i,j}$. Property $\ref{it:unique}$ easily follows from the properties of $\{\alpha_i\}$ and $\{\beta_j\}$.
 
 \paragraph*{Property (\ref{it:small_parallelogram}).}
-Consider any $p_{i,j}$, $i,j \in [\ell]$. First note that	for all $u, v \in p_{i, j}$, we have $|u - v| = \O(n / \ell)$. Consider any $u, v \in p_{i, j}$ and denote $w = u - v$.
+Consider any $p_{i,j}$, $i,j \in [\ell]$. First note that	for all $u, v \in p_{i, j}$, we have $\absolute{u - v} = \O(n / \ell)$. Consider any $u, v \in p_{i, j}$ and denote $w = u - v$.
 By definition of $p_{i, j}$, we have
-\[ |\h{w}| = |\h{(u - v)}| = |\h{u} - \h{v}| = \O(n|\phi| / \ell) \]
-and similarly $|\s{w}| = \O(n|\psi| / \ell)$. Since $\phi$ and $\psi$ are not collinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$. Recall that by \Cref{get_periods} we have $|\phi \times \psi| \ge \frac{1}{2}|\phi||\psi|$ (since $|\sin \alpha| \ge 1/2$), thus
-\[ \frac{1}{2}|t||\phi||\psi| \le |t||\phi \times \psi| = |\phi \times (s\phi + t\psi)| = |\h{w}| = \O(n|\phi| / \ell), \]
-which gives us $|t\psi| = \O(n / \ell)$. We can similarly prove that $|s\phi| = \O(n / \ell)$ and finally 
-\[ |w| = |s\phi + t\psi| \le |s\phi| + |t\psi| = \O(n / \ell). \]
+\[ \absolute{\h{w}} = \absolute{\h{(u - v)}} = \absolute{\h{u} - \h{v}} = \O(n\absolute{\phi} / \ell) \]
+and similarly $\absolute{\s{w}} = \O(n\absolute{\psi} / \ell)$. Since $\phi$ and $\psi$ are not collinear, there exist $s, t \in \mathbb{R}$, such that $w = s\phi + t\psi$. Recall that by \Cref{get_periods} we have $\absolute{\phi \times \psi} \ge \frac{1}{2}\absolute{\phi}\absolute{\psi}$ (since $\absolute{\sin \alpha} \ge 1/2$), thus
+\[ \frac{1}{2}\absolute{t}\absolute{\phi}\absolute{\psi} \le \absolute{t}\absolute{\phi \times \psi} = \absolute{\phi \times (s\phi + t\psi)} = \absolute{\h{w}} = \O(n\absolute{\phi} / \ell), \]
+which gives us $\absolute{t\psi} = \O(n / \ell)$. We can similarly prove that $\absolute{s\phi} = \O(n / \ell)$ and finally 
+\[ \absolute{w} = \absolute{s\phi + t\psi} \le \absolute{s\phi} + \absolute{t\psi} = \O(n / \ell). \]
 
-Secondly, we show that	for all $u \in \X(p_{i, j}) \times \Y(p_{i, j})$ there exists $v \in p_{i, j}$, such that $|u - v| = \O(n / \ell)$. Indeed, there exist $w \in p_{i, j}$ such that $\x{u} = \x{w}$ and $v \in p_{i, j}$ such that $\y{u} = \y{v}$. From above, 
-\[|u - v| = |\x{u} - \x{v}| = |\x{w} - \x{v}| \le |w - v| = \O(n / \ell).\] 
+Secondly, we show that	for all $u \in \X(p_{i, j}) \times \Y(p_{i, j})$ there exists $v \in p_{i, j}$, such that $\absolute{u - v} = \O(n / \ell)$. Indeed, there exist $w \in p_{i, j}$ such that $\x{u} = \x{w}$ and $v \in p_{i, j}$ such that $\y{u} = \y{v}$. From above, 
+\[\absolute{u - v} = \absolute{\x{u} - \x{v}} = \absolute{\x{w} - \x{v}} \le \absolute{w - v} = \O(n / \ell).\] 
 
-Finally, consider any $u, v \in p_{i, j}$. From above, there exist $u', v' \in p_{i, j}$ such that $|u - u'| = \O(n / \ell)$ and $|v - v'| = \O(n / \ell)$. Therefore, 
-\[ |u - v| \le |u - u'| + |u' - v'| + |v' - v| = \O(n / \ell). \]
+Finally, consider any $u, v \in p_{i, j}$. From above, there exist $u', v' \in p_{i, j}$ such that $\absolute{u - u'} = \O(n / \ell)$ and $\absolute{v - v'} = \O(n / \ell)$. Therefore, 
+\[ \absolute{u - v} \le \absolute{u - u'} + \absolute{u' - v'} + \absolute{v' - v} = \O(n / \ell). \]
 
 \paragraph*{Property (\ref{it:monotonicity}).} 
 We show that for all $i \in [\ell - 1]$ and $j \in [\ell]$ we have
