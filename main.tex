@@ -27,8 +27,6 @@
 \usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
 \usepackage[capitalise]{cleveref}
 
-\pagestyle{myheadings}
-
 \title{Two-dimensional pattern matching with $k$ mismatches}
 \author{}
 % submissions need to be anonymous
@@ -142,8 +140,12 @@ Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm, so $\t
 \newpage
 
 \section{Introduction}
-The fundamental algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
-finding one string in another. Efficient linear-time algorithms for this problem are known since the 70s~\cite{Knuth1977}.
+Finite sequences of characters, or strings, are basic objects used to store and manipulate data, readily available in any popular
+programming language.The fundamental algorithmic problem on such objects is pattern matching: finding one string in another.
+Efficient linear-time algorithms for this problem are known since the 70s~\cite{Knuth1977}, and dozens 
+
+
+
 However, from the point of view of possible applications, it is desirable to search for approximate occurrences.
 A clean and yet possibly useful in practice notion of an approximate occurrence is that of bounded Hamming distance,
 where given a parameter $k$, we want to find all positions in the text where the pattern matches with at most $k$
