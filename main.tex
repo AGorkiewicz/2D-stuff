@@ -30,13 +30,15 @@
 \pagestyle{myheadings}
 
 \title{Two-dimensional pattern matching with $k$ mismatches}
-\author[1]{Jonas Ellert}
-\author[2]{Paweł Gawrychowski}
-\author[3]{Adam Górkiewicz}
-\author[4]{Tatiana Starikovskaya}
-\affil[1]{DI/ENS, PSL Research University, France}
-\affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
-\affil[4]{DI/ENS, PSL Research University, France}
+\author{}
+% submissions need to be anonymous
+%\author[1]{Jonas Ellert}
+%\author[2]{Paweł Gawrychowski}
+%\author[3]{Adam Górkiewicz}
+%\author[4]{Tatiana Starikovskaya}
+%\affil[1]{DI/ENS, PSL Research University, France}
+%\affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
+%\affil[4]{DI/ENS, PSL Research University, France}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -112,18 +114,32 @@
 
 \date{}
 \maketitle
+\thispagestyle{empty}
 
 \begin{abstract}
-	We consider a natural generalization of the classical approximate pattern matching problem to two-dimensional strings.
-	A two-dimensional string is simply a square array of characters.
-	Given two such arrays, the pattern of size $m\times m$ and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$ mismatches.
-	This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good understanding of the best possible time complexity as a function of $n$, $m$, and $k$.
-	In particular, we know that for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
-	Surprisingly, no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
-	We improve on these bounds from 30 years ago with a non-trivial adaptation of tools used to tackle the one-dimensional version and design an $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm.
-	In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
-	The results described in this thesis have been obtained in a collaboration between Jonas Ellert, Paweł Gawrychowski, Adam Górkiewicz, and Tatiana Starikovskaya, and will form the basis of a later joint publication.
+The classical pattern matching asks for locating all occurrences of one string, called the pattern, in another, called the text, where
+a string is simply a sequence of characters.
+Due to the potential practical applications, it is desirable to seek approximate occurrences, for example by bounding the number
+of mismatches. This problem has been extensively studied, and by now we have a good
+understanding of the best possible time complexity as a function of $n$ (length of the text), $m$ (length of the pattern), and $k$
+(number of mismatches).
+In particular, we know that for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
+
+We consider a natural generalisation of the approximate pattern matching problem to two-dimensional strings, which are simply
+square arrays of characters. The exact version of this problem, has been extensively studied in the early 90s, motived by the
+potential applications in image processing. While the basic tool used when working with one-dimensional strings, namely periodicity,
+admits a natural extension to two dimensions, it turns out to become significantly more challenging to work with,
+and it took some time until an alphabet-independent linear-time algorithm has been obtained by Galil and Park [SICOMP 1996].
+
+Formally, in the approximate two-dimensional pattern matching, we are given a pattern of size $m\times m$ and a text of size $n\times n$,
+and ask for all locations in the text where the pattern matches with at most $k$ mismatches.
+The asymptotically fastest algorithm for this algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
+We transfer some of the tools used for the approximate one-dimensional pattern matching, and provide new insight
+into two-dimensional periodicities to improve on these 30-years old bounds.
+Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm, so $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
 \end{abstract}
+
+\newpage
 
 \section{Introduction}
 The fundamental algorithmic problem considered in the context of sequences of characters, called strings, is pattern matching:
