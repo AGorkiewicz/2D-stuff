@@ -1079,8 +1079,8 @@ It remains to shown how to compute the second term, let it be $\tau_q$.
 Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\psi$).
 
 \begin{observation}\label{primitive}
-Let $U$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$ and $X \subseteq \Z^2$. There exist $w_{i,j} \in \Z^2$, $i,j \in \{0,1\}$ such that
-\[ \absolute{U \cap X} = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \absolute{(D + w_{i,j}) \cap X}\]
+Let $S$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$ and $X \subseteq \Z^2$. There exist $w_{i,j} \in \Z^2$, $i,j \in \{0,1\}$ such that
+\[ \absolute{S \cap X} = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \absolute{(D + w_{i,j}) \cap X}\]
 In more detail, $w_{i,j}$'s are defined as follows: 
 \begin{enumerate}
 \item $w_{0,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$;
@@ -1107,12 +1107,12 @@ Now, fix $i,j \in \{0,1\}$, and let
 %
 \begin{equation}
 \label{eq:fixed_ij}
-\tau_q^{i,j} = (-1)^{(i+j)} \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \absolute{\d{D-q} \cap \d{V-w_{i, j}(S)}}
+\tau_q^{i,j} = \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \absolute{\d{D-q} \cap \d{V-w_{i, j}(S)}}
 \end{equation}
 
-Below we explain how to compute the values $\tau_q^{i,j}$ for all $q \in Q$ and all $i,j \in \{0,1\}$ in time $\tO(m^2 + \sum{S \in \S} \absolute{\V_{\getchar{S}}})$. It is easy to see from \cref{eq:S_replaced_by_shifted_angles} that the values $\tau_q$ can then be computed in $\O(\absolute{Q}) = \O(m^2)$ time. 
+Below we explain how to compute the values $\tau_q^{i,j}$ for all $q \in Q$ and all $i,j \in \{0,1\}$ in time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$. Then, the values $\tau_q$ can be computed in $\O(\absolute{Q}) = \O(m^2)$ time because $\tau_q = \tau^{0,0}_q - \tau^{0,1}_q - \tau^{1,0}_q + \tau^{1,1}_q$ by \cref{eq:S_replaced_by_shifted_angles,eq:fixed_ij}.
 
-Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V \in \V_{\getchar{S}}\}$.  Note that $\absolute{\S \odot \V} = \O(\sum{S \in \S} \absolute{\V_{\getchar{S}}})$ and for all $u \in \S \odot \V$, we have $\absolute{u} = \O(m)$. We can then simplify \cref{eq:fixed_ij} as follows:
+Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V \in \V_{\getchar{S}}\}$.  Note that $\absolute{\S \odot \V} = \O(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$, and for all $u \in V$ with $V \in \S \odot \V$, we have $\absolute{u} = \O(m)$. We can then simplify \cref{eq:fixed_ij} as follows:
 
 \begin{align}
 \label{eq:group_by_gamma}
@@ -1121,22 +1121,22 @@ Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V
 
 \newcommand{\W}{\mathcal{W}}
 \begin{lemma}\label{primitive_conv}
-There is an algorithm that computes the values $\tau_q^{i,j}$ for all $q \in Q$ in total time $\tO(m^2 + \sum{S \in \S} \absolute{\V_{\getchar{S}}})$. 
+There is an algorithm that computes the values $\tau_q^{i,j}$ for all $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$. 
 \end{lemma}
 \begin{proof}
-For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $(\S \odot \V)$ containing $u$. Observe that
+For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $\S \odot \V$ containing $u$, i.e., $\score(u) = \absolute{\{V : V \in \S \odot \V, u \in \dom(V)\}}$. Observe that
 %
 \begin{equation}
 \begin{split}
-&\tau_q^{i,j} =\\
-&\sum_{V \in \S \odot \V} \absolute{u \in \Z^2 : u \in (D-q), u \in V} = \sum_{V \in \S \odot \V} \sum_{u \in D-q}  \absolute{u \in V} =  \\
-&\sum_{u \in D-q} \sum_{V \in \S \odot \V} \absolute{u \in V} = \sum_{u \in D-q} \score(u)
+\tau_q^{i,j} =&\sum_{V \in \S \odot \V} \absolute{\{u \in \Z^2 : u \in \dom(D-q), u \in \dom(V)\}}\\
+=&\sum_{V \in \S \odot \V}\ \sum_{u \in \dom(D-q)}  \absolute{\{u\} \cap \dom(V)}\\
+=&\sum_{u \in \dom(D-q)}\ \sum_{V \in \S \odot \V} \absolute{\{u\} \cap \dom(V)} = \sum_{u \in \dom(D-q)} \score(u).
 \end{split}
 \end{equation}
-We now explain how to compute $\tau_q^{i,j}$. We start by computing in $\O(\S \odot \V) = \tO(\sum{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
+We now explain how to compute $\tau_q^{i,j}$. We start by computing in $\O(\S \odot \V) = \tO(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
 an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. We therefore can construct the set $\W = \{w \in \Z^2 : \absolute{w} \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
 
-We then construct in $\O(m^2)$ the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. By \cref{subtile_definition}, that if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$ we can refine the definition of score:
+We then construct in $\O(m^2)$ time the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. By \cref{subtile_definition}, that if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$ we can refine the definition of score:
 %
 $$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{u \in V}$$
 %
