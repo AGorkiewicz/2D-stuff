@@ -22,21 +22,19 @@
 \usepackage{todonotes}
 \usepackage{subcaption}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows,arrows.meta}
+\usetikzlibrary{positioning,arrows,arrows.meta,calc,patterns,patterns.meta}
 
 \usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
 \usepackage[capitalise]{cleveref}
 
 \title{Two-dimensional pattern matching with $k$ mismatches}
-\author{}
-% submissions need to be anonymous
-%\author[1]{Jonas Ellert}
-%\author[2]{Paweł Gawrychowski}
-%\author[3]{Adam Górkiewicz}
-%\author[4]{Tatiana Starikovskaya}
-%\affil[1]{DI/ENS, PSL Research University, France}
-%\affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
-%\affil[4]{DI/ENS, PSL Research University, France}
+\author[1]{Jonas Ellert}
+\author[2]{Paweł Gawrychowski}
+\author[3]{Adam Górkiewicz}
+\author[4]{Tatiana Starikovskaya}
+\affil[1]{DI/ENS, PSL Research University, France}
+\affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
+\affil[4]{DI/ENS, PSL Research University, France}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -112,32 +110,18 @@
 
 \date{}
 \maketitle
-\thispagestyle{empty}
 
 \begin{abstract}
-The classical pattern matching asks for locating all occurrences of one string, called the pattern, in another, called the text, where
-a string is simply a sequence of characters.
-Due to the potential practical applications, it is desirable to seek approximate occurrences, for example by bounding the number
-of mismatches. This problem has been extensively studied, and by now we have a good
-understanding of the best possible time complexity as a function of $n$ (length of the text), $m$ (length of the pattern), and $k$
-(number of mismatches).
-In particular, we know that for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
-
-We consider a natural generalisation of the approximate pattern matching problem to two-dimensional strings, which are simply
-square arrays of characters. The exact version of this problem, has been extensively studied in the early 90s, motived by the
-potential applications in image processing. While the basic tool used when working with one-dimensional strings, namely periodicity,
-admits a natural extension to two dimensions, it turns out to become significantly more challenging to work with,
-and it took some time until an alphabet-independent linear-time algorithm has been obtained by Galil and Park [SICOMP 1996].
-
-Formally, in the approximate two-dimensional pattern matching, we are given a pattern of size $m\times m$ and a text of size $n\times n$,
-and ask for all locations in the text where the pattern matches with at most $k$ mismatches.
-The asymptotically fastest algorithm for this algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
-We transfer some of the tools used for the approximate one-dimensional pattern matching, and provide new insight
-into two-dimensional periodicities to improve on these 30-years old bounds.
-Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm, so $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
+	We consider a natural generalization of the classical approximate pattern matching problem to two-dimensional strings.
+	A two-dimensional string is simply a square array of characters.
+	Given two such arrays, the pattern of size $m\times m$ and the text of size $n\times n$, our goal is to find all locations in the text where the pattern matches with at most $k$ mismatches.
+	This problem has been extensively studied for regular one-dimensional strings, and by now, we have a good understanding of the best possible time complexity as a function of $n$, $m$, and $k$.
+	In particular, we know that for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
+	Surprisingly, no similar statement is known for two-dimensional strings, as the asymptotically fastest algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
+	We improve on these bounds from 30 years ago with a non-trivial adaptation of tools used to tackle the one-dimensional version and design an $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm.
+	In other words, our algorithm works in $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
+	The results described in this thesis have been obtained in a collaboration between Jonas Ellert, Paweł Gawrychowski, Adam Górkiewicz, and Tatiana Starikovskaya, and will form the basis of a later joint publication.
 \end{abstract}
-
-\newpage
 
 \section{Introduction}
 Finite sequences of characters, or strings, are basic objects used to store and manipulate data, readily available in any popular
@@ -1105,24 +1089,99 @@ In $T'$, we then replace all positions from $\dom(U)$ with character $1$.
 We observe that $\absolute{\d{P + q} \cap U} = \Ham(P' + q, T')$, which can be computed for all $q \in Q$ in $\tO(m^2)$ time with \cref{cor:sigman2d}.
 It remains to shown how to compute the second term, let it be $\tau_q$. 
 
-Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \ge 0}$, where $\L$ is the set defined in \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\psi$).
+Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \le 0} = \{ s\phi + t\psi : s,t \in \mathbb N_{\geq 0}\}$, where $\L = \{ s\phi + t\psi : s,t \in \mathbb Z\}$ is the set from \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\psi$).
 
-\begin{observation}\label{primitive}
-Let $S$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$ and $X \subseteq \Z^2$. There exist $w_{i,j} \in \Z^2$, $i,j \in \{0,1\}$ such that
-\[ \absolute{S \cap X} = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \absolute{(D + w_{i,j}) \cap X}\]
-In more detail, $w_{i,j}$'s are defined as follows: 
-\begin{enumerate}
-\item $w_{0,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$;
-\item $w_{1,0}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_0\}$ shifted by $\psi$;
-\item $w_{0,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_0\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi$;
-\item $w_{1,1}$ is the intersection of $\{u \in \R^2 : \h{u} = \phi_1\}$ and $\{u \in \R^2 : \s{u} = \psi_1\}$ shifted by $\phi+\psi$.
-\end{enumerate}
-(Note that $\forall u \in D + w_{i,j}$, we have $u \equiv \gamma$). We can compute $w_{i,j}$ in $\O(1)$ time given $U$'s signature and if $\max \{\absolute{u} : u \in U\} = \O(m)$, then $\absolute{w_{i,j}} = \O(m)$ as well. 
-\end{observation}
+\begin{lemma}\label{primitive}
+Let $S$ be a subtile with signature $\phi_0, \phi_1, \psi_0, \psi_1, \gamma$. In constant time, we can compute points $w_{0,0},w_{0,1},w_{1,0},w_{1,1} \in \mathbb Z^2$ such that for every $X \in \mathbb Z^2$ it holds
+\[ \absolute{S \cap X} = \sum_{i,j \in \{0,1\}} (-1)^{(i+j)} \cdot \absolute{(D + w_{i,j}) \cap X}\]
+and $\forall u \in (D + w_{i,j}) : u \equiv \gamma$. If $\max_{u \in S}(\absolute{u}) = \O(m)$, then $\absolute{w_{i,j}} = \O(m)$.
 
-\todo{figure would be good}
+\begin{proof}
+By definition of a subtile, every point $u \in S$ satisfies $u - \gamma = s\phi + t\psi$, or equivalently $u = s\phi + t\psi + \gamma$ for some $s,t\in\mathbb Z$. 
+By definition of a tile, it also holds $\phi \times (s\phi + t\psi + \gamma) \in [\phi_0, \phi_1]$ and $\psi \times (s\phi + t\psi + \gamma) \in [\psi_0, \psi_1]$. Since the cross-product has the distributive property, and the cross-product of colinear vectors is $0$, we can equivalently write $t \cdot (\phi \times \psi) + (\phi \times \gamma) \in [\phi_0, \phi_1]$ and $s \cdot (\psi \times \phi) + (\psi \times \gamma) \in [\psi_0, \psi_1]$. 
+Due to $\psi \in (0, +\infty) \times [0, +\infty)$ and $\phi \in [0, +\infty) \times (-\infty, 0)$, it holds $(\phi \times \psi) \geq 0$ and $(\psi \times \phi) \leq 0$. Hence the former term increases with $t$, while the latter one decreases as $s$ increases.
 
-We apply \Cref{primitive} to each $S\in \S$ to obtain in $\O(\absolute{\S})$ total time $w_{i, j}(S)$, where $i,j \in \{0,1\}$. We then have:
+By solving the respective univariate linear equations in constant time, we determine the respectively minimal $t_0, t_1 \in \mathbb Z$ and maximal $s_0, s_1 \in \mathbb Z$ such that $\psi \times (s_0\phi + \gamma) \leq \psi_1$, $\psi \times (s_1\phi + \gamma) < \psi_0$, $\phi \times (t_0\psi + \gamma) \geq \phi_0$ and $\phi \times (t_1\psi + \gamma) > \phi_1$.
+For $i,j \in \{0, 1\}$, we define $w_{i, j} = (s_i\phi + t_j\psi + \gamma) \equiv \gamma$ and $D_{i,j} = D + w_{i,j}$. 
+Then, a point $s\phi + t\psi + \gamma$ with $s,t \in \mathbb Z$ is in 
+\begin{itemize}
+	\item $S$ if and only if $s_0 \leq s < s_1$ and $t_0 \leq t < t$,
+	\item $D_{0, 0}$ if and only if $s_0 \leq s$ and $t_0 \leq t$,
+	\item $D_{0, 1}$ if and only if $s_0 \leq s$ and $t_1 \leq t$,
+	\item $D_{1, 0}$ if and only if $s_1 \leq s$ and $t_0 \leq t$,
+	\item $D_{1, 1}$ if and only if $s_1 \leq s$ and $t_1 \leq t$,%
+	%
+	~~~~~~~~\begin{tikzpicture}[overlay, x=.6em, y=.6em]
+
+\foreach \s in {1,...,10} {
+	\foreach[evaluate=\s as \x using (\s+.7*\t),
+			 evaluate=\s as \y using (0.8*\s-.5*\t + 5)] \t in {1,...,10} {
+		\node[black!20!white, draw, circle, fill=black!20!white, inner sep=.5pt] (\s-\t) at (\x, \y) {};	
+	}
+}
+
+\foreach \s in {3,...,8} {
+	\foreach \t in {3,...,8} {
+		\node[draw, circle, fill, inner sep=.5pt] at (\s-\t) {};	
+	}
+}
+
+\draw ($0.5*(2-1)+0.5*(3-1)$) to node[pos=0, above left] {\small $\phi_0$} ($0.5*(2-10)+0.5*(3-10)$);
+\draw ($0.5*(8-1)+0.5*(9-1)$) to node[pos=0, above left] {\small $\phi_1$} ($0.5*(8-10)+0.5*(9-10)$);
+\draw ($0.5*(1-2)+0.5*(1-3)$) to node[pos=0, below left] {\small $\psi_1$} ($0.5*(10-2)+0.5*(10-3)$);
+\draw ($0.5*(1-8)+0.5*(1-9)$) to node[pos=0, below left] {\small $\psi_0$} ($0.5*(10-8)+0.5*(10-9)$);
+
+\node[draw, circle, fill=red, inner sep=1.5pt] (3-3) at (3-3) {};
+\node[draw, circle, fill=red, inner sep=1.5pt] (3-9) at (3-9) {};
+\node[draw, circle, fill=red, inner sep=1.5pt] (9-3) at (9-3) {};
+\node[draw, circle, fill=red, inner sep=1.5pt] (9-9) at (9-9) {};
+
+\draw[densely dotted, thick] (3-3) ++(-1.5, 3.5) node[black, inner sep=1pt] (l) {\small $w_{0,0}$} (3-3) to[bend right] (l);
+\draw[densely dotted, thick] (3-9) ++(4, 0) node[black, inner sep=1pt] (l) {\small $w_{1,0}$} (3-9) to[bend right] (l);
+\draw[densely dotted, thick] (9-3) ++(4.5, 0) node[black, inner sep=1pt] (l) {\small $w_{0,1}$} (9-3) to[bend left] (l);
+\draw[densely dotted, thick] (9-9) ++(1, -3) node[black, inner sep=1pt] (l) {\small $w_{1,1}$} (9-9) to[bend left] (l);
+
+
+
+\foreach \s in {1,...,20} {
+	\foreach[evaluate=\s as \x using (0.5*\s+.35*\t+0.425 + 19),
+			 evaluate=\s as \y using (0.4*\s-.25*\t+0.325 + 5)] \t in {1,...,20} {
+		\node[circle, inner sep=.5pt] (\s-\t) at (\x, \y) {};	
+	}
+}
+
+\foreach \s in {1,...,20} {
+		\ifnum\s=8\else
+			\draw[gray, thin] (\s-8.center) to (\s-20.center);
+			\draw[gray, thin] (8-\s.center) to (20-\s.center);
+		\fi
+}
+
+\draw[very thick]
+(1-1.center) to (20-1.center)
+(1-1.center) to (1-20.center)
+(1-8.center) to (20-8.center)
+(8-1.center) to (8-20.center);
+\path (1-8.center) to node[midway] {$S$} (8-1.center);
+
+\node[draw, circle, fill=red, inner sep=1.5pt] (1-1) at ($0.5*(1-1)+0.5*(2-2)$) {};
+\node[draw, circle, fill=red, inner sep=1.5pt] (1-8) at ($0.5*(1-8)+0.5*(2-9)$) {};
+\node[draw, circle, fill=red, inner sep=1.5pt] (8-1) at ($0.5*(8-1)+0.5*(9-2)$) {};
+\node[draw, circle, fill=red, inner sep=1.5pt] (8-8) at ($0.5*(8-8)+0.5*(9-9)$) {};
+
+
+\end{tikzpicture}
+\end{itemize}
+and all sets contain only points that are in the same class as $\gamma$. 
+Since $D_{0,0}$ is partitioned by $S \cup (D_{0, 1}\setminus D_{1, 1}) \cup (D_{1, 0}\setminus D_{1, 1}) \cup D_{1, 1}$, the statement of the lemma follows. 
+Any $w_{i, j}$ is at distance at most $\absolute{\phi + \psi} = \O(m)$ from a point in $S$, and $\max \{\absolute{u} : u \in S\} = \O(m)$ implies $\absolute{w_{i,j}} = \O(m)$. 
+(If $S$ is empty, i.e., $s_0 = s_1$ or $t_0 = t_1$, then we define $\forall i,j\in\{0, 1\} : w_{i,j} = \gamma$ instead.)
+\end{proof}
+
+\end{lemma}
+
+
+We apply \Cref{primitive} to the domain of each $S\in \S$ to obtain $w_{i, j}(S)$ for $i,j \in \{0,1\}$ in $\O(\absolute{\S})$ total time. We then have:
 
 \begin{align}
 \label{eq:S_replaced_by_shifted_angles}
@@ -1139,9 +1198,8 @@ Now, fix $i,j \in \{0,1\}$, and let
 \tau_q^{i,j} = \sum_{S \in \S} \sum_{V \in \V_{\getchar{S}}} \absolute{\d{D-q} \cap \d{V-w_{i, j}(S)}}
 \end{equation}
 
-Below we explain how to compute the values $\tau_q^{i,j}$ for all $q \in Q$ and all $i,j \in \{0,1\}$ in time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$. Then, the values $\tau_q$ can be computed in $\O(\absolute{Q}) = \O(m^2)$ time because $\tau_q = \tau^{0,0}_q - \tau^{0,1}_q - \tau^{1,0}_q + \tau^{1,1}_q$ by \cref{eq:S_replaced_by_shifted_angles,eq:fixed_ij}.
-
-Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V \in \V_{\getchar{S}}\}$.  Note that $\absolute{\S \odot \V} = \O(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$, and for all $u \in V$ with $V \in \S \odot \V$, we have $\absolute{u} = \O(m)$. We can then simplify \cref{eq:fixed_ij} as follows:
+Now we explain how to compute the values $\tau_q^{i,j}$ for all $q \in Q$ and all $i,j \in \{0,1\}$ in time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$. Then, the values $\tau_q$ can be computed in $\O(\absolute{Q}) = \O(m^2)$ time using $\tau_q = \tau^{0,0}_q - \tau^{0,1}_q - \tau^{1,0}_q + \tau^{1,1}_q$ due to \cref{eq:S_replaced_by_shifted_angles,eq:fixed_ij}. 
+Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V \in \V_{\getchar{S}}\}$.  Note that $\absolute{\S \odot \V} = \O(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$, and for all $u \in V$ with $V \in \S \odot \V$, we have $\absolute{u} = \O(m)$. We can simplify \cref{eq:fixed_ij} as follows:
 
 \begin{align}
 \label{eq:group_by_gamma}
@@ -1150,7 +1208,7 @@ Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V
 
 \newcommand{\W}{\mathcal{W}}
 \begin{lemma}\label{primitive_conv}
-There is an algorithm that computes the values $\tau_q^{i,j}$ for all $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$. 
+The values $\tau_q^{i,j}$ for all $q \in Q$ can be computed in total time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$. 
 \end{lemma}
 \begin{proof}
 For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $\S \odot \V$ containing $u$, i.e., $\score(u) = \absolute{\{V : V \in \S \odot \V, u \in \dom(V)\}}$. Observe that
