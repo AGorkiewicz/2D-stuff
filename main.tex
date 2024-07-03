@@ -186,20 +186,27 @@ bounded Hamming distance is a fairly well-understood problem.
 This is also the case from the more combinatorial point of view: we know that occurrences of the pattern with $k$ mismatches
 either have a simple and exploitable structure, or the pattern is close to being periodic~\cite{Bringmann2019,Charalampopoulos2020a}.
 
-\paragraph{2D strings.} The natural extension of strings to two dimensions is to consider arrays
-of characters, called 2D strings. To avoid multiplying the parameters, we will assume that they are square. Such an extension
-is motivated by the possible application in image processing. Then, the basic algorithmic problem becomes
-to find all occurrences of an $m\times m$ pattern in an $n\times n$ text. An efficient $\O(n^{2}+m^{2})$ time algorithm
-for this problem was obtained already in the late 70s~\cite{Bird1977}, but obtaining such complexity without
-any assumption on the size of the alphabet was achieved only in the mid-90s~\cite{Amir1994,Galil1996}
+\paragraph{2D strings.} The natural extension of strings to two dimensions are arrays of characters, called 2D strings. 
+To avoid multiplying the parameters, we will assume that they are squares, but one could as well consider rectangles.
+Naturally, such an extension is motivated by the possible application in image processing and the related areas,
+and not surprisingly the corresponding problem of 2D exact pattern matching has been already considered in the 70s.
+In this problem we want to find all occurrences of an $m\times m$ pattern in an $n\times n$ text.
+For constant-size alphabets an asymptotically optimal $\O(n^{2}+m^{2})$ time algorithm has been found relatively
+quickly, but (as opposed to 1D exact pattern matching) it was quite unclear for quite some time how to obtain
+such a complexity without any assumptions on the size of the alphabet. Only in the mid 90s, a systematic
+study of the so-called periodicities in 2D strings paved up the way for obtaining such an algorithm~\cite{Amir1994,Galil1996}
 (even in logarithmic space~\cite{Crochemore1995}). Efficient parallel algorithms have also been obtained~\cite{Crochemore1998,Crochemore1998},
-and the time complexity for random inputs, i.e., average time complexity, has been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
+and the time complexity for random inputs, i.e., average time complexity, has also been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
 
 \paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is periodicity,
 defined as follows. We say that $p$ is a period of $s[1 \dd n]$ when $s[i]=s[i+p]$, for all $i$ such that the expression is defined.
-The set of all periods of a given string has a very simple structure~\cite{Fine1965}. For 2D strings, the notion of periodicity
-becomes more involved~\cite{Amir1998}, but remains to be a powerful tool for exact pattern matching~\cite{Amir1992,Galil1996}.
-Some purely combinatorial properties of two-dimensional periodicities have been studied~\cite{Mignosi2003,Gamard2017},
+The set of all periods of a given string has a very simple structure~\cite{Fine1965}, namely, when $p$ and $q$ are both periods
+of the same string $S[1 \dd n]$, and further $p+q\leq n$, then so is $\gcd(p,q)$.
+For 2D strings, the notion of periodicity becomes more involved In particular, instead of periodic
+and non-periodic strings it is now necessary to consider four types: non-periodic, lattice periodic, line periodic, and
+radiant periodic~\cite{Amir1998}. Such considerations formed the foundations of the asymptotically optimal alphabet-independent
+2D exact pattern matching algorithms~\cite{Amir1994,Galil1996}.
+Later, some purely combinatorial properties of two-dimensional periodicities have been discovered~\cite{Mignosi2003,Gamard2017},
 but generally speaking repetitions in two-dimensional strings are inherently more complicated than in one-dimensional strings.
 For example, compressed pattern matching for two-dimensional strings becomes NP-complete~\cite{Berman2002}, see~\cite{Rytter2000}
 for a more extensive discussion.
@@ -214,8 +221,12 @@ to be the asymptotically fastest algorithm. A number of non-trivial results have
 that the input is random, i.e. for the average time complexity~\cite{Baeza-Yates1998,Park1998,Kaerkkaeinen1999}.
 Given that other notions of approximate occurrences, e.g. bounded edit distance, seem less natural in the two-dimensional
 setting~\cite{Baeza-Yates1998a}, the natural challenge is to better understand the complexity
-of 2D pattern matching with $k$ mismatches. In particular, it would be interesting to design a quasi-linear time
-algorithm for polynomial $k=\O(n^{\epsilon})$ number of mismatches.
+of 2D pattern matching with $k$ mismatches. Following the line of research for 1D pattern matching with $k$
+mismatches, a particularly natural question is to understand if we are able to design a quasi-linear time
+algorithm for polynomial $k=\O(n^{\epsilon})$ number of mismatches. It appears that no such result was known
+in the literature, and it was not clear if the methods designed for 1D pattern matching with $k$ mismatches
+can be immediately adapted to 2D strings, as they are based on extending the notion of periodicity, which becomes
+inherently more complicated in two dimensions.
 
 \paragraph{Our result.} We design an algorithm that, given an $n\times n$ text and $m\times m$ pattern, finds
 all occurrences with at most $k$ mismatches of the former in latter in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
