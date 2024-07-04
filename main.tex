@@ -124,34 +124,33 @@ understanding of the best possible time complexity as a function of $n$ (length 
 In particular, we know that for $k=\O(\sqrt{m})$, we can achieve quasi-linear time complexity [Gawrychowski and Uznański, ICALP 2018].
 
 We consider a natural generalisation of the approximate pattern matching problem to two-dimensional strings, which are simply
-square arrays of characters. The exact version of this problem, has been extensively studied in the early 90s, motived by the
-potential applications in image processing. While the basic tool used when working with one-dimensional strings, namely periodicity,
+square arrays of characters. The exact version of this problem has been extensively studied in the early 90s, motivated by the
+potential applications in image processing. While periodicity, which is the basic tool for one-dimensional pattern matching, 
 admits a natural extension to two dimensions, it turns out to become significantly more challenging to work with,
 and it took some time until an alphabet-independent linear-time algorithm has been obtained by Galil and Park [SICOMP 1996].
 
-Formally, in the approximate two-dimensional pattern matching, we are given a pattern of size $m\times m$ and a text of size $n\times n$,
+In the approximate two-dimensional pattern matching, we are given a pattern of size $m\times m$ and a text of size $n\times n$,
 and ask for all locations in the text where the pattern matches with at most $k$ mismatches.
 The asymptotically fastest algorithm for this algorithm works in $\O(kn^{2})$ time [Amir and Landau, TCS 1991].
-We transfer some of the tools used for the approximate one-dimensional pattern matching, and provide new insight
-into two-dimensional periodicities to improve on these 30-years old bounds.
-Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time algorithm, so $\tO(n^{2})$ time for $k=\O(m^{4/5})$.
+We provide a new insight
+into two-dimensional periodicity to improve on these 30-years old bounds.
+Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time, which is $\tO(n^{2})$ for $k=\O(m^{4/5})$.
 \end{abstract}
 
 \newpage
 
 \section{Introduction}
-Finite sequences of characters, or strings, are basic objects used to store and manipulate data, readily available in any popular
-programming language. The fundamental algorithmic problem on such objects is pattern matching: finding one string in another.
-Traditionally, the former is called the pattern and the latter is the text.
-An asymptotically optimal linear time algorithm for this problem is known since the 70s~\cite{Knuth1977}, and multiple dozens
+Strings are basic objects that can used to store and manipulate sequential data, readily available in any popular
+programming language. The fundamental algorithmic problem on such objects is pattern matching: identifying occurrences of one string in another.
+Traditionally, the former is called the pattern and the latter the text.
+An asymptotically optimal linear-time algorithm for this problem is known since the 70s~\cite{Knuth1977}, and multiple dozens
 efficient algorithms have been described in the literature since then~\cite{DBLP:books/daglib/0025563}. However, 
-from the point of view of possible applications, in particular those in computational biology, where we work with chromosomes
-that can be described by finite strings over the alphabet $\{A,C,G,T\}$, is to search for approximate occurrences, that is,
-allow some slack when defining when two such strings are equal.
+from the point of view of possible applications, in particular those in computational biology, where we work with biological sequences
+that can be described by finite strings over the alphabet $\{A,C,G,T\}$, a more appropriate task is to search for approximate occurrences, that is, to 
+allow for some slack when defining when two such strings are equal.
 
-From a theoretical point of view, a particular clean notion of an approximate occurrence is that of bounded Hamming distance.
-Then, given an integer parameter $k$ together with the text of length $n$ and the pattern of length $m$, we want to find all
-positions in the text where the pattern matches with at most $k$ mismatches. This is known as pattern matching with $k$
+From a theoretical point of view, a particular clean notion of an approximate occurrence is that of bounded Hamming distance: Given an integer parameter $k$ together with a text of length $n$ and a pattern of length $m$, the task is to find all
+positions in the text where the pattern occurs with at most $k$ mismatches. This is known as pattern matching with $k$
 mismatches. The natural assumption is that $k$ is not too large,
 and the running time should be close to linear when $k$ is small. Indeed, from the point of view of potential applications we do
 not want positions where there are many mismatches, as they would not be very meaningful.
@@ -164,20 +163,20 @@ A single jump can be implemented in constant time with a data structure for the 
 as a suffix tree augmented with a lowest common ancestors structure (or some of the earlier simpler structures with slightly worse
 parameters). This results in an $\O(nk)$ time algorithm, which is efficient for small values of $k$.
 Another early discovery, efficient when there are very few distinct characters present in the input,
-is to run FFT for each distinct character, resulting in $\O(n|\Sigma|\log n)$ running time~\cite{FischerP74}.
+is to run the fast Fourier transform for each distinct character, resulting in $\O(n|\Sigma|\log n)$ running time~\cite{FischerP74}.
 While, in principle, this is possibly quite bad for a general input, in the late 80s Abrahamson showed
 how to apply the so-called heavy-light trick to guarantee that the time complexity is always
 $\O(n \sqrt{m \log m})$ time~\cite{Abrahamson1987}. This clearly established that the $\O(nk)$ time complexity
 can't be the right answer for the whole range values of $k$.
 
 It was only in 2004 that both bounds were unified to obtain an $\O(n\sqrt{k \log k})$ time algorithm~\cite{Amir2004},
-by combining FFT with a purely combinatorial reasoning that allows for eliminating all but a few relevant positions
-in the text. It might have seen at the time that such a complexity is the best possible as a function of $n$, $m$, and $k$,
+by combining the fast Fourier transform with a purely combinatorial reasoning that allows for eliminating all but a few relevant positions
+in the text. It might have been seen at the time that such a complexity is the best possible as a function of $n$, $m$, and $k$,
 but surprisingly in 2016 Clifford et al.~\cite{Clifford2016a} designed another algorithm that works
-in $\tO(n + k^2n/m)$ time. In particular, this is almost-linear when $k=\O(\sqrt{m})$. Later, their
+in $\tO(n + k^2n/m)$ time. In particular, this is almost linear when $k=\O(\sqrt{m})$. Later, their
 approach was refined to work in $\tO(n + kn/\sqrt{m})$ time~\cite{Gawrychowski2018},
 which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We write $\tO$ to hide factors polylogarithmic in $n$.}. 
-It is known that a significantly faster algorithm implies fast boolean matrix multiplication~\cite{Gawrychowski2018},
+It is known that a significantly faster algorithm implies fast Boolean matrix multiplication~\cite{Gawrychowski2018},
 and the time complexity can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020} (at the expense
 of allowing Monte Carlo randomization). In a very recent exciting improvement, it was shown how to slightly improve
 these time complexities by leveraging a connection to the 3-SUM problem~\cite{Chan0WX23}.
@@ -190,8 +189,8 @@ either have a simple and exploitable structure, or the pattern is close to being
 To avoid multiplying the parameters, we will assume that they are squares, but one could as well consider rectangles.
 Naturally, such an extension is motivated by the possible application in image processing and the related areas,
 and not surprisingly the corresponding problem of 2D exact pattern matching has been already considered in the 70s.
-In this problem we want to find all occurrences of an $m\times m$ pattern in an $n\times n$ text.
-For constant-size alphabets an asymptotically optimal $\O(n^{2}+m^{2})$ time algorithm has been found relatively
+In this problem, the task is to locate all occurrences of an $m\times m$ pattern in an $n\times n$ text.
+For constant-size alphabets, an asymptotically optimal $\O(n^{2}+m^{2})$-time algorithm has been found relatively
 quickly, but (as opposed to 1D exact pattern matching) it was quite unclear for quite some time how to obtain
 such a complexity without any assumptions on the size of the alphabet. Only in the mid 90s, a systematic
 study of the so-called periodicities in 2D strings paved up the way for obtaining such an algorithm~\cite{Amir1994,Galil1996}
@@ -199,11 +198,11 @@ study of the so-called periodicities in 2D strings paved up the way for obtainin
 and the time complexity for random inputs, i.e., average time complexity, has also been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
 
 \paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is periodicity,
-defined as follows. We say that $p$ is a period of $s[1 \dd n]$ when $s[i]=s[i+p]$, for all $i$ such that the expression is defined.
-The set of all periods of a given string has a very simple structure~\cite{Fine1965}, namely, when $p$ and $q$ are both periods
+defined as follows. We say that $p$ is a period of a string $S[1 \dd n]$ when $S[i]=S[i+p]$, for all $i$ such that the expression is defined.
+The set of all periods of a given string is very structured~\cite{Fine1965}, namely, when $p$ and $q$ are both periods
 of the same string $S[1 \dd n]$, and further $p+q\leq n$, then so is $\gcd(p,q)$.
-For 2D strings, the notion of periodicity becomes more involved In particular, instead of periodic
-and non-periodic strings it is now necessary to consider four types: non-periodic, lattice periodic, line periodic, and
+For 2D strings, the notion of periodicity becomes more involved. In particular, instead of periodic
+and non-periodic strings it is now necessary to consider four types of strings: non-periodic, lattice periodic, line periodic, and
 radiant periodic~\cite{Amir1998}. Such considerations formed the foundations of the asymptotically optimal alphabet-independent
 2D exact pattern matching algorithms~\cite{Amir1994,Galil1996}.
 Later, some purely combinatorial properties of two-dimensional periodicities have been discovered~\cite{Mignosi2003,Gamard2017},
@@ -242,8 +241,7 @@ for an optimized version (but the approach is due to~\cite{Clifford2015}), which
 First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}.
 Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
-Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a small approximate
-the period in the pattern, i.e., an integer $p$ such that aligning the pattern with itself at a distance $p$ incurs few mismatches.
+Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a small approximate period in the pattern, i.e., an integer $p$ such that aligning the pattern with itself at a distance $p$ incurs few mismatches.
 Then, (for $n=2m$), we can restrict our attention to the middle part of the text with the same approximate period $p$.
 Both the pattern and the middle part of the text compress very well under the simple RLE compression, if we rearrange their characters
 by considering the positions modulo $p$. In other words, they can be both decomposed into few subsequences
@@ -264,7 +262,7 @@ defined by some lattice of points restricted to a polygon. We call such a set of
 The next step is to similarly decompose the text. In 2D it is less clear what would be its middle part that
 admits the same approximate period, however we can build on this idea to partition the relevant part of the text
 into monochromatic pieces. Then, we consider each piece of the pattern and each piece of the text,
-and convolve them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$
+and convolve them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$ time
 per pair of pieces if one of them admits some additional condition that we call being simple.
 Thus, we actually need to partition the relevant part of the text into simple subtiles. A direct approach
 results in too many pieces, and so we proceed in a more indirect way by introducing the notion of
@@ -1057,7 +1055,7 @@ W.l.o.g., $v = (\max \X(P), \max \Y(i,j)) \notin \d{\Ta}$. For all $u \in U$, we
 Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\mathcal{P}$ of $\O(\ell)$ parallelograms such that for every $p \in \mathcal{P}$ the set $p \cap Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
 \end{lemma}
 \begin{proof}
-By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid}(\ref{it:monotonicity}), and \ref{th:coverable_peripheral}, for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
+By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid}(\ref{it:monotonicity}), \cref{coverable}, and \cref{peripheral} for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
 \begin{enumerate}
 	\item A parallelogram $P_j^1 = \bigcup_{i=1}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
 	\item A parallelogram $P_j^2 = \bigcup_{i=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
@@ -1250,14 +1248,14 @@ By \cref{subtile_definition}, if $w \in \W_\gamma$ is contained in a truncated s
 %
 $$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{\{u\} \cap \dom(V)}$$
 %
-Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. For any $w = (\x{w}, \y{w}) \in \W_\gamma$, it holds $w \in V$ if and only if
+Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. For any $w = (\x{w}, \y{w}) \in \W_\gamma$, it holds $w \in V$ if and only if
 \begin{equation}
 \label{eq:range}
 x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
 \end{equation}
 (where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a 3-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
 %
-$$\{(x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
+$$\{(x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
 For every $w = (w.x, w.y) \in \W_\gamma$, we compute the query $(w.x, w.y, \phi \times w, \psi \times w)$, and count the $\V \in (\S \odot \V) |_\gamma$ containing the query in $\tO(1)$ time using the range tree. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time is $\O(m^2 + \absolute{(\S \odot \V)})$.
 
 Now, note that the following recursive formula holds for all $w \in \W_\gamma$:\jonas{TODO}
