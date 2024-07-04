@@ -653,9 +653,9 @@ We extend $\Q_1$ to $\Q_1^+$ by adding the neighbouring $30$ degrees of $\Q_2$ a
 \draw[thick] (-10, \line) to (10, -\line);
 \draw[thick] (-\line, 10) to (\line, -10);
 
-\fill[blue!10!white] (-10,-10) rectangle (10,10);
-\fill[red!10!white] (-10, \line) to (-10, 10) to (-\line, 10) to (0,0) to (-10, \line);
-\fill[red!10!white] (10, -\line) to (10, -10) to (\line, -10) to (0,0) to (10, -\line);
+\fill[gray!30!white] (-10,-10) rectangle (10,10);
+\fill[gray!10!white] (-10, \line) to (-10, 10) to (-\line, 10) to (0,0) to (-10, \line);
+\fill[gray!10!white] (10, -\line) to (10, -10) to (\line, -10) to (0,0) to (10, -\line);
 
 \path (10,10) node[below left] {$\Q_1^+$};
 \path (-10,10) node[below right] {$\Q_2^-$};
@@ -675,10 +675,10 @@ We extend $\Q_1$ to $\Q_1^+$ by adding the neighbouring $30$ degrees of $\Q_2$ a
 
 
 
-\path (10, -\line) to node[fill=blue!10!white, pos=1, above right=0 and .2em, rotate=-30, anchor=south west] {\scalebox{\fontscaler}{\enskip $y = -x/\sqrt{3}$}} (0,0);
+\path (10, -\line) to node[fill=gray!30!white, pos=1, above right=0 and .2em, rotate=-30, anchor=south west] {\scalebox{\fontscaler}{\enskip $y = -x/\sqrt{3}$}} (0,0);
 
 
-\path (\line, -10) to node[fill=blue!10!white, pos=1, below right=.2em and 0, rotate=-60, anchor=north west] {\scalebox{\fontscaler}{\enskip $y = -x \cdot \sqrt{3}$}} (0,0);
+\path (\line, -10) to node[fill=gray!30!white, pos=1, below right=.2em and 0, rotate=-60, anchor=north west] {\scalebox{\fontscaler}{\enskip $y = -x \cdot \sqrt{3}$}} (0,0);
 
 
 \draw[gray] (-7,0) to[out=90, in=180] %
