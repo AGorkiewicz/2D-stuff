@@ -581,7 +581,7 @@ For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{\
 \end{definition}
 
 \begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
-Given $\ell \in [2m]$, one can partition $T_a$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and a $\O(m / \ell)$-peripheral string.
+Given $\ell \in [2m]$, one can partition $\Ta$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and a $\O(m / \ell)$-peripheral string.
 \end{restatable*}
 
 \subsection{Algorithm}
@@ -604,7 +604,7 @@ By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for ev
 
 \begin{restatable*}{theorem}{DenseAlgo}
 \label{th:dense_algo}
-Given a $d$-peripheral string $F$, there is an algorithm which computes $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
+Given a $d$-peripheral string $F$, there is an algorithm that computes $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
 \end{restatable*}
 
 By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
@@ -1093,7 +1093,7 @@ In this section, we prove two main components of our algorithm, \cref{th:sparse_
 
 \subsection{Proof of \cref{th:sparse_algo}}
 \SparseAlgo*
-Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \ref{sec:partitioning}).
+Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partitioning}).
  Observe that
 \begin{align}
 \label{eq:sparse}
@@ -1232,8 +1232,8 @@ For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $\S \od
 \begin{equation}
 \begin{split}
 \tau_q^{i,j} =&\sum_{V \in \S \odot \V} \absolute{\{u \in \Z^2 : u \in \dom(D-q), u \in \dom(V)\}}\\
-=&\sum_{V \in \S \odot \V}\ \sum_{u \in \dom(D-q)}  \absolute{\{u\} \cap \dom(V)}\\
-=&\sum_{u \in \dom(D-q)}\ \sum_{V \in \S \odot \V} \absolute{\{u\} \cap \dom(V)} = \sum_{u \in \dom(D-q)} \score(u).
+=&\sum_{V \in \S \odot \V}\ \sum_{u \in \dom(D-q)}  \absolute{\{u : u \in \dom(V)\}}\\
+=&\sum_{u \in \dom(D-q)}\ \sum_{V \in \S \odot \V} \absolute{\{u : u \in \dom(V)\}} = \sum_{u \in \dom(D-q)} \score(u).
 \end{split}
 \end{equation}
 We now explain how to compute $\tau_q^{i,j}$. 
@@ -1241,30 +1241,59 @@ We start by computing an upper bound $\ell = \O(m)$ such that $\score(u) = 0$ fo
 %
 %We start by computing in $\O(\S \odot \V) = \tO(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
 %an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. 
-We therefore can construct the set $\W = \{w \in \Z^2 : \absolute{w} \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
+Therefore, the set $\W' = \{(x,y) \in \Z^2 : \absolute{x} \le \ell, \absolute{y} \le \ell \}$ is of size $\O(m^2)$. 
+We pad this square-shaped set such that it is a parallelogram with sides colinear to $\phi$ and $\psi$, i.e., 
+$$\W = \{ w \in \mathbb Z^2 : \absolute{\phi \times w} \leq \absolute{\phi \times (\ell, \ell)}, \absolute{\psi \times w} \leq \absolute{\psi \times (-\ell, \ell)}$$
+
+\begin{tikzpicture}[x=.15em, y=.15em]
+
+%\useasboundingbox (-20,-20) rectangle (30,30);
+\clip (-20,-20) rectangle (30,30);
+
+\draw[densely dotted] (0,0) to (0,10) to (10,10) to (10, 0) to (0,0);
+
+\draw (0,10) ++(-100,-80) to ++(200,160);
+\draw (10,0) ++(-100,-80) to ++(200,160);
+
+\draw (0,0) ++(-100,30) to ++(200,-60);
+\draw (10,10) ++(-100,30) to ++(200,-60);
+
+\draw (-20,-20) rectangle (30,30);
+
+
+
+\end{tikzpicture}
+
+Since the angle between $\phi$ and $\psi$ is between $30^\circ$ and $150^\circ$, it can be readily verified that $\W$ is a subset of the larger square $\W'' = \{(x,y) \in \Z^2 : \absolute{x} \le 3\ell, \absolute{y} \le 3\ell \}$, which is still of size $\O(m^2)$. Hence, by checking each point in $\W''$ separately, we can construct $\W$ in $\O(m^2)$ time. By design, it holds $\score(w)=0$ for $w \notin \W$. 
 
 We then construct in $\O(m^2)$ time the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in \W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. 
 By \cref{subtile_definition}, if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$, we can refine the definition of score:
 %
-$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{\{u\} \cap \dom(V)}$$
+$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{\{u : u \in \dom(V)\}}$$
 %
 Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. For any $w = (\x{w}, \y{w}) \in \W_\gamma$, it holds $w \in V$ if and only if
 \begin{equation}
 \label{eq:range}
 x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
 \end{equation}
-(where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a 3-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
+(where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time an $8$-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
 %
-$$\{(x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
-For every $w = (w.x, w.y) \in \W_\gamma$, we compute the query $(w.x, w.y, \phi \times w, \psi \times w)$, and count the $\V \in (\S \odot \V) |_\gamma$ containing the query in $\tO(1)$ time using the range tree. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time is $\O(m^2 + \absolute{(\S \odot \V)})$.
+$$\{(x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma\}.$$
+For $w = (w.x, w.y) \in \W_\gamma$, let $w.\psi = \psi \times w$ and $w.\phi = \phi \times w$. For every such $w$, we perform in $\tO(1)$ time a counting query for the range 
+$$
+(-\infty, w.x] \times [w.x, \infty) \times 
+(-\infty, w.y] \times [w.y, \infty) \times
+(-\infty, w.\phi] \times [w.\phi, \infty) \times
+(-\infty, w.\psi] \times [w.\psi, \infty).
+$$
+The result is exactly the number of sets $\V \in (\S \odot \V) |_\gamma$ that contain $w$, i.e., $\score(w)$. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time for computing $\score(w)$ for all $w \in \W$ is $\O(m^2 + \absolute{(\S \odot \V)})$.
 
-Now, note that the following recursive formula holds for all $w \in \W_\gamma$:\jonas{TODO}
+Now, note that the following recursive formula holds for all $q \in [m]^2 \supseteq Q$:
 %
-$$\sum_{u \in D+w} \score{u} = \sum_{u \in D+w+\phi} \score{u} + \sum_{u \in D+w+\psi} \score{u} -\sum_{u \in D+w+\phi+\psi} \score{u}$$
+$$\sum_{u \in D-q} \score(u) = \score(-q) + \sum_{u \in D-q+\phi} \score(u) + \sum_{u \in D-q+\psi} \score(u) -\sum_{u \in D-q+\phi+\psi} \score(u).$$
 %
-Furthermore, if $w \in \W_\gamma$, then $w+\phi, w+\psi, w+\phi+\psi \in \Gamma$ as well. Consequently, we can compute $\sum_{u \in D+w} \score{u}$ for all $w \in \W_\gamma$ in $\O(\absolute{W_\gamma})$ time. 
-
-In total over all $\gamma$, the computation takes $\sum_{\gamma \in \Gamma} \tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma}) = \tO(\absolute{\W} + \absolute{\S \odot \V}) = \tO(m^2 + \absolute{Q} + \sum{S \in \S} \absolute{\V_{\getchar{S}}})$ time. We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q} = \O(m^2)$ time, concluding the proof. 
+Note that, if $-q \in \W$ but $-q + \psi \notin \W$, then $(\sum_{u \in D-q+\psi} \score(u)) = 0$. This is because $\W$ and $D -q + \psi$ cannot overlap if $-q + \psi \notin \W$, and all scores outside $\W$ are $0$. The same holds for $-q + \phi$ and $-q + \phi + \psi$. Hence we can stop the recursion as soon as we leave $\W$. By using dynamic programming, we can therefore compute $\sum_{u \in D-q} \score(u)$ for every $q \in\W \subseteq \Q$ in $\O(\absolute{W}) = \O(m^2)$ time. 
+We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q} = \O(m^2)$ time, concluding the proof. 
 \end{proof}
 	
 
@@ -1276,13 +1305,13 @@ In this section, we show how to compute the Hamming distances between $P$ and a 
 
 \DenseAlgo
 
-Partition $F$ into four roughly equal $d$-peripheral strings $F_i$, $i \in [4]$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
+We partition $F$ into four roughly equal-sized $d$-peripheral strings $F_i$, $i \in [4]$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
 %
-$$\Ham(P + q, F) = \sum_{i \in [4]} \Ham(P + q, F_i)$$
+$$\Ham(P + q, F) = \sum_{i \in [4]} \Ham(P + q, F_i).$$
 %
-Below we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$, the other cases are symmetric. 
+Below, we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$. The other cases are symmetric. 
 
-For a string $V$, define a value $h(V)$, which is an upper bound on $V$'s height, as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h : \forall u,v \in V, (\x{v}, \y{v} + h) \notin \d{\Ta}\}$. We start with the following technical claim:
+For a string $V$, define a value $h(V)$ that is an upper bound on $V$'s height as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h : \forall u,v \in V, (\x{v}, \y{v} + h) \notin \d{\Ta}\}$. We start with the following technical claim.
 
 \begin{figure}[h!]
     \centering
@@ -1304,10 +1333,10 @@ For a string $V$, define a value $h(V)$, which is an upper bound on $V$'s height
 \end{figure}
 
 \begin{claim}\label{border_lemma}
-Let $F_1$ be a $d$-peripheral string with $\d{F_1} \subseteq K_1$. For all $u \in \d{F_1}$ and $v \in \d{\Ta}$, either $\x{v} - \x{u} < d$ or $\y{v} - \y{u} < d$.  
+Let $F_1$ be a $d$-peripheral string with $\d{F_1} \subseteq K_1$. For all $u \in \d{F_1}$ and ${v \in \d{\Ta}}$, either $\x{v} - \x{u} < d$ or $\y{v} - \y{u} < d$.  
 \end{claim}
 \begin{proof}
-Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $\absolute{\x{u} - \x{w}} \le \absolute{u-w} \le d$ and $\absolute{\y{u} - \y{w}} \le \absolute{u-w} \le d$. Since $v \in \d{T_a}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
+Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $\absolute{\x{u} - \x{w}} \le \absolute{u-w} \le d$ and $\absolute{\y{u} - \y{w}} \le \absolute{u-w} \le d$. Since $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
 \[ \x{w} \ge \x{u} - d \ge n/2 - m/4 \ge n - m > \x{q}\]
 and
 \[ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. \]
@@ -1315,17 +1344,17 @@ Similarly, we can show $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^
 \end{proof}
 
 \begin{lemma}\label{lm:partitioning}
-A $d$-peripheral string $F_1$ with $\d{F_1} \subseteq K_1$ can be partitioned into $\ell = \O(m/d)$ strings $V_i$ with width at most $d$ and $\sum_{i \in [\ell]} h(V_i) = \O(m)$. (See \cref{figure:quarter_split}.)
+A $d$-peripheral string $F_1$ with $\d{F_1} \subseteq K_1$ can be partitioned into $\ell = \O(m/d)$ strings $V_i$ with width at most $d$ and $\sum_{i \in [\ell]} h(V_i) = \O(m)$. (See \cref{figure:periphery_decomposition}.)
 \end{lemma}
 \begin{proof}
 Let $\ell = \lceil n / d \rceil - 1$ and partition $F_1$ into strings $V_i$, $i \in [\ell]$, where $V_i$ is the restriction of $F_1$ to $\set{i \cdot d, \dots, i \cdot d + d - 1} \times [n] \cap \d{F_1}$. (See \cref{figure:periphery_decomposition}.) 
 For each $i$, the width of $V_i$ is at most $d$. 
 
-We now show that $\sum_{i \in [\ell]} h(V_i) = \O(m)$. For $\ell < 2$ the claim is trivial. Assume $\ell \ge 2$. For every $i \in [\ell]$ (since $h(V_i)$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h(V_i) - 1) \in \d{\Ta}$. For all $i \ge 2$, we have
-\[ h(V_i) \le \y{u_{i - 2}} - \y{u_{i}} + d.\]
-since if that were not the case for some $i$, the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h(V_i) - 1)$ would have contradicted \cref{border_lemma}. We conclude that the sum $h_i$ can be upper-bounded by a telescoping series:
+We will denote height bounds by using $h_i = h(V_i)$. We now show that $\sum_{i \in [\ell]} h_i = \O(m)$. For $\ell < 2$ the claim is trivial. Assume $\ell \ge 2$. For every $i \in [\ell]$ (since $h_i$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h_i - 1) \in \d{\Ta}$. For all $i \ge 2$, we have
+\[ h_i \le \y{u_{i - 2}} - \y{u_{i}} + d.\]
+since if that were not the case for some $i$, the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h_i - 1)$ would have contradicted \cref{border_lemma}. We conclude that the sum $h_i$ can be upper-bounded by a telescoping series:
 %
-$$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d) = \O(m)$$
+$$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d) = \O(m)\qedhere$$
 \end{proof}
 
 As an immediate corollary, we obtain
@@ -1334,18 +1363,22 @@ As an immediate corollary, we obtain
 $\absolute{\dom{F_1}} = \O(dm)$. 
 \end{corollary}
 
-Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F$ into two strings $F_1$ and $F_2$, where $F_1$ contains only infrequent characters and $F_2$ frequent ones. For every $q \in Q$ we then have 
+Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
 
 \[\Ham(P + q, S) = \Ham(P + q, F_1') + \Ham(P + q, F_1'').\]
 
-For all $u \in \d{F_1'}$ let $I_u$ a subtile string defined as the restriction of $F_1'$ to $\set{u}$. We have $\Ham(P + q, F_1') = \sum_{u \in \d{F_1'}} \Ham(P + q, I_u)$ for every $q \in Q$. Consequently, we can compute these values in $\tO(m^2 + \sum_{u \in \d{I}} \absolute{\V_{I(u)}})$ time by \cref{th:sparse_algo}. For all $u \in \d{F_1'}$, $I(u)$ is an infrequent character and consequently, $\absolute{\V_{I(u)}} < k^{1/2}$. Furthermore, \cref{cor:area_F}, we have $\absolute{\d{F_1'}} = \O(md)$, and thus the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
+For all $u \in \d{F_1'}$, let $I_u$ be a monochromatic subtile string defined as the restriction of $F_1'$ to $\set{u}$. 
+We have $\Ham(P + q, F_1') = \sum_{u \in \d{F_1'}} \Ham(P + q, I_u)$ for every $q \in Q$. 
+Consequently, we can compute these values in $\tO(m^2 + \sum_{u \in \d{F'}} \absolute{\V_{\getchar{I_u}}})$ time by \cref{th:sparse_algo}. 
+For all $u \in \d{F_1'}$, $\getchar{I_u}$ is an infrequent character, and hence $\absolute{\V_{\getchar{I_u}}} < k^{1/2}$. 
+Furthermore, by \cref{cor:area_F}, we have $\absolute{\d{F_1'}} = \O(md)$, and the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
 To compute the values $\Ham(P + q, F_1'')$, we apply the following lemma:
 
 \begin{restatable}{lemma}{SigmaBorder}\label{lm:sigma_border}
 Let $X$ be a $d$-peripheral string such that $\d{X} \subseteq K_1$. There is an algorithm that computes, for all $q \in Q$, the distance $\Ham(P + q, F)$ in total time $\tO(m^2 + (\sigma+1) \cdot md)$, where $\sigma$ is the total number of distinct characters in $P$ and $F$.
 \end{restatable}
 
-Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k + m^2) = \tO(m^2)$ time, we replace all characters in $P$ not present in $F_1''$ with a new character. This operation does not change the Hamming distances, and we now have that the total number of distinct characters in $P$ and $F$ is $\O(\sqrt{k})$. We then apply \cref{lm:sigma_border} to compute $\Ham(P + q, F_1'')$ for all $q \in Q$ in $\tO(m^2 + \sqrt k \cdot md)$ time, which completes the proof of \ref{th:dense_algo}. 
+Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k + m^2) = \tO(m^2)$ time, we replace all characters in $P$ not present in $F_1''$ with a new character. This operation does not change the Hamming distances, and we now have that the total number of distinct characters in $P$ and $F$ is $\O(\sqrt{k})$. We then apply \cref{lm:sigma_border} to compute $\Ham(P + q, F_1'')$ for all $q \in Q$ in $\tO(m^2 + \sqrt k \cdot md)$ time, which completes the proof of \cref{th:dense_algo}. 
 
 \begin{proof}[{Proof of \cref{lm:sigma_border}}]
 If $d > m/4$, we can apply \cref{cor:sigman2d} to compute the distances in $\tO(m^2 + (\sigma+1) \cdot m^2) = \tO(m^2 + (\sigma+1) \cdot dm)$ time. From now on, we assume $d \le m / 4$. 
