@@ -1248,14 +1248,14 @@ By \cref{subtile_definition}, if $w \in \W_\gamma$ is contained in a truncated s
 %
 $$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{\{u\} \cap \dom(V)}$$
 %
-Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. For any $w = (\x{w}, \y{w}) \in \W_\gamma$, it holds $w \in V$ if and only if
+Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. For any $w = (\x{w}, \y{w}) \in \W_\gamma$, it holds $w \in V$ if and only if
 \begin{equation}
 \label{eq:range}
 x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
 \end{equation}
 (where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a $6$-dimensional range tree~\cite{BENTLEY1979244}\jonas{this should probably be a 3d interval tree with counting queries?} for the set of points 
 %
-$$\{(x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
+$$\{(x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
 For every $w = (w.x, w.y) \in \W_\gamma$, we compute the query $(w.x, w.y, \phi \times w, \psi \times w)$, and count the $\V \in (\S \odot \V) |_\gamma$ containing the query in $\tO(1)$ time using the range tree. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time is $\O(m^2 + \absolute{(\S \odot \V)})$.
 
 Now, note that the following recursive formula holds for all $w \in \W_\gamma$:\jonas{TODO}
