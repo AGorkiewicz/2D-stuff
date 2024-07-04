@@ -806,7 +806,7 @@ The goal of this section is to show \cref{tile_decomposition} (which explains ho
  
 % tile DECOMPOSITION
 \subsection{Properties of lattices and subtiles} \label{sec:lattices_subtiles}
-In this section we explore the properties of periodic (sub-)tile strings (recall Definitions \ref{tile_definition}, \ref{subtile_definition}, \ref{tile_string_definition}).
+In this section, we explore the properties of periodic (sub-)tile strings (recall Definitions \ref{tile_definition}, \ref{subtile_definition}, \ref{tile_string_definition}).
 Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
 
 \begin{lemma} \label{lattice_base}
@@ -824,12 +824,12 @@ Specifically, we introduce some methods of partitioning them into monochromatic 
 		By definition, 
 		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
 		
-		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\psi},\y{\phi}]$. We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
+		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\phi},\y{\psi}]$. We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
 	\end{proof}
 
 \begin{definition}[Lattice graph]
 	For a set $U \subseteq \Z^2$ we define its \emph{lattice graph} $(U, \Edges(U))$, where
-	\[ \Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U}\].
+$$\Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U}.$$
 \end{definition}
 Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi, \psi, -\phi, -\psi$ if they are contained in $U$.
 
@@ -837,12 +837,12 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 	If $U$ is a truncated subtile, then $(U, \Edges(U))$ is connected.
 	\begin{proof}
 		Assume the contrary.
-		Consider $u, v = u + s \phi + t \psi \in U$ such that
+		Consider $u \in U$ and $v = u + s \phi + t \psi \in U$ such that
 		\begin{itemize}
 			\item $u$ and $v$ belong to different connected components of $(U, \Edges(U))$,
 			\item $\absolute{s} + \absolute{t}$ is minimized.
 		\end{itemize}
-		W.l.o.g $s \ge 0$, since in the other case $u$ and $v$ can be swapped.
+		W.l.o.g. $s \ge 0$, since in the other case $u$ and $v$ can be swapped.
 		We now show that there exists $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $\absolute{s'} + \absolute{t'} < \absolute{s} + \absolute{t}$, which contradicts the minimality of $\absolute{s} + \absolute{t}$. 
 	
 		Let $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ and $\gamma \in \Z^2$ be the signature of $U$, meaning that
@@ -914,10 +914,10 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 
 
 \begin{lemma}\label{cut_partitioning}
-Given a truncated subtile string $S$, there is an algorithm that runs in time $\tO(\absolute{\d{S}} + 1)$ and constructs the following two partitionings.
+Given a (truncated) subtile string $S$, there is an algorithm that runs in time $\tO(\absolute{\d{S}} + 1)$ and constructs the following two partitionings.
 	\begin{enumerate}[(a)]
 		\item A partitioning of $S$ into a set of $\O(\Ham(S + \phi, S) + 1)$ (truncated) subtile strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
-		\item A partitioning of $S$ into a set of $\O(\Ham(S + \psi, S) + 1)$ strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
+		\item A partitioning of $S$ into a set of $\O(\Ham(S + \psi, S) + 1)$ (truncated) subtile strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
 	\end{enumerate}
 	\begin{proof}
 		First, consider option (\ref{partition_a}). We construct the set
@@ -932,7 +932,7 @@ Given a truncated subtile string $S$, there is an algorithm that runs in time $\
 		\[ A = \set{\h{u} : u \in \d{S}, u + \psi \in \d{S}, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} \]
 		and then sort it increasingly, creating $a_0, \dots, a_\ell$, where $\ell \le \Ham(S + \psi, S) + 2$.
 		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to 
-		$\set{u : u \in \d{S}, \h{u} \in (a_i, a_{i + 1}]}$.
+		$\set{u : u \in \d{S}, \h{u} \in (a_i, a_{i + 1}]}$. Similarly to above, if $S$ is a (truncated) subtile string, then the created strings are (truncated) subtile strings as well.
 	\end{proof}
 \end{lemma}
 
