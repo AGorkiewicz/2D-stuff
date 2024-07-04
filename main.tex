@@ -994,7 +994,7 @@ For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
 
 \todo{we need a picture here}
 
-Intuitively, it suffices to take a sequence of $\ell+1$ equispaced lines parallel to $\psi$ and a sequence of $\ell+1$ equispaced lines parallel to $\phi$ (see \todo{reference the figure}). The first property then follows from the fact that the angle between $\psi$ and $\varphi$ is in $[\pi/3,2\pi/3]$ (hence, the parallelograms in the grid cannot be too ``stretched out''). The second property is implied by the fact that $\psi$ is in the first quarter and $\phi$ in the forth quarter. A formal proof, which uses nothing but standard arithmetic, can be found in \cref{app:parallelogram_grid}.  
+Intuitively, it suffices to take a sequence of $\ell+1$ equispaced lines parallel to $\psi$ and a sequence of $\ell+1$ equispaced lines parallel to $\phi$ (see \todo{reference the figure}). The first property then follows from the fact that the angle between $\psi$ and $\varphi$ is in $[30^\circ,150^\circ]$ (hence, the parallelograms in the grid cannot be too ``stretched out''). The second property is implied by the fact that $\psi$ is in $(0,+\infty)\times [0,+\infty)$ and $\phi$ in $[0,\infty) \times (-\infty,0)$. A formal proof, which uses nothing but standard arithmetic, can be found in \cref{app:parallelogram_grid}.  
 
 We apply \Cref{lm:parallelogram_grid} to construct a parallelogram grid $\{p_{i,j}\}$ of size $\ell$. If $\exists i, j \in [\ell] : \max \X(p_{i, j}) - \min \X(p_{i, j}) \ge m / 4$, then by \Cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}) we have $m / 4 \le \max \X(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$. In this case, we can return a trivial partitioning where the set of monochromatic subtile strings is empty and $F = \Ta$, since $\Ta$ is $\O(m)$-peripheral. We can use an analogous argument if $\exists i,j \in \ell : \max \Y(p_{i, j}) - \min \Y(p_{i, j}) \ge m / 4$. Below we assume $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. 
 
@@ -1032,15 +1032,15 @@ Let $z = \frac{n - 1}{2}$. Split the 2D plane with two lines $x = z$ and $y = z$
 \newcommand{\C}{\mathcal{C}}
 
 \begin{claim}\label{coverable}
-Let $P$ be a union of parallelograms which have a non-empty intersection with $K_1$. If $v = (\max \X(P), \max \Y(P)) \in \d{\Ta}$, then $U = P \cap \Z^2$ is coverable. (For $K_2$, an analogous claim is true with $v: = (\min \X(P), \max \Y(P))$, for $K_3$ with $v : = (\min \X(P), \min \Y(P))$, and for $K^4$ with $v : = (\max \X(P), \min \Y(P))$.)
+Let $P$ be a union of parallelograms~$p_{i,j}$ which have a non-empty intersection with $K_1$. If $v = (\max \X(P), \max \Y(P)) \in \d{\Ta}$, then $U = P \cap \Z^2$ is coverable. (For $K_2$, an analogous claim is true with $v: = (\min \X(P), \max \Y(P))$, for $K_3$ with $v : = (\min \X(P), \min \Y(P))$, and for $K_4$ with $v : = (\max \X(P), \min \Y(P))$.)
 \end{claim}
 \begin{proof}
-As $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. Let $z = \frac{n - 1}{2}$. As $P$ is a union of parallelograms which have a non-empty intersection with $K_1$, we have $\x{v} \ge z$ and $\y{v} \ge z$. Recall that we assume $n \le \frac{3}{2} m$ and $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. Therefore, for all $u \in U$ we have
-\begin{align}
+As $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. As $P$ is a union of parallelograms $p_{i,j}$ which have a non-empty intersection with $K_1$, we have $\x{v} \ge z$ and $\y{v} \ge z$. Recall that we assume $n \le \frac{3}{2} m$ and $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. Therefore, for all $u \in P$ we have
+\begin{align*}
 &\x{q} \le n-m \le n/2-m/4 \le \x{u} \le \x{v} \le \x{q} + m-1\\
 &\y{q} \le n-m \le n/2-m/4 \le \y{u} \le \y{v} \le \y{q} + m-1 
-\end{align}
-\noindent Consequently, $U \subseteq [m]^2+q$ and hence coverable.
+\end{align*}
+\noindent Consequently, $P \subseteq [m]^2+q$ and hence coverable.
 \end{proof}
 
 \begin{claim}\label{peripheral}
