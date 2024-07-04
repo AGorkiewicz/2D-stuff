@@ -1375,7 +1375,7 @@ Furthermore, by \cref{cor:area_F}, we have $\absolute{\d{F_1'}} = \O(md)$, and t
 To compute the values $\Ham(P + q, F_1'')$, we apply the following lemma:
 
 \begin{restatable}{lemma}{SigmaBorder}\label{lm:sigma_border}
-Let $X$ be a $d$-peripheral string such that $\d{X} \subseteq K_1$. There is an algorithm that computes, for all $q \in Q$, the distance $\Ham(P + q, F)$ in total time $\tO(m^2 + (\sigma+1) \cdot md)$, where $\sigma$ is the total number of distinct characters in $P$ and $F$.
+Let $F_1''$ be a $d$-peripheral string such that $\d{F_1''} \subseteq K_1$. There is an algorithm that computes, for all $q \in Q$, the distance $\Ham(P + q, F_1'')$ in total time $\tO(m^2 + (\sigma+1) \cdot md)$, where $\sigma$ is the total number of distinct characters in $P$ and $F_1''$.
 \end{restatable}
 
 Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k + m^2) = \tO(m^2)$ time, we replace all characters in $P$ not present in $F_1''$ with a new character. This operation does not change the Hamming distances, and we now have that the total number of distinct characters in $P$ and $F$ is $\O(\sqrt{k})$. We then apply \cref{lm:sigma_border} to compute $\Ham(P + q, F_1'')$ for all $q \in Q$ in $\tO(m^2 + \sqrt k \cdot md)$ time, which completes the proof of \cref{th:dense_algo}. 
@@ -1383,7 +1383,7 @@ Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k
 \begin{proof}[{Proof of \cref{lm:sigma_border}}]
 If $d > m/4$, we can apply \cref{cor:sigman2d} to compute the distances in $\tO(m^2 + (\sigma+1) \cdot m^2) = \tO(m^2 + (\sigma+1) \cdot dm)$ time. From now on, we assume $d \le m / 4$. 
 
-We first partition $F_1''$ into $\ell$ strings $V_i$, $\ell = \O(m/d)$ by \ref{lm:partitioning}. For all $q \in Q$, we have 
+We first partition $F_1''$ into $\ell$ strings $V_i$, $\ell = \O(m/d)$ by \cref{lm:partitioning}. For all $q \in Q$, we have 
 
 \[ \Ham(P + q, F_1'') = \sum_{i \in [\ell]} \Ham(P_0 + q, V_i).\]
 
@@ -1392,7 +1392,7 @@ Next, we partition the pattern. We start by partitioning $P$ into a string $P_0$
 \[ \Ham(P + q, V_i) = \Ham(P_0 + q, V_i) + \Ham(P_1 + q, V_i).\]
 
 \begin{claim}\label{border_hamming_reduction}
-For all $q \in Q$, there is $\d{P_0 + q} \cap \d{V_i} = \emptyset$.
+For all $q \in Q$, it holds $\d{P_0 + q} \cap \d{V_i} = \emptyset$.
 \end{claim}
 \begin{proof}
 Assume towards a contradiction that for some $q \in Q$ there exist $u \in \d{P_0 + q} \cap \d{V_i}$. Define $v = (\x{u} + d, \y{u} + d)$. Since $u \in [m - d]^2 + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$. Consequently, we have $u \in \d{V_i}$, $v \in \d{\Ta}$, and $\x{v} - \x{u} = \y{v} - \y{u}$, a contradiction with \Cref{border_lemma}.
@@ -1429,7 +1429,7 @@ By \Cref{pattern_height_reduction}, we have for all $q \in Q$:
 \[\Ham(P_2 + q, V_i) = \Ham(H_i + q, V_i). \]
 
 \paragraph*{Wrapping up.}
-We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ by \cref{cor:area_F}. Additionally, we naively compute ${q : \d{H_i+q} \subseteq \d{V_i}}$ for all $i \in [\ell]$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \O(dm)$ (again, by \cref{cor:area_F}). We finally compute $Q' = Q \cup \cup_i {q : \d{H_i+q} \subseteq \d{V_i}}$ by sorting the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $\absolute{Q'} = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\O(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
+We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ time by \cref{cor:area_F}. Additionally, we naively compute ${q : \d{H_i+q} \subseteq \d{V_i}}$ for all $i \in [\ell]$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \O(dm)$ (again, by \cref{cor:area_F}). We finally compute $Q' = Q \cup \cup_i {q : \d{H_i+q} \subseteq \d{V_i}}$ by sorting the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $\absolute{Q'} = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\O(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
 \end{proof}
 
 
