@@ -238,8 +238,7 @@ for an optimized version (but the approach is due to~\cite{Clifford2015}), which
 First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}.
 Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
-Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a small approximate
-the period in the pattern, i.e., an integer $p$ such that aligning the pattern with itself at a distance $p$ incurs few mismatches.
+Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a small approximate period in the pattern, i.e., an integer $p$ such that aligning the pattern with itself at a distance $p$ incurs few mismatches.
 Then, (for $n=2m$), we can restrict our attention to the middle part of the text with the same approximate period $p$.
 Then, both the pattern and the text compress very well under the simple RLE compression, if we rearrange their characters
 by considering the positions modulo $p$. In other words, they can be both decomposed into few subsequences
@@ -259,7 +258,7 @@ defined by some lattice of points restricted to a polygon. We call such a set of
 The next step is to similarly decompose the text. In 2D it is less clear what would be its middle part that
 admits the same approximate period, however we can build on this idea to partition the relevant part of the text
 into monochromatic pieces. Then, we consider each piece of the pattern and each piece of the text,
-and convolve them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$
+and convolve them to calculate their contribution to the number of mismatches. This can be done in $\tO(1)$ time
 per pair of pieces if one of them admits some additional condition that we call being simple.
 Thus, we actually need to partition the relevant part of the text into simple subtiles. A direct approach
 results in too many pieces, and so we proceed in a more indirect way by introducing the notion of
