@@ -793,9 +793,9 @@ We select any pair of different vectors $s', t' \in A$ that minimizes $\absolute
 By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{A}\absolute{C}\absolute{w}\absolute{w'} \leq 256\ell^2$. Finally, applying \cref{dilworth} and dividing both sides by $\absolute{U}$, we obtain the final statement $\absolute{w}\absolute{w'} \leq 256\ell^2/\absolute{U}$.
 
 We have shown that $w$ and $w'$ satisfy the claimed properties. 
-It remains to show how to compute $w'$. 
+It remains to show how to compute~$w'$. 
 If the longest antichain $A$ is given, then it is easy to sort the chain according to $<_2$ and select the desired $w'$ in $\tO(\absolute{A})$ time. To compute the antichain, we recall from the proof of \cref{A_ineq} that $u <_2 v$ (equivalently $v - u \in \Q_2^-$) implies that $(v.x - u.x)$ is negative, while $(v.y - u.y)$ is positive (this also readily follows from the fact that $\Q_2^-$ is a subset of $\Q_2$). This means that $v.y - v.x > u.y - u.x$. We sort $U$ in increasing order of $y - x$. Thus, if $u <_2 v$, then $u$ precedes $v$ in the sorted $U$. 
-Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2 v$. We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$. This takes $\tO(\absolute{U})$ time \cite{TODO} and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
+Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2 v$. We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$. This takes $\tO(\absolute{U})$ time (see~\cite{CROCHEMORE20101054} and references therein) and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
