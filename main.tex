@@ -355,7 +355,7 @@ S(x,y) & \text{ otherwise}
 \end{cases}
 $$
 
-Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-defined character values with wilcards, and writing the rectangle two-dimensional string row-by-row. 
+Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-defined character values with wildcards, and writing the rectangle two-dimensional string row-by-row. 
 
 \begin{theorem}\label{kangaroos}
 Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ and $\d{T} = [n] \times [n]$ for $m \le n \in \Z^+$. Given a set $Q \subseteq \Z^2$, there is an algorithm that computes $d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\O(n^2 + \sum_{q \in Q} d_q)$.
@@ -363,10 +363,10 @@ Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ an
 \begin{proof}
 For every $i \in [m]$, define a one-dimensional string $P_i = P(i,1) P(i,2) \ldots P(i,m)$. Analogously, for every $i \in [n], j \in [n-m+1]$, define a one-dimensional string $T_{i,j} = T(i,j) T(i,j+1) \ldots T(i,j+m-1)$. 
 
-We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
+We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $\$ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
 
 \begin{fact}[{\cite{Galil1986}}]\label{fact:kangaroo1D}
-Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
+Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1+j-i, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
 \end{fact}
 
 Let $\ID(T) = \ID(T_{1,1}) \ID(T_{1,2}) \ldots \ID(T_{1,n-m+1}) \ldots \ID(T_{n,1}) \ID(T_{n,2}) \ldots \ID(T_{n,n-m+1}))$ and $\ID(P) = \ID(P_1)\ID(P_2) \ldots \ID(P_m)$. 
@@ -384,9 +384,9 @@ It follows that we can first use the data structure of \cref{fact:kangaroo1D} fo
 $\Ham(T_{x, \y{q}+1}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
 \end{proof}
 
-The following fact is folklore, and follows by applying a separate FFT for every distinct character present in $P$ and $T$.
+The following fact is folklore, and follows by applying, for every distinct character present in $P$ and $T$, a separate instance of the fast Fourier transform~\cite{FischerP74} to copies of the pattern and the text where all but the given character are replaced with a new character.
 
-\begin{fact}\label{fact:sigman1d}
+\begin{fact}[folklore]\label{fact:sigman1d}
 Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), the text-to-pattern Hamming distances problem can be solved in $\O(\sigma \cdot n \log m)$ time, where $\sigma$ is the number of distinct characters present in $P$ and $T$.
 \end{fact}
 
@@ -394,9 +394,9 @@ Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both ca
 Let $\varepsilon > 0$ be a constant. Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in $\O((n/\varepsilon^2)  \log^3 m)$ time.
 \end{corollary}
 \begin{proof}
-Karloff's algorithm~\cite{Karloff1993} solves the text-to-pattern Hamming distances problem for $P,T$ in $\O((n/\varepsilon^2)  \log^3 m)$ time assuming that neither $P$ nor $T$ does not contain a wildcard. We show how to modify it slightly to allow for wildcards. 
+Karloff's algorithm~\cite{Karloff1993} solves the text-to-pattern Hamming distances problem for $P,T$ in $\O((n/\varepsilon^2)  \log^3 m)$ time assuming that neither $P$ nor $T$ contains a wildcard. We show how to modify it slightly to allow for wildcards. 
 
-The idea of Karloff's algorithm is as follows. For each $1 \le i \le r = (\log m/ \varepsilon)^2$, the algorithm a mapping $\mu_i : \Sigma \rightarrow \{0,1\}$. It then solves the text-to-pattern Hamming distances problem for $\mu_i(T) := \mu_i(T(1))\mu_i(T(2)) \ldots \mu_i(T(n))$ and $\mu_i(P) := \mu_i(P(1))\mu_i(P(2)) \ldots \mu_i(P(m))$. For $1 \le j \le n-m$, define $d_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$. The algorithm returns the value $d(j) = \sum_i d_i(j)$. Karloff showed that $\Ham(T, P+j-1) \le d(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$.
+The idea of Karloff's algorithm is as follows. For each $1 \le i \le r = (\log m/ \varepsilon)^2$, the algorithm considers a mapping $\mu_i : \Sigma \rightarrow \{0,1\}$. It then solves the text-to-pattern Hamming distances problem for $\mu_i(T) := \mu_i(T(1))\mu_i(T(2)) \ldots \mu_i(T(n))$ and $\mu_i(P) := \mu_i(P(1))\mu_i(P(2)) \ldots \mu_i(P(m))$. For $1 \le j \le n-m$, define $d_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$. The algorithm returns the value $d(j) = \sum_i d_i(j)$. Karloff showed that $\Ham(T, P+j-1) \le d(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$.
 
 We modify the mappings slightly. For $a \in \Sigma \cup \{\wild\}$, define
 $$
@@ -406,14 +406,14 @@ $$
 \wild & \text{ if } a = \wild.
 \end{cases}
 $$
-We then construct $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$ by applying the mapping to the characters of the strings similarly to above, and compute the values $\tilde{d}_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$ and $\tilde{d}(j) = \sum_i d_i(j)$ using \cref{fact:sigman1d} in $\O(r \cdot n \log m) = \O((n/\varepsilon^2) \log^3 m)$ time. It is not difficult to see that wildcards do not contribute to the distances neither between $T$ and $P$, nor between $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$. Therefore, $\Ham(T, P+j-1) \le \tilde{d}(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$, and the algorithm is correct. 
+We then construct $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$ by applying the mapping to the characters of the strings similarly to above, and compute the values $\tilde{d}_i(j) = \Ham(\tilde{\mu_i}(T), \tilde{\mu_i}(P)+j-1)$ and $\tilde{d}(j) = \sum_i d_i(j)$ using \cref{fact:sigman1d} in $\O(r \cdot n \log m) = \O((n/\varepsilon^2) \log^3 m)$ time. It is not difficult to see that wildcards do not contribute to the distances neither between $T$ and $P$, nor between $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$. Therefore, $\Ham(T, P+j-1) \le \tilde{d}(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$, and the algorithm is correct. 
 \end{proof}
 
 We now show a simple embedding from two-dimensional strings to one-dimensional, that is essential for generalising \cref{fact:sigman1d} and \cref{cor:approx1d} to two dimensions.
 
 \begin{claim}
 \label{claim:padding}
-Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to compute the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights~$h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to solve the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
 \end{claim}
 \begin{proof}
 We first construct a two-dimensional string $P'$ such that for all $\min \X(\d{P}) \le i \le \max \X(\d{P})+(w_T-w_P)$ and $\min \Y(\d{P}) \le j \le \max \Y(\d{P})$ there is
@@ -434,7 +434,7 @@ The claim follows.
 \end{proof}
 
 \begin{corollary}\label{cor:sigman2d}
-Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot N \log N)$, where $\sigma$ is the number of different characters present both in $P$ and $T$ and $N = (w_P + w_T)(h_P + h_T)$.
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights~$h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot N \log N)$, where $\sigma$ is the number of different characters present both in $P$ and $T$ and $N = (w_P + w_T)(h_P + h_T)$.
 \end{corollary}
 \begin{proof}
 We replace all characters of $T$ non-present in $P$ with a new character in $\O(w_T\times h_T)$ time. The Hamming distances do not change. The claim then follows immediately from \cref{fact:sigman1d} and \cref{claim:padding}. 
@@ -445,7 +445,7 @@ We replace all characters of $T$ non-present in $P$ with a new character in $\O(
 Let $\varepsilon > 0$ be a constant. Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in time $\O((N/\varepsilon^2)  \log^3 N)$, where $N = (w_P + w_T)(h_P + h_T)$.
 \end{corollary}
 \begin{proof}
-The claim then follows from \cref{cor:approx1d} and \cref{claim:padding}. 
+Follows from \cref{cor:approx1d} and \cref{claim:padding}. 
 \end{proof}
 
 %Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
@@ -454,13 +454,13 @@ The claim then follows from \cref{cor:approx1d} and \cref{claim:padding}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Technical overview}
-We can now give a formal statement of our result:
+In this section, we present the technical ideas behind our main result:
 
 \begin{restatable}{theorem}{MainResult}\label{th:main}
 Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{restatable}
 
-Below, we present the technical main ideas behind our result. Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+ Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
