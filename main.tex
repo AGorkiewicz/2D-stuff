@@ -522,7 +522,7 @@ We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/parquet}
 	\end{center}
-	\caption{All the points in the polygon form a tile and the red points form a subtile.}
+	\caption{All the points in the polygon form a tile and the thicker points form a subtile.}
 	\label{figure:tile}
 \end{figure}
 
@@ -890,13 +890,13 @@ Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi,
 \end{lemma}
 
 
-\begin{figure}[!t]
-	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
-	\end{center}
-	\caption{The partitioning of a subtile string into monochromatic subtile strings. Different colors represent different characters.}
-	\label{figure:tile_decomposition}
-\end{figure}
+%\begin{figure}[!t]
+%	\begin{center}
+%		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
+%	\end{center}
+%	\caption{The partitioning of a subtile string into monochromatic subtile strings. Different colors represent different characters.}
+%	\label{figure:tile_decomposition}
+%\end{figure}
 
 
 \begin{lemma}\label{monochromacy_condition}
@@ -951,10 +951,10 @@ We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\a
 	Finally, we apply  \Cref{cut_partitioning} (\ref{partition_b}) to partition each $S' \in \S'$ into a set of (truncated) subtile strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \phi, S'') = 0$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
 	Again we have
 	\[ \absolute{\S''} = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + \absolute{\S'}) = \O(k),\]
-	since $R$ has a $\O(k)$-period $\psi$. See \cref{figure:tile_decomposition} for an illustration. 
-	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
+	since $R$ has a $\O(k)$-period $\psi$.
+	%See \cref{figure:tile_decomposition} for an illustration. The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
 	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
-	To construct $\S''$, the algorithm uses $\tO(\absolute{\d{R}} + k)$ total time.
+	To construct~$\S''$, the algorithm uses $\tO(\absolute{\d{R}} + k)$ total time.
 \end{proof}
 
 
@@ -1359,7 +1359,7 @@ $$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i -
 As an immediate corollary, we obtain
 
 \begin{corollary}\label{cor:area_F}
-$\absolute{\dom{F_1}} = \O(dm)$. 
+$\absolute{\d{F_1}} = \O(dm)$. 
 \end{corollary}
 
 Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
@@ -1427,7 +1427,11 @@ By \Cref{pattern_height_reduction}, we have for all $q \in Q$:
 \[\Ham(P_2 + q, F_1'') = \sum_{i \in [\ell]} \Ham(P_2 + q, V_i) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i). \]
 
 \paragraph*{Wrapping up.}
-We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ time by \cref{cor:area_F}. Additionally, we naively compute ${q : \d{H_i+q} \subseteq \d{V_i}}$ for all $i \in [\ell]$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \O(dm)$ (again, by \cref{cor:area_F}). We finally compute $Q' = Q \cup \cup_i {q : \d{H_i+q} \subseteq \d{V_i}}$ by sorting the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $\absolute{Q'} = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\O(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
+We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ time by \cref{cor:area_F}. We then need to combine these results to obtain $\Ham(P_2 + q, F_1'')$ for all $q \in Q$. 
+
+To do so, we first naively compute, for all $i \in [\ell]$, a set ${q \in \Z^2 : \d{H_i+q} \subseteq \d{V_i}}$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \tO(dm)$ time (again, by \cref{cor:area_F}). Note that the union of these sets contains all vectors $q \in Q$ for which the value $\Ham(P_2 + q, F_1'')$ can be different from zero. 
+
+We then compute $Q' = Q \cap \bigl( \cup_i \{q \in \Z^2 : \d{H_i+q} \subseteq \d{V_i}\} \bigr)$ by sorting and merging the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $\absolute{Q'} = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q'$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \tO(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
 \end{proof}
 
 
