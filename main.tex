@@ -460,7 +460,7 @@ In this section, we present the technical ideas behind our main result:
 Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{restatable}
 
- Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+ Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
@@ -470,7 +470,7 @@ We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and 
 
 If $\absolute{Q} \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $\absolute{Q} > 6m + m^2/k$. 
 
-The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, its the area of their intersection.
+The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, it is the area of their intersection.
 
 % 2D PERIODICITY
 \subsection{Two-dimensional periodicity} \label{periodicity_section}
@@ -508,7 +508,7 @@ Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There i
 	\end{itemize}
 \end{restatable*}
 
-Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\O(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
+Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
 \subsection{Partitionings of the pattern and the text}
 \label{sec:partitioning}
@@ -585,7 +585,7 @@ Given $\ell \in [2m]$, one can partition $T_a$ in time $\tO(m^2 + \ell k)$ into 
 \end{restatable*}
 
 \subsection{Algorithm}
-In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a string consisting of a monochromatic subtile strings can be computed efficiently: 
+In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a string that can be partitioned into a set of a monochromatic subtile strings can be computed efficiently: 
 
 \begin{restatable}{theorem}{SparseAlgo}
 \label{th:sparse_algo}
@@ -728,19 +728,19 @@ $\Q_2^- = \{ (x,y) \in \mathbb Z^2\phantom{\ \setminus \{(0,0)\}} \mid y > -x / 
 Analogously, we obtain the extended $\Q_3$ as $\Q_3^+ = \{ z \in \mathbb Z^2 \mid -z \in \Q_1^+ \}$, and the restricted $\Q_4$ as $\Q_4^- = \{ z \in \mathbb Z^2 \mid -z \in \Q_2^- \}$. The angle between a vector in $\Q_1$ (not extended) and a vector in $\Q_2^-$ (restricted) is clearly at least $30$ degrees and at most $150$ degrees. We will find $w'$ in $\Q_2^-$, and thus the angle $\alpha$ between $w$ and $w'$ will satisfy $\sin(\alpha) \geq \frac12$ by design.
 
 We define two relations $<_1$ and $<_2$ over $U$. For $u, v \in U$, it holds $u <_1 v$ if and only if $(v - u) \in \Q_1^+$, and $u <_2 v$ if and only if $(v - u) \in \Q_2^-$. In a moment, we will show that both $<_1$ and $<_2$ are strict partial orders. 
-Note that two distinct points $u,v \in U$ are comparible with $<_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparible with $<_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$. 
+Note that two distinct points $u,v \in U$ are comparable with $<_1$ if and only if $(v - u) \in \Q_1^+ \cup \Q_3^+$, and they are comparable with $<_2$ if and only if $(v - u) \in \Q_2^- \cup \Q_4^-$. 
 By the definition of the sets, it is clear that $\Q_1^+ \cup \Q_3^+$ and $\Q_2^- \cup \Q_4^-$ form a bipartition of $\mathbb Z^2 \setminus \{(0,0)\}$.
 %(they resemble half-planes defined by the line $y = -x / \sqrt{3}$, with a simple case distinction for points on the line). 
 Thus, it is clear that every antichain with respect to $<_1$ is a chain with respect to $<_2$ and vice versa.
 
-Now we show that $<_1$ is a strict partial order. The proof for $<_2$ works analogously. First, note that $(0,0) \notin \Q_1^+$, and thus it cannot be that $u <_1 u$, i.e., the relation is \emph{irreflexive}. It is easy to see that the intersection of $\Q_1^+$ and $\Q_3^+$ is empty. This means that, if $u <_1 v$, then it cannot be that $v <_1 u$, i.e., the relation is \emph{asymmetric}. Finally, given $u <_1 v$ and $v <_1 v'$, it holds $(v.y - u.y) \geq -(v.x-u.x)/\sqrt{3}$ and $(v'.y - v.y) \geq -(v'.x-v.x)/\sqrt{3}$ by the definition of $\Q_1^+$. By summing the inequalities, we get $(v'.y - u.y) \geq -(v'.x-u.x)/\sqrt{3}$. The same reasoning applys to the second inequality of the definition. Therefore, it holds $(v' - u) \in \Q_1^+$ and hence $u <_1 v'$, i.e., the relation is \emph{transitive}.
+Now we show that $<_1$ is a strict partial order. The proof for $<_2$ works analogously. First, note that $(0,0) \notin \Q_1^+$, and thus it cannot be that $u <_1 u$, i.e., the relation is \emph{irreflexive}. It is easy to see that the intersection of $\Q_1^+$ and $\Q_3^+$ is empty. This means that, if $u <_1 v$, then it cannot be that $v <_1 u$, i.e., the relation is \emph{asymmetric}. Finally, given $u <_1 v$ and $v <_1 v'$, it holds $(v.y - u.y) \geq -(v.x-u.x)/\sqrt{3}$ and $(v'.y - v.y) \geq -(v'.x-v.x)/\sqrt{3}$ by the definition of $\Q_1^+$. By summing the inequalities, we get $(v'.y - u.y) \geq -(v'.x-u.x)/\sqrt{3}$. The same reasoning applies to the second inequality of the definition. Therefore, it holds $(v' - u) \in \Q_1^+$ and hence $u <_1 v'$, i.e., the relation is \emph{transitive}.
 
 We have shown that $<_1$ and $<_2$ are strict partial orders, with a one-to-one correspondence between antichains of $<_1$ and chains of $<_2$.
-Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $<_1$, or equivalently the longest chain of $<_2$. We show how to compute $A$ and $C$ later. First, we show upper bounds for $\absolute{C}$ and $\absolute{A}$ using Dilworth's theorem.
+Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $<_1$, or equivalently the longest chain of $<_2$. First, we show upper bounds for $\absolute{C}$ and $\absolute{A}$ using Dilworth's theorem:
 
-\begin{lemma}[Dilworth's theorem]\label{dilworth}
+\begin{fact}[Dilworth's theorem]\label{dilworth}
 	$\absolute{U} \le \absolute{C} \absolute{A}$.
-\end{lemma}
+\end{fact}
 
 \begin{claim}\label{C_ineq}
 	$\absolute{C} \cdot \absolute{w} \leq 16\ell$. 
@@ -750,7 +750,7 @@ Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $
 		Consider any $u = c_i$ and $v = c_{i + 1}$ with $i \in [f]$. We will show that $v.x + v.y \geq u.x + u.y + \frac14\absolute{w}$. 		
 		Let $w'' = (v - u)$, which is in $\Q_1^+$ due to $u <_1 v$. Assume $v.x + v.y < u.x + u.y + \frac14\absolute{w}$, or equivalently $(w''.x + w''.y) < \frac14\absolute{w}$. From now on, let $x = w''.x$ and $y = w''.y$. It then holds $$\absolute{w''} \geq \absolute{w} > 4(x + y).$$
 		
-		This is already a contradiction if both $x$ and $y$ are non-negative, since then it should hold $\sqrt{x^2 + y^2} \leq \absolute{x} + \absolute{y}$. If both $x$ and $y$ are negative, then they contradict $y \geq -x/\sqrt{3} \geq 0$ in the definition of $\Q_1^-$. Hence exactly one of them is negative. If $x \geq 0$ and $y < 0$, then $y \geq -x / \sqrt{3}$ in the definiton of $\Q_1^-$ implies $\absolute{x} \geq \absolute{y}\cdot \sqrt{3}$ and thus $\frac34\absolute{x} > \frac54\absolute{y}$. Similarly, if $x < 0$ and $y \geq 0$, then $y \geq -x \cdot \sqrt{3}$ implies $\frac34\absolute{y} > \frac54\absolute{x}$. Hence we have
+		This is already a contradiction if both $x$ and $y$ are non-negative, since then it should hold $\sqrt{x^2 + y^2} \leq \absolute{x} + \absolute{y}$. If both $x$ and $y$ are negative, then they contradict $y \geq -x/\sqrt{3} \geq 0$ in the definition of $\Q_1^-$. Hence exactly one of them is negative. If $x \geq 0$ and $y < 0$, then $y \geq -x / \sqrt{3}$ in the definition of $\Q_1^-$ implies $\absolute{x} \geq \absolute{y}\cdot \sqrt{3}$ and thus $\frac34\absolute{x} > \frac54\absolute{y}$. Similarly, if $x < 0$ and $y \geq 0$, then $y \geq -x \cdot \sqrt{3}$ implies $\frac34\absolute{y} > \frac54\absolute{x}$. Hence we have
 		%
 	\begin{alignat*}{1}	
 		\absolute{w''} > 4(x + y) = 
@@ -772,7 +772,7 @@ Let $C$ be the longest chain of $<_1$, and let $A$ be the longest antichain of $
 By the assumption $\absolute{U} \ge 16\ell$ and \Cref{dilworth}, it holds
 $16 \ell \le \absolute{U} \le \absolute{C} \absolute{A} < 16\ell\absolute{A}$,
 thus $\absolute{A} \ge 2$.
-We select any pair of different vectors $s', t' \in A$ that minimizes $\absolute{t' - s'}$. Since $s'$ and $t'$ are in a chain of $<_2$, it holds either $s' <_2 t'$ or $t' <_2 s'$. W.l.o.g., we assume $s' <_2 t'$ (otherwise swap $s'$ and $t'$), and we construct $w' = t' - s'$, which is in $\Q_2^-$ as required.
+We select any pair of different vectors $s', t' \in A$ that minimizes $\absolute{t' - s'}$. Since $s'$ and $t'$ are in a chain of $<_2$, it holds either $s' <_2 t'$ or $t' <_2 s'$. W.l.o.g., we assume $s' <_2 t'$ (otherwise swap $s'$ and~$t'$), and define $w' = t' - s'$, which is in $\Q_2^-$ as required.  We show how to compute $A$ and $w'$ later.
 
 \begin{claim}\label{A_ineq}
 	$\absolute{A}\cdot \absolute{w'} \leq 16\ell$. 
@@ -781,7 +781,7 @@ We select any pair of different vectors $s', t' \in A$ that minimizes $\absolute
 		Let $f = \absolute{C} - 1$ and
 		let $c_0, \dots, c_{f}$ denote the points in $A$, ordered so that $c_i <_2 c_{i + 1}$ for every $i \in [f]$ (recall that $A$ is a chain with respect to $<_2$).
 		Consider any $u = c_i$ and $v = c_{i + 1}$ with $i \in [f]$. We will show that $v.x + v.y \geq u.x + u.y + \frac14\absolute{w'}$. 		
-		Let $w'' = (v - u)$, which is in $\Q_2^-$ due to $u <_2 v$. From now on, let $x = w''.x$ and $y = w''.y$
+		Let $w'' = (v - u)$, which is in $\Q_2^-$ due to $u <_2 v$. From now on, let $x = w''.x$ and $y = w''.y$. 
 		Note that $-x/\sqrt{3} < y < -x \sqrt{3}$ in the definition of $\Q_2^-$ implies that $x$ is negative and $y$ is positive.
 		Therefore, $y > -x/\sqrt{3}$ implies $\sqrt{3}\absolute{y} < \absolute{x}$, and thus $\frac 5 4\absolute{y} < \frac 3 4\absolute{x}$.
 		Assume $v.x + v.y < u.x + u.y + \frac14\absolute{w'}$, or equivalently $(\absolute{x} - \absolute{y}) = (x + y) < \frac14\absolute{w'}$. Then $$\absolute{w''} \geq \absolute{w'} > 4(x + y) = 4(\absolute{x} - \absolute{y}) > 4(\tfrac14\absolute{x} + \tfrac14\absolute{y}) = 
@@ -793,7 +793,7 @@ We select any pair of different vectors $s', t' \in A$ that minimizes $\absolute
 By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{A}\absolute{C}\absolute{w}\absolute{w'} \leq 256\ell^2$. Finally, applying \cref{dilworth} and dividing both sides by $\absolute{U}$, we obtain the final statement $\absolute{w}\absolute{w'} \leq 256\ell^2/\absolute{U}$.
 
 We have shown that $w$ and $w'$ satisfy the claimed properties. 
-It remains to be shown how to compute $w'$. 
+It remains to show how to compute $w'$. 
 If the longest antichain $A$ is given, then it is easy to sort the chain according to $<_2$ and select the desired $w'$ in $\tO(\absolute{A})$ time. To compute the antichain, we recall from the proof of \cref{A_ineq} that $u <_2 v$ (equivalently $v - u \in \Q_2^-$) implies that $(v.x - u.x)$ is negative, while $(v.y - u.y)$ is positive (this also readily follows from the fact that $\Q_2^-$ is a subset of $\Q_2$). This means that $v.y - v.x > u.y - u.x$. We sort $U$ in increasing order of $y - x$. Thus, if $u <_2 v$, then $u$ precedes $v$ in the sorted $U$. 
 Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2 v$. We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$. This takes $\tO(\absolute{U})$ time \cite{TODO} and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
 \end{proof}
