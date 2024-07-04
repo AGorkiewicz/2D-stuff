@@ -230,7 +230,10 @@ inherently more complicated in two dimensions.
 \paragraph{Our result.} We design an algorithm that, given an $n\times n$ text and $m\times m$ pattern, finds
 all occurrences with at most $k$ mismatches of the former in latter in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 This significantly improves on the previously known upper bound of $\O(kn^{2})$ (from over 30 years ago),
-and provides a quasi-linear time algorithm for $k=\O(m^{4/5})$. 
+and provides a quasi-linear time algorithm for $k=\O(m^{4/5})$. To obtain our result, we follow the framework
+used to solve one-dimensional pattern matching with bounded Hamming distance. However, due to the intrinsically
+more complex nature of two-dimensional periodicities, this turns out to require a deeper delve into the geometric
+properties of such objects.
 
 \paragraph{Overview of the techniques.}
 The starting point for our algorithm is the approach designed for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
@@ -240,7 +243,7 @@ Then, we can eliminate positions for which the approximated distance is very lar
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
 Otherwise, some two remaining possible occurrences must have a large overlap, and thus induce a small approximate period in the pattern, i.e., an integer $p$ such that aligning the pattern with itself at a distance $p$ incurs few mismatches.
 Then, (for $n=2m$), we can restrict our attention to the middle part of the text with the same approximate period $p$.
-Then, both the pattern and the text compress very well under the simple RLE compression, if we rearrange their characters
+Both the pattern and the middle part of the text compress very well under the simple RLE compression, if we rearrange their characters
 by considering the positions modulo $p$. In other words, they can be both decomposed into few subsequences
 of the form $i, i+p, i+2p, \ldots, i+\alpha p$ consisting of the same character.
 By appropriately plugging in an efficient algorithm for approximate pattern
@@ -248,8 +251,9 @@ matching for RLE-compressed inputs, this allows us to obtain the desired time co
 
 In the two-dimensional case, there is no difficulty in adapting Karloff's algorithm or kangaroo jumps, which allows
 us to focus on the case where there are two possible occurrences with a large overlap. Here, the two-dimensional
-case significantly departs from the one-dimensional case in terms of technical complications. In 2D, a period is
-no longer an integer but a pair of integers, i.e., a vector. However, to obtain a compressed representation of
+case significantly departs from the one-dimensional case in terms of technical complications. In 2D,
+the natural definition of a period is not an integer but a pair of integers, i.e., a vector.
+However, to obtain a compressed representation of
 a 2D string with small approximate period we actually need two such periods (with some additional properties) and not
 just one. We show that two vectors with the required properties exist with some geometric considerations and
 applying Dilworth's theorem. Then, we show that, similarly to the 1D case, they allow us to decompose the pattern
@@ -267,14 +271,12 @@ and can be convolved differently. All remaining positions of the text are partit
 and then we convolve every simple subtile from the text with every subtile from the pattern.
 Finally, we sum up the number of mismatches for each relevant position in the text.
 
-
-
-We assume the standard word-RAM model of computation with words of size $\Omega(\log n)$.
-
-
 \begin{theorem}[Informal version of \cref{th:main}]
-Given a two-dimensional $m \times m$ string $P$ and a two-dimensional $n \times n$ string $T$, where $m,n \in \Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+Given a two-dimensional $m \times m$ string $P$ and a two-dimensional $n \times n$ string $T$, for $m \le n$.
+There is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{theorem}
+
+\noindent Throughout the paper, we assume the standard word-RAM model of computation with words of size $\Omega(\log n)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1251,7 +1253,7 @@ Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0,
 \label{eq:range}
 x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
 \end{equation}
-(where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a $6$-dimensional range tree~\cite{BENTLEY1979244}\jonas{this should probably be a 3d interval tree with counting queries?} for the set of points 
+(where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a 3-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
 %
 $$\{(x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
 For every $w = (w.x, w.y) \in \W_\gamma$, we compute the query $(w.x, w.y, \phi \times w, \psi \times w)$, and count the $\V \in (\S \odot \V) |_\gamma$ containing the query in $\tO(1)$ time using the range tree. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time is $\O(m^2 + \absolute{(\S \odot \V)})$.
