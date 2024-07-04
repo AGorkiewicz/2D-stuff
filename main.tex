@@ -604,7 +604,7 @@ By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for ev
 
 \begin{restatable*}{theorem}{DenseAlgo}
 \label{th:dense_algo}
-Given a $d$-peripheral string $F$, there is an algorithm which computes $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
+Given a $d$-peripheral string $F$, there is an algorithm that computes $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
 \end{restatable*}
 
 By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
@@ -1305,13 +1305,13 @@ In this section, we show how to compute the Hamming distances between $P$ and a 
 
 \DenseAlgo
 
-Partition $F$ into four roughly equal $d$-peripheral strings $F_i$, $i \in [4]$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
+We partition $F$ into four roughly equal-sized $d$-peripheral strings $F_i$, $i \in [4]$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
 %
-$$\Ham(P + q, F) = \sum_{i \in [4]} \Ham(P + q, F_i)$$
+$$\Ham(P + q, F) = \sum_{i \in [4]} \Ham(P + q, F_i).$$
 %
-Below we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$, the other cases are symmetric. 
+Below, we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$. The other cases are symmetric. 
 
-For a string $V$, define a value $h(V)$, which is an upper bound on $V$'s height, as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h : \forall u,v \in V, (\x{v}, \y{v} + h) \notin \d{\Ta}\}$. We start with the following technical claim:
+For a string $V$, define a value $h(V)$ that is an upper bound on $V$'s height as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h : \forall u,v \in V, (\x{v}, \y{v} + h) \notin \d{\Ta}\}$. We start with the following technical claim.
 
 \begin{figure}[h!]
     \centering
@@ -1333,7 +1333,7 @@ For a string $V$, define a value $h(V)$, which is an upper bound on $V$'s height
 \end{figure}
 
 \begin{claim}\label{border_lemma}
-Let $F_1$ be a $d$-peripheral string with $\d{F_1} \subseteq K_1$. For all $u \in \d{F_1}$ and $v \in \d{\Ta}$, either $\x{v} - \x{u} < d$ or $\y{v} - \y{u} < d$.  
+Let $F_1$ be a $d$-peripheral string with $\d{F_1} \subseteq K_1$. For all $u \in \d{F_1}$ and ${v \in \d{\Ta}}$, either $\x{v} - \x{u} < d$ or $\y{v} - \y{u} < d$.  
 \end{claim}
 \begin{proof}
 Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $\absolute{\x{u} - \x{w}} \le \absolute{u-w} \le d$ and $\absolute{\y{u} - \y{w}} \le \absolute{u-w} \le d$. Since $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
@@ -1374,7 +1374,7 @@ To compute the values $\Ham(P + q, F_1'')$, we apply the following lemma:
 Let $X$ be a $d$-peripheral string such that $\d{X} \subseteq K_1$. There is an algorithm that computes, for all $q \in Q$, the distance $\Ham(P + q, F)$ in total time $\tO(m^2 + (\sigma+1) \cdot md)$, where $\sigma$ is the total number of distinct characters in $P$ and $F$.
 \end{restatable}
 
-Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k + m^2) = \tO(m^2)$ time, we replace all characters in $P$ not present in $F_1''$ with a new character. This operation does not change the Hamming distances, and we now have that the total number of distinct characters in $P$ and $F$ is $\O(\sqrt{k})$. We then apply \cref{lm:sigma_border} to compute $\Ham(P + q, F_1'')$ for all $q \in Q$ in $\tO(m^2 + \sqrt k \cdot md)$ time, which completes the proof of \ref{th:dense_algo}. 
+Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k + m^2) = \tO(m^2)$ time, we replace all characters in $P$ not present in $F_1''$ with a new character. This operation does not change the Hamming distances, and we now have that the total number of distinct characters in $P$ and $F$ is $\O(\sqrt{k})$. We then apply \cref{lm:sigma_border} to compute $\Ham(P + q, F_1'')$ for all $q \in Q$ in $\tO(m^2 + \sqrt k \cdot md)$ time, which completes the proof of \cref{th:dense_algo}. 
 
 \begin{proof}[{Proof of \cref{lm:sigma_border}}]
 If $d > m/4$, we can apply \cref{cor:sigman2d} to compute the distances in $\tO(m^2 + (\sigma+1) \cdot m^2) = \tO(m^2 + (\sigma+1) \cdot dm)$ time. From now on, we assume $d \le m / 4$. 
