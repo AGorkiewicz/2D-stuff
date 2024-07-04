@@ -1363,11 +1363,15 @@ As an immediate corollary, we obtain
 $\absolute{\dom{F_1}} = \O(dm)$. 
 \end{corollary}
 
-Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F$ into two strings $F_1$ and $F_2$, where $F_1$ contains only infrequent characters and $F_2$ frequent ones. For every $q \in Q$ we then have 
+Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
 
 \[\Ham(P + q, S) = \Ham(P + q, F_1') + \Ham(P + q, F_1'').\]
 
-For all $u \in \d{F_1'}$ let $I_u$ a subtile string defined as the restriction of $F_1'$ to $\set{u}$. We have $\Ham(P + q, F_1') = \sum_{u \in \d{F_1'}} \Ham(P + q, I_u)$ for every $q \in Q$. Consequently, we can compute these values in $\tO(m^2 + \sum_{u \in \d{I}} \absolute{\V_{I(u)}})$ time by \cref{th:sparse_algo}. For all $u \in \d{F_1'}$, $I(u)$ is an infrequent character and consequently, $\absolute{\V_{I(u)}} < k^{1/2}$. Furthermore, \cref{cor:area_F}, we have $\absolute{\d{F_1'}} = \O(md)$, and thus the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
+For all $u \in \d{F_1'}$, let $I_u$ be a monochromatic subtile string defined as the restriction of $F_1'$ to $\set{u}$. 
+We have $\Ham(P + q, F_1') = \sum_{u \in \d{F_1'}} \Ham(P + q, I_u)$ for every $q \in Q$. 
+Consequently, we can compute these values in $\tO(m^2 + \sum_{u \in \d{F'}} \absolute{\V_{\getchar{I_u}}})$ time by \cref{th:sparse_algo}. 
+For all $u \in \d{F_1'}$, $\getchar{I_u}$ is an infrequent character, and hence $\absolute{\V_{\getchar{I_u}}} < k^{1/2}$. 
+Furthermore, by \cref{cor:area_F}, we have $\absolute{\d{F_1'}} = \O(md)$, and the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
 To compute the values $\Ham(P + q, F_1'')$, we apply the following lemma:
 
 \begin{restatable}{lemma}{SigmaBorder}\label{lm:sigma_border}
