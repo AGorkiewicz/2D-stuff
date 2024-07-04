@@ -543,13 +543,13 @@ We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x
 The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are called its \emph{signature}. 
 \end{definition}
 
-Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possible, infinite) and a parallelogram with sides collinear to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possible, infinite) and a parallelogram with sides collinear to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
 
 \begin{definition}[Subtile]\label{subtile_definition}
 We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$. Abusing notation, we write $V \equiv v$ for $v \in \Z^2$ if $v \equiv \gamma$ and for two (truncated) subtiles $U,V$ we write $U \equiv V$ if there exists $v \in \Z^2$ such that $U \equiv v$ and $V \equiv v$.
 \end{definition}
 
-See \Cref{figure:tile} for an illustration.
+See \Cref{figure:tile} for an illustration. Note that every truncated subtile is a subtile.
 
 \begin{definition}[Tile string]\label{tile_string_definition}
 We call a string $S$ a \emph{(truncated) (sub)tile string} if $\d{S}$ is a (truncated) (sub)tile.
@@ -938,7 +938,7 @@ Given a (truncated) subtile string $S$, there is an algorithm that runs in time 
 
 
 \subsection{Partitioning of a periodic string}
-The next theorem is used both to partition the pattern $P$ and the active text $\Ta$.
+The next theorem is used to partition both the pattern $P$ and the active text $\Ta$.
 
 \tileDecomposition
 \begin{proof}
@@ -946,16 +946,15 @@ We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\a
 
 	We now apply \Cref{cut_partitioning} (\ref{partition_a}) to partition each $S \in \S$  into a set of (truncated) subtile strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
 	Note that
-	\[ \absolute{S'} = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + \absolute{\S}) = \O(k),\]
+	\[ \absolute{\S'} = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + \absolute{\S}) = \O(k),\]
 	since $\phi$ is a $\O(k)$-period of $R$.
 	Finally, we apply  \Cref{cut_partitioning} (\ref{partition_b}) to partition each $S' \in \S'$ into a set of (truncated) subtile strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \phi, S'') = 0$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
 	Again we have
-	\[ \absolute{S''} = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + \absolute{\S'}) = \O(k),\]
-	since $R$ has an $\O(k)$-period $\psi$.
-	since $\psi$ is a $\O(k)$-period of $R$.
+	\[ \absolute{\S''} = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + \absolute{\S'}) = \O(k),\]
+	since $R$ has a $\O(k)$-period $\psi$. See \cref{figure:tile_decomposition} for an illustration. 
 	The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
 	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
-	Apart from the $\O((\min\{k,m\})^2)$-time preprocessing of $\phi$ and $\psi$ during which the algorithm constructs $\Gamma$, the algorithm spends $\tO(\absolute{\d{R}} + k)$ time.
+	To construct $\S''$, the algorithm uses $\tO(\absolute{\d{R}} + k)$ total time.
 \end{proof}
 
 
