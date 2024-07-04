@@ -1336,7 +1336,7 @@ For a string $V$, define a value $h(V)$ that is an upper bound on $V$'s height a
 Let $F_1$ be a $d$-peripheral string with $\d{F_1} \subseteq K_1$. For all $u \in \d{F_1}$ and ${v \in \d{\Ta}}$, either $\x{v} - \x{u} < d$ or $\y{v} - \y{u} < d$.  
 \end{claim}
 \begin{proof}
-Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $\absolute{\x{u} - \x{w}} \le \absolute{u-w} \le d$ and $\absolute{\y{u} - \y{w}} \le \absolute{u-w} \le d$. Since $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
+Assume the contrary. Since $u \in \d{F_1}$, there exists $w \in \Z^2 \setminus \d{\Ta}$ such that $\absolute{\x{u} - \x{w}} \le \absolute{u-w} \le d$ and $\absolute{\y{u} - \y{w}} \le \absolute{u-w} \le d$. Since $v \in \d{T_a}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. We have
 \[ \x{w} \ge \x{u} - d \ge n/2 - m/4 \ge n - m > \x{q}\]
 and
 \[ \x{w} \le \x{u} + d \le \x{v} \le \x{q} + m - 1. \]
@@ -1344,17 +1344,17 @@ Similarly, we can show $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^
 \end{proof}
 
 \begin{lemma}\label{lm:partitioning}
-A $d$-peripheral string $F_1$ with $\d{F_1} \subseteq K_1$ can be partitioned into $\ell = \O(m/d)$ strings $V_i$ with width at most $d$ and $\sum_{i \in [\ell]} h(V_i) = \O(m)$. (See \cref{figure:quarter_split}.)
+A $d$-peripheral string $F_1$ with $\d{F_1} \subseteq K_1$ can be partitioned into $\ell = \O(m/d)$ strings $V_i$ with width at most $d$ and $\sum_{i \in [\ell]} h(V_i) = \O(m)$. (See \cref{figure:periphery_decomposition}.)
 \end{lemma}
 \begin{proof}
 Let $\ell = \lceil n / d \rceil - 1$ and partition $F_1$ into strings $V_i$, $i \in [\ell]$, where $V_i$ is the restriction of $F_1$ to $\set{i \cdot d, \dots, i \cdot d + d - 1} \times [n] \cap \d{F_1}$. (See \cref{figure:periphery_decomposition}.) 
 For each $i$, the width of $V_i$ is at most $d$. 
 
-We now show that $\sum_{i \in [\ell]} h(V_i) = \O(m)$. For $\ell < 2$ the claim is trivial. Assume $\ell \ge 2$. For every $i \in [\ell]$ (since $h(V_i)$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h(V_i) - 1) \in \d{\Ta}$. For all $i \ge 2$, we have
-\[ h(V_i) \le \y{u_{i - 2}} - \y{u_{i}} + d.\]
-since if that were not the case for some $i$, the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h(V_i) - 1)$ would have contradicted \cref{border_lemma}. We conclude that the sum $h_i$ can be upper-bounded by a telescoping series:
+We will denote height bounds by using $h_i = h(V_i)$. We now show that $\sum_{i \in [\ell]} h_i = \O(m)$. For $\ell < 2$ the claim is trivial. Assume $\ell \ge 2$. For every $i \in [\ell]$ (since $h_i$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h_i - 1) \in \d{\Ta}$. For all $i \ge 2$, we have
+\[ h_i \le \y{u_{i - 2}} - \y{u_{i}} + d.\]
+since if that were not the case for some $i$, the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h_i - 1)$ would have contradicted \cref{border_lemma}. We conclude that the sum $h_i$ can be upper-bounded by a telescoping series:
 %
-$$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d) = \O(m)$$
+$$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d) = \O(m)\qedhere$$
 \end{proof}
 
 As an immediate corollary, we obtain
