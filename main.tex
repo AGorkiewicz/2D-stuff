@@ -140,18 +140,17 @@ Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time, which is $\tO(n^
 \newpage
 
 \section{Introduction}
-Finite sequences of characters, or strings, are basic objects used to store and manipulate data, readily available in any popular
-programming language. The fundamental algorithmic problem on such objects is pattern matching: finding one string in another.
-Traditionally, the former is called the pattern and the latter is the text.
-An asymptotically optimal linear time algorithm for this problem is known since the 70s~\cite{Knuth1977}, and multiple dozens
+Strings are basic objects that can used to store and manipulate sequential data, readily available in any popular
+programming language. The fundamental algorithmic problem on such objects is pattern matching: identifying occurrences of one string in another.
+Traditionally, the former is called the pattern and the latter the text.
+An asymptotically optimal linear-time algorithm for this problem is known since the 70s~\cite{Knuth1977}, and multiple dozens
 efficient algorithms have been described in the literature since then~\cite{DBLP:books/daglib/0025563}. However, 
-from the point of view of possible applications, in particular those in computational biology, where we work with chromosomes
-that can be described by finite strings over the alphabet $\{A,C,G,T\}$, is to search for approximate occurrences, that is,
-allow some slack when defining when two such strings are equal.
+from the point of view of possible applications, in particular those in computational biology, where we work with biological sequences
+that can be described by finite strings over the alphabet $\{A,C,G,T\}$, a more appropriate task is to search for approximate occurrences, that is, to 
+allow for some slack when defining when two such strings are equal.
 
-From a theoretical point of view, a particular clean notion of an approximate occurrence is that of bounded Hamming distance.
-Then, given an integer parameter $k$ together with the text of length $n$ and the pattern of length $m$, we want to find all
-positions in the text where the pattern matches with at most $k$ mismatches. This is known as pattern matching with $k$
+From a theoretical point of view, a particular clean notion of an approximate occurrence is that of bounded Hamming distance: Given an integer parameter $k$ together with a text of length $n$ and a pattern of length $m$, the task is to find all
+positions in the text where the pattern occurs with at most $k$ mismatches. This is known as pattern matching with $k$
 mismatches. The natural assumption is that $k$ is not too large,
 and the running time should be close to linear when $k$ is small. Indeed, from the point of view of potential applications we do
 not want positions where there are many mismatches, as they would not be very meaningful.
@@ -164,20 +163,20 @@ A single jump can be implemented in constant time with a data structure for the 
 as a suffix tree augmented with a lowest common ancestors structure (or some of the earlier simpler structures with slightly worse
 parameters). This results in an $\O(nk)$ time algorithm, which is efficient for small values of $k$.
 Another early discovery, efficient when there are very few distinct characters present in the input,
-is to run FFT for each distinct character, resulting in $\O(n|\Sigma|\log n)$ running time~\cite{FischerP74}.
+is to run the fast Fourier transform for each distinct character, resulting in $\O(n|\Sigma|\log n)$ running time~\cite{FischerP74}.
 While, in principle, this is possibly quite bad for a general input, in the late 80s Abrahamson showed
 how to apply the so-called heavy-light trick to guarantee that the time complexity is always
 $\O(n \sqrt{m \log m})$ time~\cite{Abrahamson1987}. This clearly established that the $\O(nk)$ time complexity
 can't be the right answer for the whole range values of $k$.
 
 It was only in 2004 that both bounds were unified to obtain an $\O(n\sqrt{k \log k})$ time algorithm~\cite{Amir2004},
-by combining FFT with a purely combinatorial reasoning that allows for eliminating all but a few relevant positions
-in the text. It might have seen at the time that such a complexity is the best possible as a function of $n$, $m$, and $k$,
+by combining the fast Fourier transform with a purely combinatorial reasoning that allows for eliminating all but a few relevant positions
+in the text. It might have been seen at the time that such a complexity is the best possible as a function of $n$, $m$, and $k$,
 but surprisingly in 2016 Clifford et al.~\cite{Clifford2016a} designed another algorithm that works
-in $\tO(n + k^2n/m)$ time. In particular, this is almost-linear when $k=\O(\sqrt{m})$. Later, their
+in $\tO(n + k^2n/m)$ time. In particular, this is almost linear when $k=\O(\sqrt{m})$. Later, their
 approach was refined to work in $\tO(n + kn/\sqrt{m})$ time~\cite{Gawrychowski2018},
 which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We write $\tO$ to hide factors polylogarithmic in $n$.}. 
-It is known that a significantly faster algorithm implies fast boolean matrix multiplication~\cite{Gawrychowski2018},
+It is known that a significantly faster algorithm implies fast Boolean matrix multiplication~\cite{Gawrychowski2018},
 and the time complexity can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020} (at the expense
 of allowing Monte Carlo randomization). In a very recent exciting improvement, it was shown how to slightly improve
 these time complexities by leveraging a connection to the 3-SUM problem~\cite{Chan0WX23}.
@@ -190,8 +189,8 @@ either have a simple and exploitable structure, or the pattern is close to being
 To avoid multiplying the parameters, we will assume that they are squares, but one could as well consider rectangles.
 Naturally, such an extension is motivated by the possible application in image processing and the related areas,
 and not surprisingly the corresponding problem of 2D exact pattern matching has been already considered in the 70s.
-In this problem we want to find all occurrences of an $m\times m$ pattern in an $n\times n$ text.
-For constant-size alphabets an asymptotically optimal $\O(n^{2}+m^{2})$ time algorithm has been found relatively
+In this problem, the task is to locate all occurrences of an $m\times m$ pattern in an $n\times n$ text.
+For constant-size alphabets, an asymptotically optimal $\O(n^{2}+m^{2})$-time algorithm has been found relatively
 quickly, but (as opposed to 1D exact pattern matching) it was quite unclear for quite some time how to obtain
 such a complexity without any assumptions on the size of the alphabet. Only in the mid 90s, a systematic
 study of the so-called periodicities in 2D strings paved up the way for obtaining such an algorithm~\cite{Amir1994,Galil1996}
@@ -199,11 +198,11 @@ study of the so-called periodicities in 2D strings paved up the way for obtainin
 and the time complexity for random inputs, i.e., average time complexity, has also been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
 
 \paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is periodicity,
-defined as follows. We say that $p$ is a period of $s[1 \dd n]$ when $s[i]=s[i+p]$, for all $i$ such that the expression is defined.
-The set of all periods of a given string has a very simple structure~\cite{Fine1965}, namely, when $p$ and $q$ are both periods
+defined as follows. We say that $p$ is a period of a string $S[1 \dd n]$ when $S[i]=S[i+p]$, for all $i$ such that the expression is defined.
+The set of all periods of a given string is very structured~\cite{Fine1965}, namely, when $p$ and $q$ are both periods
 of the same string $S[1 \dd n]$, and further $p+q\leq n$, then so is $\gcd(p,q)$.
-For 2D strings, the notion of periodicity becomes more involved In particular, instead of periodic
-and non-periodic strings it is now necessary to consider four types: non-periodic, lattice periodic, line periodic, and
+For 2D strings, the notion of periodicity becomes more involved. In particular, instead of periodic
+and non-periodic strings it is now necessary to consider four types of strings: non-periodic, lattice periodic, line periodic, and
 radiant periodic~\cite{Amir1998}. Such considerations formed the foundations of the asymptotically optimal alphabet-independent
 2D exact pattern matching algorithms~\cite{Amir1994,Galil1996}.
 Later, some purely combinatorial properties of two-dimensional periodicities have been discovered~\cite{Mignosi2003,Gamard2017},
