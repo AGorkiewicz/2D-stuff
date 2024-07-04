@@ -355,7 +355,7 @@ S(x,y) & \text{ otherwise}
 \end{cases}
 $$
 
-Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-defined character values with wilcards, and writing the rectangle two-dimensional string row-by-row. 
+Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-defined character values with wildcards, and writing the rectangle two-dimensional string row-by-row. 
 
 \begin{theorem}\label{kangaroos}
 Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ and $\d{T} = [n] \times [n]$ for $m \le n \in \Z^+$. Given a set $Q \subseteq \Z^2$, there is an algorithm that computes $d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\O(n^2 + \sum_{q \in Q} d_q)$.
@@ -363,10 +363,10 @@ Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ an
 \begin{proof}
 For every $i \in [m]$, define a one-dimensional string $P_i = P(i,1) P(i,2) \ldots P(i,m)$. Analogously, for every $i \in [n], j \in [n-m+1]$, define a one-dimensional string $T_{i,j} = T(i,j) T(i,j+1) \ldots T(i,j+m-1)$. 
 
-We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
+We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $\$ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
 
 \begin{fact}[{\cite{Galil1986}}]\label{fact:kangaroo1D}
-Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
+Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1+j-i, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
 \end{fact}
 
 Let $\ID(T) = \ID(T_{1,1}) \ID(T_{1,2}) \ldots \ID(T_{1,n-m+1}) \ldots \ID(T_{n,1}) \ID(T_{n,2}) \ldots \ID(T_{n,n-m+1}))$ and $\ID(P) = \ID(P_1)\ID(P_2) \ldots \ID(P_m)$. 
@@ -384,9 +384,9 @@ It follows that we can first use the data structure of \cref{fact:kangaroo1D} fo
 $\Ham(T_{x, \y{q}+1}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
 \end{proof}
 
-The following fact is folklore, and follows by applying a separate FFT for every distinct character present in $P$ and $T$.
+The following fact is folklore, and follows by applying, for every distinct character present in $P$ and $T$, a separate instance of the fast Fourier transform~\cite{FischerP74} to copies of the pattern and the text where all but the given character are replaced with a new character.
 
-\begin{fact}\label{fact:sigman1d}
+\begin{fact}[folklore]\label{fact:sigman1d}
 Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), the text-to-pattern Hamming distances problem can be solved in $\O(\sigma \cdot n \log m)$ time, where $\sigma$ is the number of distinct characters present in $P$ and $T$.
 \end{fact}
 
@@ -394,9 +394,9 @@ Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both ca
 Let $\varepsilon > 0$ be a constant. Given one-dimensional strings $P$ of size $m$ and $T$ of size $n \ge m$ (both can contain wildcards), there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in $\O((n/\varepsilon^2)  \log^3 m)$ time.
 \end{corollary}
 \begin{proof}
-Karloff's algorithm~\cite{Karloff1993} solves the text-to-pattern Hamming distances problem for $P,T$ in $\O((n/\varepsilon^2)  \log^3 m)$ time assuming that neither $P$ nor $T$ does not contain a wildcard. We show how to modify it slightly to allow for wildcards. 
+Karloff's algorithm~\cite{Karloff1993} solves the text-to-pattern Hamming distances problem for $P,T$ in $\O((n/\varepsilon^2)  \log^3 m)$ time assuming that neither $P$ nor $T$ contains a wildcard. We show how to modify it slightly to allow for wildcards. 
 
-The idea of Karloff's algorithm is as follows. For each $1 \le i \le r = (\log m/ \varepsilon)^2$, the algorithm a mapping $\mu_i : \Sigma \rightarrow \{0,1\}$. It then solves the text-to-pattern Hamming distances problem for $\mu_i(T) := \mu_i(T(1))\mu_i(T(2)) \ldots \mu_i(T(n))$ and $\mu_i(P) := \mu_i(P(1))\mu_i(P(2)) \ldots \mu_i(P(m))$. For $1 \le j \le n-m$, define $d_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$. The algorithm returns the value $d(j) = \sum_i d_i(j)$. Karloff showed that $\Ham(T, P+j-1) \le d(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$.
+The idea of Karloff's algorithm is as follows. For each $1 \le i \le r = (\log m/ \varepsilon)^2$, the algorithm considers a mapping $\mu_i : \Sigma \rightarrow \{0,1\}$. It then solves the text-to-pattern Hamming distances problem for $\mu_i(T) := \mu_i(T(1))\mu_i(T(2)) \ldots \mu_i(T(n))$ and $\mu_i(P) := \mu_i(P(1))\mu_i(P(2)) \ldots \mu_i(P(m))$. For $1 \le j \le n-m$, define $d_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$. The algorithm returns the value $d(j) = \sum_i d_i(j)$. Karloff showed that $\Ham(T, P+j-1) \le d(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$.
 
 We modify the mappings slightly. For $a \in \Sigma \cup \{\wild\}$, define
 $$
@@ -406,14 +406,14 @@ $$
 \wild & \text{ if } a = \wild.
 \end{cases}
 $$
-We then construct $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$ by applying the mapping to the characters of the strings similarly to above, and compute the values $\tilde{d}_i(j) = \Ham(\mu_i(T), \mu_i(P)+j-1)$ and $\tilde{d}(j) = \sum_i d_i(j)$ using \cref{fact:sigman1d} in $\O(r \cdot n \log m) = \O((n/\varepsilon^2) \log^3 m)$ time. It is not difficult to see that wildcards do not contribute to the distances neither between $T$ and $P$, nor between $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$. Therefore, $\Ham(T, P+j-1) \le \tilde{d}(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$, and the algorithm is correct. 
+We then construct $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$ by applying the mapping to the characters of the strings similarly to above, and compute the values $\tilde{d}_i(j) = \Ham(\tilde{\mu_i}(T), \tilde{\mu_i}(P)+j-1)$ and $\tilde{d}(j) = \sum_i d_i(j)$ using \cref{fact:sigman1d} in $\O(r \cdot n \log m) = \O((n/\varepsilon^2) \log^3 m)$ time. It is not difficult to see that wildcards do not contribute to the distances neither between $T$ and $P$, nor between $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$. Therefore, $\Ham(T, P+j-1) \le \tilde{d}(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$, and the algorithm is correct. 
 \end{proof}
 
 We now show a simple embedding from two-dimensional strings to one-dimensional, that is essential for generalising \cref{fact:sigman1d} and \cref{cor:approx1d} to two dimensions.
 
 \begin{claim}
 \label{claim:padding}
-Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to compute the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights~$h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to solve the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
 \end{claim}
 \begin{proof}
 We first construct a two-dimensional string $P'$ such that for all $\min \X(\d{P}) \le i \le \max \X(\d{P})+(w_T-w_P)$ and $\min \Y(\d{P}) \le j \le \max \Y(\d{P})$ there is
@@ -434,7 +434,7 @@ The claim follows.
 \end{proof}
 
 \begin{corollary}\label{cor:sigman2d}
-Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot N \log N)$, where $\sigma$ is the number of different characters present both in $P$ and $T$ and $N = (w_P + w_T)(h_P + h_T)$.
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights~$h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot N \log N)$, where $\sigma$ is the number of different characters present both in $P$ and $T$ and $N = (w_P + w_T)(h_P + h_T)$.
 \end{corollary}
 \begin{proof}
 We replace all characters of $T$ non-present in $P$ with a new character in $\O(w_T\times h_T)$ time. The Hamming distances do not change. The claim then follows immediately from \cref{fact:sigman1d} and \cref{claim:padding}. 
@@ -445,7 +445,7 @@ We replace all characters of $T$ non-present in $P$ with a new character in $\O(
 Let $\varepsilon > 0$ be a constant. Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights $h_P, h_T$, there is a $(1+\varepsilon)$-approximation algorithm that solves the text-to-pattern Hamming distances problem in time $\O((N/\varepsilon^2)  \log^3 N)$, where $N = (w_P + w_T)(h_P + h_T)$.
 \end{corollary}
 \begin{proof}
-The claim then follows from \cref{cor:approx1d} and \cref{claim:padding}. 
+Follows from \cref{cor:approx1d} and \cref{claim:padding}. 
 \end{proof}
 
 %Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
@@ -454,13 +454,13 @@ The claim then follows from \cref{cor:approx1d} and \cref{claim:padding}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Technical overview}
-We can now give a formal statement of our result:
+In this section, we present the technical ideas behind our main result:
 
 \begin{restatable}{theorem}{MainResult}\label{th:main}
 Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{restatable}
 
-Below, we present the technical main ideas behind our result. Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+ Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$ and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
@@ -1093,7 +1093,7 @@ In this section, we prove two main components of our algorithm, \cref{th:sparse_
 
 \subsection{Proof of \cref{th:sparse_algo}}
 \SparseAlgo*
-Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \ref{sec:partitioning}).
+Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partitioning}).
  Observe that
 \begin{align}
 \label{eq:sparse}
@@ -1232,8 +1232,8 @@ For $u \in \Z^2$, let $\score(u)$ be the number of truncated subtiles in $\S \od
 \begin{equation}
 \begin{split}
 \tau_q^{i,j} =&\sum_{V \in \S \odot \V} \absolute{\{u \in \Z^2 : u \in \dom(D-q), u \in \dom(V)\}}\\
-=&\sum_{V \in \S \odot \V}\ \sum_{u \in \dom(D-q)}  \absolute{\{u\} \cap \dom(V)}\\
-=&\sum_{u \in \dom(D-q)}\ \sum_{V \in \S \odot \V} \absolute{\{u\} \cap \dom(V)} = \sum_{u \in \dom(D-q)} \score(u).
+=&\sum_{V \in \S \odot \V}\ \sum_{u \in \dom(D-q)}  \absolute{\{u : u \in \dom(V)\}}\\
+=&\sum_{u \in \dom(D-q)}\ \sum_{V \in \S \odot \V} \absolute{\{u : u \in \dom(V)\}} = \sum_{u \in \dom(D-q)} \score(u).
 \end{split}
 \end{equation}
 We now explain how to compute $\tau_q^{i,j}$. 
@@ -1241,30 +1241,59 @@ We start by computing an upper bound $\ell = \O(m)$ such that $\score(u) = 0$ fo
 %
 %We start by computing in $\O(\S \odot \V) = \tO(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
 %an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. 
-We therefore can construct the set $\W = \{w \in \Z^2 : \absolute{w} \le \ell\}$ in $\O(m^2)$ time. Since for $w \notin \W$ we have $\score(w) = 0$, we only need to compute the scores for $w \in \W$. 
+Therefore, the set $\W' = \{(x,y) \in \Z^2 : \absolute{x} \le \ell, \absolute{y} \le \ell \}$ is of size $\O(m^2)$. 
+We pad this square-shaped set such that it is a parallelogram with sides colinear to $\phi$ and $\psi$, i.e., 
+$$\W = \{ w \in \mathbb Z^2 : \absolute{\phi \times w} \leq \absolute{\phi \times (\ell, \ell)}, \absolute{\psi \times w} \leq \absolute{\psi \times (-\ell, \ell)}$$
+
+\begin{tikzpicture}[x=.15em, y=.15em]
+
+%\useasboundingbox (-20,-20) rectangle (30,30);
+\clip (-20,-20) rectangle (30,30);
+
+\draw[densely dotted] (0,0) to (0,10) to (10,10) to (10, 0) to (0,0);
+
+\draw (0,10) ++(-100,-80) to ++(200,160);
+\draw (10,0) ++(-100,-80) to ++(200,160);
+
+\draw (0,0) ++(-100,30) to ++(200,-60);
+\draw (10,10) ++(-100,30) to ++(200,-60);
+
+\draw (-20,-20) rectangle (30,30);
+
+
+
+\end{tikzpicture}
+
+Since the angle between $\phi$ and $\psi$ is between $30^\circ$ and $150^\circ$, it can be readily verified that $\W$ is a subset of the larger square $\W'' = \{(x,y) \in \Z^2 : \absolute{x} \le 3\ell, \absolute{y} \le 3\ell \}$, which is still of size $\O(m^2)$. Hence, by checking each point in $\W''$ separately, we can construct $\W$ in $\O(m^2)$ time. By design, it holds $\score(w)=0$ for $w \notin \W$. 
 
 We then construct in $\O(m^2)$ time the set $\Gamma$ defined in \Cref{lattice_base} and for each $\gamma \in \Gamma$ define $\W_\gamma = \{w \in \W : w \equiv \gamma\}$. For $\gamma \in \Gamma$, let $(\S \odot \V) |_\gamma = \{V \in \S \odot \V : V \equiv \gamma\}$. 
 By \cref{subtile_definition}, if $w \in \W_\gamma$ is contained in a truncated subtile $V \in \S \odot \V$, then $V \equiv \gamma$, and consequently $V \in (\S \odot \V) |_\gamma$. Therefore, for $w \in \W_\gamma$, we can refine the definition of score:
 %
-$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{\{u\} \cap \dom(V)}$$
+$$\score(w) = \sum_{V \in (\S \odot \V) |_\gamma} \absolute{\{u : u \in \dom(V)\}}$$
 %
 Consider a truncated subtile $V \in (\S \odot \V) |_\gamma$ with signature $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma$. For any $w = (\x{w}, \y{w}) \in \W_\gamma$, it holds $w \in V$ if and only if
 \begin{equation}
 \label{eq:range}
 x_0 \le x \le x_1, y_0 \le y \le y_1, \phi_0 \le \h{w} \le \phi_1, \psi_0 \le \s{w} \le \psi_1
 \end{equation}
-(where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time a 3-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
+(where we do not need to check whether $w \equiv \gamma$ as $w \in \W_\gamma$). We build in $\tO(\absolute{(\S \odot \V) |_\gamma})$ time an $8$-dimensional range tree~\cite{BENTLEY1979244} for the set of points 
 %
-$$\{(x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1\}.$$
-For every $w = (w.x, w.y) \in \W_\gamma$, we compute the query $(w.x, w.y, \phi \times w, \psi \times w)$, and count the $\V \in (\S \odot \V) |_\gamma$ containing the query in $\tO(1)$ time using the range tree. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time is $\O(m^2 + \absolute{(\S \odot \V)})$.
+$$\{(x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1) : \exists V \in (\S \odot \V) |_\gamma\text{\ with signature\ } x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1, \gamma\}.$$
+For $w = (w.x, w.y) \in \W_\gamma$, let $w.\psi = \psi \times w$ and $w.\phi = \phi \times w$. For every such $w$, we perform in $\tO(1)$ time a counting query for the range 
+$$
+(-\infty, w.x] \times [w.x, \infty) \times 
+(-\infty, w.y] \times [w.y, \infty) \times
+(-\infty, w.\phi] \times [w.\phi, \infty) \times
+(-\infty, w.\psi] \times [w.\psi, \infty).
+$$
+The result is exactly the number of sets $\V \in (\S \odot \V) |_\gamma$ that contain $w$, i.e., $\score(w)$. The total time for all $\W_\gamma$ (including the construction of the range tree) is $\tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma})$. Summing over all $\gamma$, the time for computing $\score(w)$ for all $w \in \W$ is $\O(m^2 + \absolute{(\S \odot \V)})$.
 
-Now, note that the following recursive formula holds for all $w \in \W_\gamma$:\jonas{TODO}
+Now, note that the following recursive formula holds for all $q \in [m]^2 \supseteq Q$:
 %
-$$\sum_{u \in D+w} \score{u} = \sum_{u \in D+w+\phi} \score{u} + \sum_{u \in D+w+\psi} \score{u} -\sum_{u \in D+w+\phi+\psi} \score{u}$$
+$$\sum_{u \in D-q} \score(u) = \score(-q) + \sum_{u \in D-q+\phi} \score(u) + \sum_{u \in D-q+\psi} \score(u) -\sum_{u \in D-q+\phi+\psi} \score(u).$$
 %
-Furthermore, if $w \in \W_\gamma$, then $w+\phi, w+\psi, w+\phi+\psi \in \Gamma$ as well. Consequently, we can compute $\sum_{u \in D+w} \score{u}$ for all $w \in \W_\gamma$ in $\O(\absolute{W_\gamma})$ time. 
-
-In total over all $\gamma$, the computation takes $\sum_{\gamma \in \Gamma} \tO(\absolute{\W_\gamma} + \absolute{(\S \odot \V) |_\gamma}) = \tO(\absolute{\W} + \absolute{\S \odot \V}) = \tO(m^2 + \absolute{Q} + \sum{S \in \S} \absolute{\V_{\getchar{S}}})$ time. We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q} = \O(m^2)$ time, concluding the proof. 
+Note that, if $-q \in \W$ but $-q + \psi \notin \W$, then $(\sum_{u \in D-q+\psi} \score(u)) = 0$. This is because $\W$ and $D -q + \psi$ cannot overlap if $-q + \psi \notin \W$, and all scores outside $\W$ are $0$. The same holds for $-q + \phi$ and $-q + \phi + \psi$. Hence we can stop the recursion as soon as we leave $\W$. By using dynamic programming, we can therefore compute $\sum_{u \in D-q} \score(u)$ for every $q \in\W \subseteq \Q$ in $\O(\absolute{W}) = \O(m^2)$ time. 
+We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q} = \O(m^2)$ time, concluding the proof. 
 \end{proof}
 	
 
