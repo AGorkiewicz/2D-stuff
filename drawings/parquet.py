@@ -142,7 +142,7 @@ for x in range(ax, bx + 1):
 
 for (x, y) in vis:
     if inside(Point(x, y)):
-        res += f'\\draw[red, fill=red] ({x},{y}) circle (4pt);'
+        res += f'\\draw[black, fill=black] ({x},{y}) circle (4pt);'
     #else:
      #   res += f'\\draw[red, fill=red] ({x},{y}) circle (0.5pt);'
 
