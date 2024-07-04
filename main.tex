@@ -1325,7 +1325,7 @@ For a string $V$, define a value $h(V)$ that is an upper bound on $V$'s height a
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[width=0.9\textwidth]{drawings/periphery_decomposition}
-        \caption{Strings $V_i$ in the partitioning of $F_1$. The red and green points constitute $\d{F_1}$.}
+        \caption{Strings $V_i$ in the partitioning of $F_1$. The thicker points constitute $\d{F_1}$.}
         \label{figure:periphery_decomposition}
     \end{subfigure}
     \caption{Partitioning of $F$. }
@@ -1382,13 +1382,13 @@ Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k
 If $d > m/4$, we can apply \cref{cor:sigman2d} to compute the distances in $\tO(m^2 + (\sigma+1) \cdot m^2) = \tO(m^2 + (\sigma+1) \cdot dm)$ time. From now on, we assume $d \le m / 4$. 
 
 We start by partitioning $P$ into a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
-Further, we partition $P_1$ into a string $P_2$ of width $d$, which is a restriction of $P$ onto $[m-d,m - 1]\times [m]$ and a string $P_3$ of height $d$, which is a restriction of $P$ onto $[0, m-d-1] \times [m-d,m -1]$. (See \cref{figure:pattern_restriction}.) Then, it holds
+Further, we partition $P_1$ into a string $P_2$ of width $d$, which is a restriction of $P$ onto $[m-d,m - 1]\times [m]$ and a string $P_3$ of height~$d$, which is a restriction of $P$ onto $[0, m-d-1] \times [m-d,m -1]$. (See \cref{figure:pattern_restriction}.) Then, it holds
 %
 \[ \Ham(P + q, F_1'') = \Ham(P_0 + q, F_1'') + \Ham(P_2 + q, F_1'') + \Ham(P_3 + q, F_1'').\]
 %
 In a moment, we will show that $\Ham(P_0 + q, F_1'') = 0$ for every $q \in Q$. Hence we only have to consider $\Ham(P_2 + q, F_1'')$ and $\Ham(P_3 + q, F_1'')$. We focus on $P_2$, while the proof for $P_3$ is symmetric.
 
-We partition $F_1''$ into $\ell$ strings $V_i$, $i\in [\ell]$ of width at most $d$, where $\ell = \O(m/d)$ by \cref{lm:partitioning}. (In the proof for $P_3$, we have to use a symmetric version of \cref{lm:partitioning} such that the $V_i$ are of height at most $d$.) Now we show that $\d{P_0+q}$ and $\d{F_1''}$ are disjoint, and thus $\Ham(P_0 + q, F_1'') = 0$.
+We partition $F_1''$ into $\ell$ strings $V_i$, $i\in [\ell]$ of width at most $d$, where $\ell = \O(m/d)$ by \cref{lm:partitioning}. (In the proof for $P_3$, we have to use a symmetric version of \cref{lm:partitioning} such that the $V_i$'s are of height at most $d$.) Now we show that $\d{P_0+q}$ and $\d{F_1''}$ are disjoint, and thus $\Ham(P_0 + q, F_1'') = 0$.
 
 \begin{claim}\label{border_hamming_reduction}
 For all $q \in Q$ and $i \in [\ell]$, it holds $\d{P_0 + q} \cap \d{V_i} = \emptyset$.
