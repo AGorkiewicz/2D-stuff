@@ -1379,30 +1379,25 @@ Let $F_1''$ be a $d$-peripheral string such that $\d{F_1''} \subseteq K_1$. Ther
 \end{restatable}
 
 Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k + m^2) = \tO(m^2)$ time, we replace all characters in $P$ not present in $F_1''$ with a new character. This operation does not change the Hamming distances, and we now have that the total number of distinct characters in $P$ and $F$ is $\O(\sqrt{k})$. We then apply \cref{lm:sigma_border} to compute $\Ham(P + q, F_1'')$ for all $q \in Q$ in $\tO(m^2 + \sqrt k \cdot md)$ time, which completes the proof of \cref{th:dense_algo}. 
-
 \begin{proof}[{Proof of \cref{lm:sigma_border}}]
 If $d > m/4$, we can apply \cref{cor:sigman2d} to compute the distances in $\tO(m^2 + (\sigma+1) \cdot m^2) = \tO(m^2 + (\sigma+1) \cdot dm)$ time. From now on, we assume $d \le m / 4$. 
 
-We first partition $F_1''$ into $\ell$ strings $V_i$, $\ell = \O(m/d)$ by \cref{lm:partitioning}. For all $q \in Q$, we have 
+We start by partitioning $P$ into a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
+Further, we partition $P_1$ into a string $P_2$ of width $d$, which is a restriction of $P$ onto $[m-d,m - 1]\times [m]$ and a string $P_3$ of height $d$, which is a restriction of $P$ onto $[0, m-d-1] \times [m-d,m -1]$. (See \cref{figure:pattern_restriction}.) Then, it holds
+%
+\[ \Ham(P + q, F_1'') = \Ham(P_0 + q, F_1'') + \Ham(P_2 + q, F_1'') + \Ham(P_3 + q, F_1'').\]
+%
+In a moment, we will show that $\Ham(P_0 + q, F_1'') = 0$ for every $q \in Q$. Hence we only have to consider $\Ham(P_2 + q, F_1'')$ and $\Ham(P_3 + q, F_1'')$. We focus on $P_2$, while the proof for $P_3$ is symmetric.
 
-\[ \Ham(P + q, F_1'') = \sum_{i \in [\ell]} \Ham(P_0 + q, V_i).\]
-
-Next, we partition the pattern. We start by partitioning $P$ into a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$. (See \cref{figure:pattern_restriction}.) For all $q \in Q$ and $i \in [\ell]$, we have
-
-\[ \Ham(P + q, V_i) = \Ham(P_0 + q, V_i) + \Ham(P_1 + q, V_i).\]
+We partition $F_1''$ into $\ell$ strings $V_i$, $i\in [\ell]$ of width at most $d$, where $\ell = \O(m/d)$ by \cref{lm:partitioning}. (In the proof for $P_3$, we have to use a symmetric version of \cref{lm:partitioning} such that the $V_i$ are of height at most $d$.) Now we show that $\d{P_0+q}$ and $\d{F_1''}$ are disjoint, and thus $\Ham(P_0 + q, F_1'') = 0$.
 
 \begin{claim}\label{border_hamming_reduction}
-For all $q \in Q$, it holds $\d{P_0 + q} \cap \d{V_i} = \emptyset$.
+For all $q \in Q$ and $i \in [\ell]$, it holds $\d{P_0 + q} \cap \d{V_i} = \emptyset$.
 \end{claim}
 \begin{proof}
 Assume towards a contradiction that for some $q \in Q$ there exist $u \in \d{P_0 + q} \cap \d{V_i}$. Define $v = (\x{u} + d, \y{u} + d)$. Since $u \in [m - d]^2 + q$, we have $v \in [m]^2 + q \subseteq \d{\Ta}$. Consequently, we have $u \in \d{V_i}$, $v \in \d{\Ta}$, and $\x{v} - \x{u} = \y{v} - \y{u}$, a contradiction with \Cref{border_lemma}.
 \end{proof}
 
-Furthermore, partition $P_1$ into a string $P_2$ of width $d$, which is a restriction of $P$ onto $[m-d+1,m]\times [m]$ and a string $P_3$ of height $d$,  which is a restriction of $P$ onto $[m] \times [m-d+1,m]$. (See \cref{figure:pattern_restriction}.) By \cref{border_hamming_reduction}, we have, for all $q \in Q$ and $i \in [\ell]$, 
-
-\[\Ham(P + q, V_i) = \Ham(P_1 + q, V_i) = \Ham(P_2 + q, V_i) + \Ham(P_3 + q, V_i) \]
-
-We compute $\Ham(P_2 + q, V_i)$ and $\Ham(P_3 + q, V_i)$ for every $Q$ independently and sum the results. We only show how to calculate $\Ham(P_2 + q, V_i)$, since the other case is symmetric. 
 
 \begin{figure}[!t]
 	\begin{center}
@@ -1412,7 +1407,11 @@ We compute $\Ham(P_2 + q, V_i)$ and $\Ham(P_3 + q, V_i)$ for every $Q$ independe
 	\label{figure:pattern_restriction}
 \end{figure}
 
-For every $i \in [\ell]$, let $h_i = h(V_i)$ and construct a string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$ and a string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$. (See \Cref{figure:pattern_restriction}.) Since $L_i$ and $H_i$ partition $P_2$, we have
+Our goal is to compute, for every $q \in Q$, the value
+
+\[ \Ham(P_2 + q, F_1'') = \sum_{i \in [\ell]} \Ham(P_2 + q, V_i).\]
+
+For every $i \in [\ell]$, let $h_i = h(V_i)$. We construct a string $L_i$ as the restriction of $P_2$ to $[m] \times [m - h_i] \cap \d{P_2}$ and a string $H_i$ as the restriction of $P_2$ to $\d{P_2} \setminus \d{L_i}$. (See \Cref{figure:pattern_restriction}.) Since $L_i$ and $H_i$ partition $P_2$, we have
 
 \[\Ham(P_2 + q, V_i) = \Ham(L_i + q, V_i) + \Ham(H_i + q, V_i). \]
 
@@ -1426,7 +1425,7 @@ Since $u \in [m] \times [m - h_i] + q$, we have $v \in [m]^2 + q \subseteq \d{\T
 
 By \Cref{pattern_height_reduction}, we have for all $q \in Q$:
 
-\[\Ham(P_2 + q, V_i) = \Ham(H_i + q, V_i). \]
+\[\Ham(P_2 + q, F_1'') = \sum_{i \in [\ell]} \Ham(P_2 + q, V_i) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i). \]
 
 \paragraph*{Wrapping up.}
 We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ time by \cref{cor:area_F}. Additionally, we naively compute ${q : \d{H_i+q} \subseteq \d{V_i}}$ for all $i \in [\ell]$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \O(dm)$ (again, by \cref{cor:area_F}). We finally compute $Q' = Q \cup \cup_i {q : \d{H_i+q} \subseteq \d{V_i}}$ by sorting the two sets in $\tO(m^2 + dm) = \tO(m^2)$ time. Note that $\absolute{Q'} = \O(dm)$ and $Q'$ does not contain duplicates. For each $q \in Q$, we compute $\Ham(P + q, F_1) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i)$ in $\O(dm)$ total time, completing the proof of \cref{lm:sigma_border}.
