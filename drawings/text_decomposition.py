@@ -76,10 +76,10 @@ for i in range(10):
     for u in P:
         S[x + u.x][y + u.y] = 1
 
-space = 5
+space = 0
 res +=  f'\\clip ({L - space}, {L - space}) rectangle ({R + space},{R + space});'
 
-draw_rect((L, L), (R, R), 'rounded corners=10, black, very thick, fill=lightgray, opacity=0.7')
+draw_rect((L, L), (R, R), 'rounded corners=10, lightgray, fill=lightgray, opacity=0.7')
 
 PA = []
 PB = []
@@ -105,7 +105,7 @@ for i in range(n - 1):
 P = PA[::-1] + PB + PD + PC[::-1]
 P = [Point(i + 0.5, j + 0.5) for (i, j) in P]
 
-draw_poly(P, 'rounded corners=10, black, very thick, fill=white')
+draw_poly(P, 'rounded corners=10, lightgray, fill=white')
 
 l = 40
 
@@ -173,6 +173,7 @@ for i in range(l):
         if coverable(P[i][j]):
             C.append((i, j))
 
+
 for i in range(l):
     for j in range(l):
         ax = min_x(P[i][j])
@@ -199,8 +200,6 @@ res += '\\tikzset{internal border/.style = {postaction = {clip, postaction = {dr
 for (i, j) in I:
     draw_poly(P[i][j], 'very thick, internal border=teal, fill=teal, fill opacity=0.2')
 
-for (i, j) in I_periph:
-    draw_poly(P[i][j], 'very thick, internal border=red, fill=red, fill opacity=0.2')
 
 # K1 and K3
 for j in range(l):
@@ -209,11 +208,6 @@ for j in range(l):
             a, b = min(t), max(t) + 1
             draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'very thick, internal border=cyan, fill=cyan, fill opacity=0.2')
 
-for j in range(l):
-    for t in [[i for (i, k) in K1_periph if k == j], [i for (i, jj) in K3_periph if jj == j]]: 
-        if len(t) > 0:
-            a, b = min(t), max(t) + 1
-            draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'very thick, internal border=red, fill=red, fill opacity=0.2')
 
 #K2 and K4
 for i in range(l):
@@ -222,26 +216,34 @@ for i in range(l):
             a, b = min(t), max(t) + 1
             draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'very thick, internal border=cyan, fill=cyan, fill opacity=0.2')
 
-#K2 and K4
-for i in range(l):
-    for t in [[j for (k, j) in K2_periph if k == i], [j for (k, j) in K4_periph if k == i]]: 
-        if len(t) > 0:
-            a, b = min(t), max(t) + 1
-            draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'very thick, internal border=red, fill=red, fill opacity=0.2')
 
-#for h in h:
-#    #a = (x_hy(h, L), L) if x_hy(h, L) <= R else (R, y_hx(h, R))
-#    #b = (x_hy(h, R), R) if x_hy(h, R) >= L else (L, y_hx(h, L))
-#    a = xy(h, s_min)
-#    b = xy(h, s_max)
-#    draw_poly([a, b], 'opacity=0.2')
-#
-#for s in s:
-#    #a = (x_sy(s, L), L) if x_sy(s, L) >= L else (L, y_sx(s, L))
-#    #b = (x_sy(s, R), R) if x_sy(s, R) <= R else (R, y_sx(s, R))
-#    a = xy(h_min, s)
-#    b = xy(h_max, s)
-#    draw_poly([a, b], 'opacity=0.2')
+#for (i, j) in I_periph:
+#    draw_poly(P[i][j], 'very thick, internal border=red, fill=red, fill opacity=0.2')
+#for j in range(l):
+#    for t in [[i for (i, k) in K1_periph if k == j], [i for (i, jj) in K3_periph if jj == j]]: 
+#        if len(t) > 0:
+#            a, b = min(t), max(t) + 1
+#            draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'very thick, internal border=red, fill=red, fill opacity=0.2')
+#for i in range(l):
+#    for t in [[j for (k, j) in K2_periph if k == i], [j for (k, j) in K4_periph if k == i]]: 
+#        if len(t) > 0:
+#            a, b = min(t), max(t) + 1
+#            draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'very thick, internal border=red, fill=red, fill opacity=0.2')
+
+
+for h in h:
+    #a = (x_hy(h, L), L) if x_hy(h, L) <= R else (R, y_hx(h, R))
+    #b = (x_hy(h, R), R) if x_hy(h, R) >= L else (L, y_hx(h, L))
+    a = xy(h, s_min)
+    b = xy(h, s_max)
+    draw_poly([a, b], 'opacity=0.2')
+
+for s in s:
+    #a = (x_sy(s, L), L) if x_sy(s, L) >= L else (L, y_sx(s, L))
+    #b = (x_sy(s, R), R) if x_sy(s, R) <= R else (R, y_sx(s, R))
+    a = xy(h_min, s)
+    b = xy(h_max, s)
+    draw_poly([a, b], 'opacity=0.2')
 
 draw_dots(n)
 
