@@ -319,9 +319,7 @@ Alternatively, $u \cdot v = \absolute{u}\absolute{v} \cos \alpha$ and $u \times 
 \renewcommand{\d}[1]{\dom(#1)}
 \newcommand{\f}[1]{#1^\mathbf{f}}
 
-A \emph{one-dimensional string} $S$ is a function $[n] \rightarrow \Sigma \cup \{\wild\}$. We denote its $i$-th character, $i \in [n]$, by $S(i)$, and sometimes we will simply write $S = S(0) S(1) \ldots S(n-1)$. For two-dimensional strings, we use a slightly more general definition: Namely, we define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. We store strings as lists of point-character pairs. 
-
-For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d{S}) - \min \X(\d{S})$ and the \emph{height} as $\max \Y(\d{S}) - \min \Y(\d{S})$. Finally, we say that $S$ is \emph{partitioned} into strings $R_1, \dots, R_\ell$ if $\d{S} = \sqcup_{i = 1}^\ell \d{R_i}$ and $R_i(u) = S(u)$ for all $1 \le i \le \ell$ and $u \in \d{R_i}$.
+A \emph{one-dimensional string} $S$ is a function from a finite continuous subrange $[a,b]\subset \mathbb Z$ to $\Sigma \cup \{\wild\}$. If $a = 0$, we will sometimes simply write $S = S(a)S(a+1)\ldots S(b)$.\footnote{We chose this definition, which is slightly different from the standard one, as it conveniently generalises to two dimensions.} For two-dimensional strings, we use a slightly more general definition: Namely, we define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. We store strings as lists of point-character pairs. For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d{S}) - \min \X(\d{S})$ and the \emph{height} as $\max \Y(\d{S}) - \min \Y(\d{S})$. Finally, we say that $S$ is \emph{partitioned} into strings $R_0, R_1, \ldots, R_{\ell-1}$ if $\d{S} = \sqcup_{i \in [\ell]} \d{R_i}$ and $R_i(u) = S(u)$ for all $i \in [\ell]$ and $u \in \d{R_i}$.
 
 \newcommand{\hd}{\textsc{HD1D}\xspace}
 \newcommand{\HD}{\textsc{HD2D}\xspace}
@@ -331,7 +329,7 @@ For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size 
 	Two characters $a,b \in \Sigma$ \emph{match} if $a = b$. The wildcard matches itself and all characters in $\Sigma$. 
 	For strings $S, R$ (either both one-dimensional or both two-dimensional), define
 	\begin{align*}
-		&\MI(S, R) = \set{u : u \in \d{S} \cap \d{R}, S(u) \neq R(u)}|\\
+		&\MI(S, R) = \set{u : u \in \d{S} \cap \d{R}, S(u), R(u) \text{ do not match}}|\\
 		&\Ham(S,R) = \absolute{\MI(S,R)}
 	\end{align*}			 
 	We call the elements of $\MI(S,R)$ the \emph{mismatches} between $S$ and $R$.
@@ -370,27 +368,27 @@ Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-de
 Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ and $\d{T} = [n] \times [n]$, for $m \le n$. Given a set $Q \subseteq \Z^2$, there is an algorithm that computes $d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\O(n^2 + \sum_{q \in Q} d_q)$.
 \end{theorem}
 \begin{proof}
-For every $i \in [m]$, define a one-dimensional string $P_i = P(i,1) P(i,2) \ldots P(i,m)$. Analogously, for every $i \in [n], j \in [n-m+1]$, define a one-dimensional string $T_{i,j} = T(i,j) T(i,j+1) \ldots T(i,j+m-1)$. 
+For every $i \in [m]$, define a one-dimensional string $P_i = P(i,0) P(i,1) \ldots P(i,m-1)$. Analogously, for every $i \in [n], j \in [n-m+1]$, define a one-dimensional string $T_{i,j} = T(i,j) T(i,j+1) \ldots T(i,j+m-1)$. 
 
 We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $\$ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
 
 \begin{fact}[{\cite{Galil1986}}]\label{fact:kangaroo1D}
-Given a one-dimensional string $S$ of size $\ell$ such that none of its characters is a wildcard. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $1 \le i,j \le \ell-\ell'$, allows computing $\MI(S_1+j-i, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
+Given a one-dimensional string $S: [\ell] \rightarrow \Sigma$. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $0 \le i,j < \ell-\ell'$, allows computing $\MI(S_1+j-i, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
 \end{fact}
 
-Let $\ID(T) = \ID(T_{1,1}) \ID(T_{1,2}) \ldots \ID(T_{1,n-m+1}) \ldots \ID(T_{n,1}) \ID(T_{n,2}) \ldots \ID(T_{n,n-m+1}))$ and $\ID(P) = \ID(P_1)\ID(P_2) \ldots \ID(P_m)$. 
+Let $\ID(T) = \ID(T_{0,0}) \ID(T_{0,1}) \ldots \ID(T_{0,n-m}) \ldots \ID(T_{n-1,0}) \ID(T_{n-1,1}) \ldots \ID(T_{n-1,n-m}))$ and $\ID(P) = \ID(P_0)\ID(P_1) \ldots \ID(P_{m-1})$. 
 We build the data structure of \cref{fact:kangaroo1D} for two strings: $\ID(T) \$ \ID(P)$ and $\bar{T} \$ \bar{P}$ (note that neither of the strings contains a wildcard). In total, the construction takes $\O(\absolute{\ID(T) \$ \ID(P)} + \absolute{\bar{T} \$ \bar{P}}) = \O(n^2)$ time.
 
 Consider now $q \in Q$. To compute $\Ham(T, P+q)$, note that 
 
 \begin{align*}
-\Ham(T, P+q) &= \sum_{i=1}^m \Ham(T_{\x{q}+i, \y{q}+1}, P_i)\\
-&= \sum_{1 \le i \le m \; : \; \ID(T_{\x{q}+i, \y{q}+1}) \neq \ID(P_i)} \Ham(T_{\x{q}+i, \y{q}+1}, P_i) \\
-&= \sum_{x \in \MI(\ID(T_{\x{q}+1, \y{q}+1}) \ldots \ID(T_{\x{q}+1, \y{q}+m}), \ID(P))} \Ham(T_{x, \y{q}+1}, P_{x-\x{q}})\\
+\Ham(T, P+q) &= \sum_{i=0}^{m-1} \Ham(T_{\x{q}+i, \y{q}}, P_i)\\
+&= \sum_{0 \le i \le m-1 \; : \; \ID(T_{\x{q}+i, \y{q}}) \neq \ID(P_i)} \Ham(T_{\x{q}+i, \y{q}}, P_i) \\
+&= \sum_{x \in \MI(\ID(T_{\x{q}, \y{q}}) \ldots \ID(T_{\x{q}, \y{q}+m-1}), \ID(P))} \Ham(T_{x, \y{q}}, P_{x-\x{q}})\\
 \end{align*}
 
-It follows that we can first use the data structure of \cref{fact:kangaroo1D} for  $\ID(T) \$ \ID(P)$ to compute the set $\MI =  \MI(\ID(T_{\x{q}+1, \y{q}+1}) \ID(T_{\x{q}+1, \y{q}+2}) \ldots \ID(T_{\x{q}+1, \y{q}+m}), \ID(P))$ in $\O(\absolute{\MI}) = \O(d_q)$ time, and then for each $x \in \MI$, we use the data structure of  \cref{fact:kangaroo1D}  for $\bar{T} \$ \bar{P}$ to compute 
-$\Ham(T_{x, \y{q}+1}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
+It follows that we can first use the data structure of \cref{fact:kangaroo1D} for  $\ID(T) \$ \ID(P)$ to compute the set $\MI =  \MI(\ID(T_{\x{q}, \y{q}}) \ldots \ID(T_{\x{q}, \y{q}+m-1}), \ID(P))$ in $\O(\absolute{\MI}) = \O(d_q)$ time, and then for each $x \in \MI$, we use the data structure of  \cref{fact:kangaroo1D}  for $\bar{T} \$ \bar{P}$ to compute 
+$\Ham(T_{x, \y{q}}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
 \end{proof}
 
 The following fact is folklore, and follows by applying, for every distinct character present in $P$ and $T$, a separate instance of the fast Fourier transform~\cite{FischerP74} to copies of the pattern and the text where all but the given character are replaced with a new character.
@@ -437,7 +435,7 @@ $$
 %
 Intuitively, we inscribe $P$ into a rectangle, then add $w_T-w_P$ columns to it, and finally fill all non-defined character values with wildcards. Note that for all $q \in \Z^2$ there is $\Ham(T,P+q) = \Ham(T,P'+q)$. We linearise $T$ to obtain a one-dimensional string $\bar{T}$ of size $w_T \times h_T$ and $P'$ to obtain a one-dimensional string $\bar{P'}$ of length $w_T \times h_P$. We then have:
 %
-$$\Ham(T, P+q) = \Ham(T,P'+q) = \Ham(\bar{T}(\x{q} \cdot h_T + (\y{q}+1)) \ldots \bar{T}(\x{q} \cdot h_T + (\y{q}+w_T \times h_P)), \bar{P'})$$
+$$\Ham(T, P+q) = \Ham(T,P'+q) = \Ham(\bar{T}(\x{q} \cdot h_T + \y{q}) \ldots \bar{T}(\x{q} \cdot h_T + \y{q}+w_T \times h_P-1), \bar{P'})$$
 %
 The claim follows. 
 \end{proof}
