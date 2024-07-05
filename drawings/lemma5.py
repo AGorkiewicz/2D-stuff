@@ -106,9 +106,6 @@ s_delta = (s_max - s_min) / l
 H = [h_min + i * h_delta for i in range(l + 1)]
 S = [s_min + i * s_delta for i in range(l + 1)]
 
-
-
-
 ss_min = s_min - 0.70 * s_delta
 ss_max = s_max + 0.70 * s_delta
 for i, h in enumerate(H):
@@ -141,7 +138,6 @@ draw_line(sb4, sp[4], 'loosely dashed, opacity=0.8')
 draw_line(sb5, sp[5], 'loosely dashed, opacity=0.8')
 res += f'\draw[decorate, decoration={{brace, amplitude=20pt, raise=5, mirror}}] ({hb1.x}, {hb1.y}) -- ({hb2.x}, {hb2.y}) node [midway, xshift=85, yshift=-15, scale=3.5]{{$\\mathcal{{O}}(n / \\ell)$}};'
 res += f'\draw[decorate, decoration={{brace, amplitude=20pt, raise=5, mirror}}] ({sb5.x}, {sb5.y}) -- ({sb4.x}, {sb4.y}) node [midway, xshift=-50, yshift=-50, scale=3.5]{{$\\mathcal{{O}}(n / \\ell)$}};'
-
 
 for i, p in enumerate(hp[ : 6]):
     res += f'\\node (hp{i}) at ({p.x}, {p.y}) [circle, fill=white, scale=3.5] {{$h_{{{i}}}$}};'
@@ -194,7 +190,6 @@ S_coords = [
 
 for (i, j) in S_coords:
     res += f'\\node at ({w[l - i][l - j].x}, {w[l - i][l - j].y}) [scale=3.5] {{$p_{{\\ell - {i}, \\ell - {j}}}$}};'
-
 
 res += '\\end{tikzpicture}\n\\end{document}'
 print(res)
