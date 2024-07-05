@@ -1053,14 +1053,14 @@ As $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. As $P$ i
 \end{proof}
 
 \begin{claim}\label{peripheral}
-For all $i,j \in [\ell]$, the set $U = p_{i,j} \cap \Z^2$ is $\O(n / \ell)$-peripheral if one of the points $(\min \X(P), \min \Y(i,j))$, $(\min \X(P), \max \Y(i,j))$, $(\max \X(P), \min \Y(i,j))$, $(\max \X(P), \max \Y(i,j))$ is not in $\d{\Ta}$.
+For all $i,j \in [\ell]$, the set $U = p_{i,j} \cap \Z^2$ is $\O(n / \ell)$-peripheral if one of the points $(\min \X(U), \min \Y(U))$, $(\min \X(U), \max \Y(U))$, $(\max \X(U), \min \Y(U))$, $(\max \X(U), \max \Y(U))$ is not in $\d{\Ta}$.
 \end{claim}
 \begin{proof}
-W.l.o.g., $v = (\max \X(P), \max \Y(i,j)) \notin \d{\Ta}$. For all $u \in U$, we have $\absolute{u-v} = \O(n / \ell)$ by \cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}), and hence $U$ is $\O(n / \ell)$-peripheral.
+W.l.o.g., $v = (\max \X(U), \max \Y(U)) \notin \d{\Ta}$. For all $u \in U$, we have $\absolute{u-v} = \O(n / \ell)$ by \cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}), and hence $U$ is $\O(n / \ell)$-peripheral.
 \end{proof}
 
 \begin{lemma}\label{lm:parallelogram_merge}
-Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\mathcal{P}$ of $\O(\ell)$ parallelograms such that for every $p \in \mathcal{P}$ the set $p \cap Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
+Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\mathcal{P}$ of $\O(\ell)$ parallelograms with sides collinear to $\phi$ and $\psi$ such that for every $p \in \mathcal{P}$ the set $p \cap Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
 \end{lemma}
 \begin{proof}
 By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid}(\ref{it:monotonicity}), \cref{coverable}, and \cref{peripheral} for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
@@ -1081,11 +1081,18 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
 \end{enumerate}
 
+\begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.9\textwidth]{drawings/text_decomposition}
+        \caption{Parallelogram cover of $\Ta$. The polygon in the center corresponds to $\Ta$. Red parallelograms are $\O(n/\ell)$-peripheral, blue coverable, and green belong to $\I$.}
+        \label{figure:text_decomposition}
+\end{figure}
+
 Note that there are $\O(\ell)$ parallelograms $P_j^x$ and $R_i^x$ for $i,j \in [\ell]$ and $x \in \set{1, \dots, 4}$ and that they cover all parallelograms $p_{i,j}$ but those that are not fully contained in any of the quarters, in other words, the parallelograms $p_{i, j}$ intersecting  at least one of the lines $x = z$ and $y = z$. Denote the set of such parallelograms by $\I$. 
 
 By \cref{coverable} and \cref{peripheral}, for each parallelogram $p_{i,j} \in \I$ the set $p_{i,j} \cap Z^2$ is either coverable or $\O(n/\ell)$-peripheral. Furthermore, $\absolute{\I} = \O(\ell)$. Consider a set $U_x$ of intersections of grid lines different from $x=z$ with the line and a set $U_y$ of intersections of grid lines different from $y=z$. Every parallelogram in $\I$ contains $u \in U_x \cup U_y$, and every $u \in \Z^2$ can be contained in at most four parallelograms, implying the bound. 
 
-The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \cup \{R_j^x : j \in [\ell], x \in \{1, \dots, 4\}\}$ satisfies the claim of the lemma. It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
+The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \cup \{R_j^x : j \in [\ell], x \in \{1, \dots, 4\}\}$ satisfies the claim of the lemma. (See \cref{figure:text_decomposition}.) It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
 \end{proof}
 
 We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(\absolute{\d{R}} + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P_2}} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
@@ -1122,7 +1129,7 @@ and $\forall u \in (D + w_{i,j}) : u \equiv \gamma$. If $\max_{u \in S}(\absolut
 
 \begin{proof}
 By definition of a subtile, every point $u \in S$ satisfies $u - \gamma = s\phi + t\psi$, or equivalently $u = s\phi + t\psi + \gamma$ for some $s,t\in\mathbb Z$. 
-By definition of a tile, it also holds $\phi \times (s\phi + t\psi + \gamma) \in [\phi_0, \phi_1]$ and $\psi \times (s\phi + t\psi + \gamma) \in [\psi_0, \psi_1]$. Since the cross-product has the distributive property, and the cross-product of colinear vectors is $0$, we can equivalently write $t \cdot (\phi \times \psi) + (\phi \times \gamma) \in [\phi_0, \phi_1]$ and $s \cdot (\psi \times \phi) + (\psi \times \gamma) \in [\psi_0, \psi_1]$. 
+By definition of a tile, it also holds $\phi \times (s\phi + t\psi + \gamma) \in [\phi_0, \phi_1]$ and $\psi \times (s\phi + t\psi + \gamma) \in [\psi_0, \psi_1]$. Since the cross-product has the distributive property, and the cross-product of collinear vectors is $0$, we can equivalently write $t \cdot (\phi \times \psi) + (\phi \times \gamma) \in [\phi_0, \phi_1]$ and $s \cdot (\psi \times \phi) + (\psi \times \gamma) \in [\psi_0, \psi_1]$. 
 Due to $\psi \in (0, +\infty) \times [0, +\infty)$ and $\phi \in [0, +\infty) \times (-\infty, 0)$, it holds $(\phi \times \psi) \geq 0$ and $(\psi \times \phi) \leq 0$. Hence the former term increases with $t$, while the latter one decreases as $s$ increases.
 
 By solving the respective univariate linear equations in constant time, we determine the respectively minimal $t_0, t_1 \in \mathbb Z$ and maximal $s_0, s_1 \in \mathbb Z$ such that $\psi \times (s_0\phi + \gamma) \leq \psi_1$, $\psi \times (s_1\phi + \gamma) < \psi_0$, $\phi \times (t_0\psi + \gamma) \geq \phi_0$ and $\phi \times (t_1\psi + \gamma) > \phi_1$.
@@ -1250,7 +1257,7 @@ We start by computing an upper bound $\ell = \O(m)$ such that $\score(u) = 0$ fo
 %We start by computing in $\O(\S \odot \V) = \tO(\sum_{S \in \S} \absolute{\V_{\getchar{S}}})$ time the maximum distance $\ell$ from the origin to a vertex of the polygon bounding $V \in \S \odot \V$. Note that $\ell$ is 
 %an upper bound on the maximum length of $u \in V$, $V \in \S \odot \V$. On the other hand, by \cref{primitive} and as $\V$ is a partitioning of $P$, we have $\ell = \O(m)$. 
 Therefore, the set $\W' = \{(x,y) \in \Z^2 : \absolute{x} \le \ell, \absolute{y} \le \ell \}$ is of size $\O(m^2)$. 
-We pad this square-shaped set such that it is a parallelogram with sides colinear to $\phi$ and $\psi$, i.e., 
+We pad this square-shaped set such that it is a parallelogram with sides collinear to $\phi$ and $\psi$, i.e., 
 $$\W = \{ w \in \mathbb Z^2 : \absolute{\phi \times w} \leq \absolute{\phi \times (\ell, \ell)}, \absolute{\psi \times w} \leq \absolute{\psi \times (-\ell, \ell)}$$
 
 \begin{center}
