@@ -22,7 +22,7 @@
 \usepackage{todonotes}
 \usepackage{subcaption}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows,arrows.meta,calc,patterns,patterns.meta}
+\usetikzlibrary{positioning,arrows,arrows.meta,calc,patterns,patterns.meta,fit}
 
 \usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
 \usepackage[capitalise]{cleveref}
@@ -1266,23 +1266,55 @@ We pad this square-shaped set such that it is a parallelogram with sides colline
 $$\W = \{ w \in \mathbb Z^2 : \absolute{\phi \times w} \leq \absolute{\phi \times (\ell, \ell)}, \absolute{\psi \times w} \leq \absolute{\psi \times (-\ell, \ell)}$$
 
 \begin{center}
-\begin{tikzpicture}[x=.15em, y=.15em]
+\begin{tikzpicture}[x=.15em, y=.15em, remember picture]
 
 %\useasboundingbox (-20,-20) rectangle (30,30);
 \clip (-20,-20) rectangle (30,30);
 
-\draw[densely dotted] (0,0) to (0,10) to (10,10) to (10, 0) to (0,0);
+\node (bl) at (0,0) {};
+\node (tr) at (10,10) {};
+\node[draw, densely dotted, thick, inner sep=-0.5pt, fit=(bl.center)(tr.center)] {};
 
-\draw (0,10) ++(-100,-80) to ++(200,160);
-\draw (10,0) ++(-100,-80) to ++(200,160);
+\draw[very thick] (0,10) ++(-100,-80) to ++(200,160);
+\draw[very thick] (10,0) ++(-100,-80) to ++(200,160);
+\draw[very thick] (0,0) ++(-100,30) to ++(200,-60);
+\draw[very thick] (10,10) ++(-100,30) to ++(200,-60);
 
-\draw (0,0) ++(-100,30) to ++(200,-60);
-\draw (10,10) ++(-100,30) to ++(200,-60);
+\fill[white] (-100, 300) to (-100,-70) to ++(200,160) to (-100,300);
+\fill[white] (-100, 300) to (-90,40) to ++(200,-60) to (-100,300);
+\fill[white] (-100, -300) to (-90,-80) to ++(200,160) to (-100,-300);
+\fill[white] (-100, -300) to (-100,30) to ++(200,-60) to (-100,-300);
 
-\draw (-20,-20) rectangle (30,30);
+\draw[thin, black!20!white] (0,10) ++(-100,-80) to ++(200,160);
+\draw[thin, black!20!white] (10,0) ++(-100,-80) to ++(200,160);
+\draw[thin, black!20!white] (0,0) ++(-100,30) to ++(200,-60);
+\draw[thin, black!20!white] (10,10) ++(-100,30) to ++(200,-60);
 
+\draw[densely dashed] (-20,-20) rectangle (30,30);
 
+\node (root) at (5,5) {};
 
+\end{tikzpicture}~\begin{tikzpicture}[x=.15em, y=.15em]
+	\tikzset{every node/.style={inner sep=0}}
+	\node (top) at (-10,5) {};
+	\node (bot) at (0,-45) {};
+	\node (l1) at (0,0) {};
+	\node (l2) at (8,-8) {};
+	\node (l3) at (0,-16) {};
+	\node (l4) at (8,-24) {};
+	\node (l5) at (0,-32) {};
+	\node (l6) at (8,-40) {};
+	
+	\node[fit=(l1)(l2)] (L1) {};
+	\node[draw, densely dotted, thick, fit=(l3)(l4)] (L2) {};
+	\node[draw, densely dashed, fit=(l5)(l6)] (L3) {};
+	
+	\node[right=2 of L1] {$\strut = \W$};
+	\node[right=2 of L2] {$\strut = \W'$};
+	\node[right=2 of L3] {$\strut = \W''$};
+	
+	\node[fit=(L1.25)(L1.205), inner sep=2] (L1) {};	
+	\draw (L1.10) to (L1.100) to (L1.190) to (L1.280) to (L1.10);
 \end{tikzpicture}
 \end{center}
 
