@@ -977,7 +977,9 @@ While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\phi$
 We assume that a parallelogram contains its border and its vertices.
 
 \begin{definition}[Parallelogram grid]
-For $\ell \in \Z^+$, consider a sequence of $\ell+1$  distinct lines $h_0, \dots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ distinct lines $v_0, \dots, v_\ell$ parallel to $\psi$. For every $i, j \in [\ell + 1]$ let $w_{i, j}$ be the intersection of $h_i$ and $v_j$ (since $\phi$ and $\psi$ are not collinear, it is well-defined). For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i-1, j-1}, w_{i, j-1}, w_{i-1, j}, w_{i, j }$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
+	For $\ell \in \Z^+$, consider a sequence of $\ell+1$  distinct lines $h_0, \dots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ distinct lines $v_0, \dots, v_\ell$ parallel to $\psi$.
+	For every $i, j \in [\ell + 1]$ let $w_{i, j}$ be the intersection of $h_i$ and $v_j$ (since $\phi$ and $\psi$ are not collinear, it is well-defined).
+	For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
 \end{definition}
 
 \begin{restatable}{lemma}{parallelogram_grid}\label{lm:parallelogram_grid}
@@ -1065,7 +1067,7 @@ W.l.o.g., $v = (\max \X(U), \max \Y(U)) \notin \d{\Ta}$. For all $u \in U$, we h
 \end{proof}
 
 \begin{lemma}\label{lm:parallelogram_merge}
-Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\mathcal{P}$ of $\O(\ell)$ parallelograms with sides collinear to $\phi$ and $\psi$ such that for every $p \in \mathcal{P}$ the set $p \cap Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
+Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\O(\ell)$ parallelograms $\mathcal{P}$ with sides collinear to $\phi$ and $\psi$ such that for every $p \in \mathcal{P}$ the set $p \cap \Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
 \end{lemma}
 \begin{proof}
 By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid}(\ref{it:monotonicity}), \cref{coverable}, and \cref{peripheral} for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
