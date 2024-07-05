@@ -530,7 +530,7 @@ We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/parquet}
 	\end{center}
-	\caption{All the points in the polygon form a tile and the thicker points form a subtile.}
+	\caption{All the points in the polygon form a truncated tile and the thicker points form a truncated subtile.}
 	\label{figure:tile}
 \end{figure}
 
@@ -1080,11 +1080,11 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
 \end{enumerate}
 
-Note that there are $\O(\ell)$ parallelograms $P_j^x$ and $R_i^x$ for $i,j \in [\ell]$ and $x \in [4]$ and that they cover all parallelograms $p_{i,j}$ but those that are not fully contained in any of the quarters, in other words, the parallelograms $p_{i, j}$ intersecting  at least one of the lines $x = z$ and $y = z$. Denote the set of such parallelograms by $\I$. 
+Note that there are $\O(\ell)$ parallelograms $P_j^x$ and $R_i^x$ for $i,j \in [\ell]$ and $x \in \set{1, \dots, 4}$ and that they cover all parallelograms $p_{i,j}$ but those that are not fully contained in any of the quarters, in other words, the parallelograms $p_{i, j}$ intersecting  at least one of the lines $x = z$ and $y = z$. Denote the set of such parallelograms by $\I$. 
 
 By \cref{coverable} and \cref{peripheral}, for each parallelogram $p_{i,j} \in \I$ the set $p_{i,j} \cap Z^2$ is either coverable or $\O(n/\ell)$-peripheral. Furthermore, $\absolute{\I} = \O(\ell)$. Consider a set $U_x$ of intersections of grid lines different from $x=z$ with the line and a set $U_y$ of intersections of grid lines different from $y=z$. Every parallelogram in $\I$ contains $u \in U_x \cup U_y$, and every $u \in \Z^2$ can be contained in at most four parallelograms, implying the bound. 
 
-The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in [4]\} \cup \{R_j^x : j \in [\ell], x \in [4]\}$ satisfies the claim of the lemma. It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
+The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \cup \{R_j^x : j \in [\ell], x \in \{1, \dots, 4\}\}$ satisfies the claim of the lemma. It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
 \end{proof}
 
 We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(\absolute{\d{R}} + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P_2}} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
@@ -1314,9 +1314,9 @@ In this section, we show how to compute the Hamming distances between $P$ and a 
 
 \DenseAlgo
 
-We partition $F$ into four roughly equal-sized $d$-peripheral strings $F_i$, $i \in [4]$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
+We partition $F$ into four roughly equal-sized $d$-peripheral strings $F_1, \dots, F_4$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
 %
-$$\Ham(P + q, F) = \sum_{i \in [4]} \Ham(P + q, F_i).$$
+$$\Ham(P + q, F) = \sum_{i = 1}^4 \Ham(P + q, F_i).$$
 %
 Below, we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$. The other cases are symmetric. 
 
