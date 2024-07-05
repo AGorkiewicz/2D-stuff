@@ -1070,11 +1070,11 @@ Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\mathcal{P}$ of $
 \begin{proof}
 By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid}(\ref{it:monotonicity}), \cref{coverable}, and \cref{peripheral} for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
 \begin{enumerate}
-	\item A parallelogram $P_j^1 = \bigcup_{i=1}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
+	\item A parallelogram $P_j^1 = \bigcup_{i=0}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
 	\item A parallelogram $P_j^2 = \bigcup_{i=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
 	\item Parallelograms $p_{s, j}, \dots, p_{t - 1, j}$ are not fully contained neither in $K_1$ nor in $K_3$,
 	\item A parallelogram $P_j^3 = \bigcup_{i=t}^{t'-1} p_{i, j} \cup \Z^2$ is coverable,
-	\item A parallelogram $P_j^4 = \bigcup_{i=t'}^{\ell} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral.
+	\item A parallelogram $P_j^4 = \bigcup_{i=t'}^{\ell - 1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral.
 \end{enumerate}
 
 \noindent Similarly, for every $i \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
@@ -1083,7 +1083,7 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 	\item A parallelogram $R_i^2 = \bigcup_{j=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
 	\item Parallelograms $p_{i, s}, \dots, p_{i, t-1}$ are not fully contained neither in $K_2$ nor in $K_4$,
 	\item A parallelogram $R_i^3 = \bigcup_{j=t}^{t'-1} p_{i, j} \cup \Z^2$ is coverable,
-	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
+	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell - 1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
 \end{enumerate}
 
 \begin{figure}[h!]
