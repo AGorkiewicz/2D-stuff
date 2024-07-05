@@ -1003,12 +1003,12 @@ For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
 
 \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.9\textwidth]{drawings/lemma5}
-        \caption{Figure for Lemma 5}
+        \includegraphics[width=0.75\textwidth]{drawings/lemma5}
+        \caption{Parallelogram grid.}
         \label{figure:lemma5}
 \end{figure}
 
-Intuitively, it suffices to take a sequence of $\ell+1$ equispaced lines parallel to $\psi$ and a sequence of $\ell+1$ equispaced lines parallel to $\phi$ (see \todo{reference the figure}). The first property then follows from the fact that the angle between $\psi$ and $\varphi$ is in $[30^\circ,150^\circ]$ (hence, the parallelograms in the grid cannot be too ``stretched out''). The second property is implied by the fact that $\psi$ is in $(0,+\infty)\times [0,+\infty)$ and $\phi$ in $[0,\infty) \times (-\infty,0)$. A formal proof, which uses nothing but standard arithmetic, can be found in \cref{app:parallelogram_grid}.  
+Intuitively, it suffices to take a sequence of $\ell+1$ equispaced lines parallel to $\psi$ and a sequence of $\ell+1$ equispaced lines parallel to $\phi$ (see \cref{figure:lemma5}). The first property then follows from the fact that the angle between $\psi$ and $\varphi$ is in $[30^\circ,150^\circ]$ (hence, the parallelograms in the grid cannot be too ``stretched out''). The second property is implied by the fact that $\psi$ is in $(0,+\infty)\times [0,+\infty)$ and $\phi$ in $[0,\infty) \times (-\infty,0)$. A formal proof, which uses nothing but standard arithmetic, can be found in \cref{app:parallelogram_grid}.  
 
 We apply \Cref{lm:parallelogram_grid} to construct a parallelogram grid $\{p_{i,j}\}$ of size $\ell$. If $\exists i, j \in [\ell] : \max \X(p_{i, j}) - \min \X(p_{i, j}) \ge m / 4$, then by \Cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}) we have $m / 4 \le \max \X(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$. In this case, we can return a trivial partitioning where the set of monochromatic subtile strings is empty and $F = \Ta$, since $\Ta$ is $\O(m)$-peripheral. We can use an analogous argument if $\exists i,j \in \ell : \max \Y(p_{i, j}) - \min \Y(p_{i, j}) \ge m / 4$. Below we assume $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. 
 
@@ -1088,7 +1088,7 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 
 \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.9\textwidth]{drawings/text_decomposition}
+        \includegraphics[width=0.75\textwidth]{drawings/text_decomposition}
         \caption{Parallelogram cover of $\Ta$. The polygon in the center corresponds to $\Ta$. Red parallelograms are $\O(n/\ell)$-peripheral, blue coverable, and green belong to $\I$.}
         \label{figure:text_decomposition}
 \end{figure}
