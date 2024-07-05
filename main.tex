@@ -1141,13 +1141,16 @@ By solving the respective univariate linear equations in constant time, we deter
 For $i,j \in \{0, 1\}$, we define $w_{i, j} = (s_i\phi + t_j\psi + \gamma) \equiv \gamma$ and $D_{i,j} = D + w_{i,j}$. 
 Then, a point $s\phi + t\psi + \gamma$ with $s,t \in \mathbb Z$ is in 
 \begin{itemize}
-	\item $S$ if and only if $s_0 \leq s < s_1$ and $t_0 \leq t < t$,
-	\item $D_{0, 0}$ if and only if $s_0 \leq s$ and $t_0 \leq t$,
-	\item $D_{0, 1}$ if and only if $s_0 \leq s$ and $t_1 \leq t$,
-	\item $D_{1, 0}$ if and only if $s_1 \leq s$ and $t_0 \leq t$,
-	\item $D_{1, 1}$ if and only if $s_1 \leq s$ and $t_1 \leq t$,%
-	%
-	~~~~~~~~\begin{tikzpicture}[overlay, x=.6em, y=.6em]
+	\item $S$ if and only if $s_0 \leq s < s_1$ and $t_0 \leq t < t$, 
+	\item $D_{0, 0}$ if and only if $s_0 \leq s$ and $t_0 \leq t$, 
+	\item $D_{0, 1}$ if and only if $s_0 \leq s$ and $t_1 \leq t$, 
+	\item $D_{1, 0}$ if and only if $s_1 \leq s$ and $t_0 \leq t$, 
+	\item $D_{1, 1}$ if and only if $s_1 \leq s$ and $t_1 \leq t$.
+\end{itemize}
+
+\vspace{.5\baselineskip}
+
+\parbox{.55\textwidth}{\begin{tikzpicture}[x=.6em, y=.6em]
 
 \foreach \s in {1,...,10} {
 	\foreach[evaluate=\s as \x using (\s+.7*\t),
@@ -1206,9 +1209,41 @@ Then, a point $s\phi + t\psi + \gamma$ with $s,t \in \mathbb Z$ is in
 \node[draw, circle, fill=red, inner sep=1.5pt] (8-8) at ($0.5*(8-8)+0.5*(9-9)$) {};
 
 
-\end{tikzpicture}
-\end{itemize}
-and all sets contain only points that are in the same class as $\gamma$. 
+\end{tikzpicture}}%
+%
+\hfill%
+%
+\parbox{.38\textwidth}{
+$D_{0,0}\ = \enskip\rlap{\smash{\scalebox{.75}{\begin{tikzpicture}[baseline=0em]
+	\node[draw=black, pattern=north east lines, pattern color=gray, rotate=-45, inner sep=0, minimum width=1em, minimum height=2em, anchor=south east] at (0, 0) {};
+	\node[draw=black, pattern=north west lines, pattern color=gray, rotate=-45, inner sep=0, minimum width=1.5em, minimum height=1.2em, anchor=north west] at (0, 0) {};
+	\node[draw=black, pattern=crosshatch, pattern color=gray, rotate=-45, inner sep=0, minimum width=1.5em, minimum height=2em, anchor=south west] at (0, 0) {};
+	\node[draw=black, rotate=-45, inner sep=0, minimum width=1em, minimum height=1.2em, anchor=north east] at (0, 0) {};
+\end{tikzpicture}}}}$%
+%
+~~~~~~~~~~~~~~~
+%
+$D_{0,1}\ = \enskip\rlap{\smash{\scalebox{.75}{\begin{tikzpicture}[baseline=0em]
+	\node[draw=black, pattern=north east lines, pattern color=gray, rotate=-45, inner sep=0, minimum width=1em, minimum height=2em, anchor=south east] at (0, 0) {};
+	\node[draw=black, pattern=crosshatch, pattern color=gray, rotate=-45, inner sep=0, minimum width=1.5em, minimum height=2em, anchor=south west] at (0, 0) {};
+\end{tikzpicture}}}}$
+
+\vspace{2\baselineskip}
+
+$D_{1,0}\ = \enskip\rlap{\smash{\scalebox{.75}{\begin{tikzpicture}[baseline=0em]
+	\node[draw=black, pattern=north west lines, pattern color=gray, rotate=-45, inner sep=0, minimum width=1.5em, minimum height=1.2em, anchor=north west] at (0, 0) {};
+	\node[draw=black, pattern=crosshatch, pattern color=gray, rotate=-45, inner sep=0, minimum width=1.5em, minimum height=2em, anchor=south west] at (0, 0) {};
+\end{tikzpicture}}}}$%
+%
+~~~~~~~~~~~~~~~
+%
+$D_{1,1}\ = \enskip\rlap{\smash{\scalebox{.75}{\begin{tikzpicture}[baseline=0em]
+	\node[draw=black, pattern=crosshatch, pattern color=gray, rotate=-45, inner sep=0, minimum width=1.5em, minimum height=2em, anchor=south west] at (0, 0) {};
+\end{tikzpicture}}}}$}
+
+\vspace{.5\baselineskip}
+
+All sets contain only points that are in the same class as $\gamma$. 
 Since $D_{0,0}$ is partitioned by $S \cup (D_{0, 1}\setminus D_{1, 1}) \cup (D_{1, 0}\setminus D_{1, 1}) \cup D_{1, 1}$, the statement of the lemma follows. 
 Any $w_{i, j}$ is at distance at most $\absolute{\phi + \psi} = \O(m)$ from a point in $S$, and $\max \{\absolute{u} : u \in S\} = \O(m)$ implies $\absolute{w_{i,j}} = \O(m)$. 
 (If $S$ is empty, i.e., $s_0 = s_1$ or $t_0 = t_1$, then we define $\forall i,j\in\{0, 1\} : w_{i,j} = \gamma$ instead.)
