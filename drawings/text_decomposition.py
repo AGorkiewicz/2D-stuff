@@ -111,7 +111,7 @@ for i in range(n - 1):
 P = PA[::-1] + PB + PD + PC[::-1]
 P = [Point(i + 0.5, j + 0.5) for (i, j) in P]
 
-draw_poly(P, 'rounded corners=10, fill=white, white')
+draw_poly(P, 'rounded corners=10, black, very thick')
 
 l = 40
 h_min = min([u.h for u in T])
@@ -148,16 +148,34 @@ def coverable(points):
                 return False
     return True
 
+def inside_text(points):
+    #ax = math.ceil(min_x(points))
+    #ay = math.ceil(min_y(points))
+    #bx = math.floor(max_x(points))
+    #by = math.floor(max_y(points))
+    #assert ax <= bx
+    #assert ay <= by
+    #if 0 <= ax <= n     
+    #return False
+    for point in points:
+        if 0 <= point.x <= n and 0 <= point.y <= n:
+            return True
+    return False
 
 w = [[xy(h[i], s[j]) for j in range(l + 1)] for i in range(l + 1)]
 P = [[[w[i][j], w[i][j + 1], w[i + 1][j + 1], w[i + 1][j]] for j in range(l)] for i in range(l)]
 
 C = []
 I = []
+I_periph = []
 K1 = []
+K1_periph = []
 K2 = []
+K2_periph = []
 K3 = []
+K3_periph = []
 K4 = []
+K4_periph = []
 
 for i in range(l):
     for j in range(l):
@@ -167,16 +185,23 @@ for i in range(l):
 
 for i in range(l):
     for j in range(l):
-        if (i, j) not in C: continue
         ax = min_x(P[i][j])
         bx = max_x(P[i][j])
         ay = min_y(P[i][j])
         by = max_y(P[i][j])
-        if ax > z and ay > z: K1.append((i, j))
-        if bx < z and ay > z: K2.append((i, j))
-        if bx < z and by < z: K3.append((i, j))
-        if ax > z and by < z: K4.append((i, j))
-        if ax <= z and bx >= z or ay <= z and by >= z: I.append((i, j))
+        if (i, j) not in C:
+            if inside_text(P[i][j]):
+                if ax > z and ay > z: K1_periph.append((i, j))
+                if bx < z and ay > z: K2_periph.append((i, j))
+                if bx < z and by < z: K3_periph.append((i, j))
+                if ax > z and by < z: K4_periph.append((i, j))
+                if ax <= z and bx >= z or ay <= z and by >= z: I_periph.append((i, j))
+        else: 
+            if ax > z and ay > z: K1.append((i, j))
+            if bx < z and ay > z: K2.append((i, j))
+            if bx < z and by < z: K3.append((i, j))
+            if ax > z and by < z: K4.append((i, j))
+            if ax <= z and bx >= z or ay <= z and by >= z: I.append((i, j))
 
 res += '\\tikzset{internal border/.style = {postaction = {clip, postaction = {draw = #1, solid, line width = 10pt, opacity=0.7},postaction = {draw}}}}'
 
@@ -184,6 +209,8 @@ res += '\\tikzset{internal border/.style = {postaction = {clip, postaction = {dr
 for (i, j) in I:
     draw_poly(P[i][j], 'very thick, internal border=teal, fill=teal, fill opacity=0.2')
 
+for (i, j) in I_periph:
+    draw_poly(P[i][j], 'very thick, internal border=red, fill=red, fill opacity=0.2')
 
 # K1 and K3
 for j in range(l):
@@ -192,12 +219,26 @@ for j in range(l):
             a, b = min(t), max(t) + 1
             draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'very thick, internal border=cyan, fill=cyan, fill opacity=0.2')
 
+for j in range(l):
+    for t in [[i for (i, k) in K1_periph if k == j], [i for (i, jj) in K3_periph if jj == j]]: 
+        if len(t) > 0:
+            a, b = min(t), max(t) + 1
+            draw_poly([w[a][j], w[a][j + 1], w[b][j + 1], w[b][j]], 'very thick, internal border=red, fill=red, fill opacity=0.2')
+
 #K2 and K4
 for i in range(l):
     for t in [[j for (k, j) in K2 if k == i], [j for (k, j) in K4 if k == i]]: 
         if len(t) > 0:
             a, b = min(t), max(t) + 1
             draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'very thick, internal border=cyan, fill=cyan, fill opacity=0.2')
+
+#K2 and K4
+for i in range(l):
+    for t in [[j for (k, j) in K2_periph if k == i], [j for (k, j) in K4_periph if k == i]]: 
+        if len(t) > 0:
+            a, b = min(t), max(t) + 1
+            draw_poly([w[i][a], w[i][b], w[i + 1][b], w[i + 1][a]], 'very thick, internal border=red, fill=red, fill opacity=0.2')
+
 
 
 for h in h:
