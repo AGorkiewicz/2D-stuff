@@ -977,7 +977,7 @@ While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\phi$
 We assume that a parallelogram contains its border and its vertices.
 
 \begin{definition}[Parallelogram grid]
-For $\ell \in \Z^+$, consider a sequence of $\ell+1$  distinct lines $h_0, \dots, h_\ell$ parallel to $\psi$ and a sequence of $\ell+1$ distinct lines $v_0, \dots, v_\ell$ parallel to $\phi$. For every $i, j \in [\ell + 1]$ let $w_{i, j}$ be the intersection of $h_i$ and $v_j$ (since $\phi$ and $\psi$ are not collinear, it is well-defined). For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i-1, j-1}, w_{i, j-1}, w_{i-1, j}, w_{i, j }$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
+For $\ell \in \Z^+$, consider a sequence of $\ell+1$  distinct lines $h_0, \dots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ distinct lines $v_0, \dots, v_\ell$ parallel to $\psi$. For every $i, j \in [\ell + 1]$ let $w_{i, j}$ be the intersection of $h_i$ and $v_j$ (since $\phi$ and $\psi$ are not collinear, it is well-defined). For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i-1, j-1}, w_{i, j-1}, w_{i-1, j}, w_{i, j }$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
 \end{definition}
 
 \begin{restatable}{lemma}{parallelogram_grid}\label{lm:parallelogram_grid}
@@ -1460,17 +1460,17 @@ We then compute $Q' = Q \cap \bigl( \cup_i \{q \in \Z^2 : \d{H_i+q} \subseteq \d
 \section{Proof of \cref{lm:parallelogram_grid}}
 \label{app:parallelogram_grid}
 \paragraph*{Construction of the grid and Property (\ref{it:unique}).}
-Recall that the grid is defined by a sequence of $\ell+1$ lines $v_0, v_1, \ldots, v_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ lines $h_0, h_1, \ldots, h_\ell$ parallel to $\psi$. 
+Recall that the grid is defined by a sequence of $\ell+1$ lines $h_0, h_1, \ldots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ lines $v_0, v_1, \ldots, v_\ell$ parallel to $\psi$. 
 
 To construct the lines $h_0, h_1, \ldots, h_\ell$, we first compute $\h{u}$ for all $u \in [n^2]$ in $\O(n^2) = \O(m^2)$ time. As $\phi \in (0,+\infty) \times [0,+\infty]$, we have 
-$$\absolute{\phi} \cdot n \le \h{u} = \x{u} \cdot \y{\phi} - \y{u} \cdot \x{\phi} \le \absolute{\phi} \cdot n.$$
-We then sort these values in $\O(n^2 \log n) = \O(m^2 \log m)$ time and delete duplicates. Let $-\absolute{\phi} \cdot n \le c_1 < \ldots < c_{N} \le \absolute{\phi} \cdot n$, where $1 \le N \le n^2$, be the resulting values. Let $\delta = (\min_{i=1}^{n^2-1} (c_{i+1}-c_i))/2\ell = \O(n/\ell)$. Define $\alpha_0 = c_1 -\delta$ and $\alpha_\ell = c_{n^2}$. Next, choose equispaced values $\alpha_1, \alpha_2, \ldots, \alpha_{\ell-1}$ (necessarily rational) in the interval $[\alpha_0, \alpha_{\ell+1}]$. If for some $i, j$ we have $\alpha_i = c_j$, set $\alpha_i = \alpha_i + \delta$. We now have that for all $i$, each of the following is satisfied:
+$$-\absolute{\phi} \cdot n \le \h{u} = \x{u} \cdot \y{\phi} - \y{u} \cdot \x{\phi} \le \absolute{\phi} \cdot n.$$
+We then sort these values in $\O(n^2 \log n) = \O(m^2 \log m)$ time and delete duplicates. Let $-\absolute{\phi} \cdot n \le c_1 < \ldots < c_{N} \le \absolute{\phi} \cdot n$, where $1 \le N \le n^2$, be the resulting values. Let $\delta = (\min_{i=1}^{N-1} (c_{i+1}-c_i))/2\ell = \O(n/\ell)$. Define $\alpha_0 = c_1 -\delta$ and $\alpha_\ell = c_{N-1}$. Next, choose equispaced values $\alpha_1, \alpha_2, \ldots, \alpha_{\ell-1}$ (necessarily rational) in the interval $[\alpha_0, \alpha_{\ell+1}]$. If for some $i, j$ we have $\alpha_i = c_j$, set $\alpha_i = \alpha_i + \delta$. We now have that for all $i$, each of the following is satisfied:
 \begin{enumerate}
 \item $\alpha_i \notin \{\h{u} : u \in [n^2]\}$;
 \item $\alpha_{i+1}-\alpha_i = \O(\absolute{\phi} n / \ell)$;
 \item For all $u \in [n^2]$, there is $\alpha_0 < \h{u} < \alpha_\ell$.
 \end{enumerate}
-Finally, we define $v_i = \{u: u \in \R^2, \h{u} = \alpha_i\}$. In total construction of the lines $v_i$ takes $\O(m^2 \log m)$ time.
+Finally, we define $h_i = \{u: u \in \R^2, \h{u} = \alpha_i\}$. In total construction of the lines $h_i$ takes $\O(m^2 \log m)$ time.
 
 We construct the lines $v_0, v_1, \ldots, v_\ell$ analogously. Namely, we select in $\O(m^2 \log m)$ time rational values $\beta_i$, $0 \le i \le \ell+1$, satisfying each of the following:
 \begin{enumerate}
