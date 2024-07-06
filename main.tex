@@ -418,11 +418,11 @@ $$
 We then construct $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$ by applying the mapping to the characters of the strings similarly to above, and compute the values $\tilde{d}_i(j) = \Ham(\tilde{\mu_i}(T), \tilde{\mu_i}(P)+j-1)$ and $\tilde{d}(j) = \sum_i d_i(j)$ using \cref{fact:sigman1d} in $\O(r \cdot n \log m) = \O((n/\varepsilon^2) \log^3 m)$ time. It is not difficult to see that wildcards do not contribute to the distances neither between $T$ and $P$, nor between $\tilde{\mu_i}(T)$ and $\tilde{\mu_i}(P)$. Therefore, $\Ham(T, P+j-1) \le \tilde{d}(j) \le (1+\varepsilon) \cdot \Ham(T, P+j-1)$, and the algorithm is correct. 
 \end{proof}
 
-We now show a simple embedding from two-dimensional strings to one-dimensional, that is essential for generalising \cref{fact:sigman1d} and \cref{cor:approx1d} to two dimensions.
+We now show a simple embedding from two-dimensional strings to one-dimensional, which is essential for generalising \cref{fact:sigman1d} and \cref{cor:approx1d} to two dimensions.
 
 \begin{claim}
 \label{claim:padding}
-Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights~$h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to solve the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
+Let $P$ and $T$ be non-empty two-dimensional strings of respective widths $w_P, w_T$ and heights~$h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to solve the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
 \end{claim}
 \begin{proof}
 We first construct a two-dimensional string $P'$ such that for all $\min \X(\d{P}) \le i \le \max \X(\d{P})+(w_T-w_P)$ and $\min \Y(\d{P}) \le j \le \max \Y(\d{P})$ there is
@@ -431,7 +431,7 @@ $$
 P'(i,j) = 
 \begin{cases}
 P(i,j) & \text{ if } (i,j) \in \d{P}\\
-\wild & \text{ otherwise}
+\wild & \text{ otherwise.}
 \end{cases}
 $$
 %
@@ -517,7 +517,7 @@ Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There i
 	\end{itemize}
 \end{restatable*}
 
-Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 12\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
+Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
 \subsection{Partitionings of the pattern and the text}
 \label{sec:partitioning}
