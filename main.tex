@@ -281,8 +281,8 @@ that we only need to convolute the periphery with a small portion of the pattern
 part of the text can be partitioned into fewer pieces, which allows us to obtain the following theorem.
 
 \begin{theorem}[Informal version of \cref{th:main}]
-Given a two-dimensional $m \times m$ string $P$ and a two-dimensional $n \times n$ string $T$, for $m \le n$.
-There is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+Given a two-dimensional $m \times m$ string $P$ and a two-dimensional $n \times n$ string $T$, for $m \le n$,
+there is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{theorem}
 
 \noindent Throughout the paper, we assume the standard word-RAM model of computation with words of size $\Omega(\log n)$.
@@ -298,10 +298,12 @@ There is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/
 \newcommand{\s}[1]{\psi \times #1}
 
 \textbf{Geometric notations.} For $n \in \Z^+$, denote $[n] = \set{0, \dots, n - 1}$. For $u \in \R^2$, denote its coordinates as $\x{u}, \y{u}$, i.e. $u = (\x{u}, \y{u})$. Furthermore, for $u, v \in \R^2$, denote 
-\begin{align*}
-&u + v = (\x{u}+\x{v}, \y{u} + \y{v})  & u - v = (\x{u}-\x{v}, \y{u}-\y{v})\\
-&u \cdot v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v}  & u \times v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}
-\end{align*}
+\begin{alignat*}{4}
+u &\ +\ &&      v = (\x{u}+\x{v}, \y{u} + \y{v}) & \qquad\qquad
+u &\ -\ &&      v = (\x{u}-\x{v}, \y{u}-\y{v})\\
+u &\ \;\cdot\ &&  v = \x{u} \cdot \x{v} + \y{u} \cdot \y{v} & 
+u &\ \times\ && v = \x{u} \cdot \y{v} - \y{u} \cdot \x{v}
+\end{alignat*}
 Alternatively, $u \cdot v = \absolute{u}\absolute{v} \cos \alpha$ and $u \times v = \absolute{u}\absolute{v} \sin \alpha$, where $\alpha$ is the angle between $u$ and $v$.
 
 \begin{definition}
