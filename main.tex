@@ -1536,7 +1536,7 @@ Recall that the grid is defined by a sequence of $\ell+1$ lines $h_0, h_1, \ldot
 
 To construct the lines $h_0, h_1, \ldots, h_\ell$, we first compute $\h{u}$ for all $u \in [n^2]$ in $\O(n^2) = \O(m^2)$ time. As $\phi \in (0,+\infty) \times [0,+\infty]$, we have 
 $$-\absolute{\phi} \cdot n \le \h{u} = \x{u} \cdot \y{\phi} - \y{u} \cdot \x{\phi} \le \absolute{\phi} \cdot n.$$
-We then sort these values in $\O(n^2 \log n) = \O(m^2 \log m)$ time and delete duplicates. Let $-\absolute{\phi} \cdot n \le c_1 < \ldots < c_{N} \le \absolute{\phi} \cdot n$, where $1 \le N \le n^2$, be the resulting values. Let $\delta = (\min_{i=1}^{N-1} (c_{i+1}-c_i))/2\ell = \O(n/\ell)$. Define $\alpha_0 = c_1 -\delta$ and $\alpha_\ell = c_{N-1}$. Next, choose equispaced values $\alpha_1, \alpha_2, \ldots, \alpha_{\ell-1}$ (necessarily rational) in the interval $[\alpha_0, \alpha_{\ell+1}]$. If for some $i, j$ we have $\alpha_i = c_j$, set $\alpha_i = \alpha_i + \delta$. We now have that for all $i$, each of the following is satisfied:
+We then sort these values in $\O(n^2 \log n) = \O(m^2 \log m)$ time and delete duplicates. Let $-\absolute{\phi} \cdot n \le c_1 < \ldots < c_{N} \le \absolute{\phi} \cdot n$, where $1 \le N \le n^2$, be the resulting values. Let $\delta = (\min_{i=1}^{N-1} (c_{i+1}-c_i))/2\ell = \O(n/\ell)$. Define $\alpha_0 = c_1 -\delta$ and $\alpha_\ell = c_{N} + \delta$. Next, choose equispaced values $\alpha_1, \alpha_2, \ldots, \alpha_{\ell-1}$ (necessarily rational) in the interval $[\alpha_0, \alpha_{\ell}]$. If for some $i, j$ we have $\alpha_i = c_j$, set $\alpha_i = \alpha_i + \delta$. We now have that for all $i$, each of the following is satisfied:
 \begin{enumerate}
 \item $\alpha_i \notin \{\h{u} : u \in [n^2]\}$;
 \item $\alpha_{i+1}-\alpha_i = \O(\absolute{\phi} n / \ell)$;
@@ -1576,10 +1576,10 @@ the rest can be shown analogously. Recall that $w_{s,t}$ is the intersection of 
 
 As $p_{i,j}$ and $p_{i+1,j}$ are parallelograms, we have 
 \begin{align*}
-\min \X(p_{i, j}) = \min\{\x{w_{i-1,j-1}}, \x{w_{i-1,j}}, \x{w_{i,j-1}},\x{w_{i,j}}\} = \x{w_{i-1,j-1}},\\ 
-\min \X(p_{i+1, j}) = \min\{\x{w_{i,j-1}}, \x{w_{i,j}}, \x{w_{i+1,j-1}},\x{w_{i+1,j}}\} = \x{w_{i,j-1}}.
+\min \X(p_{i, j}) = \min\{\x{w_{i, j}}, \x{w_{i + 1,j}}, \x{w_{i + 1,j + 1}},\x{w_{i,j + 1}}\} = \x{w_{i,j + 1}},\\ 
+\min \X(p_{i+1, j}) = \min\{\x{w_{i + 1, j}}, \x{w_{i + 2, j}}, \x{w_{i + 2,j + 1}},\x{w_{i+1,j + 1}}\} = \x{w_{i + 1,j + 1}}.
 \end{align*}
 
-From the construction of $h_s$ and $v_t$ it follows that $w_{i,j-1} = w_{i-1,j-1} + \beta \cdot \psi$ for some $\beta > 0$, and hence $\x{w_{i,j-1}} > \x{w_{i-1,j-1}}$. Therefore, $\min \X(p_{i+1, j}) > \min \X(p_{i, j})$ as desired. 
+From the construction of $h_s$ and $v_t$ it follows that $w_{i + 1,j + 1} = w_{i,j+1} + \beta \cdot \psi$ for some $\beta > 0$, and hence $\x{w_{i + 1,j + 1}} > \x{w_{i,j + 1}}$. Therefore, $\min \X(p_{i+1, j}) > \min \X(p_{i, j})$ as desired. 
 \end{document}
 
