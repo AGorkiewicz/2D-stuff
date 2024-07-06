@@ -541,7 +541,7 @@ We call $U \subseteq \Z^2$ a \emph{tile} if there exist $\phi_0, \phi_1, \psi_0,
 We call the values $\phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ its \emph{signature}. 
 \end{definition}
 
-Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides collinear to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
+Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides parallel to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
 
 \begin{definition}[Truncated tile]
 We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x_1, y_0, y_1 \in \Z \cup \{-\infty, +\infty\}$ and $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that 
@@ -552,7 +552,7 @@ We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x
 The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are called its \emph{signature}. 
 \end{definition}
 
-Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possible, infinite) and a parallelogram with sides collinear to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
 
 \begin{definition}[Subtile]\label{subtile_definition}
 We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$. Abusing notation, we write $V \equiv v$ for $v \in \Z^2$ if $v \equiv \gamma$ and for two (truncated) subtiles $U,V$ we write $U \equiv V$ if there exists $v \in \Z^2$ such that $U \equiv v$ and $V \equiv v$.
