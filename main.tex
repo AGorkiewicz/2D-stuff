@@ -331,8 +331,8 @@ A \emph{one-dimensional string} $S$ is a function from a finite continuous subra
 	Two characters $a,b \in \Sigma$ \emph{match} if $a = b$. The wildcard matches itself and all characters in $\Sigma$. 
 	For strings $S, R$ (either both one-dimensional or both two-dimensional), define
 	\begin{align*}
-		&\MI(S, R) = \set{u : u \in \d{S} \cap \d{R}, S(u), R(u) \text{ do not match}}|\\
-		&\Ham(S,R) = \absolute{\MI(S,R)}
+		\MI(S, R)\ =\ &\set{u : u \in \d{S} \cap \d{R}, S(u), R(u) \text{ do not match}}\\
+		\Ham(S,R)\ =\ &\absolute{\MI(S,R)}
 	\end{align*}			 
 	We call the elements of $\MI(S,R)$ the \emph{mismatches} between $S$ and $R$.
 \end{definition}
