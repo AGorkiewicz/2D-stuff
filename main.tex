@@ -214,7 +214,7 @@ Another example, perhaps less extreme, are the bounds on two-dimensional runs~\c
 distinct squares~\cite{Charalampopoulos2020}, where we know that increasing the dimension incurs at least an additional
 logarithmic factor~\cite{Charalampopoulos2020}.
 
-\paragraph{2D pattern matching with $k$ mismatches.} The next step for 2D pattern matching is to allow $k$ mismatches.
+\paragraph{2D pattern matching with \boldmath$k$\unboldmath{} mismatches.} The next step for 2D pattern matching is to allow $k$ mismatches.
 Already in 1987, an $\tO(kmn^{2})$ time algorithm was obtained for this problem~\cite{Krithivasan1987}. This was
 soon improved to $\tO((k+m)n^2)$ time~\cite{Ranka1991}, and finally to $\O(kn^2)$~\cite{Amir1991}, which remains
 to be the asymptotically fastest algorithm. A number of non-trivial results have been obtained under the assumption
@@ -321,9 +321,9 @@ Alternatively, $u \cdot v = \absolute{u}\absolute{v} \cos \alpha$ and $u \times 
 
 A \emph{one-dimensional string} $S$ is a function from a finite continuous subrange $[a,b]\subset \mathbb Z$ to $\Sigma \cup \{\wild\}$. If $a = 0$, we will sometimes simply write $S = S(a)S(a+1)\ldots S(b)$.\footnote{We chose this definition, which is slightly different from the standard one, as it conveniently generalises to two dimensions.} For two-dimensional strings, we use a slightly more general definition: Namely, we define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. We store strings as lists of point-character pairs. For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d{S}) - \min \X(\d{S})$ and the \emph{height} as $\max \Y(\d{S}) - \min \Y(\d{S})$. Finally, we say that $S$ is \emph{partitioned} into strings $R_0, R_1, \ldots, R_{\ell-1}$ if $\d{S} = \sqcup_{i \in [\ell]} \d{R_i}$ and $R_i(u) = S(u)$ for all $i \in [\ell]$ and $u \in \d{R_i}$.
 
-\newcommand{\hd}{\textsc{HD1D}\xspace}
-\newcommand{\HD}{\textsc{HD2D}\xspace}
-\newcommand{\MI}{\textsc{MI}\xspace}
+%\newcommand{\hd}{\textsc{HD1D}\xspace}
+%\newcommand{\HD}{\textsc{HD2D}\xspace}
+\newcommand{\MI}{\textnormal{\textsc{MI}}\xspace}
 
 \begin{definition}[Hamming distance]
 	Two characters $a,b \in \Sigma$ \emph{match} if $a = b$. The wildcard matches itself and all characters in $\Sigma$. 
