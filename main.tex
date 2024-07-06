@@ -238,7 +238,7 @@ properties of such objects.
 
 \paragraph{Overview of the techniques.}
 The starting point for our algorithm is the approach designed for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
-for an optimized version (but the approach is due to~\cite{Clifford2015}), which proceeds as follows.
+for an optimized version (but the approach is due to~\cite{Clifford2016}), which proceeds as follows.
 First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}.
 Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
