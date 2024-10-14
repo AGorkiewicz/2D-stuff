@@ -1,8 +1,12 @@
-\documentclass[11pt, letterpaper]{article}
-\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
-\pdfoutput=1
+\documentclass[twoside,leqno]{article}
+
+\usepackage[letterpaper]{geometry}
+
+\usepackage{ltexpprt}
+\usepackage{hyperref}
+
 \usepackage[utf8]{inputenc}
-\usepackage{amsthm,amssymb,amsmath,amsmath,amsfonts}  
+\usepackage{amssymb,amsmath,amsmath,amsfonts}  
 \usepackage{xspace,enumerate}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{thmtools}
@@ -13,47 +17,36 @@
 \usepackage{listings}
 \usepackage{multirow}
 \usepackage{diagbox}
-\usepackage[ruled,noline,noend]{algorithm2e}
+%\usepackage[ruled,noline,noend]{algorithm2e}
 \usepackage{tabularx}
 \usepackage{epsfig}
 \usepackage{verbatim}
 \usepackage[noadjust]{cite}
-\usepackage{authblk}
 \usepackage{todonotes}
 \usepackage{subcaption}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows,arrows.meta,calc,patterns,patterns.meta,fit}
 
-\usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
+%\usepackage[colorlinks=true,urlcolor=Blue,citecolor=Green,linkcolor=BrickRed]{hyperref}
 \usepackage[capitalise]{cleveref}
 
-\title{Two-dimensional pattern matching with $k$ mismatches}
-\author{}
-% submissions need to be anonymous
-%\author[1]{Jonas Ellert}
-%\author[2]{Paweł Gawrychowski}
-%\author[3]{Adam Górkiewicz}
-%\author[4]{Tatiana Starikovskaya}
-%\affil[1]{DI/ENS, PSL Research University, France}
-%\affil[2,3]{Institute of Computer Science, University of Wrocław, Poland}
-%\affil[4]{DI/ENS, PSL Research University, France}
-
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}  
-\newtheorem{fact}{Fact}
-\newtheorem{corollary}[fact]{Corollary}  
+ 
 \newtheorem{observation}{Observation}
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}
 \newtheorem{example}{Example}
 \newtheorem{conjecture}{Conjecture} 
 \newtheorem{claim}{Claim}
 \newtheorem{problem}{Problem}
-\theoremstyle{remark}
-\newtheorem*{remark}{Remark}
+\newtheorem{remark}{Remark}
 
-%\crefname{claim}{claim}{claims}
+\crefname{conjecture}{Conjecture}{Conjectures}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{problem}{Problem}{Problems}
+\crefname{remark}{Remark}{Remarks}
+\crefname{definition}{Definition}{Definitions}
+\crefname{observation}{Observation}{Observations}
+\crefname{@theorem}{Theorem}{Theorems}
+\crefname{fact}{Fact}{Facts}
 \crefname{claim}{Claim}{Claims}
 
 \def\dd{\mathinner{.\,.}}
@@ -109,6 +102,30 @@
 
 % BEGIN DOCUMENT
 \begin{document}
+\title{Faster two-dimensional pattern matching with $k$ mismatches}
+%
+
+\author{Jonas Ellert\thanks{DI/ENS, PSL Research University, France.}
+\and Paweł Gawrychowski\thanks{Institute of Computer Science, University of Wrocław, Poland.}
+\and Adam Górkiewicz\thanks{Institute of Computer Science, University of Wrocław, Poland.}
+\and Tatiana Starikovskaya\thanks{DI/ENS, PSL Research University, France.}
+}
+
+\date{}
+
+\maketitle
+
+% Default Copyright Statement
+\fancyfoot[R]{\scriptsize{Copyright \textcopyright\ 2025 by SIAM\\
+Unauthorized reproduction of this article is prohibited}}
+
+%\pagenumbering{arabic}
+%\setcounter{page}{1}%Leave this line commented out.
+
+
+
+
+
 
 \date{}
 \maketitle
@@ -174,9 +191,9 @@ It was only in 2004 that both bounds were unified to obtain an $\O(n\sqrt{k \log
 by combining the fast Fourier transform with a purely combinatorial reasoning that allows for eliminating all but a few relevant positions
 in the text. It might have been seen at the time that such a complexity is the best possible as a function of $n$, $m$, and $k$,
 but surprisingly in 2016 Clifford et al.~\cite{Clifford2016a} designed another algorithm that works
-in $\tO(n + k^2n/m)$ time. In particular, this is almost linear when $k=\O(\sqrt{m})$. Later, their
+in $\tO(n + k^2n/m)$ time\footnote{We write $\tO$ to hide factors polylogarithmic in $n$.}. In particular, this is almost linear when $k=\O(\sqrt{m})$. Later, their
 approach was refined to work in $\tO(n + kn/\sqrt{m})$ time~\cite{Gawrychowski2018},
-which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$\footnote{We write $\tO$ to hide factors polylogarithmic in $n$.}. 
+which gives a smooth trade-off between $\tO(n\sqrt{k})$ and $\tO(n + k^2n/m)$. 
 It is known that a significantly faster algorithm implies fast Boolean matrix multiplication~\cite{Gawrychowski2018},
 and the time complexity can be slightly improved to $\O(n + kn\sqrt{(\log m) / m})$ \cite{Chan2020} (at the expense
 of allowing Monte Carlo randomization). In a very recent exciting improvement, it was shown how to slightly improve
@@ -192,10 +209,10 @@ Naturally, such an extension is motivated by the possible application in image p
 and not surprisingly the corresponding problem of 2D exact pattern matching has been already considered in the 70s.
 In this problem, the task is to locate all occurrences of an $m\times m$ pattern in an $n\times n$ text.
 For constant-size alphabets, an asymptotically optimal $\O(n^{2}+m^{2})$-time algorithm has been found relatively
-quickly, but (as opposed to 1D exact pattern matching) it was quite unclear for quite some time how to obtain
+quickly~\cite{AMIR1992233,AMIR19922,BIRD1977168,doi:10.1137/0207043}, but (as opposed to 1D exact pattern matching) it was quite unclear for quite some time how to obtain
 such a complexity without any assumptions on the size of the alphabet. Only in the mid 90s, a systematic
 study of the so-called periodicities in 2D strings paved up the way for obtaining such an algorithm~\cite{Amir1994,Galil1996}
-(even in logarithmic space~\cite{Crochemore1995}). Efficient parallel algorithms have also been obtained~\cite{Crochemore1998,Crochemore1998},
+(even in logarithmic space~\cite{Crochemore1995}). Efficient parallel algorithms have also been obtained~\cite{Crochemore1998},
 and the time complexity for random inputs, i.e., average time complexity, has also been considered~\cite{Baeza-Yates1993,Tarhio1996,Kaerkkaeinen1999}.
 
 \paragraph{Periodicities in 2D strings.} The fundamental combinatorial tool used for 1D strings is periodicity,
@@ -223,13 +240,13 @@ Given that other notions of approximate occurrences, e.g. bounded edit distance,
 setting~\cite{Baeza-Yates1998a}, the natural challenge is to better understand the complexity
 of 2D pattern matching with $k$ mismatches. Following the line of research for 1D pattern matching with $k$
 mismatches, a particularly natural question is to understand if we are able to design a quasi-linear time
-algorithm for polynomial $k=\O(n^{\epsilon})$ number of mismatches. It appears that no such result was known
+algorithm for polynomial $k=\O(n^{\epsilon})$ number of mismatches, where $0 < \epsilon$ is a small constant. It appears that no such result was known
 in the literature, and it was not clear if the methods designed for 1D pattern matching with $k$ mismatches
 can be immediately adapted to 2D strings, as they are based on extending the notion of periodicity, which becomes
 inherently more complicated in two dimensions.
 
 \paragraph{Our result.} We design an algorithm that, given an $n\times n$ text and $m\times m$ pattern, finds
-all occurrences with at most $k$ mismatches of the former in latter in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
+all occurrences with at most $k$ mismatches of the former in the latter in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 This significantly improves on the previously known upper bound of $\O(kn^{2})$ (from over 30 years ago),
 and provides a quasi-linear time algorithm for $k=\O(m^{4/5})$. To obtain our result, we follow the framework
 used to solve one-dimensional pattern matching with bounded Hamming distance. However, due to the intrinsically
@@ -238,7 +255,7 @@ properties of such objects.
 
 \paragraph{Overview of the techniques.}
 The starting point for our algorithm is the approach designed for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
-for an optimized version (but the approach is due to~\cite{Clifford2016}), which proceeds as follows.
+for an optimized version (but the approach is due to~\cite{Clifford2016}), which proceeds as follows. Using the standard trick~\cite{Abrahamson1987}, we can assume w.l.o.g. $n = 2m$. 
 First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}.
 Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
@@ -281,7 +298,7 @@ that we only need to convolute the periphery with a small portion of the pattern
 part of the text can be partitioned into fewer pieces, which allows us to obtain the following theorem.
 
 \begin{theorem}[Informal version of \cref{th:main}]
-Given a two-dimensional $m \times m$ string $P$ and a two-dimensional $n \times n$ string $T$, for $m \le n$,
+Given a two-dimensional $m \times m$ pattern string $P$ and a two-dimensional $n \times n$ text string $T$, for $m \le n$,
 there is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
 \end{theorem}
 
@@ -321,7 +338,7 @@ Alternatively, $u \cdot v = \absolute{u}\absolute{v} \cos \alpha$ and $u \times 
 \renewcommand{\d}[1]{\dom(#1)}
 \newcommand{\f}[1]{#1^\mathbf{f}}
 
-A \emph{one-dimensional string} $S$ is a function from a finite continuous subrange $[a,b]\subset \mathbb Z$ to $\Sigma \cup \{\wild\}$. If $a = 0$, we will sometimes simply write $S = S(a)S(a+1)\ldots S(b)$.\footnote{We chose this definition, which is slightly different from the standard one, as it conveniently generalises to two dimensions.} For two-dimensional strings, we use a slightly more general definition: Namely, we define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. We store strings as lists of point-character pairs. For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d{S}) - \min \X(\d{S})$ and the \emph{height} as $\max \Y(\d{S}) - \min \Y(\d{S})$. Finally, we say that $S$ is \emph{partitioned} into strings $R_0, R_1, \ldots, R_{\ell-1}$ if $\d{S} = \sqcup_{i \in [\ell]} \d{R_i}$ and $R_i(u) = S(u)$ for all $i \in [\ell]$ and $u \in \d{R_i}$.
+A \emph{one-dimensional string} $S$ is a function from a finite continuous subrange $[a,b]\subset \mathbb Z$ to $\Sigma \cup \{\wild\}$. If $a = 0$, we will sometimes simply write $S = S(a)S(a+1)\ldots S(b)$.\footnote{We chose this definition, which is slightly different from the standard one, as it conveniently generalises to two dimensions.} We define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. This is more general than seemingly necessary due to the technical details of the algorithm. We store strings as lists of point-character pairs. For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d{S}) - \min \X(\d{S})$ and the \emph{height} as $\max \Y(\d{S}) - \min \Y(\d{S})$. Finally, we say that $S$ is \emph{partitioned} into strings $R_0, R_1, \ldots, R_{\ell-1}$ if $\d{S} = \sqcup_{i \in [\ell]} \d{R_i}$ and $R_i(u) = S(u)$ for all $i \in [\ell]$ and $u \in \d{R_i}$.
 
 %\newcommand{\hd}{\textsc{HD1D}\xspace}
 %\newcommand{\HD}{\textsc{HD2D}\xspace}
@@ -364,7 +381,7 @@ S(x,y) & \text{ otherwise}
 \end{cases}
 $$
 
-Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-defined character values with wildcards, and writing the rectangle two-dimensional string row-by-row. 
+Intuitively, this can be seen as inscribing $S$ into a rectangle, filling non-defined character values with wildcards, and writing the rectangle two-dimensional string column-by-column. 
 
 \begin{theorem}\label{kangaroos}
 Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ and $\d{T} = [n] \times [n]$, for $m \le n$. Given a set $Q \subseteq \Z^2$, there is an algorithm that computes $d_q = \Ham(P + q, T) $ for every $q \in Q$ in total time $\O(n^2 + \sum_{q \in Q} d_q)$.
@@ -384,13 +401,13 @@ We build the data structure of \cref{fact:kangaroo1D} for two strings: $\ID(T) \
 Consider now $q \in Q$. To compute $\Ham(T, P+q)$, note that 
 
 \begin{align*}
-\Ham(T, P+q) &= \sum_{i=0}^{m-1} \Ham(T_{\x{q}+i, \y{q}}, P_i)\\
-&= \sum_{0 \le i \le m-1 \; : \; \ID(T_{\x{q}+i, \y{q}}) \neq \ID(P_i)} \Ham(T_{\x{q}+i, \y{q}}, P_i) \\
-&= \sum_{x \in \MI(\ID(T_{\x{q}, \y{q}}) \ldots \ID(T_{\x{q}, \y{q}+m-1}), \ID(P))} \Ham(T_{x, \y{q}}, P_{x-\x{q}})\\
+\Ham(T, P+q) &= \sum_{i=0}^{m-1} \Ham(T_{\x{q}, \y{q}+i}, P_i)\\
+&= \sum_{0 \le i \le m-1 \; : \; \ID(T_{\x{q}, \y{q}+i}) \neq \ID(P_i)} \Ham(T_{\x{q}, \y{q}+i}, P_i) \\
+&= \sum_{y \in \MI(\ID(T_{\x{q}, \y{q}}) \ldots \ID(T_{\x{q}, \y{q}+m-1}), \ID(P))} \Ham(T_{\x{q}, y}, P_{y-\y{q}})\\
 \end{align*}
 
-It follows that we can first use the data structure of \cref{fact:kangaroo1D} for  $\ID(T) \$ \ID(P)$ to compute the set $\MI =  \MI(\ID(T_{\x{q}, \y{q}}) \ldots \ID(T_{\x{q}, \y{q}+m-1}), \ID(P))$ in $\O(\absolute{\MI}) = \O(d_q)$ time, and then for each $x \in \MI$, we use the data structure of  \cref{fact:kangaroo1D}  for $\bar{T} \$ \bar{P}$ to compute 
-$\Ham(T_{x, \y{q}}, P_{x-\x{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
+It follows that we can first use the data structure of \cref{fact:kangaroo1D} for  $\ID(T) \$ \ID(P)$ to compute the set $\MI =  \MI(\ID(T_{\x{q}, \y{q}}) \ldots \ID(T_{\x{q}, \y{q}+m-1}, \ID(P))$ in $\O(\absolute{\MI}) = \O(d_q)$ time, and then for each $y \in \MI$, we use the data structure of  \cref{fact:kangaroo1D}  for $\bar{T} \$ \bar{P}$ to compute 
+$\Ham(T_{\x{q}, y}, P_{y-\y{q}})$ in total $\O(d_q)$ time as well. Summing up the resulting values, we obtain $\Ham(T, P+q)$. The claim follows. 
 \end{proof}
 
 The following fact is folklore, and follows by applying, for every distinct character present in $P$ and $T$, a separate instance of the fast Fourier transform~\cite{FischerP74} to copies of the pattern and the text where all but the given character are replaced with a new character.
@@ -422,7 +439,7 @@ We now show a simple embedding from two-dimensional strings to one-dimensional, 
 
 \begin{claim}
 \label{claim:padding}
-Let $P$ and $T$ be non-empty two-dimensional strings of respective widths $w_P, w_T$ and heights~$h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \times h_P$ and $\lambda(T)$ of size $w_T \times h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to solve the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
+Let $P$ and $T$ be non-empty two-dimensional strings of respective widths $w_P, w_T$ and heights~$h_P, h_T$. There are one-dimensional strings $\lambda(P)$ of size $w_T \cdot h_P$ and $\lambda(T)$ of size $w_T \cdot h_T$ that we can compute in $\O((w_P+w_T)(h_P+h_T))$ time such that to solve the text-to-pattern Hamming distances problem for $P$ and $T$ it is enough to solve it for $\lambda(P)$ and $\lambda(T)$. 
 \end{claim}
 \begin{proof}
 We first construct a two-dimensional string $P'$ such that for all $\min \X(\d{P}) \le i \le \max \X(\d{P})+(w_T-w_P)$ and $\min \Y(\d{P}) \le j \le \max \Y(\d{P})$ there is
@@ -435,15 +452,15 @@ P(i,j) & \text{ if } (i,j) \in \d{P}\\
 \end{cases}
 $$
 %
-Intuitively, we inscribe $P$ into a rectangle, then add $w_T-w_P$ columns to it, and finally fill all non-defined character values with wildcards. Note that for all $q \in \Z^2$ there is $\Ham(T,P+q) = \Ham(T,P'+q)$. We linearise $T$ to obtain a one-dimensional string $\bar{T}$ of size $w_T \times h_T$ and $P'$ to obtain a one-dimensional string $\bar{P'}$ of length $w_T \times h_P$. We then have:
+Intuitively, we inscribe $P$ into a rectangle, then add $w_T-w_P$ columns to it, and finally fill all non-defined character values with wildcards. Note that for all $q \in \Z^2$ there is $\Ham(T,P+q) = \Ham(T,P'+q)$. We linearise $T$ to obtain a one-dimensional string $\bar{T}$ of size $w_T \cdot h_T$ and $P'$ to obtain a one-dimensional string $\bar{P'}$ of length $w_T \cdot h_P$. The strings $\bar{T}$ and $\bar{P'}$ can be computed in $\O((w_P+w_T)(h_P+h_T))$ time. Furthermore, we have:
 %
 $$\Ham(T, P+q) = \Ham(T,P'+q) = \Ham(\bar{T}(\x{q} \cdot h_T + \y{q}) \ldots \bar{T}(\x{q} \cdot h_T + \y{q}+w_T \times h_P-1), \bar{P'})$$
 %
-The claim follows. 
+The claim follows by defining $\lambda(P) = \bar{P'}$ and $\lambda(T) = \bar{T}$.  
 \end{proof}
 
 \begin{corollary}\label{cor:sigman2d}
-Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights~$h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O((\sigma+1) \cdot N \log N)$, where $\sigma$ is the number of different characters present both in $P$ and $T$ and $N = (w_P + w_T)(h_P + h_T)$.
+Given two non-empty two-dimensional strings $P$ and $T$ of widths $w_P, w_T$ and heights~$h_P, h_T$, we can solve the text-to-pattern Hamming distances problem in time $\O(\sigma \cdot N \log N)$, where $\sigma$ is the number of different characters present both in $P$ and $T$ and $N = (w_P + w_T)(h_P + h_T)$.
 \end{corollary}
 \begin{proof}
 We replace all characters of $T$ non-present in $P$ with a new character in $\O(w_T\times h_T)$ time. The Hamming distances do not change. The claim then follows immediately from \cref{fact:sigman1d} and \cref{claim:padding}. 
@@ -1125,7 +1142,7 @@ Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic t
 To compute $\absolute{\d{P + q} \cap U}$ for all $q \in Q$, we create strings $P'$ and $T'$ with respective domains $\dom(P)$ and $\dom(T)$. Both strings are filled with character $0$. 
 In $T'$, we then replace all positions from $\dom(U)$ with character $1$. 
 We observe that $\absolute{\d{P + q} \cap U} = \Ham(P' + q, T')$, which can be computed for all $q \in Q$ in $\tO(m^2)$ time with \cref{cor:sigman2d}.
-It remains to shown how to compute the second term, let it be $\tau_q$. 
+It remains to show how to compute the second term, let it be $\tau_q$. 
 
 Denote $D = \set{u : u \in \L, \h{u} \ge 0, \s{u} \le 0} = \{ s\phi + t\psi : s,t \in \mathbb N_{\geq 0}\}$, where $\L = \{ s\phi + t\psi : s,t \in \mathbb Z\}$ is the set from \Cref{lattice_congruency} (geometrically, $D$ is the part of the lattice spanned by the angle with the sides collinear to $\phi$ and~$\psi$).
 
@@ -1445,7 +1462,7 @@ We will denote height bounds by using $h_i = h(V_i)$. We now show that $\sum_{i 
 \[ h_i \le \y{u_{i - 2}} - \y{u_{i}} + d.\]
 since if that were not the case for some $i$, the points $u_{i - 2}$ and $(\x{v_{i}}, \y{u_{i}} + h_i - 1)$ would have contradicted \cref{border_lemma}. We conclude that the sum $h_i$ can be upper-bounded by a telescoping series:
 %
-$$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d) = \O(m)\qedhere$$
+$$\sum_{i = 0}^{\ell - 1} h_i \le h_0 + h_1 + \sum_{i = 2}^{\ell - 1} (\y{u_{i - 2}} - \y{u_i} + d) = \O(m)$$
 \end{proof}
 
 As an immediate corollary, we obtain
