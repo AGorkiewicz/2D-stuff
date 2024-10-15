@@ -548,8 +548,7 @@ Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There i
 
 Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
-\subsection{Partitionings of the pattern and the text}
-\label{sec:partitioning}
+\subsection{Partitioning of the pattern and the text}
 Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
 
 \begin{restatable*}[Lattice congruency]{definition}{restateDefLatticeCongruency}\label{lattice_congruency}
@@ -1191,7 +1190,7 @@ In this section, we prove two main components of our algorithm, \cref{th:sparse_
 
 \subsection{Proof of \cref{th:sparse_algo}}
 \restateThmSparseAlgo
-Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partitioning}).
+Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partition}\jonas{have to check this later}).
  Observe that
 \begin{align}
 \label{eq:sparse}
