@@ -69,6 +69,8 @@
 \renewcommand{\L}{\mathcal{L}}
 \newcommand{\W}{\mathcal{W}}
 
+\newcommand{\Ta}{T_\mathbf{a}}
+
 \renewcommand{\phi}{\varphi}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
 \newcommand{\set}[1]{\left\lbrace #1 \right\rbrace}
@@ -606,7 +608,6 @@ Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{
 
 Because $T$ is not necessarily periodic, we need to use a similar but more sophisticated partitioning.
 
-\newcommand{\Ta}{T_\mathbf{a}}
 \begin{restatable*}[Active text]{definition}{restateDefActiveText}
 We define the \emph{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P + q}$. 
 \end{restatable*}
@@ -875,15 +876,43 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 
 
 \jonasi{below}
+
+
+
+Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
+
 \restateDefLatticeCongruency
+
 \restateDefTile
+
+Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides parallel to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
+
 \restateDefTruncatedTile
+
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
+
 \restateDefSubtile
+
+See \Cref{figure:tile} for an illustration. Note that every truncated subtile is a subtile.
+
 \restateDefTileString
+
 \restateDefMonochromaticString
+
+\restateThmTileDecomposition
+
+Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
+
+Because $T$ is not necessarily periodic, we need to use a similar but more sophisticated partitioning.
+
 \restateDefActiveText
+
 \restateObsActiveText
+
 \restateDefPeripherality
+
+\restateThmTextDecomposition
+
 \jonasi{above}
 
 
