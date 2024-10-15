@@ -2,6 +2,8 @@
 
 \usepackage[letterpaper]{geometry}
 
+\renewcommand{\floatpagefraction}{.8}
+
 \usepackage{ltexpprt}
 \usepackage{hyperref}
 
@@ -555,7 +557,7 @@ Next, we define tiles, which will be used to partition $P$ and $T$ into one-char
 We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that $u, v \in \Z^2$ are \emph{congruent}, denoted $u \equiv v$, if $u - v \in \L$. 
 \end{restatable*}
 
-\begin{figure}[h!]
+\begin{figure}
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{drawings/parquet}
 	\end{center}
@@ -1078,7 +1080,7 @@ For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
 \end{enumerate}
 \end{restatable}
 
-\begin{figure}[h!]
+\begin{figure}
         \centering
         \includegraphics[width=0.75\textwidth]{drawings/lemma5}
         \caption{Parallelogram grid.}
@@ -1163,7 +1165,7 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell - 1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
 \end{enumerate}
 
-\begin{figure}[h!]
+\begin{figure}
         \centering
         \includegraphics[width=0.75\textwidth]{drawings/text_decomposition}
         \caption{Parallelogram cover of $\Ta$. The polygon in the center corresponds to $\Ta$. Red parallelograms are $\O(n/\ell)$-peripheral, blue coverable, and green belong to $\I$.}
@@ -1479,7 +1481,7 @@ Below, we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$. The other cas
 
 For a string $V$, define a value $h(V)$ that is an upper bound on $V$'s height as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h : \forall u,v \in V, (\x{v}, \y{v} + h) \notin \d{\Ta}\}$. We start with the following technical claim.
 
-\begin{figure}[h!]
+\begin{figure}
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
