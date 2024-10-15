@@ -515,7 +515,7 @@ If $\absolute{Q} \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true 
 The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, it is the area of their intersection.
 
 % 2D PERIODICITY
-\subsection{Two-dimensional periodicity} \label{periodicity_section}
+\subsection{Two-dimensional periodicity}
 We start by defining two-dimensional periods.
 
 %\begin{figure}[!t]
@@ -876,8 +876,6 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 
 
 \jonasi{below}
-
-
 
 Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
 
@@ -1560,7 +1558,7 @@ As an immediate corollary, we obtain
 $\absolute{\d{F_1}} = \O(dm)$. 
 \end{corollary}
 
-Recall the construction of the sets $\V_\sigma$ described in \Cref{periodicity_section}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
+Recall the construction of the sets $\V_\sigma$ described in \Cref{TODO}\jonas{TODO}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
 
 \[\Ham(P + q, S) = \Ham(P + q, F_1') + \Ham(P + q, F_1'').\]
 
