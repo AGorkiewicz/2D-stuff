@@ -65,6 +65,7 @@
 \newcommand{\V}{\mathcal{V}}
 \newcommand{\F}{\mathcal{F}}
 \renewcommand{\L}{\mathcal{L}}
+\newcommand{\W}{\mathcal{W}}
 
 \renewcommand{\phi}{\varphi}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
@@ -298,10 +299,16 @@ the relevant positions of the text into its periphery and the rest, and observe 
 that we only need to convolute the periphery with a small portion of the pattern. The remaining non-peripheral
 part of the text can be partitioned into fewer pieces, which allows us to obtain the following theorem.
 
-\begin{theorem}[Informal version of \cref{th:main}]
-Given a two-dimensional $m \times m$ pattern string $P$ and a two-dimensional $n \times n$ text string $T$, for $m \le n$,
-there is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
-\end{theorem}
+
+\def\mainThmTitle{Informal version}
+\def\mainThmContent{%
+Given a two-dimensional $m \times m$ pattern string $P$ and a two-dimensional $n \times n$ text string $T$ with $m \le n$,
+there is an algorithm that solves the $k$-mismatch problem in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.%
+}
+
+\begin{restatable}[\mainThmTitle]{@theorem}{restateThmMain}\label{th:main}
+\mainThmContent%
+\end{restatable}
 
 \noindent Throughout the paper, we assume the standard word-RAM model of computation with words of size $\Omega(\log n)$.
 
@@ -483,11 +490,15 @@ Follows from \cref{cor:approx1d} and \cref{claim:padding}.
 \section{Technical overview}
 In this section, we present the technical ideas behind our main result:
 
-\begin{restatable}{theorem}{MainResult}\label{th:main}
-Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.
-\end{restatable}
 
- Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+\def\mainThmTitle{Formal version}
+\def\mainThmContent{%
+Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.%
+}
+
+\restateThmMain*
+
+Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
@@ -512,21 +523,21 @@ We start by defining two-dimensional periods.
 %\end{figure}
 
 
-\begin{definition}[Two-dimensional approximate period]
+\begin{restatable*}[Two-dimensional approximate period]{definition}{restateDefTwoDApproxPeriod}
 We say that a string $S$ has an \emph{$\ell$-period} $\delta \in \Z^2$ when $\Ham(S + \delta, S) \le \ell$.
-\end{definition}
+\end{restatable*}
 
-
-\begin{claim} \label{periodicity_lemma}
+\begin{restatable*}{claim}{restateClaimPeriodicity} \label{periodicity_lemma}
 For all $u, v \in Q$, we have that $u - v \in \Z^2$ is a $\O(k)$-period of $P$.
-\end{claim}	
+\end{restatable*}	
 \begin{proof}
 $\Ham(P + u - v, P) = \Ham(P + u, P + v) \le \Ham(P + u, T) + \Ham(T,P + v) = \O(k)$.
 \end{proof}
 
+
 As $Q$ is big, it generates two $\O(k)$-periods with a big angle between them and such that they and their negations belong to distinct quadrants of $\Z^2$: 
 
-\begin{restatable*}{theorem}{GetPeriods}\label{get_periods}
+\begin{restatable*}{@theorem}{restateThmGetPeriods}\label{get_periods}
 Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There is an $\tO(\absolute{U})$-time algorithm that finds $u, v, u', v' \in U$, such that the following conditions hold for $\psi = u - v$ and $\phi = u' - v'$:
 	\begin{itemize}
 		\item $\psi \in (0, +\infty) \times [0, +\infty)$, $\phi \in [0, +\infty) \times (-\infty, 0)$;
@@ -541,9 +552,9 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 \label{sec:partitioning}
 Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
 
-\begin{definition}[Lattice congruency]\label{lattice_congruency}
+\begin{restatable*}[Lattice congruency]{definition}{restateDefLatticeCongruency}\label{lattice_congruency}
 We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that $u, v \in \Z^2$ are \emph{congruent}, denoted $u \equiv v$, if $u - v \in \L$. 
-\end{definition}
+\end{restatable*}
 
 \begin{figure}[h!]
 	\begin{center}
@@ -553,40 +564,40 @@ We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that
 	\label{figure:tile}
 \end{figure}
 
-\begin{definition}[Tile]\label{tile_definition}
+\begin{restatable*}[Tile]{definition}{restateDefTile}\label{tile_definition}
 We call $U \subseteq \Z^2$ a \emph{tile} if there exist $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$, such that
 	\[ U = \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}. \]
 We call the values $\phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ its \emph{signature}. 
-\end{definition}
+\end{restatable*}
 
 Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides parallel to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
 
-\begin{definition}[Truncated tile]
+\begin{restatable*}[Truncated tile]{definition}{restateDefTruncatedTile}
 We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x_1, y_0, y_1 \in \Z \cup \{-\infty, +\infty\}$ and $\phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ such that 
 	\begin{enumerate}
 		\item $U = [x_0, x_1] \times [y_0, y_1] \cap \set{u : u \in \Z^2, \h{u} \in [\phi_0, \phi_1], \s{u} \in [\psi_0, \psi_1]}$. 
 		\item $x_1 - x_0 + 1 \ge \absolute{\x{\phi}} + \absolute{\x{\psi}}$ and $y_1 - y_0 + 1 \ge \absolute{\y{\phi}} + \absolute{\y{\psi}}$. 
 	\end{enumerate}
 The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are called its \emph{signature}. 
-\end{definition}
+\end{restatable*}
 
 Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
 
-\begin{definition}[Subtile]\label{subtile_definition}
+\begin{restatable*}[Subtile]{definition}{restateDefSubtile}\label{subtile_definition}
 We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$. Abusing notation, we write $V \equiv v$ for $v \in \Z^2$ if $v \equiv \gamma$ and for two (truncated) subtiles $U,V$ we write $U \equiv V$ if there exists $v \in \Z^2$ such that $U \equiv v$ and $V \equiv v$.
-\end{definition}
+\end{restatable*}
 
 See \Cref{figure:tile} for an illustration. Note that every truncated subtile is a subtile.
 
-\begin{definition}[Tile string]\label{tile_string_definition}
+\begin{restatable*}[Tile string]{definition}{restateDefTileString}\label{tile_string_definition}
 We call a string $S$ a \emph{(truncated) (sub)tile string} if $\d{S}$ is a (truncated) (sub)tile.
-\end{definition}
+\end{restatable*}
 
-\begin{definition}[Monochromatic string]
+\begin{restatable*}[Monochromatic string]{definition}{restateDefMonochromaticString}
 A string $S$ is called \emph{monochromatic} if there is a character $\getchar{S} \in \Sigma$ such that for every $u \in \d{S}$ there is $S(u) = \getchar{S}$.  
-\end{definition}
+\end{restatable*}
 
-\begin{restatable*}{theorem}{tileDecomposition}\label{tile_decomposition}
+\begin{restatable*}{@theorem}{restateThmTileDecomposition}\label{tile_decomposition}
 Assume to be given a (truncated) tile string $R$ such that $\phi, \psi$ are its $\O(k)$-periods. After $\O(m^2)$-time preprocessing of $\phi, \psi$, the string $R$ can be partitioned in time $\tO(\absolute{\d{R}} + k)$ into $\O(k)$ monochromatic (truncated) subtile strings.
 \end{restatable*}
 
@@ -595,30 +606,30 @@ Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{
 Because $T$ is not necessarily periodic, we need to use a similar but more sophisticated partitioning.
 
 \newcommand{\Ta}{T_\mathbf{a}}
-\begin{definition}[Active text]
+\begin{restatable*}[Active text]{definition}{restateDefActiveText}
 We define the \emph{active text} $\Ta$ as the restriction of $T$ to $\bigcup_{q \in Q} \d{P + q}$. 
-\end{definition}
+\end{restatable*}
 
-\begin{observation}\label{obs:active_text}
+\begin{restatable*}{observation}{restateObsActiveText}\label{obs:active_text}
 $\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
-\end{observation}
+\end{restatable*}
 
-\begin{definition}[Peripherality]
+\begin{restatable*}[Peripherality]{definition}{restateDefPeripherality}
 For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{\absolute{u - v} : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
-\end{definition}
+\end{restatable*}
 
-\begin{restatable*}{theorem}{TextDecomposition}\label{text_decomposition}
+\begin{restatable*}{@theorem}{restateThmTextDecomposition}\label{text_decomposition}
 Given $\ell \in [2m]$, one can partition $\Ta$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and an $\O(m / \ell)$-peripheral string.
 \end{restatable*}
 
 \subsection{Algorithm}
 In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a string that can be partitioned into a set of a monochromatic subtile strings can be computed efficiently: 
 
-\begin{restatable}{theorem}{SparseAlgo}
+\begin{restatable*}{@theorem}{restateThmSparseAlgo}
 \label{th:sparse_algo}
 Let $\S$ be a set of monochromatic subtile strings $\S$ with a property that the domains $\d{S}$ for $S \in \S$ are pairwise disjoint subsets of $\d{T}$. There is an algorithm that computes
 $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in total time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$.
-\end{restatable}
+\end{restatable*}
 
 As an immediate corollary, we obtain an $\tO(m^2 + mk^2)$-time solution for the $k$-mismatch problem. First, we apply \Cref{text_decomposition} for a large enough value $\ell = \Theta(m)$ to partition the active text $\Ta$ into a set $\S$ of $\O(mk)$ monochromatic subtile strings and a $0$-peripheral string, empty by definition, in time $\tO(m^2 + mk)$. For every $q \in Q$ we then have $\Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S)$, and these values can be computed in $\tO(m^2 + mk^{2})$ total time by \cref{th:sparse_algo}, since $\sum_{S \in \S} \absolute{\V_{\getchar{S}}} \le \absolute{\S} \absolute{\V} = \O(mk \cdot k)$. 
 
@@ -629,26 +640,33 @@ We obtain a set~$\S$ of $\O(mk^{1/4})$ monochromatic subtile strings $\S$, and a
 
 By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$, since similarly to above we have $\sum_{S \in \S} \absolute{\V_{\getchar{S}}} \le \absolute{\S} \absolute{\V} = \O(mk^{5/4})$. To compute the values $\Ham(P + q, F)$, we apply the following result:
 
-\begin{restatable*}{theorem}{DenseAlgo}
+\begin{restatable*}{@theorem}{restateThmDenseAlgo}
 \label{th:dense_algo}
 Given a $d$-peripheral string $F$, there is an algorithm that computes $\Ham(P + q, F)$ for every $q \in Q$ in total time $\tO(m^2 + mdk^{1/2})$.
 \end{restatable*}
 
 By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
-In \cref{sec:two_periods,sec:partition,sec:algorithm}, we explain the proof in full detail, including the proofs of the main technical results from  
+In \cref{sec:two_periods,sec:partition,sec:algorithm}, we explain the proof in full detail, including the proofs of the main technical results stated in \cref{get_periods,tile_decomposition,text_decomposition,th:sparse_algo,th:dense_algo}.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Two-dimensional periodicity: Proof of \cref{get_periods}}
 \label{sec:two_periods}
+
+\jonasi{below}
+\restateDefTwoDApproxPeriod
+\restateClaimPeriodicity
+\jonasi{above}
+
 In this section, we show the following result that allows us to select two ``good'' periods of the pattern:
 
 %\def\newrel{\le_{\rho, z}}
 %\begin{lemma}
 %Let $\ell \in \mathbb Z^+$ and $U \subseteq [\ell + 1]^2$. Let $z \in [0, \pi/2]$, $\rho \in \mathbb Z^2$, and let $R = [-z, +z]$. Let $\newrel$ be a relation defined as follows. For every $u \in U$, it holds $u \newrel u$. For $u, v \in U$ with $u \neq v$, it holds $u \newrel v$ if and only if the angle between $(v - u)$ and $\rho$ is within $R$. Then $\newrel$ is a partial order.
 %\end{lemma}
-\GetPeriods
+\restateThmGetPeriods
 \begin{proof}
 We start by finding the closest pair of points in $U$.
 Specifically, we select any pair of different points $s, t \in U$ that minimizes $\absolute{t - s}$. 
@@ -832,6 +850,23 @@ Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Partitioning of the pattern and the text}
 \label{sec:partition}
+
+
+
+\jonasi{below}
+\restateDefLatticeCongruency
+\restateDefTile
+\restateDefTruncatedTile
+\restateDefSubtile
+\restateDefTileString
+\restateDefMonochromaticString
+\restateDefActiveText
+\restateObsActiveText
+\restateDefPeripherality
+\jonasi{above}
+
+
+
 The goal of this section is to show \cref{tile_decomposition} (which explains how to partition the pattern into monochromatic truncated subtile strings) and \cref{text_decomposition} (which explains how to partition the text). We start with a technical \cref{sec:lattices_subtiles}, which describes necessary properties of lattices and subtiles. 
  
 % tile DECOMPOSITION
@@ -970,7 +1005,7 @@ Given a (truncated) subtile string $S$, there is an algorithm that runs in time 
 \subsection{Partitioning of a periodic string}
 The next theorem is used to partition both the pattern $P$ and the active text $\Ta$.
 
-\tileDecomposition
+\restateThmTileDecomposition
 \begin{proof}
 We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\absolute{\Gamma} = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$ (\Cref{lattice_base}). Next, we use it to partition $R$ into a set of (truncated) subtile strings $\S$, such that $\absolute{\S} = \O(\min\set{m, k})$: Namely, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a (truncated) subtile string defined as the restriction of $R$ to $\d{R} \cap (\L + \gamma)$. For that, we consider each $u \in \d{R}$, construct its basis decomposition $u = s\cdot \phi + t\cdot \psi$, where $s,t\in \R$ by solving a system of linear equations in $\O(1)$ time, and add $u$ into the restriction corresponding to $\gamma = (s-\floor{s}) \cdot \phi + (t-\floor{t}) \cdot \psi \in \Gamma$. 
 
@@ -991,7 +1026,7 @@ We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\a
 \subsection{Text partitioning}
 While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\phi$ and $\psi$ as $\O(k)$-periods) into monochromatic truncated subtile strings, $T$ is not necessarily periodic, and we are obliged to extend \cref{tile_decomposition} further to obtain a partitioning for $T$. In this section, we show the following result:
 
-\TextDecomposition
+\restateThmTextDecomposition
 
 
 \subsection{Proof of \cref{text_decomposition}}
@@ -1003,7 +1038,7 @@ We assume that a parallelogram contains its border and its vertices.
 	For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
 \end{definition}
 
-\begin{restatable}{lemma}{parallelogram_grid}\label{lm:parallelogram_grid}
+\begin{restatable}{lemma}{restateLemParallelogramGrid}\label{lm:parallelogram_grid}
 For all $\ell \in [2m]$, one can construct in $\O(m^2)$ time a parallelogram grid $\{p_{i,j} : i,j \in [\ell]\}$, which satisfies each of the following:
 \begin{enumerate}[(a)]
 \item \label{it:unique} For all $u \in [n] \times [n]$, there exist unique $i,j$ such that $u \in p_{i,j}$.
@@ -1135,7 +1170,7 @@ This concludes the proof of \cref{text_decomposition}.
 In this section, we prove two main components of our algorithm, \cref{th:sparse_algo} and \cref{th:dense_algo}. \cref{th:sparse_algo} gives an efficient algorithm for computing the Hamming distances between $P$ and a text partitioned into a small number of monochromatic subtile strings, and \cref{th:dense_algo} gives an efficient algorithm for computing the Hamming distances between $P$ and a $d$-peripheral string.
 
 \subsection{Proof of \cref{th:sparse_algo}}
-\SparseAlgo*
+\restateThmSparseAlgo
 Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partitioning}).
  Observe that
 \begin{align}
@@ -1300,7 +1335,7 @@ Define a set of truncated subtiles $\S \odot \V := \{V-w_{i, j}(S) : S \in \S, V
 \tau_q^{i,j} = \sum_{V \in \S \odot \V} \absolute{\d{D-q} \cap \d{V}}
 \end{align}
 
-\newcommand{\W}{\mathcal{W}}
+
 \begin{lemma}\label{primitive_conv}
 The values $\tau_q^{i,j}$ for all $q \in Q$ can be computed in total time $\tO(m^2 + \sum_{S \in \S} \absolute{\V_{\getchar{S}}})$. 
 \end{lemma}
@@ -1415,7 +1450,7 @@ We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q}
 \subsection{Proof of \cref{th:dense_algo}}
 In this section, we show how to compute the Hamming distances between $P$ and a $d$-peripheral string efficiently:
 
-\DenseAlgo
+\restateThmDenseAlgo
 
 We partition $F$ into four roughly equal-sized $d$-peripheral strings $F_1, \dots, F_4$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
 %
@@ -1486,7 +1521,7 @@ For all $u \in \d{F_1'}$, $\getchar{I_u}$ is an infrequent character, and hence 
 Furthermore, by \cref{cor:area_F}, we have $\absolute{\d{F_1'}} = \O(md)$, and the total complexity of this step is $\tO(m^2 + mdk^{1/2})$. 
 To compute the values $\Ham(P + q, F_1'')$, we apply the following lemma:
 
-\begin{restatable}{lemma}{SigmaBorder}\label{lm:sigma_border}
+\begin{restatable}{lemma}{restateLemSigmaBorder}\label{lm:sigma_border}
 Let $F_1''$ be a $d$-peripheral string such that $\d{F_1''} \subseteq K_1$. There is an algorithm that computes, for all $q \in Q$, the distance $\Ham(P + q, F_1'')$ in total time $\tO(m^2 + (\sigma+1) \cdot md)$, where $\sigma$ is the total number of distinct characters in $P$ and $F_1''$.
 \end{restatable}
 
