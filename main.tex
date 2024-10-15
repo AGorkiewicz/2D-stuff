@@ -875,11 +875,35 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 
 
 
-\jonasi{below}
-
-Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
+\jonasi{below}\noindent%
+Next, we use $\phi$ and $\psi$ to define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
+The partitioning will depend on the lattice spanned by $\phi$ and $\psi$. We use the lattice to partition the domains of $P$ and $T$ into $\O(\min\{m, k\})$ congruency classes.
 
 \restateDefLatticeCongruency
+
+\begin{lemma} \label{lattice_base}
+	There exists an algorithm that constructs in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\absolute{\Gamma} = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$.
+\end{lemma} 
+	\begin{proof}
+		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$ and $\Gamma = p \cap \Z^2$.
+		By Pick's Theorem, a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its area.
+		Observe that the elements of $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
+		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $\absolute{\Gamma} = \O(\min\set{m, k})$.
+		
+		Now consider any $u \in \Z^2$.
+		As $\phi, \psi$ are not collinear, there exist unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
+		$u = (s + s') \phi + (t + t') \psi$.
+		By definition, 
+		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
+		
+		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\phi},\y{\psi}]$. We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
+	\end{proof}
+	
+\subsection*{Monochromatic tiles.}
+As mentioned before, we will partition $P$ and $S$ into one-character strings of regular form. A string containing only a single character is \emph{monochromatic, formally:}
+
+\restateDefMonochromaticString
+
 
 \restateDefTile
 
@@ -895,7 +919,6 @@ See \Cref{figure:tile} for an illustration. Note that every truncated subtile is
 
 \restateDefTileString
 
-\restateDefMonochromaticString
 
 
 \subsection{Properties of lattices and subtiles}
