@@ -9,7 +9,7 @@
 \usepackage{amssymb,amsmath,amsmath,amsfonts}  
 \usepackage{xspace,enumerate}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{thmtools}
+%\usepackage{thmtools}
 \usepackage{thm-restate}
 \usepackage[cmbtt]{bold-extra}
 \usepackage[T1]{fontenc}
@@ -31,13 +31,14 @@
 \usepackage[capitalise]{cleveref}
 
  
-\newtheorem{observation}{Observation}
-\newtheorem{definition}{Definition}
-\newtheorem{example}{Example}
-\newtheorem{conjecture}{Conjecture} 
-\newtheorem{claim}{Claim}
-\newtheorem{problem}{Problem}
-\newtheorem{remark}{Remark}
+\newtheorem{observation}{Observation}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{claim}{Claim}[section]
+
+%\newtheorem{problem}{Problem}[section]
+%\newtheorem{remark}{Remark}[section]
+%\newproof{example}{Example}[section]
+%\newtheorem{conjecture}{Conjecture}[section]
 
 \crefname{conjecture}{Conjecture}{Conjectures}
 \crefname{lemma}{Lemma}{Lemmas}
@@ -47,7 +48,7 @@
 \crefname{observation}{Observation}{Observations}
 \crefname{@theorem}{Theorem}{Theorems}
 \crefname{fact}{Fact}{Facts}
-\crefname{claim}{Claim}{Claims}
+\crefname{claim}{Claim}{Claims} 
 
 \def\dd{\mathinner{.\,.}}
 \newcommand{\R}{\mathbb{R}}
@@ -634,11 +635,13 @@ Given a $d$-peripheral string $F$, there is an algorithm that computes $\Ham(P +
 \end{restatable*}
 
 By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
+In \cref{sec:two_periods,sec:partition,sec:algorithm}, we explain the proof in full detail, including the proofs of the main technical results from  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Two-dimensional periodicity: Proof of \cref{get_periods}}
+\label{sec:two_periods}
 In this section, we show the following result that allows us to select two ``good'' periods of the pattern:
 
 %\def\newrel{\le_{\rho, z}}
@@ -828,6 +831,7 @@ Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Partitioning of the pattern and the text}
+\label{sec:partition}
 The goal of this section is to show \cref{tile_decomposition} (which explains how to partition the pattern into monochromatic truncated subtile strings) and \cref{text_decomposition} (which explains how to partition the text). We start with a technical \cref{sec:lattices_subtiles}, which describes necessary properties of lattices and subtiles. 
  
 % tile DECOMPOSITION
