@@ -897,9 +897,19 @@ See \Cref{figure:tile} for an illustration. Note that every truncated subtile is
 
 \restateDefMonochromaticString
 
+
+\subsection{Properties of lattices and subtiles}
+
+
+\subsection{Pattern partitioning}
+
+
 \restateThmTileDecomposition
 
 Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
+
+
+\subsection{Text partitioning}
 
 Because $T$ is not necessarily periodic, we need to use a similar but more sophisticated partitioning.
 
