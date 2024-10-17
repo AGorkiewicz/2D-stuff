@@ -1212,10 +1212,28 @@ This concludes the proof of \cref{text_decomposition}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Algorithm}
 \label{sec:algorithm}
-In this section, we prove two main components of our algorithm, \cref{th:sparse_algo} and \cref{th:dense_algo}. \cref{th:sparse_algo} gives an efficient algorithm for computing the Hamming distances between $P$ and a text partitioned into a small number of monochromatic subtile strings, and \cref{th:dense_algo} gives an efficient algorithm for computing the Hamming distances between $P$ and a $d$-peripheral string.
 
-\subsection{Proof of \cref{th:sparse_algo}}
+
+Now we show how to algorithmically exploit the partitioning of the pattern and the text. In \cref{sec:algorithm:center}, we show that the Hamming distances between $P$ and a string that can be partitioned into a set of monochromatic subtile strings can be computed efficiently:
+
 \restateThmSparseAlgo
+
+As an immediate corollary, we obtain an $\tO(m^2 + mk^2)$-time solution for the $k$-mismatch problem. First, we apply \Cref{text_decomposition} for a large enough value $\ell = \Theta(m)$ to partition the active text $\Ta$ into a set $\S$ of $\O(mk)$ monochromatic subtile strings and a $0$-peripheral string, empty by definition, in time $\tO(m^2 + mk)$. For every $q \in Q$ we then have $\Ham(P + q, \Ta) = \sum_{S \in \S} \Ham(P + q, S)$, and these values can be computed in $\tO(m^2 + mk^{2})$ total time by \cref{th:sparse_algo}, since $\sum_{S \in \S} \absolute{\V_{\getchar{S}}} \le \absolute{\S} \absolute{\V} = \O(mk \cdot k)$. 
+
+To improve the complexity further, we partition the active text using the algorithm from \Cref{text_decomposition} with $\ell = mk^{-3/4}$.
+We obtain a set~$\S$ of $\O(mk^{1/4})$ monochromatic subtile strings $\S$, and an $\O(k^{3 / 4})$-peripheral string $F$. For every $q \in Q$ we then have
+
+\[ \Ham(P + q, \Ta) = \Ham(P + q, F) + \sum_{S \in \S} \Ham(P + q, S).\]
+
+By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for every $q \in Q$ in time $\tO(m^2 + mk^{5/4})$, since similarly to above we have $\sum_{S \in \S} \absolute{\V_{\getchar{S}}} \le \absolute{\S} \absolute{\V} = \O(mk^{5/4})$. It remains to compute the values $\Ham(P + q, F)$. In \cref{sec:algorithm:periph}, we show how to efficiently compute the Hamming distances between $P$ and a $d$-peripheral string:
+
+\restateThmDenseAlgo
+
+By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
+
+
+\subsection{Proof of \cref{th:sparse_algo}}\label{sec:algorithm:center}
+\restateThmSparseAlgo*
 Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partition}\jonas{have to check this later}).
  Observe that
 \begin{align}
@@ -1493,9 +1511,11 @@ We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Proof of \cref{th:dense_algo}}
+\label{sec:algorithm:periph}
+
 In this section, we show how to compute the Hamming distances between $P$ and a $d$-peripheral string efficiently:
 
-\restateThmDenseAlgo
+\restateThmDenseAlgo*
 
 We partition $F$ into four roughly equal-sized $d$-peripheral strings $F_1, \dots, F_4$, where $F_i$ is the restriction of $F$ to $K_i$ defined as in \cref{eq:quarters}. (See \cref{figure:quarter_split}.) For all $q \in Q$, we have 
 %
