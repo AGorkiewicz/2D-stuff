@@ -384,7 +384,7 @@ A \emph{one-dimensional string} $S$ is a function from a finite continuous subra
 
 \noindent Traditionally, $P$ is referred to as \emph{the pattern} and $T$ as \emph{the text}.
 
-\subsection{Generalisations of one-dimensional algorithms}
+\subsection{Generalisations of one-dimensional algorithms.}
 We start by generalising existing one-dimensional algorithms to two dimensions, which we will use as subroutines in the final algorithm for the $k$-mismatch problem. 
 
 For a two-dimensional string $S$ of width $w_S$ and height $h_S$ define its \emph{linearisation} as a one-dimensional string $\bar{S}$ of size $w_S \cdot h_S$, where $\forall x \in \X(\d{S}), y \in \Y(\d{S})$:
@@ -519,7 +519,7 @@ If $\absolute{Q} \le 8m + m^2/k$, we apply \cref{kangaroos} to compute the true 
 The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, it is the size of their intersection.
 
 % 2D PERIODICITY
-\subsection{Two-dimensional periodicity}
+\subsection{Two-dimensional periodicity.}
 We start by defining two-dimensional periods.
 
 %\begin{figure}[!t]
@@ -556,7 +556,7 @@ Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There i
 
 Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 8m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
-\subsection{Partitioning of the pattern and the text}
+\subsection{Partitioning of the pattern and the text.}
 Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
 
 \begin{restatable*}[Lattice congruency]{definition}{restateDefLatticeCongruency}\label{lattice_congruency}
@@ -629,7 +629,7 @@ For every point $u \in \Z^2$, we define its \emph{border distance} as $\min\set{
 Given $\ell \in [2m]$, one can partition $\Ta$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and an $\O(m / \ell)$-peripheral string.
 \end{restatable*}
 
-\subsection{Algorithm}
+\subsection{Algorithm.}
 In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a string that can be partitioned into a set of monochromatic subtile strings can be computed efficiently: 
 
 \begin{restatable*}{@theorem}{restateThmSparseAlgo}
@@ -1232,7 +1232,7 @@ By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for ev
 By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
 
 
-\subsection{Proof of \cref{th:sparse_algo}}\label{sec:algorithm:center}
+\subsection[Counting mismatches between $P$ and monochromatic subtile strings.]{Proof of \cref{th:sparse_algo}.}\label{sec:algorithm:center}
 \restateThmSparseAlgo*
 Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partition}\jonas{have to check this later}).
  Observe that
@@ -1510,7 +1510,7 @@ We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Proof of \cref{th:dense_algo}}
+\subsection[Counting mismatches between $P$ and a $d$-peripheral string.]{Proof of \cref{th:dense_algo}.}
 \label{sec:algorithm:periph}
 
 In this section, we show how to compute the Hamming distances between $P$ and a $d$-peripheral string efficiently:
@@ -1639,7 +1639,7 @@ By \Cref{pattern_height_reduction}, we have for all $q \in Q$:
 
 \[\Ham(P_2 + q, F_1'') = \sum_{i \in [\ell]} \Ham(P_2 + q, V_i) = \sum_{i \in [\ell]} \Ham(H_i + q, V_i). \]
 
-\paragraph*{Wrapping up.}
+\paragraph{Wrapping up.}
 We apply \cref{cor:sigman2d} to solve the text-to-pattern Hamming distances problem for every pair of $H_i$ and $V_i$. In total, this takes $\tO(\sum_{i \in [\ell]} ((\sigma+1) \cdot d \cdot h_i) = \O((\sigma+1) dm)$ time by \cref{cor:area_F}. We then need to combine these results to obtain $\Ham(P_2 + q, F_1'')$ for all $q \in Q$. 
 
 To do so, we first naively compute, for all $i \in [\ell]$, a set ${q \in \Z^2 : \d{H_i+q} \subseteq \d{V_i}}$ in $\tO(\sum_{i \in [\ell]} d \cdot h_i) = \tO(dm)$ time (again, by \cref{cor:area_F}). Note that the union of these sets contains all vectors $q \in Q$ for which the value $\Ham(P_2 + q, F_1'')$ can be different from zero. 
@@ -1654,7 +1654,7 @@ We then compute $Q' = Q \cap \bigl( \cup_i \{q \in \Z^2 : \d{H_i+q} \subseteq \d
 \appendix
 \section{Proof of \cref{lm:parallelogram_grid}}
 \label{app:parallelogram_grid}
-\paragraph*{Construction of the grid and Property (\ref{it:unique}).}
+\paragraph{Construction of the grid and Property (\ref{it:unique}).}
 Recall that the grid is defined by a sequence of $\ell+1$ lines $h_0, h_1, \ldots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ lines $v_0, v_1, \ldots, v_\ell$ parallel to $\psi$. 
 
 To construct the lines $h_0, h_1, \ldots, h_\ell$, we first compute $\h{u}$ for all $u \in [n^2]$ in $\O(n^2) = \O(m^2)$ time. As $\phi \in (0,+\infty) \times [0,+\infty]$, we have 
@@ -1677,7 +1677,7 @@ We then define $v_i = \{u: u \in \R^2, \s{u} = \beta_i\}$.
 
 For $0 \le i,j \le \ell+1$ let $w_{i,j}$ be the intersection of $h_i$ and $v_j$ (defined correctly as they are not collinear). For $i,j \in [\ell]$ define a parallelogram $p_{i,j}$ as the parallelogram with vertices $w_{i-1,j-1}$, $w_{i-1,j}$, $w_{i,j-1}$, $w_{i,j}$. Property $\ref{it:unique}$ easily follows from the properties of $\{\alpha_i\}$ and $\{\beta_j\}$.
 
-\paragraph*{Property (\ref{it:small_parallelogram}).}
+\paragraph{Property (\ref{it:small_parallelogram}).}
 Consider any $p_{i,j}$, $i,j \in [\ell]$. First note that	for all $u, v \in p_{i, j}$, we have $\absolute{u - v} = \O(n / \ell)$. Consider any $u, v \in p_{i, j}$ and denote $w = u - v$.
 By definition of $p_{i, j}$, we have
 \[ \absolute{\h{w}} = \absolute{\h{(u - v)}} = \absolute{\h{u} - \h{v}} = \O(n\absolute{\phi} / \ell) \]
@@ -1692,7 +1692,7 @@ Secondly, we show that	for all $u \in \X(p_{i, j}) \times \Y(p_{i, j})$ there ex
 Finally, consider any $u, v \in p_{i, j}$. From above, there exist $u', v' \in p_{i, j}$ such that $\absolute{u - u'} = \O(n / \ell)$ and $\absolute{v - v'} = \O(n / \ell)$. Therefore, 
 \[ \absolute{u - v} \le \absolute{u - u'} + \absolute{u' - v'} + \absolute{v' - v} = \O(n / \ell). \]
 
-\paragraph*{Property (\ref{it:monotonicity}).} 
+\paragraph{Property (\ref{it:monotonicity}).} 
 We show that for all $i \in [\ell - 1]$ and $j \in [\ell]$ we have
 $$\min \X(p_{i, j}) < \min \X(p_{i + 1, j}),$$
 the rest can be shown analogously. Recall that $w_{s,t}$ is the intersection of the lines $h_s$ and $v_t$ defining the parallelogram grid, $\phi \in [0, +\infty] \times (-\infty,0)$, and $\psi \in (0,+\infty) \times [0,+\infty)$. 
