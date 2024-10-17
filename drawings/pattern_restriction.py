@@ -79,14 +79,14 @@ res += f'\\node [scale=20] at ({m - (d + 1) / 2}, {25}) {{$L_i$}};'
 h = 31
 res += f'\\draw ({m - d - 0.5}, {m - h - 0.5}) -- ({m - 0.5}, {m - h - 0.5});'
 
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({m - 1}, {m - h}) -- ({m - 1}, {m - 1}) node [midway, scale=10, xshift=1.5em]{{$h_i$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({m - 1}, {m - h}) -- ({m - 1}, {m - 1}) node [midway, scale=10, xshift=2.3em]{{$h_i - 1$}};'
 
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({0}, {m - 1}) -- ({0}, {m - d}) node [midway, scale=10, xshift=-1.5em]{{$d$}};'
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({m - d}, {0}) -- ({m - 1}, {0}) node [midway, scale=10, yshift=-1.2em]{{$d$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({0}, {m - 1}) -- ({0}, {m - d}) node [midway, scale=10, xshift=-2.1em]{{$d - 1$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({m - d}, {0}) -- ({m - 1}, {0}) node [midway, scale=10, yshift=-1.2em]{{$d - 1$}};'
 
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({0}, {m - d}) -- ({0}, {0}) node [midway, scale=10, xshift=-3.3em]{{$m-d-1$}};'
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({0}, {0}) -- ({m - d}, {0}) node [midway, scale=10, yshift=-1.2em]{{$m - d-1$}};'
-res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({m - 1}, {0}) -- ({m - 1}, {m - h}) node [midway, scale=10, xshift=3.3em]{{$m - h_i-1$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({0}, {m - d}) -- ({0}, {0}) node [midway, scale=10, xshift=-2.4em]{{$m - d$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({0}, {0}) -- ({m - d}, {0}) node [midway, scale=10, yshift=-1.2em]{{$m - d$}};'
+res += f'\\draw[decorate, decoration={{brace, amplitude=50pt, raise=4ex, mirror}}] ({m - 1}, {0}) -- ({m - 1}, {m - h}) node [midway, scale=10, xshift=2.4em]{{$m - h_i$}};'
 
 res += '\\end{tikzpicture}\n\\end{document}'
 

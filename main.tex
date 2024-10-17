@@ -354,7 +354,8 @@ Alternatively, $u \cdot v = \absolute{u}\absolute{v} \cos \alpha$ and $u \times 
 \renewcommand{\d}[1]{\dom(#1)}
 \newcommand{\f}[1]{#1^\mathbf{f}}
 
-A \emph{one-dimensional string} $S$ is a function from a finite continuous subrange $[a,b]\subset \mathbb Z$ to $\Sigma \cup \{\wild\}$. If $a = 0$, we will sometimes simply write $S = S(a)S(a+1)\ldots S(b)$.\footnote{We chose this definition, which is slightly different from the standard one, as it conveniently generalises to two dimensions.} We define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. This is more general than seemingly necessary due to the technical details of the algorithm. We store strings as lists of point-character pairs. For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain. The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d{S}) - \min \X(\d{S})$ and the \emph{height} as $\max \Y(\d{S}) - \min \Y(\d{S})$. Finally, we say that $S$ is \emph{partitioned} into strings $R_0, R_1, \ldots, R_{\ell-1}$ if $\d{S} = \sqcup_{i \in [\ell]} \d{R_i}$ and $R_i(u) = S(u)$ for all $i \in [\ell]$ and $u \in \d{R_i}$.
+A \emph{one-dimensional string} $S$ is a function from a finite continuous subrange $[a,b]\subset \mathbb Z$ to $\Sigma \cup \{\wild\}$. If $a = 0$, we will sometimes simply write $S = S(a)S(a+1)\ldots S(b)$.\footnote{We chose this definition, which is slightly different from the standard one, as it conveniently generalises to two dimensions.} We define a \emph{two-dimensional string} $S$ as a partial function $\Z^2 \pto \Sigma$. This is more general than seemingly necessary due to the technical details of the algorithm. We store strings as lists of point-character pairs. For a string $S$, let $\d{S}$ be its domain. The \emph{size} of $S$ is the size of its domain.
+The \emph{width} of a non-empty two-dimensional string $S$ is defined as $\max \X(\d{S}) - \min \X(\d{S}) + 1$ and the \emph{height} as $\max \Y(\d{S}) - \min \Y(\d{S}) + 1$. Finally, we say that $S$ is \emph{partitioned} into strings $R_0, R_1, \ldots, R_{\ell-1}$ if $\d{S} = \sqcup_{i \in [\ell]} \d{R_i}$ and $R_i(u) = S(u)$ for all $i \in [\ell]$ and $u \in \d{R_i}$.
 
 %\newcommand{\hd}{\textsc{HD1D}\xspace}
 %\newcommand{\HD}{\textsc{HD2D}\xspace}
@@ -390,7 +391,7 @@ We start by generalising existing one-dimensional algorithms to two dimensions, 
 For a two-dimensional string $S$ of width $w_S$ and height $h_S$ define its \emph{linearisation} as a one-dimensional string $\bar{S}$ of size $w_S \cdot h_S$, where $\forall x \in \X(\d{S}), y \in \Y(\d{S})$:
 
 $$
-\bar{S}((x-1) \cdot h_S + y) =
+\bar{S}(x \cdot h_S + y) =
 \begin{cases}
 \wild & \text{ if } S(x,y) \text{ is not defined}\\
 S(x,y) & \text{ otherwise}
@@ -1526,7 +1527,8 @@ $$\Ham(P + q, F) = \sum_{i = 1}^4 \Ham(P + q, F_i).$$
 %
 Below, we focus on computing $\Ham(P + q, F_1)$ for all $q \in Q$. The other cases are symmetric. 
 
-For a string $V$, define a value $h(V)$ that is an upper bound on $V$'s height as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h : \forall u,v \in V, (\x{v}, \y{v} + h) \notin \d{\Ta}\}$. We start with the following technical claim.
+For a string $V$, define a value $h(V)$ that is an upper bound on $V$'s height as follows: If $V$ is empty, $h(V): = 0$, and otherwise $h(V) := \min \{h \in \Z^+: \forall u,v \in V, (\x{v}, \y{u} + h) \notin \d{\Ta}\}$.
+We start with the following technical claim.
 
 \begin{figure}
     \centering
@@ -1562,7 +1564,7 @@ Similarly, we can show $\y{q} \le \y{w} \le \y{q} + m - 1$, and thus $w \in [m]^
 A $d$-peripheral string $F_1$ with $\d{F_1} \subseteq K_1$ can be partitioned into $\ell = \O(m/d)$ strings $V_i$ with width at most $d$ and $\sum_{i \in [\ell]} h(V_i) = \O(m)$. (See \cref{figure:periphery_decomposition}.)
 \end{lemma}
 \begin{proof}
-Let $\ell = \lceil n / d \rceil - 1$ and partition $F_1$ into strings $V_i$, $i \in [\ell]$, where $V_i$ is the restriction of $F_1$ to $\set{i \cdot d, \dots, i \cdot d + d - 1} \times [n] \cap \d{F_1}$. (See \cref{figure:periphery_decomposition}.) 
+Let $\ell = \lceil n / d \rceil$ and partition $F_1$ into strings $V_i$, $i \in [\ell]$, where $V_i$ is the restriction of $F_1$ to $\set{i \cdot d, \dots, i \cdot d + d - 1} \times [n] \cap \d{F_1}$. (See \cref{figure:periphery_decomposition}.) 
 For each $i$, the width of $V_i$ is at most $d$. 
 
 We will denote height bounds by using $h_i = h(V_i)$. We now show that $\sum_{i \in [\ell]} h_i = \O(m)$. For $\ell < 2$ the claim is trivial. Assume $\ell \ge 2$. For every $i \in [\ell]$ (since $h_i$ is minimal) there exists a pair of points $u_i, v_i \in \d{V_i}$ such that $(\x{v_i}, \y{u_i} + h_i - 1) \in \d{\Ta}$. For all $i \ge 2$, we have
@@ -1598,7 +1600,7 @@ Note that $F_1''$ contains $\O(\sqrt{k})$ distinct characters. In $\O(k^2 \log k
 If $d > m/4$, we can apply \cref{cor:sigman2d} to compute the distances in $\tO(m^2 + (\sigma+1) \cdot m^2) = \tO(m^2 + (\sigma+1) \cdot dm)$ time. From now on, we assume $d \le m / 4$. 
 
 We start by partitioning $P$ into a string $P_0$, defined as the restriction of $P$ to $[m - d]^2$ and a string $P_1$, defined as the restriction of $P$ to $\d{P} \setminus \d{P_0}$.
-Further, we partition $P_1$ into a string $P_2$ of width $d$, which is a restriction of $P$ onto $[m-d,m - 1]\times [m]$ and a string $P_3$ of height~$d$, which is a restriction of $P$ onto $[0, m-d-1] \times [m-d,m -1]$. (See \cref{figure:pattern_restriction}.) Then, it holds
+Further, we partition $P_1$ into a string $P_2$ of width $d$, which is a restriction of $P$ onto $[m-d,m - 1] \times [m - d]$ and a string $P_3$ of height~$d$, which is a restriction of $P$ onto $[m] \times [m-d,m -1]$. (See \cref{figure:pattern_restriction}.) Then, it holds
 %
 \[ \Ham(P + q, F_1'') = \Ham(P_0 + q, F_1'') + \Ham(P_2 + q, F_1'') + \Ham(P_3 + q, F_1'').\]
 %
