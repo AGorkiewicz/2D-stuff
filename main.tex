@@ -299,8 +299,7 @@ algorithm for $n\leq \frac{3}{2}m$ (which can be guaranteed by covering the text
 squares).
 
 To obtain our final result, we need to proceed more carefully when partitioning the text. We partition
-the relevant positions of the text into its periphery and the rest, and observe that (by carefully choosing the parameters)
-that we only need to convolute the periphery with a small portion of the pattern. The remaining non-peripheral
+the relevant positions of the text into its periphery and the rest, and observe that (by carefully choosing the parameters) we only need to convolve the periphery with a small portion of the pattern. The remaining non-peripheral
 part of the text can be partitioned into fewer pieces, which allows us to obtain the following theorem.
 
 
@@ -383,7 +382,7 @@ A \emph{one-dimensional string} $S$ is a function from a finite continuous subra
 \subsection{Generalisations of one-dimensional algorithms}
 We start by generalising existing one-dimensional algorithms to two dimensions, which we will use as subroutines in the final algorithm for the $k$-mismatch problem. 
 
-For a two-dimensional string $S$ of width $w_S$ and height $h_S$ define its \emph{linearisation} as a one-dimensional string $\bar{S}$ of size $w_S \times h_S$, where $\forall x \in \X(\d{S}), y \in \Y(\d{S})$:
+For a two-dimensional string $S$ of width $w_S$ and height $h_S$ define its \emph{linearisation} as a one-dimensional string $\bar{S}$ of size $w_S \cdot h_S$, where $\forall x \in \X(\d{S}), y \in \Y(\d{S})$:
 
 $$
 \bar{S}((x-1) \cdot h_S + y) =
@@ -497,12 +496,12 @@ In this section, we present the technical ideas behind our main result:
 
 \def\mainThmTitle{Formal version}
 \def\mainThmContent{%
-Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.%
+Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d{T} = [n] \times [n]$, where $m,n\in \Z^+$ and $m \le n$. There is an algorithm that solves the $k$-mismatch problem for $P,T$ in $\tO((m^2 + mk^{5/4})n^2 / m^2)$ time.%
 }
 
 \restateThmMain*
 
-Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' \le \frac{3}{2}m$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
@@ -510,9 +509,9 @@ We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and 
 \item For all $q \in Q$, we have $\Ham(T, P+q) \le 2 k$.
 \end{enumerate}
 
-If $\absolute{Q} \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $\absolute{Q} > 6m + m^2/k$. 
+If $\absolute{Q} \le 8m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $\absolute{Q} > 8m + m^2/k$. 
 
-The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, it is the area of their intersection.
+The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, it is the size of their intersection.
 
 % 2D PERIODICITY
 \subsection{Two-dimensional periodicity}
@@ -550,7 +549,7 @@ Given $\ell \in \Z^+$ and $U \subseteq [\ell + 1]^2$ of size $> 16\ell$. There i
 	\end{itemize}
 \end{restatable*}
 
-Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
+Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 8m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
 \subsection{Partitioning of the pattern and the text}
 Next, we define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
@@ -593,7 +592,7 @@ We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a 
 See \Cref{figure:tile} for an illustration. Note that every truncated subtile is a subtile.
 
 \begin{restatable*}[Tile string]{definition}{restateDefTileString}\label{tile_string_definition}
-We call a string $S$ a \emph{(truncated) (sub)tile string} if $\d{S}$ is a (truncated) (sub)tile.
+We call a string $S$ a \emph{(truncated) (sub-)tile string} if $\d{S}$ is a (truncated) (sub-)tile.
 \end{restatable*}
 
 \begin{restatable*}[Monochromatic string]{definition}{restateDefMonochromaticString}
@@ -625,7 +624,7 @@ Given $\ell \in [2m]$, one can partition $\Ta$ in time $\tO(m^2 + \ell k)$ into 
 \end{restatable*}
 
 \subsection{Algorithm}
-In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a string that can be partitioned into a set of a monochromatic subtile strings can be computed efficiently: 
+In \cref{sec:algorithm}, we show that the Hamming distances between $P$ and a string that can be partitioned into a set of monochromatic subtile strings can be computed efficiently: 
 
 \begin{restatable*}{@theorem}{restateThmSparseAlgo}
 \label{th:sparse_algo}
@@ -662,8 +661,7 @@ Now we provide a full proof of the main result, which is restated below. In this
 
 \restateThmMain*
 
-
-Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' = \Theta(m)$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' \le \frac{3}{2}m$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
@@ -671,9 +669,9 @@ We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and 
 \item For all $q \in Q$, we have $\Ham(T, P+q) \le 2 k$.
 \end{enumerate}
 
-If $\absolute{Q} \le 6m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $\absolute{Q} > 6m + m^2/k$. 
+If $\absolute{Q} \le 8m + m^2/k$, we apply \cref{kangaroos} to compute the true value of the Hamming distance for all $q \in Q$, which takes $\O(mk+m^2)$ total time, completing the proof of \cref{th:main}. Below we assume $\absolute{Q} > 8m + m^2/k$. 
 
-The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, it is the area of their intersection.
+The idea of the algorithm is to partition the pattern $P$ and the text $T$ into strings of regular form each containing a single character. Intuitively, computing the Hamming distance between two such strings is easy: if the characters are equal, the distance is zero, and otherwise, it is the size of their intersection.
 In order to achieve the desired time complexity, it is crucial that the number of regular strings that we partition $P$ and $S$ into is sufficiently small.
 We achieve this by showing that the pattern is approximately periodic according to the following definition.
 
@@ -861,10 +859,13 @@ By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{
 We have shown that $w$ and $w'$ satisfy the claimed properties. 
 It remains to show how to compute~$w'$. 
 If the longest antichain $A$ is given, then it is easy to sort the chain according to $<_2$ and select the desired $w'$ in $\tO(\absolute{A})$ time. To compute the antichain, we recall from the proof of \cref{A_ineq} that $u <_2 v$ (equivalently $v - u \in \Q_2^-$) implies that $(v.x - u.x)$ is negative, while $(v.y - u.y)$ is positive (this also readily follows from the fact that $\Q_2^-$ is a subset of $\Q_2$). This means that $v.y - v.x > u.y - u.x$. We sort $U$ in increasing order of $y - x$. Thus, if $u <_2 v$, then $u$ precedes $v$ in the sorted $U$. 
-Let $\prec$ be a strict total order defined by $u \prec v$ if and only if $u <_2 v$. We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$. This takes $\tO(\absolute{U})$ time (see~\cite{CROCHEMORE20101054} and references therein) and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
+% AG: For now I just remove "and only if" since it makes the definition less incorrect
+Let $\prec$ be a strict total order defined by $u \prec v$ if $u <_2 v$.
+We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$.
+This takes $\tO(\absolute{U})$ time (see~\cite{CROCHEMORE20101054} and references therein) and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
 \end{proof}
 
-Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 6m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
+Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 8m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
