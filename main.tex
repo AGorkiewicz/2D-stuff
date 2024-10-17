@@ -56,6 +56,8 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
+
+
 \renewcommand{\O}{\mathcal{O}}
 \newcommand{\tO}{\tilde{\mathcal{O}}}
 
@@ -68,6 +70,9 @@
 \newcommand{\F}{\mathcal{F}}
 \renewcommand{\L}{\mathcal{L}}
 \newcommand{\W}{\mathcal{W}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\C}{\mathcal{C}}
 
 \newcommand{\Ta}{T_\mathbf{a}}
 
@@ -583,7 +588,8 @@ We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x
 The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are called its \emph{signature}. 
 \end{restatable*}
 
-Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
+%Note that every truncated tile is a tile. \jonas{this should be the other way around.}
 
 \begin{restatable*}[Subtile]{definition}{restateDefSubtile}\label{subtile_definition}
 We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$. Abusing notation, we write $V \equiv v$ for $v \in \Z^2$ if $v \equiv \gamma$ and for two (truncated) subtiles $U,V$ we write $U \equiv V$ if there exists $v \in \Z^2$ such that $U \equiv v$ and $V \equiv v$.
@@ -616,7 +622,7 @@ $\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
 \end{restatable*}
 
 \begin{restatable*}[Peripherality]{definition}{restateDefPeripherality}
-For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{\absolute{u - v} : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
+For every point $u \in \Z^2$, we define its \emph{border distance} as $\min\set{\absolute{u - v} : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
 \end{restatable*}
 
 \begin{restatable*}{@theorem}{restateThmTextDecomposition}\label{text_decomposition}
@@ -871,14 +877,28 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\jonasi{below}
 \section{Partitioning of the pattern and the text}
 \label{sec:partition}
 
+As mentioned before, we will partition $P$ and $T$ into one-character strings of regular form. A one-character string is formally defined as follows.
 
+\restateDefMonochromaticString
 
-\jonasi{below}\noindent%
-Next, we use $\phi$ and $\psi$ to define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
-The partitioning will depend on the lattice spanned by $\phi$ and $\psi$. We use the lattice to partition the domains of $P$ and $T$ into $\O(\min\{m, k\})$ congruency classes.
+The regular form of the strings is obtained by cutting the domains of $P$ and $T$ into so-called \emph{(truncated) tiles}.
+
+\restateDefTile
+
+Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides parallel to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
+
+\restateDefTruncatedTile
+
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
+%Note that every truncated tile is a tile. \jonas{this should be the other way around.}
+
+\subsection*{Partitioning tiles into subtiles.}
+
+Using the lattice defined by basis vectors $\phi$ and $\psi$, we can further partition a (truncated) tile into $\O(\min\{m, k\})$ (truncated) \emph{subtiles}. This is done by dividing the points into congruence classes depending on their relative position with respect to the lattice.
 
 \restateDefLatticeCongruency
 
@@ -899,80 +919,19 @@ The partitioning will depend on the lattice spanned by $\phi$ and $\psi$. We use
 		
 		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\phi},\y{\psi}]$. We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
 	\end{proof}
-	
-\subsection*{Monochromatic tiles.}
-As mentioned before, we will partition $P$ and $S$ into one-character strings of regular form. A string containing only a single character is \emph{monochromatic, formally:}
-
-\restateDefMonochromaticString
-
-
-\restateDefTile
-
-Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides parallel to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
-
-\restateDefTruncatedTile
-
-Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
 
 \restateDefSubtile
 
-See \Cref{figure:tile} for an illustration. Note that every truncated subtile is a subtile.
+See \Cref{figure:tile} for an illustration.
+%Note that every truncated subtile is a subtile. \jonas{this should be the other way around.}
 
 \restateDefTileString
 
 
+\subsection{Pattern partitioning.}
+\label{sec:partition:pattern}
 
-\subsection{Properties of lattices and subtiles}
-
-
-\subsection{Pattern partitioning}
-
-
-\restateThmTileDecomposition
-
-Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
-
-
-\subsection{Text partitioning}
-
-Because $T$ is not necessarily periodic, we need to use a similar but more sophisticated partitioning.
-
-\restateDefActiveText
-
-\restateObsActiveText
-
-\restateDefPeripherality
-
-\restateThmTextDecomposition
-
-\jonasi{above}
-
-
-
-The goal of this section is to show \cref{tile_decomposition} (which explains how to partition the pattern into monochromatic truncated subtile strings) and \cref{text_decomposition} (which explains how to partition the text). We start with a technical \cref{sec:lattices_subtiles}, which describes necessary properties of lattices and subtiles. 
- 
-% tile DECOMPOSITION
-\subsection{Properties of lattices and subtiles} \label{sec:lattices_subtiles}
-In this section, we explore the properties of periodic (sub-)tile strings (recall Definitions \ref{tile_definition}, \ref{subtile_definition}, \ref{tile_string_definition}).
-Specifically, we introduce some methods of partitioning them into monochromatic strings, which we utilize when decomposing both the pattern and the active text.
-
-\begin{lemma} \label{lattice_base}
-	There exists an algorithm that constructs in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\absolute{\Gamma} = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$.
-\end{lemma} 
-	\begin{proof}
-		Let $p = \set{s\phi + t\psi : s \in [0, 1), t \in [0, 1)}$ and $\Gamma = p \cap \Z^2$.
-		By Pick's Theorem, a simple polygon with integer vertices contains $\O(A)$ integer points in the interior or on the boundary, where $A$ denotes its area.
-		Observe that the elements of $\Gamma$ are contained in a parallelogram with vertices $(0, 0), \phi, \phi + \psi, \psi$.
-		Since its area is $\phi \times \psi = \O(\min\set{m, k})$, we get $\absolute{\Gamma} = \O(\min\set{m, k})$.
-		
-		Now consider any $u \in \Z^2$.
-		As $\phi, \psi$ are not collinear, there exist unique values $s, t \in [0, 1)$ and $s', t' \in \Z$, such that
-		$u = (s + s') \phi + (t + t') \psi$.
-		By definition, 
-		$u \equiv s\phi + t\psi$ and $s\phi + t\psi \in \Gamma$.
-		
-		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\phi},\y{\psi}]$. We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
-	\end{proof}
+In this section, we show how to partition the pattern $P$ into $\O(k)$ monochromatic truncated subtile strings. The procedure works not only for $P$, but for any truncated tile string with $\O(k)$-mismatch periods $\psi$ and $\phi$. Later, we use the same procedure to also partition a part of the text.
 
 \begin{definition}[Lattice graph]
 	For a set $U \subseteq \Z^2$ we define its \emph{lattice graph} $(U, \Edges(U))$, where
@@ -1084,9 +1043,6 @@ Given a (truncated) subtile string $S$, there is an algorithm that runs in time 
 \end{lemma}
 
 
-\subsection{Partitioning of a periodic string}
-The next theorem is used to partition both the pattern $P$ and the active text $\Ta$.
-
 \restateThmTileDecomposition
 \begin{proof}
 We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\absolute{\Gamma} = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$ (\Cref{lattice_base}). Next, we use it to partition $R$ into a set of (truncated) subtile strings $\S$, such that $\absolute{\S} = \O(\min\set{m, k})$: Namely, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a (truncated) subtile string defined as the restriction of $R$ to $\d{R} \cap (\L + \gamma)$. For that, we consider each $u \in \d{R}$, construct its basis decomposition $u = s\cdot \phi + t\cdot \psi$, where $s,t\in \R$ by solving a system of linear equations in $\O(1)$ time, and add $u$ into the restriction corresponding to $\gamma = (s-\floor{s}) \cdot \phi + (t-\floor{t}) \cdot \psi \in \Gamma$. 
@@ -1105,19 +1061,31 @@ We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\a
 \end{proof}
 
 
-\subsection{Text partitioning}
-While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\phi$ and $\psi$ as $\O(k)$-periods) into monochromatic truncated subtile strings, $T$ is not necessarily periodic, and we are obliged to extend \cref{tile_decomposition} further to obtain a partitioning for $T$. In this section, we show the following result:
+Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
+
+
+\subsection{Text partitioning.}
+
+While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\O(k)$-periods $\phi$ and $\psi$) into a small number of monochromatic truncated subtile strings, $T$ is not necessarily periodic. Hence we are obliged to extend \cref{tile_decomposition} further to obtain a partitioning for $T$. We focus on the \emph{active text}, i.e., the positions of $T$ that actually participate in at least one of the $\O(k)$-mismatch occurrences of $P$.
+
+\restateDefActiveText%
+%
+\restateObsActiveText
+
+\restateDefPeripherality
+
+In the remainder of the section, we show that $\Ta$ is close to being $\O(k)$-periodic with periods $\psi$ and $\phi$. 
+This allows us to partition $\Ta$ into one peripheral string and a small number of monochromatic subtile strings.
 
 \restateThmTextDecomposition
 
-
-\subsection{Proof of \cref{text_decomposition}}
-We assume that a parallelogram contains its border and its vertices.
+Now we prove the theorem. 
+We will cut the text into parallelograms, and we assume that a parallelogram contains its border and its vertices.
 
 \begin{definition}[Parallelogram grid]
 	For $\ell \in \Z^+$, consider a sequence of $\ell+1$  distinct lines $h_0, \dots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ distinct lines $v_0, \dots, v_\ell$ parallel to $\psi$.
 	For every $i, j \in [\ell + 1]$ let $w_{i, j}$ be the intersection of $h_i$ and $v_j$ (since $\phi$ and $\psi$ are not collinear, it is well-defined).
-	For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
+	For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly trivial) with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
 \end{definition}
 
 \begin{restatable}{lemma}{restateLemParallelogramGrid}\label{lm:parallelogram_grid}
@@ -1181,10 +1149,6 @@ Let $z = \frac{n - 1}{2}$. Split the 2D plane with two lines $x = z$ and $y = z$
 \end{align}
 
 
-\newcommand{\I}{\mathcal{I}}
-\newcommand{\G}{\mathcal{G}}
-\newcommand{\C}{\mathcal{C}}
-
 \begin{claim}\label{coverable}
 Let $P$ be a union of parallelograms~$p_{i,j}$ which have a non-empty intersection with $K_1$. If $v = (\max \X(P), \max \Y(P)) \in \d{\Ta}$, then $U = P \cap \Z^2$ is coverable. (For $K_2$, an analogous claim is true with $v: = (\min \X(P), \max \Y(P))$, for $K_3$ with $v : = (\min \X(P), \min \Y(P))$, and for $K_4$ with $v : = (\max \X(P), \min \Y(P))$.)
 \end{claim}
@@ -1243,6 +1207,8 @@ The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \
 We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(\absolute{\d{R}} + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P}_2} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
 
 This concludes the proof of \cref{text_decomposition}.
+
+\jonasi{above}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1592,7 +1558,7 @@ As an immediate corollary, we obtain
 $\absolute{\d{F_1}} = \O(dm)$. 
 \end{corollary}
 
-Recall the construction of the sets $\V_\sigma$ described in \Cref{TODO}\jonas{TODO}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
+Recall the construction of the sets $\V_a$ described in \Cref{sec:partition:pattern}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
 
 \[\Ham(P + q, S) = \Ham(P + q, F_1') + \Ham(P + q, F_1'').\]
 
