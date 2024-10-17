@@ -589,13 +589,13 @@ The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are
 \end{restatable*}
 
 Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
-%Note that every truncated tile is a tile. \jonas{this should be the other way around.}
+Note that every tile is a truncated tile.
 
 \begin{restatable*}[Subtile]{definition}{restateDefSubtile}\label{subtile_definition}
 We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$. Abusing notation, we write $V \equiv v$ for $v \in \Z^2$ if $v \equiv \gamma$ and for two (truncated) subtiles $U,V$ we write $U \equiv V$ if there exists $v \in \Z^2$ such that $U \equiv v$ and $V \equiv v$.
 \end{restatable*}
 
-See \Cref{figure:tile} for an illustration. Note that every truncated subtile is a subtile.
+See \Cref{figure:tile} for an illustration. Note that every subtile is a truncated subtile.
 
 \begin{restatable*}[Tile string]{definition}{restateDefTileString}\label{tile_string_definition}
 We call a string $S$ a \emph{(truncated) (sub-)tile string} if $\d{S}$ is a (truncated) (sub-)tile.
@@ -939,7 +939,7 @@ In this section, we show how to partition the pattern $P$ into $\O(k)$ monochrom
 	For a set $U \subseteq \Z^2$ we define its \emph{lattice graph} $(U, \Edges(U))$, where
 $$\Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U}.$$
 \end{definition}
-Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi, \psi, -\phi, -\psi$ if they are contained in $U$.
+Intuitively, we connect every $u \in U \cap \Z^2$ with its translations by $\phi, \psi, -\phi, -\psi$ if they are contained in $U$.
 
 \begin{lemma}\label{lattice_graph_connectivity}
 	If $U$ is a truncated subtile, then $(U, \Edges(U))$ is connected.
