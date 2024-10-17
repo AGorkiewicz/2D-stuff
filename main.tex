@@ -877,7 +877,6 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\jonasi{below}
 \section{Partitioning of the pattern and the text}
 \label{sec:partition}
 
@@ -1207,8 +1206,6 @@ The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \
 We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(\absolute{\d{R}} + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P}_2} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
 
 This concludes the proof of \cref{text_decomposition}.
-
-\jonasi{above}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
