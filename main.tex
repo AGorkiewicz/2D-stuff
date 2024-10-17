@@ -56,6 +56,8 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
+
+
 \renewcommand{\O}{\mathcal{O}}
 \newcommand{\tO}{\tilde{\mathcal{O}}}
 
@@ -68,6 +70,9 @@
 \newcommand{\F}{\mathcal{F}}
 \renewcommand{\L}{\mathcal{L}}
 \newcommand{\W}{\mathcal{W}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\C}{\mathcal{C}}
 
 \newcommand{\Ta}{T_\mathbf{a}}
 
@@ -584,7 +589,8 @@ We call $U \subseteq \Z^2$ a \emph{truncated tile} if there exist values $x_0, x
 The values $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1$ defining $U$ are called its \emph{signature}. 
 \end{restatable*}
 
-Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
+%Note that every truncated tile is a tile. \jonas{this should be the other way around.}
 
 \begin{restatable*}[Subtile]{definition}{restateDefSubtile}\label{subtile_definition}
 We call a set $V \subseteq \Z^2$ a \emph{(truncated) subtile} if there exists a (truncated) tile $U$ and $\gamma \in \Z^2$ such that $V = \set{u : u \in U, u \equiv \gamma}$. A signature of $V$ consists of the signature of $U$ and $\gamma$. Abusing notation, we write $V \equiv v$ for $v \in \Z^2$ if $v \equiv \gamma$ and for two (truncated) subtiles $U,V$ we write $U \equiv V$ if there exists $v \in \Z^2$ such that $U \equiv v$ and $V \equiv v$.
@@ -617,7 +623,7 @@ $\Ham(P + q, T) = \Ham(P + q, \Ta)$ for every $q \in Q$.
 \end{restatable*}
 
 \begin{restatable*}[Peripherality]{definition}{restateDefPeripherality}
-For every point $u \in \Z^2$ we define its \emph{border distance} as $\min\set{\absolute{u - v} : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
+For every point $u \in \Z^2$, we define its \emph{border distance} as $\min\set{\absolute{u - v} : v \in \Z^2 \setminus \d{\Ta}}$. A set $U \subseteq \Z^2$ is $d$-\emph{peripheral} for some $d \ge 0$, if the border distance of every $u \in U$ is at most $d$. We say that a string $S$ is $d$-peripheral when $\d{S}$ is $d$-peripheral.
 \end{restatable*}
 
 \begin{restatable*}{@theorem}{restateThmTextDecomposition}\label{text_decomposition}
@@ -870,14 +876,28 @@ Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\jonasi{below}
 \section{Partitioning of the pattern and the text}
 \label{sec:partition}
 
+As mentioned before, we will partition $P$ and $T$ into one-character strings of regular form. A one-character string is formally defined as follows.
 
+\restateDefMonochromaticString
 
-\jonasi{below}\noindent%
-Next, we use $\phi$ and $\psi$ to define tiles, which will be used to partition $P$ and $T$ into one-character strings of regular form.
-The partitioning will depend on the lattice spanned by $\phi$ and $\psi$. We use the lattice to partition the domains of $P$ and $T$ into $\O(\min\{m, k\})$ congruency classes.
+The regular form of the strings is obtained by cutting the domains of $P$ and $T$ into so-called \emph{(truncated) tiles}.
+
+\restateDefTile
+
+Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides parallel to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
+
+\restateDefTruncatedTile
+
+Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. 
+%Note that every truncated tile is a tile. \jonas{this should be the other way around.}
+
+\subsection*{Partitioning tiles into subtiles.}
+
+Using the lattice defined by basis vectors $\phi$ and $\psi$, we can further partition a (truncated) tile into $\O(\min\{m, k\})$ (truncated) \emph{subtiles}. This is done by dividing the points into congruence classes depending on their relative position with respect to the lattice.
 
 \restateDefLatticeCongruency
 
@@ -898,56 +918,300 @@ The partitioning will depend on the lattice spanned by $\phi$ and $\psi$. We use
 		
 		We now give a construction algorithm for $\Gamma$. Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\phi},\y{\psi}]$. We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$. For $u \in \Gamma'$ we have $u \in \Gamma$ iff $0 \le \s{u} \le \s{\phi}$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
 	\end{proof}
-	
-\subsection*{Monochromatic tiles.}
-As mentioned before, we will partition $P$ and $S$ into one-character strings of regular form. A string containing only a single character is \emph{monochromatic, formally:}
-
-\restateDefMonochromaticString
-
-
-\restateDefTile
-
-Geometrically, a tile $U$ can be viewed as a set of integer points inside a parallelogram with sides parallel to $\phi$ and $\psi$. Truncated tiles are a generalisation of simple tiles. 
-
-\restateDefTruncatedTile
-
-Geometrically, the first property of a truncated tile $U$ means that it is a set of integer points in the intersection of an axis-parallel rectangle (possibly infinite) and a parallelogram with sides parallel to $\phi$ and $\psi$. The second property implies that the axis-parallel rectangle defined by $x_0, x_1, y_0, y_1$ contains a parallelogram spanned by $\phi$ and $\psi$. It will become clear later why this property is important. Note that every truncated tile is a tile.
 
 \restateDefSubtile
 
-See \Cref{figure:tile} for an illustration. Note that every truncated subtile is a subtile.
+See \Cref{figure:tile} for an illustration.
+%Note that every truncated subtile is a subtile. \jonas{this should be the other way around.}
 
 \restateDefTileString
 
 
+\subsection{Pattern partitioning.}
+\label{sec:partition:pattern}
 
-\subsection{Properties of lattices and subtiles}
+In this section, we show how to partition the pattern $P$ into $\O(k)$ monochromatic truncated subtile strings. The procedure works not only for $P$, but for any truncated tile string with $\O(k)$-mismatch periods $\psi$ and $\phi$. Later, we use the same procedure to also partition a part of the text.
+
+\begin{definition}[Lattice graph]
+	For a set $U \subseteq \Z^2$ we define its \emph{lattice graph} $(U, \Edges(U))$, where
+$$\Edges(U) = \bigset{\set{u, u + \delta} : \delta \in \set{\phi, \psi}, u \in U, u + \delta \in U}.$$
+\end{definition}
+Intuitively, we connect every $u \in U \cap Z^2$ with its translations by $\phi, \psi, -\phi, -\psi$ if they are contained in $U$.
+
+\begin{lemma}\label{lattice_graph_connectivity}
+	If $U$ is a truncated subtile, then $(U, \Edges(U))$ is connected.
+	\begin{proof}
+		Assume the contrary.
+		Consider $u \in U$ and $v = u + s \phi + t \psi \in U$ such that
+		\begin{itemize}
+			\item $u$ and $v$ belong to different connected components of $(U, \Edges(U))$,
+			\item $\absolute{s} + \absolute{t}$ is minimized.
+		\end{itemize}
+		W.l.o.g. $s \ge 0$, since in the other case $u$ and $v$ can be swapped.
+		We now show that there exists $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $\absolute{s'} + \absolute{t'} < \absolute{s} + \absolute{t}$, which contradicts the minimality of $\absolute{s} + \absolute{t}$. 
+	
+		Let $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ and $\gamma \in \Z^2$ be the signature of $U$, meaning that
+		\begin{itemize}
+			\item $ U = [x_0, x_1] \times [y_0, y_1] \cap \set{z : z \in \Z^2, \h{z} \in [\phi_0, \phi_1], \s{z} \in [\psi_0, \psi_1], \gamma \equiv u}$,
+			\item $x_1 - x_0 + 1 \ge \absolute{\x{\phi}} + \absolute{\x{\psi}}$ and $y_1 - y_0 + 1 \ge \absolute{\y{\phi}} + \absolute{\y{\psi}}$.
+		\end{itemize}
+		
+		Recall that $\x{\phi} \ge 0$, $\y{\phi} \le 0$, $\x{\psi} \ge 0$, $\y{\psi} \ge 0$. We have the following cases:
+		\begin{enumerate}[(a)]
+			\item \label{it:s0_tneg} If $s = 0$, then w.l.o.g. (up to swapping $u$ and $v$) $t > 0$. Let $w := u + \psi$. Observe that
+				\eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} \le \y{v}, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				and since $w \equiv u$, we get $w \in U$. 
+			
+			\item If $s > 0$ and $t = 0$, let $w := u + \phi$. Analogously, 
+				\eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} \le \y{v}, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				and since $w \equiv u$, we get $w \in U$. 
+			
+			\item If $s > 0$ and $t > 0$, let $w' := u + \phi$. \label{case_pos}
+				We have \eq{
+					\x{u} \le \x{w'} \le \x{v}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
+				}
+				If $w' \in U$, let $w = w'$.
+				If $w' \not \in U$, then since all other requirements are satisfied, we must have $\y{w'} \not \in [y_0, y_1]$.
+				Since $\y{w'} = \y{u} + \y{\phi} \le \y{u}$, we have $\y{u} + \y{\phi} \le y_0 - 1$, and
+				considering $y_1 - y_0 + 1 \ge \absolute{\y{\phi}} + \absolute{\y{\psi}}$, we get $y_1 \ge \y{u} + \y{\psi}$.
+				Now let $w =: u + \psi$.
+				We have \eq{
+					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} = \y{u} + \y{\psi} \le y_1, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
+				}
+				thus $w \in U$.
+			\item If $s > 0$ and $t < 0$, consider $w' = u + \phi$.
+				We have \eq{
+					\y{v} \le \y{w'} \le \y{u}, \quad \h{w'} = \h{u}, \quad \s{v} \le \s{w'} \le \s{u}.
+				}
+				If $w' \in U$, then $w = w'$.
+				Otherwise we can (similarly to (\ref{case_pos})) show that $w = u - \psi \in U$, by the fact that $x_1 - x_0 + 1 \ge \absolute{\x{\phi}} + \absolute{\x{\psi}}$. 
+		\end{enumerate}
+		In all these cases, which are clearly exhaustive, either $\absolute{s} \ge \absolute{s'} = 0$ and $\absolute{t} > \absolute{t'} = 1$ or $\absolute{s} > \absolute{s'} = 1$ and $\absolute{t} \ge \absolute{t'} = 0$ and hence $\absolute{s'}+\absolute{t'} \le \absolute{s}+\absolute{t}$, a contradiction. 
+	\end{proof}
+\end{lemma}
 
 
-\subsection{Pattern partitioning}
+%\begin{figure}[!t]
+%	\begin{center}
+%		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
+%	\end{center}
+%	\caption{The partitioning of a subtile string into monochromatic subtile strings. Different colors represent different characters.}
+%	\label{figure:tile_decomposition}
+%\end{figure}
+
+
+\begin{lemma}\label{monochromacy_condition}
+	A truncated subtile string $S$ is monochromatic iff
+	\[\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0.\]
+	\begin{proof}
+		If $S$ is monochromatic, then clearly $\Ham(S + \phi, S) + \Ham(S + \psi, S) = 0$.
+		Assume the contrary for the other implication.
+		Let $u, v \in \d{S}$ be such that $S(u) \neq S(v)$.
+		Since $\d{S}$ is a truncated subtile, the graph $(\d{S}, \Edges(\d{S})$ is connected by \Cref{lattice_graph_connectivity} and there must exist a path between $u$ and $v$.
+		On that path there must exist a pair of neighbors $w, w'$, such that $S(w) \neq S(w')$ and $w' = w + \delta$ for some $\delta \in \set{\phi, \psi}$.
+		If $\delta = \phi$, then $\Ham(S + \phi, S) \ge 1$ and if $\delta = \psi$, then $\Ham(S + \psi, S) \ge 1$ and we get a contradiction.
+	\end{proof}
+\end{lemma}
+
+
+\begin{lemma}\label{cut_partitioning}
+Given a (truncated) subtile string $S$, there is an algorithm that runs in time $\tO(\absolute{\d{S}} + 1)$ and constructs the following two partitionings.
+	\begin{enumerate}[(a)]
+		\item A partitioning of $S$ into a set of $\O(\Ham(S + \phi, S) + 1)$ (truncated) subtile strings $\U$, such that $\Ham(U + \phi, U) = 0$ for each $U \in \U$ and \label{partition_a}
+		\item A partitioning of $S$ into a set of $\O(\Ham(S + \psi, S) + 1)$ (truncated) subtile strings $\V$, such that $\Ham(V + \psi, V) = 0$ for each $V \in \V$. \label{partition_b}
+	\end{enumerate}
+	\begin{proof}
+		First, consider option (\ref{partition_a}). We construct the set
+		\[ A = \set{\s{u} : u \in \d{S}, u + \phi \in \d{S}, S(u) \neq S(u + \phi)} \cup \set{-\infty, +\infty}\]
+		and then sort its elements increasingly, creating a sequence $a_0, \dots, a_\ell$.
+		Note that $\ell \le \Ham(S + \phi, S) + 2$.
+		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to
+		$\set{u : u \in \d{S}, \s{u} \in [a_i, a_{i + 1})}$ for every $i \in [\ell]$.
+		Observe that $S_0, \dots, S_{\ell - 1}$ partition $S$ and that $\Ham(S_i + \phi, S_i) = 0$ for every $i \in [\ell]$. Finally, if $S$ is a (truncated) subtile string, then the created strings are (truncated) subtile strings as well.
+	
+		Second, consider option (\ref{partition_b}). Similarly to above, we construct
+		\[ A = \set{\h{u} : u \in \d{S}, u + \psi \in \d{S}, S(u) \neq S(u + \psi)} \cup \set{-\infty, +\infty} \]
+		and then sort it increasingly, creating $a_0, \dots, a_\ell$, where $\ell \le \Ham(S + \psi, S) + 2$.
+		We then construct the strings $S_0, \dots, S_{\ell - 1}$, where $S_i$ is the restriction of $S$ to 
+		$\set{u : u \in \d{S}, \h{u} \in (a_i, a_{i + 1}]}$. Similarly to above, if $S$ is a (truncated) subtile string, then the created strings are (truncated) subtile strings as well.
+	\end{proof}
+\end{lemma}
 
 
 \restateThmTileDecomposition
+\begin{proof}
+We first construct in $\O(m^2)$ time a set $\Gamma \subseteq \Z^2$ such that $\absolute{\Gamma} = \O(\min\set{m, k})$ and $\forall u \in \Z^2 \; \exists \gamma \in \Gamma : u \equiv \gamma$ (\Cref{lattice_base}). Next, we use it to partition $R$ into a set of (truncated) subtile strings $\S$, such that $\absolute{\S} = \O(\min\set{m, k})$: Namely, for each $\gamma \in \Gamma$ (see \Cref{lattice_base}), we construct a (truncated) subtile string defined as the restriction of $R$ to $\d{R} \cap (\L + \gamma)$. For that, we consider each $u \in \d{R}$, construct its basis decomposition $u = s\cdot \phi + t\cdot \psi$, where $s,t\in \R$ by solving a system of linear equations in $\O(1)$ time, and add $u$ into the restriction corresponding to $\gamma = (s-\floor{s}) \cdot \phi + (t-\floor{t}) \cdot \psi \in \Gamma$. 
+
+	We now apply \Cref{cut_partitioning} (\ref{partition_a}) to partition each $S \in \S$  into a set of (truncated) subtile strings $\S'$, such that $\S'$ partitions $R$ and $\Ham(S' + \phi, S') = 0$ for every $S' \in \S'$.
+	Note that
+	\[ \absolute{\S'} = \sum_{S \in \S} \O(\Ham(S + \phi, S) + 1) = \O(\Ham(R + \phi, R) + \absolute{\S}) = \O(k),\]
+	since $\phi$ is a $\O(k)$-period of $R$.
+	Finally, we apply  \Cref{cut_partitioning} (\ref{partition_b}) to partition each $S' \in \S'$ into a set of (truncated) subtile strings $\S''$, such that $\S''$ partitions $R$ and $\Ham(S'' + \phi, S'') = 0$ and $\Ham(S'' + \psi, S'') = 0$ for every $S'' \in \S''$.
+	Again we have
+	\[ \absolute{\S''} = \sum_{S' \in \S'} \O(\Ham(S' + \psi, S') + 1) = \O(\Ham(R + \psi, R) + \absolute{\S'}) = \O(k),\]
+	since $R$ has a $\O(k)$-period $\psi$.
+	%See \cref{figure:tile_decomposition} for an illustration. The red lines represent the partitioning done in the first phase, when constructing $\S'$, and blue in the second, when constructing $\S''$.
+	By \Cref{monochromacy_condition}, the strings $S'' \in \S''$ are monochromatic.
+	To construct~$\S''$, the algorithm uses $\tO(\absolute{\d{R}} + k)$ total time.
+\end{proof}
+
 
 Since $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$, the string $P$ is a truncated tile string and we can apply \Cref{tile_decomposition} to partition it in time $\tO(m^2 + k)$ into a set of monochromatic truncated subtile strings $\V$. We then group the strings in $\V$ based on the single character they contain. Specifically, for every character $a \in \Sigma$ present in $P$, we construct a set $\V_a = \set{V : V \in \V, \getchar{V} = a}$.
 
 
-\subsection{Text partitioning}
+\subsection{Text partitioning.}
 
-Because $T$ is not necessarily periodic, we need to use a similar but more sophisticated partitioning.
+While \cref{tile_decomposition} is sufficient to partition $P$ (which has $\O(k)$-periods $\phi$ and $\psi$) into a small number of monochromatic truncated subtile strings, $T$ is not necessarily periodic. Hence we are obliged to extend \cref{tile_decomposition} further to obtain a partitioning for $T$. We focus on the \emph{active text}, i.e., the positions of $T$ that actually participate in at least one of the $\O(k)$-mismatch occurrences of $P$.
 
-\restateDefActiveText
-
+\restateDefActiveText%
+%
 \restateObsActiveText
 
 \restateDefPeripherality
 
+In the remainder of the section, we show that $\Ta$ is close to being $\O(k)$-periodic with periods $\psi$ and $\phi$. 
+This allows us to partition $\Ta$ into one peripheral string and a small number of monochromatic subtile strings.
+
 \restateThmTextDecomposition
+
+Now we prove the theorem. 
+We will cut the text into parallelograms, and we assume that a parallelogram contains its border and its vertices.
+
+\begin{definition}[Parallelogram grid]
+	For $\ell \in \Z^+$, consider a sequence of $\ell+1$  distinct lines $h_0, \dots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ distinct lines $v_0, \dots, v_\ell$ parallel to $\psi$.
+	For every $i, j \in [\ell + 1]$ let $w_{i, j}$ be the intersection of $h_i$ and $v_j$ (since $\phi$ and $\psi$ are not collinear, it is well-defined).
+	For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly trivial) with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
+\end{definition}
+
+\begin{restatable}{lemma}{restateLemParallelogramGrid}\label{lm:parallelogram_grid}
+For all $\ell \in [2m]$, one can construct in $\O(m^2)$ time a parallelogram grid $\{p_{i,j} : i,j \in [\ell]\}$, which satisfies each of the following:
+\begin{enumerate}[(a)]
+\item \label{it:unique} For all $u \in [n] \times [n]$, there exist unique $i,j$ such that $u \in p_{i,j}$.
+
+\item \label{it:small_parallelogram} For all $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $\absolute{u - v} = \O(n / \ell)$.
+
+\item \label{it:monotonicity} For all $i \in [\ell - 1]$ and $j \in [\ell]$ we have
+	\eq{
+	&\min \X(p_{i, j}) < \min \X(p_{i + 1, j}) &\min \Y(p_{i, j}) \le \min \Y(p_{i + 1, j}) \\
+	&\max \X(p_{i, j}) < \max \X(p_{i + 1, j})  &\max \Y(p_{i, j}) \le \max \Y(p_{i + 1, j})
+	}
+	
+For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
+	\eq{
+		&\min \X(p_{i, j}) \ge \min \X(p_{i, j + 1})  &\min \Y(p_{i, j}) < \min \Y(p_{i, j + 1}) \\
+		&\max \X(p_{i, j}) \ge \max \X(p_{i, j + 1})  &\max \Y(p_{i, j}) < \max \Y(p_{i, j + 1})
+	}
+\end{enumerate}
+\end{restatable}
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.75\textwidth]{drawings/lemma5}
+        \caption{Parallelogram grid.}
+        \label{figure:lemma5}
+\end{figure}
+
+Intuitively, it suffices to take a sequence of $\ell+1$ equispaced lines parallel to $\psi$ and a sequence of $\ell+1$ equispaced lines parallel to $\phi$ (see \cref{figure:lemma5}). The first property then follows from the fact that the angle between $\psi$ and $\varphi$ is in $[30^\circ,150^\circ]$ (hence, the parallelograms in the grid cannot be too ``stretched out''). The second property is implied by the fact that $\psi$ is in $(0,+\infty)\times [0,+\infty)$ and $\phi$ in $[0,\infty) \times (-\infty,0)$. A formal proof, which uses nothing but standard arithmetic, can be found in \cref{app:parallelogram_grid}.  
+
+We apply \Cref{lm:parallelogram_grid} to construct a parallelogram grid $\{p_{i,j}\}$ of size $\ell$. If $\exists i, j \in [\ell] : \max \X(p_{i, j}) - \min \X(p_{i, j}) \ge m / 4$, then by \Cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}) we have $m / 4 \le \max \X(p_{i, j}) - \min \X(p_{i, j}) = \O(n / \ell)$, and thus $\ell = \O(1)$. In this case, we can return a trivial partitioning where the set of monochromatic subtile strings is empty and $F = \Ta$, since $\Ta$ is $\O(m)$-peripheral. We can use an analogous argument if $\exists i,j \in \ell : \max \Y(p_{i, j}) - \min \Y(p_{i, j}) \ge m / 4$. Below we assume $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. 
+
+\begin{definition}
+A set $U \subseteq \Z^2$ is \emph{coverable} if $U \subseteq \d{P + q}$ for some $q \in Q$.
+\end{definition}
+
+The following claim gives the intuition behind this definition:
+
+\begin{claim}\label{coverable is periodic}
+	The restriction of $T$ to a coverable set has $\O(k)$-periods $\phi$ and $\psi$.
+\end{claim}	
+	\begin{proof}
+		Let $R$ denote the restriction. For $q \in Q$, such that $\d{R} \subseteq \d{P + q}$ we have
+\begin{align*}
+&\Ham(R + \phi, R) \le \\
+&\Ham(R + \phi, P + q + \phi) + \Ham(P + q + \phi, P + q) + \Ham(P + q, R) \le \\
+&\Ham(T, P + q) + \Ham(P + \phi, P) + \Ham(P + q, T) = \O(k)
+\end{align*}
+and identically $\Ham(R + \psi, R) = \O(k)$.
+\end{proof}
+
+Let $z = \frac{n - 1}{2}$. Split the 2D plane with two lines $x = z$ and $y = z$ into four quarters:
+\begin{align}
+\label{eq:quarters}
+\begin{split}
+&K_1 = (z, +\infty) \times (z, +\infty) \quad\quad K_2 = (-\infty, z) \times (z, +\infty)\\
+&K_3 = (-\infty, z) \times (-\infty, z) \quad\quad K_4 = (z, +\infty) \times (-\infty, z)
+\end{split}
+\end{align}
+
+
+\begin{claim}\label{coverable}
+Let $P$ be a union of parallelograms~$p_{i,j}$ which have a non-empty intersection with $K_1$. If $v = (\max \X(P), \max \Y(P)) \in \d{\Ta}$, then $U = P \cap \Z^2$ is coverable. (For $K_2$, an analogous claim is true with $v: = (\min \X(P), \max \Y(P))$, for $K_3$ with $v : = (\min \X(P), \min \Y(P))$, and for $K_4$ with $v : = (\max \X(P), \min \Y(P))$.)
+\end{claim}
+\begin{proof}
+As $v \in \d{\Ta}$, there exists $q \in Q$ such that $v \in [m]^2 + q$. As $P$ is a union of parallelograms $p_{i,j}$ which have a non-empty intersection with $K_1$, we have $\x{v} \ge z$ and $\y{v} \ge z$. Recall that we assume $n \le \frac{3}{2} m$ and $\max \X(p_{i, j}) - \min \X(p_{i, j}) < m / 4$ and $\Y(p_{i, j}) - \min \Y(p_{i, j}) < m / 4$ for all $i, j \in [\ell]$. Therefore, for all $u \in P$ we have
+\begin{align*}
+&\x{q} \le n-m \le n/2-m/4 \le \x{u} \le \x{v} \le \x{q} + m-1\\
+&\y{q} \le n-m \le n/2-m/4 \le \y{u} \le \y{v} \le \y{q} + m-1 
+\end{align*}
+\noindent Consequently, $P \subseteq [m]^2+q$ and hence coverable.
+\end{proof}
+
+\begin{claim}\label{peripheral}
+For all $i,j \in [\ell]$, the set $U = p_{i,j} \cap \Z^2$ is $\O(n / \ell)$-peripheral if one of the points $(\min \X(U), \min \Y(U))$, $(\min \X(U), \max \Y(U))$, $(\max \X(U), \min \Y(U))$, $(\max \X(U), \max \Y(U))$ is not in $\d{\Ta}$.
+\end{claim}
+\begin{proof}
+W.l.o.g., $v = (\max \X(U), \max \Y(U)) \notin \d{\Ta}$. For all $u \in U$, we have $\absolute{u-v} = \O(n / \ell)$ by \cref{lm:parallelogram_grid} (\ref{it:small_parallelogram}), and hence $U$ is $\O(n / \ell)$-peripheral.
+\end{proof}
+
+\begin{lemma}\label{lm:parallelogram_merge}
+Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\O(\ell)$ parallelograms $\mathcal{P}$ with sides collinear to $\phi$ and $\psi$ such that for every $p \in \mathcal{P}$ the set $p \cap \Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
+\end{lemma}
+\begin{proof}
+By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid}(\ref{it:monotonicity}), \cref{coverable}, and \cref{peripheral} for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
+\begin{enumerate}
+	\item A parallelogram $P_j^1 = \bigcup_{i=0}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
+	\item A parallelogram $P_j^2 = \bigcup_{i=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
+	\item Parallelograms $p_{s, j}, \dots, p_{t - 1, j}$ are not fully contained neither in $K_1$ nor in $K_3$,
+	\item A parallelogram $P_j^3 = \bigcup_{i=t}^{t'-1} p_{i, j} \cup \Z^2$ is coverable,
+	\item A parallelogram $P_j^4 = \bigcup_{i=t'}^{\ell - 1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral.
+\end{enumerate}
+
+\noindent Similarly, for every $i \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
+\begin{enumerate}
+	\item A parallelogram $R_i^1 = \bigcup_{j=0}^{s-1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral,
+	\item A parallelogram $R_i^2 = \bigcup_{j=s}^{s'-1} p_{i, j} \cup \Z^2$ is coverable, 
+	\item Parallelograms $p_{i, s}, \dots, p_{i, t-1}$ are not fully contained neither in $K_2$ nor in $K_4$,
+	\item A parallelogram $R_i^3 = \bigcup_{j=t}^{t'-1} p_{i, j} \cup \Z^2$ is coverable,
+	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell - 1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
+\end{enumerate}
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.75\textwidth]{drawings/text_decomposition}
+        \caption{Parallelogram cover of $\Ta$. The polygon in the center corresponds to $\Ta$. Red parallelograms are $\O(n/\ell)$-peripheral, blue coverable, and green belong to $\I$.}
+        \label{figure:text_decomposition}
+\end{figure}
+
+Note that there are $\O(\ell)$ parallelograms $P_j^x$ and $R_i^x$ for $i,j \in [\ell]$ and $x \in \set{1, \dots, 4}$ and that they cover all parallelograms $p_{i,j}$ but those that are not fully contained in any of the quarters, in other words, the parallelograms $p_{i, j}$ intersecting  at least one of the lines $x = z$ and $y = z$. Denote the set of such parallelograms by $\I$. 
+
+By \cref{coverable} and \cref{peripheral}, for each parallelogram $p_{i,j} \in \I$ the set $p_{i,j} \cap \Z^2$ is either coverable or $\O(n/\ell)$-peripheral. Furthermore, $\absolute{\I} = \O(\ell)$. Consider a set $U_x$ of intersections of grid lines different from $x=z$ with the line and a set $U_y$ of intersections of grid lines different from $y=z$. Every parallelogram in $\I$ contains $u \in U_x \cup U_y$, and every $u \in \Z^2$ can be contained in at most four parallelograms, implying the bound. 
+
+The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \cup \{R_j^x : j \in [\ell], x \in \{1, \dots, 4\}\}$ satisfies the claim of the lemma. (See \cref{figure:text_decomposition}.) It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
+\end{proof}
+
+We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(\absolute{\d{R}} + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P}_2} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
+
+This concludes the proof of \cref{text_decomposition}.
+
 
 \jonasi{above}
 
 
-
+\section{Partitioning of the pattern and the text}
 The goal of this section is to show \cref{tile_decomposition} (which explains how to partition the pattern into monochromatic truncated subtile strings) and \cref{text_decomposition} (which explains how to partition the text). We start with a technical \cref{sec:lattices_subtiles}, which describes necessary properties of lattices and subtiles. 
  
 % tile DECOMPOSITION
@@ -1119,7 +1383,7 @@ We assume that a parallelogram contains its border and its vertices.
 	For every $i, j \in [\ell]$ define $p_{i, j}$ to be the parallelogram (possibly, trivial) with vertices $w_{i, j}, w_{i + 1, j}, w_{i + 1, j + 1}, w_{i, j + 1}$. We say that a set $\{p_{i,j} : i,j \in [\ell]\}$, is a \emph{parallelogram grid} of size $\ell$. 
 \end{definition}
 
-\begin{restatable}{lemma}{restateLemParallelogramGrid}\label{lm:parallelogram_grid}
+\begin{restatable}{lemma}{parallelogram_grid}\label{lm:parallelogram_grid}
 For all $\ell \in [2m]$, one can construct in $\O(m^2)$ time a parallelogram grid $\{p_{i,j} : i,j \in [\ell]\}$, which satisfies each of the following:
 \begin{enumerate}[(a)]
 \item \label{it:unique} For all $u \in [n] \times [n]$, there exist unique $i,j$ such that $u \in p_{i,j}$.
@@ -1140,7 +1404,7 @@ For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
 \end{enumerate}
 \end{restatable}
 
-\begin{figure}
+\begin{figure}[h!]
         \centering
         \includegraphics[width=0.75\textwidth]{drawings/lemma5}
         \caption{Parallelogram grid.}
@@ -1179,10 +1443,6 @@ Let $z = \frac{n - 1}{2}$. Split the 2D plane with two lines $x = z$ and $y = z$
 \end{split}
 \end{align}
 
-
-\newcommand{\I}{\mathcal{I}}
-\newcommand{\G}{\mathcal{G}}
-\newcommand{\C}{\mathcal{C}}
 
 \begin{claim}\label{coverable}
 Let $P$ be a union of parallelograms~$p_{i,j}$ which have a non-empty intersection with $K_1$. If $v = (\max \X(P), \max \Y(P)) \in \d{\Ta}$, then $U = P \cap \Z^2$ is coverable. (For $K_2$, an analogous claim is true with $v: = (\min \X(P), \max \Y(P))$, for $K_3$ with $v : = (\min \X(P), \min \Y(P))$, and for $K_4$ with $v : = (\max \X(P), \min \Y(P))$.)
@@ -1225,7 +1485,7 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 	\item A parallelogram $R_i^4 = \bigcup_{j=t'}^{\ell - 1} p_{i, j} \cup \Z^2$ is $\O(n/\ell)$-peripheral. 
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[h!]
         \centering
         \includegraphics[width=0.75\textwidth]{drawings/text_decomposition}
         \caption{Parallelogram cover of $\Ta$. The polygon in the center corresponds to $\Ta$. Red parallelograms are $\O(n/\ell)$-peripheral, blue coverable, and green belong to $\I$.}
@@ -1591,7 +1851,7 @@ As an immediate corollary, we obtain
 $\absolute{\d{F_1}} = \O(dm)$. 
 \end{corollary}
 
-Recall the construction of the sets $\V_\sigma$ described in \Cref{TODO}\jonas{TODO}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
+Recall the construction of the sets $\V_a$ described in \Cref{sec:partition:pattern}. We call a character $a \in \Sigma$ \emph{frequent} if $\absolute{\V_a} \ge \sqrt{k}$, and otherwise \emph{infrequent}. We partition $F_1$ into two strings $F_1'$ and $F_1''$, where $F_1'$ contains only infrequent characters and $F_1''$ frequent ones. For every $q \in Q$, we then have 
 
 \[\Ham(P + q, S) = \Ham(P + q, F_1') + \Ham(P + q, F_1'').\]
 
