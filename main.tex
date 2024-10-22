@@ -865,11 +865,17 @@ By multiplying the inequalities from \cref{A_ineq,C_ineq}, we obtain $\absolute{
 
 We have shown that $w$ and $w'$ satisfy the claimed properties. 
 It remains to show how to compute~$w'$. 
-If the longest antichain $A$ is given, then it is easy to sort the chain according to $<_2$ and select the desired $w'$ in $\tO(\absolute{A})$ time. To compute the antichain, we recall from the proof of \cref{A_ineq} that $u <_2 v$ (equivalently $v - u \in \Q_2^-$) implies that $(v.x - u.x)$ is negative, while $(v.y - u.y)$ is positive (this also readily follows from the fact that $\Q_2^-$ is a subset of $\Q_2$). This means that $v.y - v.x > u.y - u.x$. We sort $U$ in increasing order of $y - x$. Thus, if $u <_2 v$, then $u$ precedes $v$ in the sorted $U$. 
-% AG: For now I just remove "and only if" since it makes the definition less incorrect
-Let $\prec$ be a strict total order defined by $u \prec v$ if $u <_2 v$.
-We compute the longest subsequence in the sorted $U$ that is increasing with respect to $\prec$.
-This takes $\tO(\absolute{U})$ time (see~\cite{CROCHEMORE20101054} and references therein) and results in the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
+If the longest antichain $A$ is given, then it is easy to sort the chain according to $<_2$ and select the desired $w'$ in $\tO(\absolute{A})$ time. To compute the antichain, 
+we define two orders $\prec_a$ and $\prec_b$, where 
+%\begin{alignat*}{1}
+%u \prec_b v & \textnormal{\ if and only if\ } \sqrt{3} \cdot v.x + v.y < \sqrt{3} \cdot u.x + u.y \textnormal{\ and}\\
+%u \prec_a v & \textnormal{\ if and only if\ } \sqrt{3} \cdot u.y + u.x < \sqrt{3} \cdot v.y + v.x.
+%\end{alignat*}
+$u \prec_a v$ if and only if $\sqrt{3} \cdot u.y + u.x < \sqrt{3} \cdot v.y + v.x$, and $u \prec_b v$ if and only if $\sqrt{3} \cdot v.x + v.y < \sqrt{3} \cdot u.x + u.y$.
+By the definition of $Q_2^-$, it holds $u <_2 v$ if and only if both $u \prec_a v$ and $u \prec_b v$.
+We sort $U$ in non-decreasing order with respect to $\prec_a$. If there is a tie between $u$ and $v$, we break the tie such that $u$ precedes $v$ if and only if $v \prec_b u$. (There cannot be distinct $u$ and $v$ that are tied with respect to both orders.) 
+Afterwards, a subsequence of the sorted $U$ is a chain of $<_2$ if and only if the subsequence (read from left to right) is increasing with respect to $\prec_b$.
+We compute the longest increasing subsequence with respect to $\prec_b$ in $\tO(\absolute{U})$ time (see~\cite{CROCHEMORE20101054} and references therein) and hence obtain the longest chain of $<_2$, or equivalently the longest antichain of $<_1$.
 \end{proof}
 
 Let $\ell = n - m \le m / 2$. We apply \Cref{get_periods} on $\ell$ and the set $Q$ (the conditions of the claim are satisfied as $\absolute{Q} > 8m + m^2/k \ge 16\ell$) and compute $\phi, \psi \in \Z^2$ in $\tO(\absolute{Q})$ time. By \Cref{periodicity_lemma}, $\phi$ and $\psi$ are $\O(k)$-periods of $P$, and $0 \le \phi \times \psi \le \absolute{\phi}\absolute{\psi} = \O(\ell^2 / \absolute{Q}) =  \O(\min\set{m, k})$. We fix $\phi$ and $\psi$ for the rest of the paper.
