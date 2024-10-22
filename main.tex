@@ -627,7 +627,7 @@ For every point $u \in \Z^2$, we define its \emph{border distance} as $\min\set{
 \end{restatable*}
 
 \begin{restatable*}{@theorem}{restateThmTextDecomposition}\label{text_decomposition}
-Given $\ell \in [2m]$, one can partition $\Ta$ in time $\tO(m^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and an $\O(m / \ell)$-peripheral string.
+Given $\ell \in \Z^+$, one can partition $\Ta$ in time $\tO(m^2 + \ell^2 + \ell k)$ into $\O(\ell k)$ monochromatic subtile strings and an $\O(m / \ell)$-peripheral string.
 \end{restatable*}
 
 \subsection{Algorithm.}
@@ -1092,22 +1092,22 @@ We will cut the text into parallelograms, and we assume that a parallelogram con
 \end{definition}
 
 \begin{restatable}{lemma}{restateLemParallelogramGrid}\label{lm:parallelogram_grid}
-For all $\ell \in [2m]$, one can construct in $\O(m^2)$ time a parallelogram grid $\{p_{i,j} : i,j \in [\ell]\}$, which satisfies each of the following:
+For all $\ell \in \Z^2$, one can construct in $\O(m^2 + \ell^2)$ time a parallelogram grid $\{p_{i,j} : i,j \in [\ell]\}$, which satisfies each of the following:
 \begin{enumerate}[(a)]
-\item \label{it:unique} For all $u \in [n] \times [n]$, there exist unique $i,j$ such that $u \in p_{i,j}$.
+\item \label{it:unique} For all $u \in [n]^2$, there exist unique $i,j$ such that $u \in p_{i,j}$.
 
 \item \label{it:small_parallelogram} For all $i, j \in [\ell]$ and every $u, v \in \X(p_{i, j}) \times \Y(p_{i, j})$, we have $\absolute{u - v} = \O(n / \ell)$.
 
 \item \label{it:monotonicity} For all $i \in [\ell - 1]$ and $j \in [\ell]$ we have
 	\eq{
-	&\min \X(p_{i, j}) < \min \X(p_{i + 1, j}) &\min \Y(p_{i, j}) \le \min \Y(p_{i + 1, j}) \\
-	&\max \X(p_{i, j}) < \max \X(p_{i + 1, j})  &\max \Y(p_{i, j}) \le \max \Y(p_{i + 1, j})
+		\min \X(p_{i, j}) &< \min \X(p_{i + 1, j}) & \min \Y(p_{i, j}) &\le \min \Y(p_{i + 1, j}) \\
+		\max \X(p_{i, j}) &< \max \X(p_{i + 1, j}) & \max \Y(p_{i, j}) &\le \max \Y(p_{i + 1, j})
 	}
 	
 For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
 	\eq{
-		&\min \X(p_{i, j}) \ge \min \X(p_{i, j + 1})  &\min \Y(p_{i, j}) < \min \Y(p_{i, j + 1}) \\
-		&\max \X(p_{i, j}) \ge \max \X(p_{i, j + 1})  &\max \Y(p_{i, j}) < \max \Y(p_{i, j + 1})
+		\min \X(p_{i, j}) &\ge \min \X(p_{i, j + 1})  & \min \Y(p_{i, j}) &< \min \Y(p_{i, j + 1}) \\
+		\max \X(p_{i, j}) &\ge \max \X(p_{i, j + 1})  & \max \Y(p_{i, j}) &< \max \Y(p_{i, j + 1})
 	}
 \end{enumerate}
 \end{restatable}
@@ -1172,7 +1172,7 @@ W.l.o.g., $v = (\max \X(U), \max \Y(U)) \notin \d{\Ta}$. For all $u \in U$, we h
 \end{proof}
 
 \begin{lemma}\label{lm:parallelogram_merge}
-Given $\ell \in [2m]$, $\d{\Ta}$ can be covered with a set of $\O(\ell)$ parallelograms $\mathcal{P}$ with sides collinear to $\phi$ and $\psi$ such that for every $p \in \mathcal{P}$ the set $p \cap \Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
+Given $\ell \in \Z^+$, $\d{\Ta}$ can be covered with a set of $\O(\ell)$ parallelograms $\mathcal{P}$ with sides collinear to $\phi$ and $\psi$ such that for every $p \in \mathcal{P}$ the set $p \cap \Z^2$ is either coverable or $\O(n / \ell)$-peripheral. 
 \end{lemma}
 \begin{proof}
 By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus \d{\Ta}$ and $v \in \d{\Ta}$, such that $\x{u} \le \x{v}$ and $\y{u} \le \y{v}$. From this, \Cref{lm:parallelogram_grid}(\ref{it:monotonicity}), \cref{coverable}, and \cref{peripheral} for every $j \in [\ell]$ there exist $s,s', t',t \in [\ell]$  such that each of the following is satisfied:
