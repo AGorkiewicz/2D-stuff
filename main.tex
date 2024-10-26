@@ -24,7 +24,7 @@
 \usepackage{epsfig}
 \usepackage{verbatim}
 \usepackage[noadjust]{cite}
-\usepackage{todonotes}
+%\usepackage{todonotes}
 \usepackage{subcaption}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows,arrows.meta,calc,patterns,patterns.meta,fit}
@@ -1240,7 +1240,7 @@ By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO
 
 \subsection[Counting mismatches between P and monochromatic subtile strings.]{Proof of \cref{th:sparse_algo}.}\label{sec:algorithm:center}
 \restateThmSparseAlgo*
-Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partition}\jonas{have to check this later}).
+Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partition:pattern}).
  Observe that
 \begin{align}
 \label{eq:sparse}
