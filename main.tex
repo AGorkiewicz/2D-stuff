@@ -262,7 +262,7 @@ properties of such objects.
 
 \paragraph{Overview of the techniques.}
 The starting point for our algorithm is the approach designed for the one-dimensional version, see e.g.~\cite{Gawrychowski2018}
-for an optimized version (but the approach is due to~\cite{Clifford2016}), which proceeds as follows. Using the standard trick~\cite{Abrahamson1987}, we can assume w.l.o.g. $n = 2m$. 
+for an optimized version (but the approach is due to~\cite{Clifford2016}), which proceeds as follows. Using the standard trick~\cite{Abrahamson1987}, we can assume w.l.o.g.~$n = 2m$. 
 First, we approximate the Hamming distance for every position in the text with Karloff's algorithm~\cite{Karloff1993}.
 Then, we can eliminate positions for which the approximated distance is very large.
 If the number of remaining positions is small enough, we can use kangaroo jumps~\cite{Galil1986} to verify them one by one.
@@ -503,7 +503,7 @@ Given two-dimensional strings $P$ with $\d{P} = [m] \times [m]$ and $T$ with $\d
 
 \restateThmMain*
 
-Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' \le \frac{3}{2}m$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+Assume w.l.o.g.~that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' \le \frac{3}{2}m$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
@@ -664,7 +664,7 @@ Now we provide a full proof of the main result, which is restated below. In this
 
 \restateThmMain*
 
-Assume w.l.o.g. that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' \le \frac{3}{2}m$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
+Assume w.l.o.g.~that $2|n$ and $n \le \frac{3}{2}m$. If this is not the case, one can cover $T$ with $\O(n^2/m^2)$ strings $T_i$ such that $\d{T_i} = [n'] \times [n'] + q$ for $n' \le \frac{3}{2}m$, $2|n'$, and $q \in \Z^2$ and solve the problem for $P$ and each $T_i$ independently, which will result in $\O(n^2/m^2)$ extra multiplicative factor in the time complexity. Hence, below we assume that the two conditions are satisfied and aim to design an $\tO(m^2 + mk^{5/4})$-time algorithm. 
 
 We start by applying \cref{cor:approx2d} to $P$, $T$, and $\varepsilon = 1$ and obtain in $\O(n^2 \log^3 n)$ time a set $Q \subseteq \Z^2$ such that both of the following hold:
 \begin{enumerate}
@@ -953,7 +953,7 @@ Intuitively, we connect every $u \in U \cap \Z^2$ with its translations by $\phi
 			\item $u$ and $v$ belong to different connected components of $(U, \Edges(U))$,
 			\item $\absolute{s} + \absolute{t}$ is minimized.
 		\end{itemize}
-		W.l.o.g. $s \ge 0$, since in the other case $u$ and $v$ can be swapped.
+		W.l.o.g.~$s \ge 0$, since in the other case $u$ and $v$ can be swapped.
 		We now show that there exists $w \in U$, such that $\set{u, w} \in \Edges(U)$ and if we let $s', t' \in \Z$ be such that $v = w + s'\phi + t'\psi$, then $\absolute{s'} + \absolute{t'} < \absolute{s} + \absolute{t}$, which contradicts the minimality of $\absolute{s} + \absolute{t}$. 
 	
 		Let $x_0, x_1, y_0, y_1, \phi_0, \phi_1, \psi_0, \psi_1 \in \Z$ and $\gamma \in \Z^2$ be the signature of $U$, meaning that
@@ -964,7 +964,7 @@ Intuitively, we connect every $u \in U \cap \Z^2$ with its translations by $\phi
 		
 		Recall that $\x{\phi} \ge 0$, $\y{\phi} \le 0$, $\x{\psi} \ge 0$, $\y{\psi} \ge 0$. We have the following cases:
 		\begin{enumerate}[(a)]
-			\item \label{it:s0_tneg} If $s = 0$, then w.l.o.g. (up to swapping $u$ and $v$) $t > 0$. Let $w := u + \psi$. Observe that
+			\item \label{it:s0_tneg} If $s = 0$, then w.l.o.g.~(up to swapping $u$ and $v$) $t > 0$. Let $w := u + \psi$. Observe that
 				\eq{
 					\x{u} \le \x{w} \le \x{v}, \quad \y{u} \le \y{w} \le \y{v}, \quad \h{u} \le \h{w} \le \h{v}, \quad \s{w} = \s{u},
 				}
