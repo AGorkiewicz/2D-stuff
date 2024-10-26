@@ -1238,7 +1238,7 @@ By \cref{th:sparse_algo}, we can compute $\sum_{S \in \S} \Ham(P + q, S)$ for ev
 By substituting $d = \O(k^{3/4})$, we obtain the desired time complexity of $\tO(m^2 + mk^{5/4})$ and hence complete the proof of \cref{th:main}.
 
 
-\subsection[Counting mismatches between $P$ and monochromatic subtile strings.]{Proof of \cref{th:sparse_algo}.}\label{sec:algorithm:center}
+\subsection[Counting mismatches between P and monochromatic subtile strings.]{Proof of \cref{th:sparse_algo}.}\label{sec:algorithm:center}
 \restateThmSparseAlgo*
 Let $U = \bigcup_{S \in \S} \d{S}$. Recall that $\V$ is a set of monochromatic truncated subtile strings that partition $P$, and $\V_a = \set{V : V \in \V, \getchar{V} = a}$ (see \cref{sec:partition}\jonas{have to check this later}).
  Observe that
@@ -1516,7 +1516,7 @@ We can then extract the values $\tau^{i,j}_q$ for all $q \in Q$ in $\absolute{Q}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection[Counting mismatches between $P$ and a $d$-peripheral string.]{Proof of \cref{th:dense_algo}.}
+\subsection[Counting mismatches between P and a d-peripheral string.]{Proof of \cref{th:dense_algo}.}
 \label{sec:algorithm:periph}
 
 In this section, we show how to compute the Hamming distances between $P$ and a $d$-peripheral string efficiently:
@@ -1659,9 +1659,17 @@ We then compute $Q' = Q \cap \bigl( \cup_i \{q \in \Z^2 : \d{H_i+q} \subseteq \d
 \bibliographystyle{plainurl}
 \bibliography{references}
 \appendix
-\section{Proof of \cref{lm:parallelogram_grid}}
+\section[Constructing a parallelogram grid]{Proof of \cref{lm:parallelogram_grid}}
 \label{app:parallelogram_grid}
-\paragraph{Construction of the grid and Property (\ref{it:unique}).}
+
+\restateLemParallelogramGrid*
+
+\begin{proof}
+\def\paragraphrp#1{\vspace{.5\baselineskip}
+
+\noindent\textbf{#1}}
+
+\paragraphrp{Construction of the grid and Property (\ref{it:unique}).}
 Recall that the grid is defined by a sequence of $\ell+1$ lines $h_0, h_1, \ldots, h_\ell$ parallel to $\phi$ and a sequence of $\ell+1$ lines $v_0, v_1, \ldots, v_\ell$ parallel to $\psi$. 
 
 To construct the lines $h_0, h_1, \ldots, h_\ell$, we first compute $\h{u}$ for all $u \in [n^2]$ in $\O(n^2) = \O(m^2)$ time. As $\phi \in (0,+\infty) \times [0,+\infty]$, we have 
@@ -1684,7 +1692,7 @@ We then define $v_i = \{u: u \in \R^2, \s{u} = \beta_i\}$.
 
 For $0 \le i,j \le \ell+1$ let $w_{i,j}$ be the intersection of $h_i$ and $v_j$ (defined correctly as they are not collinear). For $i,j \in [\ell]$ define a parallelogram $p_{i,j}$ as the parallelogram with vertices $w_{i-1,j-1}$, $w_{i-1,j}$, $w_{i,j-1}$, $w_{i,j}$. Property $\ref{it:unique}$ easily follows from the properties of $\{\alpha_i\}$ and $\{\beta_j\}$.
 
-\paragraph{Property (\ref{it:small_parallelogram}).}
+\paragraphrp{Property (\ref{it:small_parallelogram}).}
 Consider any $p_{i,j}$, $i,j \in [\ell]$. First note that	for all $u, v \in p_{i, j}$, we have $\absolute{u - v} = \O(n / \ell)$. Consider any $u, v \in p_{i, j}$ and denote $w = u - v$.
 By definition of $p_{i, j}$, we have
 \[ \absolute{\h{w}} = \absolute{\h{(u - v)}} = \absolute{\h{u} - \h{v}} = \O(n\absolute{\phi} / \ell) \]
@@ -1699,7 +1707,7 @@ Secondly, we show that	for all $u \in \X(p_{i, j}) \times \Y(p_{i, j})$ there ex
 Finally, consider any $u, v \in p_{i, j}$. From above, there exist $u', v' \in p_{i, j}$ such that $\absolute{u - u'} = \O(n / \ell)$ and $\absolute{v - v'} = \O(n / \ell)$. Therefore, 
 \[ \absolute{u - v} \le \absolute{u - u'} + \absolute{u' - v'} + \absolute{v' - v} = \O(n / \ell). \]
 
-\paragraph{Property (\ref{it:monotonicity}).} 
+\paragraphrp{Property (\ref{it:monotonicity}).} 
 We show that for all $i \in [\ell - 1]$ and $j \in [\ell]$ we have
 $$\min \X(p_{i, j}) < \min \X(p_{i + 1, j}),$$
 the rest can be shown analogously. Recall that $w_{s,t}$ is the intersection of the lines $h_s$ and $v_t$ defining the parallelogram grid, $\phi \in [0, +\infty] \times (-\infty,0)$, and $\psi \in (0,+\infty) \times [0,+\infty)$. 
@@ -1711,5 +1719,6 @@ As $p_{i,j}$ and $p_{i+1,j}$ are parallelograms, we have
 \end{align*}
 
 From the construction of $h_s$ and $v_t$ it follows that $w_{i + 1,j + 1} = w_{i,j+1} + \beta \cdot \psi$ for some $\beta > 0$, and hence $\x{w_{i + 1,j + 1}} > \x{w_{i,j + 1}}$. Therefore, $\min \X(p_{i+1, j}) > \min \X(p_{i, j})$ as desired. 
+\end{proof}
 \end{document}
 
