@@ -234,7 +234,7 @@ Later, some purely combinatorial properties of two-dimensional periodicities hav
 but generally speaking repetitions in two-dimensional strings are inherently more complicated than in one-dimensional strings.
 For example, compressed pattern matching for two-dimensional strings becomes NP-complete~\cite{Berman2002}, see~\cite{Rytter2000}
 for a more extensive discussion.
-Another example, perhaps less extreme, are the bounds on two-dimensional runs~\cite{Amir2020} and
+Another example, perhaps less extreme, is the bounds on two-dimensional runs~\cite{Amir2020} and
 distinct squares~\cite{Charalampopoulos2020}, where we know that increasing the dimension incurs at least an additional
 logarithmic factor~\cite{Charalampopoulos2020}.
 
@@ -402,7 +402,7 @@ Assume that $P, T$ are two-dimensional strings where $\d{P} = [m] \times [m]$ an
 \begin{proof}
 For every $i \in [m]$, define a one-dimensional string $P_i = P(i,0) P(i,1) \ldots P(i,m-1)$. Analogously, for every $i \in [n], j \in [n-m+1]$, define a one-dimensional string $T_{i,j} = T(i,j) T(i,j+1) \ldots T(i,j+m-1)$. 
 
-We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal iff the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $\$ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
+We assign in $\O(n^2)$ time an integer identifier $\ID$ to each $P_i$ and $T_{i,j}$, satisfying the property that the identifiers are equal if and only if the strings are equal, in a folklore way: First, we build the suffix tree~\cite{DBLP:conf/focs/Weiner73} for $\bar{T} \$ \bar{P}$ in $\O(n^2)$ time, where $\$ \notin \Sigma \cup \{\wild\}$. Next, we trim the suffix tree at depth $m$ by a depth-first traverse in $\O(n^2)$ time as well. By definition, every string $P_i$ and $T_{i,j}$ now corresponds to a leaf of the tree, and distinct strings correspond to distinct leaves. We can now identify a string with the corresponding leaf. 
 
 \begin{fact}[{\cite{Galil1986}}]\label{fact:kangaroo1D}
 Given a one-dimensional string $S: [\ell] \rightarrow \Sigma$. There is a data structure that can be built in $\O(\ell)$ time and for all pairs of strings $S_1 = S(i) S(i+1) \ldots S(i+\ell')$, $S_2 = S(j) S(j+1) \ldots S(j+\ell')$, where $0 \le i,j < \ell-\ell'$, allows computing $\MI(S_1+j-i, S_2)$ in time $\O(\Ham(S_1,S_2))$. 
@@ -487,7 +487,7 @@ Let $\varepsilon > 0$ be a constant. Given two non-empty two-dimensional strings
 Follows from \cref{cor:approx1d} and \cref{claim:padding}. 
 \end{proof}
 
-%Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalized.
+%Unfortunately, the most effective known algorithms for bounded \hd~\cite{Clifford2015,Gawrychowski2017} rely on periodicity and inherently do not allow don't care symbols, thus, they cannot be easily generalised.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -922,7 +922,7 @@ Using the lattice defined by basis vectors $\phi$ and $\psi$, we can further par
 		We now give a construction algorithm for $\Gamma$.
 		Consider $\Gamma' = \Z^2 \cap [0,\x{\phi}+\x{\psi}] \times [\y{\phi},\y{\psi}]$.
 		We have $\absolute{\Gamma'} = \O((\absolute{\x{\phi}}+\absolute{\x{\psi}}) \cdot (\absolute{\y{\phi}}+\absolute{\y{\psi}})) = \O(m^2)$ as $\absolute{\x{\phi}}, \absolute{\y{\phi}}, \absolute{\x{\psi}}, \absolute{\y{\psi}} \le n - m \le m / 2$.
-		For $u \in \Gamma'$ we have $u \in \Gamma$ iff $\s{\phi} \le \s{u} \le 0$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
+		For $u \in \Gamma'$ we have $u \in \Gamma$ if and only if $\s{\phi} \le \s{u} \le 0$ and $0 \le \h{u} \le \h{\psi}$, which can be checked in constant time. 
 	\end{proof}
 
 \restateDefSubtile
@@ -1206,7 +1206,7 @@ Note that there are $\O(\ell)$ parallelograms $P_j^x$ and $R_i^x$ for $i,j \in [
 
 By \cref{coverable} and \cref{peripheral}, for each parallelogram $p_{i,j} \in \I$ the set $p_{i,j} \cap \Z^2$ is either coverable or $\O(n/\ell)$-peripheral. Furthermore, $\absolute{\I} = \O(\ell)$. Consider a set $U_x$ of intersections of grid lines different from $x=z$ with the line and a set $U_y$ of intersections of grid lines different from $y=z$. Every parallelogram in $\I$ contains $u \in U_x \cup U_y$, and every $u \in \Z^2$ can be contained in at most four parallelograms, implying the bound. 
 
-The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \cup \{R_j^x : j \in [\ell], x \in \{1, \dots, 4\}\}$ satisfies the claim of the lemma. (See \cref{figure:text_decomposition}.) It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ iff $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ iff $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
+The set $\mathcal{P} = \I \cup \{P_j^x : j \in [\ell], x \in \{1, \dots, 4\}\} \cup \{R_j^x : j \in [\ell], x \in \{1, \dots, 4\}\}$ satisfies the claim of the lemma. (See \cref{figure:text_decomposition}.) It remains to explain how to construct it efficiently. For all $i,j \in [\ell]$, the values $\min \X(p_{i,j}), \max \X(p_{i,j}), \min \Y(p_{i,j}), \max \X(p_{i,j})$ can be inferred in $\O(1)$ time. As $p_{i,j}$ is a connected figure, it intersects with $x = z$ if and only if $\min \X(p_{i,j}) \le \max \X(p_{i,j})$ and with $y = z$ if and only if $\min \Y(p_{i,j}) \le \max \Y(p_{i,j})$. Both of the conditions can be checked in $\O(1)$ time as well. Plugging this bounds into our construction, we obtain that $\mathcal{P}$ can be built in $\O(\ell^2) = \O(m^2)$ time. 
 \end{proof}
 
 We apply \cref{lm:parallelogram_merge} to $\Ta$. Let $\mathcal{P}_1 = \{p \in \mathcal{P} : p \text { is coverable}\}$ and $\mathcal{P}_2 = \{p \in \mathcal{P} : p \text { is }\O(n/\ell)\text{-peripheral}\}$. For each $p \in \mathcal{P}_1$, consider a restriction $R$ of $\Ta$ to $p$. By \Cref{coverable is periodic}, it has $\O(k)$-periods $\phi$ and $\psi$, thus, by \Cref{tile_decomposition}, it can be partitioned in time $\tO(\absolute{\d{R}} + k)$ (after $\O(m^2)$-time shared preprocessing of $\phi$ and $\psi$) into $\O(k)$ monochromatic subtile strings. Finally, construct in $\O(m^2)$ time the restriction of $\Ta$ to $\cup_{p \in \mathcal{P}_2} p$, which is a $\O(n / \ell)$-peripheral string. The total time of the partitioning algorithm is therefore $\O(m^2+\ell k)$.
