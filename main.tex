@@ -1,18 +1,17 @@
-\documentclass[twoside,leqno]{article}
-
-\usepackage[letterpaper]{geometry}
+\documentclass[a4paper,11pt]{article}
+\usepackage{fullpage}
+%\usepackage[letterpaper]{geometry}
 
 \renewcommand{\floatpagefraction}{.8}
 
-\usepackage{ltexpprt}
+%\usepackage{ltexpprt}
 \usepackage{hyperref}
 
 \usepackage[utf8]{inputenc}
-\usepackage{amssymb,amsmath,amsmath,amsfonts}  
+\usepackage{amssymb,amsmath,amsfonts,amsthm}  
 \usepackage{xspace,enumerate}
 \usepackage[dvipsnames]{xcolor}
-%\usepackage{thmtools}
-\usepackage{thm-restate}
+\usepackage{thmtools}
 \usepackage[cmbtt]{bold-extra}
 \usepackage[T1]{fontenc}
 \usepackage{makecell}
@@ -33,6 +32,11 @@
 \usepackage[capitalise]{cleveref}
 \let\Cref\cref
  
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{@theorem}{Theorem}[section]
+\newtheorem{fact}{Fact}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
 \newtheorem{observation}{Observation}[section]
 \newtheorem{definition}{Definition}[section]
 \newtheorem{claim}{Claim}[section]
@@ -113,7 +117,7 @@
 
 % BEGIN DOCUMENT
 \begin{document}
-\title{\Large Faster two-dimensional pattern matching with $k$ mismatches}
+\title{Faster two-dimensional pattern matching with $k$ mismatches}
 %
 
 \author{Jonas Ellert\thanks{DI/ENS, PSL Research University, France. Partially supported by the grant ANR-20-CE48-0001 from the French National Research Agency (ANR).}
@@ -122,21 +126,12 @@
 \and Tatiana Starikovskaya\thanks{DI/ENS, PSL Research University, France. Partially supported by the grant ANR-20-CE48-0001 from the French National Research Agency (ANR).}
 }
 
-\date{}
-
-\maketitle
-
 % Default Copyright Statement
-\fancyfoot[R]{\scriptsize{Copyright \textcopyright\ 2025 by SIAM\\
-Unauthorized reproduction of this article is prohibited}}
+%\fancyfoot[R]{\scriptsize{Copyright \textcopyright\ 2025 by SIAM\\
+%Unauthorized reproduction of this article is prohibited}}
 
 %\pagenumbering{arabic}
 %\setcounter{page}{1}%Leave this line commented out.
-
-
-
-
-
 
 \date{}
 \maketitle
@@ -163,6 +158,10 @@ We provide a new insight
 into two-dimensional periodicity to improve on these 30-years old bounds.
 Our algorithm works in $\tO((m^{2}+mk^{5/4})n^{2}/m^{2})$ time, which is $\tO(n^{2})$ for $k=\O(m^{4/5})$.
 \end{abstract}
+
+\setcounter{page}{0}
+\thispagestyle{empty}
+\clearpage
 
 \section{Introduction}
 Strings are basic objects that can used to store and manipulate sequential data, readily available in any popular
