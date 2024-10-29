@@ -113,6 +113,8 @@
 \newcommand{\jonas}[2][]{\todo[color=green!40, #1]{\textbf{J:} #2}}
 \newcommand{\jonasi}[2][]{\jonas[inline, #1]{#2}}
 
+\graphicspath{{drawings/}}
+
 \sloppy
 
 % BEGIN DOCUMENT
@@ -520,7 +522,7 @@ We start by defining two-dimensional periods.
 
 %\begin{figure}[!t]
 %	\begin{center}
-%		\includegraphics[width=0.8\textwidth]{drawings/occurrences}
+%		\includegraphics[width=0.8\textwidth]{occurrences}
 %	\end{center}
 %	\caption{Occurrences with small approximated Hamming distance. Red points belong to $Q$.}
 %	\label{figure:occurrences}
@@ -561,7 +563,7 @@ We define \emph{a lattice} $\L = \set{s\phi + t\psi : s, t \in \Z}$. We say that
 
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/parquet}
+		\includegraphics[width=0.8\textwidth]{parquet}
 	\end{center}
 	\caption{All the points in the polygon form a truncated tile and the thicker points form a truncated subtile.}
 	\label{figure:tile}
@@ -1002,7 +1004,7 @@ Intuitively, we connect every $u \in U \cap \Z^2$ with its translations by $\phi
 
 %\begin{figure}[!t]
 %	\begin{center}
-%		\includegraphics[width=0.8\textwidth]{drawings/parquet_decomposition}
+%		\includegraphics[width=0.8\textwidth]{parquet_decomposition}
 %	\end{center}
 %	\caption{The partitioning of a subtile string into monochromatic subtile strings. Different colors represent different characters.}
 %	\label{figure:tile_decomposition}
@@ -1115,7 +1117,7 @@ For all $i \in [\ell]$ and $j \in [\ell - 1]$ we have
 
 \begin{figure}
         \centering
-        \includegraphics[width=0.75\textwidth]{drawings/lemma5}
+        \includegraphics[width=0.75\textwidth]{lemma5}
         \caption{Parallelogram grid.}
         \label{figure:lemma5}
 \end{figure}
@@ -1196,7 +1198,7 @@ By the definition of $\Ta$, there does not exist $u \in \Z^2 \cap K_1 \setminus 
 
 \begin{figure}
         \centering
-        \includegraphics[width=0.75\textwidth]{drawings/text_decomposition}
+        \includegraphics[width=0.75\textwidth]{text_decomposition}
         \caption{Parallelogram cover of $\Ta$. The polygon in the center corresponds to $\Ta$. Red parallelograms are $\O(n/\ell)$-peripheral, blue coverable, and green belong to $\I$.}
         \label{figure:text_decomposition}
 \end{figure}
@@ -1536,14 +1538,14 @@ We start with the following technical claim.
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         
-        \includegraphics[width=0.9\textwidth]{drawings/quarter_split}
+        \includegraphics[width=0.9\textwidth]{quarter_split}
         \caption{Strings $F_i$ in the partitioning of $F$. The red points constitute $\d{F}$.}
         \label{figure:quarter_split}
     \end{subfigure}%
     \hfill
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{drawings/periphery_decomposition}
+        \includegraphics[width=0.9\textwidth]{periphery_decomposition}
         \caption{Strings $V_i$ in the partitioning of $F_1$. The thicker points constitute $\d{F_1}$.}
         \label{figure:periphery_decomposition}
     \end{subfigure}
@@ -1619,7 +1621,7 @@ Assume towards a contradiction that for some $q \in Q$ there exist $u \in \d{P_0
 
 \begin{figure}[!t]
 	\begin{center}
-		\includegraphics[width=0.8\textwidth]{drawings/pattern_restriction}
+		\includegraphics[width=0.8\textwidth]{pattern_restriction}
 	\end{center}
 	\caption{Pattern partitioning.}
 	\label{figure:pattern_restriction}
