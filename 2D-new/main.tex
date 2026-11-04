@@ -398,7 +398,7 @@ If $\theta \ge 90^\circ$, the line through $w'$ has angle in $(34^\circ, 56^\cir
 In both cases, $\psi$ and $\phi$ lie in the claimed quadrants, and the counterclockwise angle from $\phi$ to $\psi$ is in $(34^\circ, 146^\circ)$, hence $\det(\phi,\psi) = \abs{\phi}\abs{\psi}\sin(\angle(\phi,\psi)) \ge \frac12\abs{\phi}\abs{\psi}$.
 \end{proof}
 
-We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$) and fix $\phi, \psi$ for the rest of the paper.
+We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$) and fix $\phi, \psi$ for the rest of these notes.
 Let $\Delta = \det(\phi,\psi) \in \Z$.
 We have
 \[ 1 \le \Delta \le \abs{\phi}\abs{\psi} \le 2\Delta, \qquad \Delta < 30\ell^2/\abs{Q} < 30 \ell^2 k / m^2 < 8k,\qquad \inorm{\phi}, \inorm{\psi} \le \ell, \]
@@ -1245,7 +1245,7 @@ It is open whether there is a combinatorial algorithm with running time $\tO(n^2
 We assumed square arrays to keep the number of parameters small.
 The approach should extend to rectangular patterns and texts, and the lattice and the Whitney decomposition generalize to higher dimensions; we have not worked out the resulting bounds.
 
-\paragraph{Where the old bound came from.}
+\paragraph{A simpler but slower variant.}
 A previous version of this algorithm used a single threshold $d$ instead of a hierarchy of levels: text points at depth more than $d$ were always paired with the pattern pieces, and those at depth at most $d$ were always handled by FFT, with a fixed split of the characters into frequent and infrequent ones.
 Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend on both the level and the character is what removes the extra factor $k^{1/4}$.
 
@@ -1254,6 +1254,7 @@ Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend o
 
 \begin{enumerate}
   \item Show that the selected cells of all levels together number $\O(m)$, and conclude that the text blocks number $\O(mk)$.
+    \emph{Hint:} use Lemma~\ref{lem:levels} and sum a geometric series.
   \item Show that Lemma~\ref{lem:shallow} is tight: for every $d \le m/8$, every active text has $\Omega(md)$ points of depth at most $d$.
     \emph{Hint:} every row of $A$ is an interval, and at least $m/2$ rows of $A$ have length at least $m$.
   \item Lemma~\ref{lem:connected} needs the rectangle to be wide in both coordinates.
@@ -1262,6 +1263,7 @@ Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend o
   \item In the reduction of \autoref{sec:lower}, the text contains $\bot$ instead of the filler $0$ at the cells of $G$ with $X[i][t] = 0$.
     What goes wrong if we use $0$ there instead?
     \emph{Hint:} the number of pattern characters that lie on non-filler text characters would no longer be the number of points in a rectangle.
+  \item Show that the analysis of the counting step is tight: for a level with $\abs{\cS_\iota} = Y$ text blocks, $\abs{\cV} = X$ pattern pieces, and FFT cost $B$ per character, find a distribution of the blocks and pieces among the characters such that $\sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c}, B\} = \Omega(\sqrt{XYB})$, provided that $B \le XY$.
   \item Trace the decomposition of Lemma~\ref{lem:decomposition} on the text of \autoref{fig:problem}, using the periods $\phi = (1,-1)$ and $\psi = (1,1)$ and the whole text $[6]^2$ as the wide rectangle.
     How many pieces do you get, and which mismatches cause the cuts?
 \end{enumerate}
