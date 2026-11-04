@@ -318,6 +318,7 @@ Hence, some bucket contains two distinct points, and their difference $w' \in U 
 Thus $\abs{w'}^2 = ((w' \cdot e)^2 + (w'\cdot e')^2)/2 < (a+b)^2$, and
 \[\abs{w}\abs{w'} < r(a + b) = r^2/4 + 28\ell^2/\abs{U} < 30\ell^2/\abs{U}.\]
 Moreover, the angle $\beta$ between $w'$ and the line orthogonal to $e$ satisfies $\sin\beta = \abs{w'\cdot e}/(\sqrt2\abs{w'}) < a/(\sqrt 2 r) < \sin 11^\circ$.
+(The bucketing needs no real arithmetic: it suffices to sort the values $u \cdot e$ and to group them greedily into intervals of length less than $a$, which creates at most $2\ell/a + 1$ groups; whether two integers differ by less than $a = r/4$ is decided by comparing their squared difference with $r^2/16$. The same works for $b$.)
 
 \emph{Choosing the signs.}
 If $\theta < 90^\circ$, the line through $w'$ has angle in $(124^\circ, 146^\circ)$.
@@ -790,9 +791,9 @@ Moreover, we cut the shallow points into strips of width $d_\iota$, and each str
       \draw[thick] (0,6) -- (2,6) -- (2,5.2) -- (3.5,5.2) -- (3.5,4.2) -- (4.6,4.2) -- (4.6,2.8) -- (5.6,2.8) -- (5.6,1.2) -- (6.3,1.2);
     \end{scope}
     \draw[violet, very thick] (3.2,2.0) rectangle (4.0,5.2);
-    \draw[decorate, decoration={brace, amplitude=3pt}, violet] (4.1,5.2) -- node[right=2pt, font=\small] {$h_i$} (4.1,2.0);
+    \draw[decorate, decoration={brace, amplitude=3pt}, violet] (4.1,5.2) -- node[right=3pt, font=\small, fill=white, inner sep=1pt] {$h_i$} (4.1,2.0);
     \draw[decorate, decoration={brace, amplitude=3pt, mirror}] (3.2,-0.1) -- node[below=2pt, font=\small] {$d$} (4.0,-0.1);
-    \node[font=\small] at (1.2,1.2) {$A \cap K_1$};
+    \node[font=\small, fill=orange!12, inner sep=1pt] at (1.2,1.2) {$A \cap K_1$};
     % pattern
     \begin{scope}[xshift=8.6cm, yshift=0.4cm]
       \fill[gray!10] (0,0) rectangle (5.6,5.6);
@@ -823,7 +824,7 @@ If $d_\iota > m/8$, we apply Fact~\ref{fact:fft} to $T|_{A_\iota}$ and $P$ in $\
 
 \emph{Only the boundary strips of $P$ matter.} Let $q \in Q$ and $u \in F$ with $p := u - q \in [m]^2$. As $[m]^2 + q \subseteq A$ and $u + (d,d) \notin A$, we have $p + (d,d) \notin [m]^2$. Hence $p \in Z_R \cup Z_T$, where $Z_R = [m-d, m) \times [0, m)$ and $Z_T = [0, m-d) \times [m-d, m)$ are disjoint.
 
-\emph{Vertical strips.} For $i \ge 0$, let $F_i = F \cap ([id, (i+1)d) \times \Z)$, let $\mathit{bot}_i = \min\{\y u : u \in F_i\}$, let $\mathit{top}_i = \max\{\y v : v \in A,\ \x v \in [id, (i+1)d)\}$, and let $h_i = \mathit{top}_i - \mathit{bot}_i + 1$ (for non-empty $F_i$). Then $F_i$ lies in a $d \times h_i$ rectangle. Let $q \in Q$ and $u \in F_i$ with $p = u - q \in [m]^2$. Since $\x u \in [\x q, \x q + m)$, the point $(\x u, \y q + m - 1) \in [m]^2 + q$ is in $A$, so $\mathit{top}_i \ge \y q + m - 1$ and $\y p = \y u - \y q \ge \mathit{bot}_i - \mathit{top}_i + m - 1 = m - h_i$. Hence, the matches with $p \in Z_R$ are exactly those counted by applying Fact~\ref{fact:fft} to $T|_{F_i}$ and $P|_{[m-d, m) \times [m-h_i, m)}$ for all $i$, which takes $\O(dh_i \log m)$ time per $i$ (the contributions are added to the array).
+\emph{Vertical strips.} For $i \ge 0$, let $F_i = F \cap ([id, (i+1)d) \times \Z)$, let $\mathit{bot}_i = \min\{\y u : u \in F_i\}$, let $\mathit{top}_i = \max\{\y v : v \in A,\ \x v \in [id, (i+1)d)\}$ (which we obtain from the highest point of $A$ in every column, computed in $\O(n^2)$ time), and let $h_i = \mathit{top}_i - \mathit{bot}_i + 1$ (for non-empty $F_i$). Then $F_i$ lies in a $d \times h_i$ rectangle. Let $q \in Q$ and $u \in F_i$ with $p = u - q \in [m]^2$. Since $\x u \in [\x q, \x q + m)$, the point $(\x u, \y q + m - 1) \in [m]^2 + q$ is in $A$, so $\mathit{top}_i \ge \y q + m - 1$ and $\y p = \y u - \y q \ge \mathit{bot}_i - \mathit{top}_i + m - 1 = m - h_i$. Hence, the matches with $p \in Z_R$ are exactly those counted by applying Fact~\ref{fact:fft} to $T|_{F_i}$ and $P|_{[m-d, m) \times [m-h_i, m)}$ for all $i$, which takes $\O(dh_i \log m)$ time per $i$ (the contributions are added to the array).
 
 We show $\sum_i h_i = \O(m)$. Let $i_1 < i_2 < \cdots$ be the indices of the non-empty strips. For $t \ge 3$, let $u \in F_{i_{t-2}}$ with $\y u = \mathit{bot}_{i_{t-2}}$, and let $v \in A$ with $\x v \in [i_t d, (i_t+1)d)$ and $\y v = \mathit{top}_{i_t}$. Then $\x v \ge \x u + d$. If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a), since $u + (d,d)$ lies between $C$ and $v$ (its coordinates are at least $z \ge \ell$ and at most those of $v$); a contradiction. Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$. Summing up, the series telescopes, and we obtain $\sum_i h_i \le 2n + (n/d+1)d + 2n = \O(m)$.
 
