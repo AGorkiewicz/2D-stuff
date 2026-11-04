@@ -787,12 +787,12 @@ To analyze the staircases, we split the plane into four quarters around the cent
     \node[font=\small, anchor=east] at (8.15,8.7) {$X$};
     \fill[red!75!black] (9.3464,9.5464) circle (4pt);
     \draw[red!75!black, thin] (9.3464,9.5464) -- (11.6,11.3);
-    \node[font=\small, text=red!75!black, anchor=south west] at (11.6,11.3) {$(x_1,y_1)$};
+    \node[font=\small, text=red!75!black, anchor=south west] at (11.6,11.3) {$c$};
     \node[font=\small] at (1.4,1.2) {$[n]^2$};
   \end{tikzpicture}
   \caption{Lemma~\ref{lem:coverable}.
     All points within distance $r$ of the small set $X$ (dotted square) lie in the active text $A$ (shaded).
-    In particular, the corner $(x_1, y_1)$ of the bounding box of $X$ (dashed) lies in some occurrence $[m]^2 + q$, which then contains all of $X$, since $X$ lies between this corner and the central square $K_0$.}
+    In particular, the corner $c$ of the bounding box of $X$ (dashed) that is farthest from the central square $K_0$ lies in some occurrence $[m]^2 + q$, which then contains all of $X$, since $X$ lies between $K_0$ and $c$.}
   \label{fig:coverable}
 \end{figure}
 
@@ -936,7 +936,7 @@ We provide two ways of computing the values $M_{\iota,c}(q)$.
 The first way enumerates all pairs of a text block $S \in \cS_{\iota,c}$ and a pattern piece $V \in \cV_c$, and adds up $\abs{\dom(S) \cap \dom(V + q)}$ for all $q$ simultaneously.
 For a single pair, this intersection count is a function of $q$ that is determined by the constant-size descriptions of $S$ and $V$, but it is not obvious how to add up many such functions quickly.
 The trick is to write the block $S$, which is a rectangle in lattice coordinates, as a signed sum of four \emph{cones}, that is, quadrants in lattice coordinates (\autoref{fig:cones}).
-A cone has a single corner, so intersecting it with $V + q$ depends only on the difference of $V$ and the corner, and all pairs can be combined into a single function on the plane, of which we take prefix sums along the lattice.
+A cone has a single corner, so intersecting it with $V + q$ depends only on the difference of $V$ and the corner, and all pairs can be combined into a single function on the plane, of which we take cone sums, that is, suffix sums in lattice coordinates.
 This is the reason why the text is cut into blocks, and not into truncated blocks: a block has only four corners, while the indicator function of a truncated block is not a signed sum of a few cones.
 On the pattern side, the truncation does no harm, since the pattern pieces enter only through the function on the plane, which we can evaluate with range counting.
 
