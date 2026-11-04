@@ -726,15 +726,31 @@ A cone has a single corner, so intersecting it with $V + q$ depends only on the 
 Given a set $\Pi$ of pairs $(\iota, c)$, the values $\sum_{(\iota,c) \in \Pi} M_{\iota,c}(q)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time, where $N = \sum_{(\iota,c) \in \Pi} \abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$.
 \end{lemma}
 \begin{proof}
-For $p \in \Z^2$, let $\cC(p) = \{p + i\phi + j\psi : i,j \ge 0\}$ be the \emph{cone} at $p$. Write the domain of every text block $S$ as $\gamma + [i_0, i_1)\phi + [j_0, j_1)\psi$ and let $w_{ab}(S) = \gamma + i_a\phi + j_b\psi$ for $a,b \in \{0,1\}$. Then, by inclusion--exclusion, $\mathbf{1}_{\dom(S)} = \sum_{a,b \in \{0,1\}} (-1)^{a+b}\,\mathbf 1_{\cC(w_{ab}(S))}$. Moreover, for every $V$, $w$, and $q$, the map $u \mapsto u - q - w$ gives $\abs{\cC(w) \cap \dom(V+q)} = \abs{\cC(-q) \cap (\dom(V) - w)}$. Hence, defining $F \colon \Z^2 \to \Z$ by
+\emph{From blocks to cones.}
+For $p \in \Z^2$, let $\cC(p) = \{p + i\phi + j\psi : i,j \ge 0\}$ be the \emph{cone} at $p$.
+Write the domain of every text block $S$ as $\gamma + [i_0, i_1)\phi + [j_0, j_1)\psi$ and let $w_{ab}(S) = \gamma + i_a\phi + j_b\psi$ for $a,b \in \{0,1\}$.
+Then, by inclusion--exclusion (\autoref{fig:cones}),
+\[ \mathbf{1}_{\dom(S)} = \textstyle\sum_{a,b \in \{0,1\}} (-1)^{a+b}\,\mathbf 1_{\cC(w_{ab}(S))}. \]
+Moreover, for every $V$, $w$, and $q$, the map $u \mapsto u - q - w$ shows $\abs{\cC(w) \cap \dom(V+q)} = \abs{\cC(-q) \cap (\dom(V) - w)}$.
+Hence, defining $F \colon \Z^2 \to \Z$ by
 \[ F = \sum_{(\iota,c) \in \Pi}\ \sum_{S \in \cS_{\iota,c}}\ \sum_{V \in \cV_c}\ \sum_{a,b \in \{0,1\}} (-1)^{a+b}\,\mathbf{1}_{\dom(V) - w_{ab}(S)}, \]
-the desired value for $q$ is $\sum_{v \in \cC(-q)} F(v)$.
+the desired value for $q$ is $\sum_{v \in \cC(-q)} F(v)$, the sum of $F$ over a single cone.
+In words: every pair contributes four shifted copies of its pattern piece, with signs, and the answer for $q$ is the sum of $F$ over the cone at $-q$.
 
-Every corner $w_{ab}(S)$ is within distance $\inorm{\phi} + \inorm{\psi} \le m$ of $\dom(S) \subseteq [n]^2$, so $\dom(V) - w_{ab}(S) \subseteq W := [-3m, 2m]^2$; also $-[\ell+1]^2 \subseteq W$. Each set $\dom(V) - w$ consists of the points $u$ of a single congruence class with $(u, \kappa(u)) \in Z$ for an axis-parallel box $Z \subseteq \R^4$ (the $u$-part of $Z$ is $[m]^2 - w$, and the $\kappa$-part is determined by the block $B$ with $\dom(V) = [m]^2 \cap B$). Hence, for every class separately, Fact~\ref{fact:range} computes $F(u)$ for all $u \in W$ in $\tO(m^2 + N)$ total time.
+\emph{Computing $F$.}
+Every corner $w_{ab}(S)$ is within distance $\inorm{\phi} + \inorm{\psi} \le m$ of $\dom(S) \subseteq [n]^2$, so $\dom(V) - w_{ab}(S) \subseteq W := [-3m, 2m]^2$; also $-[\ell+1]^2 \subseteq W$.
+A set $\dom(V) - w$ is described by four intervals: if $\dom(V) = [m]^2 \cap B$ for a block $B$, then a point $u$ of the congruence class of $B - w$ lies in $\dom(V) - w$ if and only if $\x u$ and $\y u$ lie in the intervals that describe $[m]^2 - w$, and the two coordinates of $\kappa(u)$ lie in the intervals that describe $B - w$.
+So, for every congruence class separately, $F(u)$ is the total weight of the axis-parallel boxes in $\R^4$ that contain the point $(\x u, \y u, \kappa_1(u), \kappa_2(u))$.
+By Fact~\ref{fact:range}, we compute $F(u)$ for all $u \in W$ in $\tO(m^2 + N)$ total time.
 
-For every congruence class $\gamma + L$ meeting $W$, let $I_\gamma \times J_\gamma$ be the smallest box of integers with $W \cap (\gamma + L) \subseteq \gamma + I_\gamma\phi + J_\gamma\psi$. For $u \in W$, we have $\abs{\kappa_1(u)} \le \abs{u}\abs{\psi} \le 5m\abs{\psi}$ and $\abs{\kappa_2(u)} \le 5m\abs{\phi}$, so
+\emph{Cone sums.}
+In lattice coordinates, a cone is a quadrant, so cone sums are suffix sums.
+For every congruence class $\gamma + L$ meeting $W$, let $I_\gamma \times J_\gamma$ be the smallest box of integers with $W \cap (\gamma + L) \subseteq \gamma + I_\gamma\phi + J_\gamma\psi$.
+For $u \in W$, we have $\abs{\kappa_1(u)} \le \abs{u}\abs{\psi} \le 5m\abs{\psi}$ and $\abs{\kappa_2(u)} \le 5m\abs{\phi}$, so
 \[ \textstyle\sum_\gamma \abs{I_\gamma}\abs{J_\gamma} \le \Delta\,(10m\abs{\psi}/\Delta + 1)(10m\abs{\phi}/\Delta + 1) = \O(m^2) \]
-by $\abs{\phi}\abs{\psi} \le 2\Delta$ and $\abs{\phi}, \abs{\psi}, \Delta^{1/2} = \O(m)$. For every class, we compute the suffix sums $G_\gamma(i,j) = \sum_{i' \ge i,\, j' \ge j} F(\gamma + i'\phi + j'\psi)$ over $I_\gamma \times J_\gamma$ (with $F = 0$ outside $W$) in $\O(\abs{I_\gamma}\abs{J_\gamma})$ time. For $-q = \gamma + i\phi + j\psi$, the desired value is $G_\gamma(i,j)$.
+by $\abs{\phi}\abs{\psi} \le 2\Delta$ and $\abs{\phi}, \abs{\psi}, \Delta^{1/2} = \O(m)$.
+For every class, we compute the suffix sums $G_\gamma(i,j) = \sum_{i' \ge i,\, j' \ge j} F(\gamma + i'\phi + j'\psi)$ over $I_\gamma \times J_\gamma$ (with $F = 0$ outside $W$) in $\O(\abs{I_\gamma}\abs{J_\gamma})$ time.
+For $-q = \gamma + i\phi + j\psi$, the desired value is $G_\gamma(i,j)$.
 \end{proof}
 
 \paragraph{FFT on strips.}
@@ -780,6 +796,7 @@ Moreover, we cut the shallow points into strips of width $d_\iota$, and each str
 
 \begin{lemma}[Strips]\label{lem:strips}
 Given a level $\iota$ and a character $c$, one can add $M_{\iota,c}(q)$ to the entry $q$ of an array indexed by $[\ell+1]^2$, for every $q \in Q$, in $\O(m d_\iota \log m)$ time.
+(The entries of positions outside $Q$ may receive arbitrary values.)
 \end{lemma}
 \begin{proof}
 If $d_\iota > m/8$, we apply Fact~\ref{fact:fft} to $T|_{A_\iota}$ and $P$ in $\O(n^2\log n) = \O(md_\iota \log m)$ time. Otherwise, let $d = d_\iota \le m/8$. We handle the four sets $A_\iota \cap K_i$ separately; by symmetry, we describe $F := A_\iota \cap K_1$. By Lemma~\ref{lem:levels} and Lemma~\ref{lem:monotone}(b), $u + (d,d) \notin A$ for all $u \in F$.
@@ -790,7 +807,7 @@ If $d_\iota > m/8$, we apply Fact~\ref{fact:fft} to $T|_{A_\iota}$ and $P$ in $\
 
 We show $\sum_i h_i = \O(m)$. Let $i_1 < i_2 < \cdots$ be the indices of the non-empty strips. For $t \ge 3$, let $u \in F_{i_{t-2}}$ with $\y u = \mathit{bot}_{i_{t-2}}$, and let $v \in A$ with $\x v \in [i_t d, (i_t+1)d)$ and $\y v = \mathit{top}_{i_t}$. Then $\x v \ge \x u + d$. If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a) (all coordinates of $u + (d,d)$ are at least $z \ge \ell$), a contradiction. Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$. Summing up, the series telescopes, and we obtain $\sum_i h_i \le 2n + (n/d+1)d + 2n = \O(m)$.
 
-\emph{Horizontal strips.} Symmetrically, with $G_i = F \cap (\Z \times [id, (i+1)d))$ and widths $w_i$ with $\sum_i w_i = \O(m)$, the matches with $p \in Z_T$ are counted by applying Fact~\ref{fact:fft} to $T|_{G_i}$ and $P|_{[m - w_i, m-d) \times [m-d,m)}$.
+\emph{Horizontal strips.} Symmetrically, let $G_i = F \cap (\Z \times [id, (i+1)d))$, let $\mathit{left}_i = \min\{\x u : u \in G_i\}$, let $\mathit{right}_i = \max\{\x v : v \in A,\ \y v \in [id, (i+1)d)\}$, and let $w_i = \mathit{right}_i - \mathit{left}_i + 1$. As above, $\sum_i w_i = \O(m)$, and the matches with $p \in Z_T$ are counted by applying Fact~\ref{fact:fft} to $T|_{G_i}$ and $P|_{[m - w_i, m-d) \times [m-d,m)}$.
 
 The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
 \end{proof}
@@ -824,7 +841,11 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
   \label{tab:steps}
 \end{table}
 
-\paragraph{Correctness} follows from (\ref{eq:ham_match}), the partition of $A$ into the sets $A_\iota$, and Lemmas~\ref{lem:pairing} and~\ref{lem:strips}.
+In Step~4, we choose, for every level and character, the cheaper of the two ways of counting matches: pairing costs $\abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$, and FFT on strips costs $\tO(md_\iota)$.
+
+\paragraph{Correctness.}
+For every $q \in Q$, the accumulator ends up with $\sum_\iota \sum_c M_{\iota,c}(q)$ by Lemmas~\ref{lem:pairing} and~\ref{lem:strips}.
+Since the sets $A_\iota$ partition $A$, this is $m^2 - \Ham(P+q,T)$ by (\ref{eq:ham_match}).
 
 \paragraph{Running time.} Steps 1--3 take $\tO(m^2 + mk)$ time. By Lemmas~\ref{lem:pairing} and~\ref{lem:strips}, steps 4 and 5 take time
 \[ \tO\Bigl(m^2 + \sum_\iota \sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c},\ md_\iota\}\Bigr).\]
