@@ -89,6 +89,8 @@ For every \emph{position} $q$, that is, every placement of the pattern inside th
     \node[cell, mis] at (1*0.46, -1*0.46) {a};
     \node[win, fit={(0.46-0.23, -0.46+0.23) (4*0.46+0.23, -4*0.46-0.23)}, inner sep=0pt] {};
     \node[font=\small] at (1.15, -3.15) {text $T$};
+    \draw[gray, ->] (-0.23,-2.75) -- (0.6,-2.75) node[right, font=\scriptsize] {$x$};
+    \draw[gray, ->] (-0.35,-2.6) -- (-0.35,-1.8) node[above, font=\scriptsize] {$y$};
     % pattern
     \chargrid{4.0}{-0.46}{{b,a,b,c},{a,b,a,b},{b,a,b,a},{a,b,a,b}}
     \node[font=\small] at (4.0+0.69, -3.15) {pattern $P$};
@@ -145,6 +147,12 @@ At every distance $D$, the number of text pieces times the FFT cost is $\O(mk/D)
 Choosing the cheaper method for each character, the Cauchy--Schwarz inequality bounds the total cost by $\tO(\sqrt{m^2 k \cdot k}) = \tO(mk)$ per distance.
 With $\O(\log m)$ distances and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gives \autoref{thm:main}.
 
+\paragraph{Roadmap.}
+\autoref{sec:periods} filters the candidate positions and finds the two periods.
+\autoref{sec:lattice} introduces the lattice they span and cuts the pattern into $\O(k)$ monochromatic pieces.
+Sections~\ref{sec:active} and~\ref{sec:multiscale} study the region $A$ and cut it into cells of all sizes.
+\autoref{sec:counting} gives the two ways of counting matches, and \autoref{sec:algorithm} puts everything together.
+\autoref{sec:lower} proves the lower bound.
 \autoref{tab:results} compares the bounds.
 
 \begin{table}[ht]
@@ -265,6 +273,7 @@ Every enumerated column contains a mismatch, so this takes $\O(k + 1)$ time per 
 \end{proof}
 
 \section{Filtering and two periods}
+\label{sec:periods}
 
 \paragraph{Assumptions.} We may assume $n \le 3m/2$: otherwise, we cover $[n-m+1]^2$ with $\O(n^2/m^2)$ translates of $[n'-m+1]^2$, where $n' = \lfloor 3m/2 \rfloor$, and solve the instance with text $T|_{[n']^2 + \delta}$ for every such translate $[n'-m+1]^2 + \delta$. We also assume that $m$ is larger than a suitable constant (otherwise, the naive algorithm takes $\O(n^2)$ time). It thus suffices to give an $\tO(m^2 + mk)$-time algorithm. Let $\ell = n - m \le m/2$, so that the set of positions is $[\ell+1]^2$.
 The assumption $n \le \frac32 m$ has two benefits: all differences of positions, and hence the periods we will find, are short compared to $m$, and all occurrences overlap in a large central square (\autoref{sec:active}).
@@ -362,6 +371,7 @@ We obtain $\psi = (1,1)$ and $\phi = (1,-1)$, with $\Delta = 2$.
 Indeed, moving a checkerboard by $\psi$ or by $\phi$ maps it onto itself.
 
 \section{Lattice blocks}
+\label{sec:lattice}
 
 Let $L = \{i\phi + j\psi : i, j \in \Z\}$. We write $u \equiv v$ if $u - v \in L$; the congruence classes are the cosets $\gamma + L$. Let
 \[\kappa(u) = (\det(u, \psi), \det(\phi, u)) \in \Z^2 \quad\text{for } u \in \Z^2.\]
@@ -778,6 +788,7 @@ For every level, we compute the cell of every point of $[n]^2$ from $\kappa$, an
 Every point of $A$ is processed by Lemma~\ref{lem:decomposition} at most once, and $\sum_\iota \abs{\cS_\iota} = \tO(mk)$.
 
 \section{Counting matches}
+\label{sec:counting}
 
 For a level $\iota$, a character $c$, and $q \in [\ell+1]^2$, let
 \[ M_{\iota,c}(q) = \Match_c(P + q, T|_{A_\iota}) = \sum_{S \in \cS_{\iota,c}}\ \sum_{V \in \cV_c} \abs{\dom(S) \cap \dom(V+q)}, \]
@@ -901,6 +912,7 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
 \end{proof}
 
 \section{The algorithm}
+\label{sec:algorithm}
 
 \autoref{alg:main} puts the pieces together, for $n \le \frac32 m$.
 
