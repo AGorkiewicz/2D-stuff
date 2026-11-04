@@ -1088,8 +1088,6 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
   \end{algorithmic}
 \end{algorithm}
 
-\autoref{tab:steps} summarizes where the time goes.
-
 \begin{table}[ht]
   \centering
   \renewcommand{\arraystretch}{1.3}
@@ -1108,6 +1106,9 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
 \end{table}
 
 In the loop of \autoref{alg:main}, we choose, for every level and character, the cheaper of the two ways of counting matches: pairing costs $\abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$, and FFT on strips costs $\tO(md_\iota)$.
+The exact threshold does not matter: comparing with $md_\iota$ instead of the true costs loses only the polylogarithmic factors hidden in $\tO$.
+To run the loop, we group the text blocks and the pattern pieces by level and character by sorting, in $\tO(mk)$ time.
+\autoref{tab:steps} summarizes where the time goes.
 
 \paragraph{Correctness.}
 For every $q \in Q$, the accumulator ends up with $\sum_\iota \sum_c M_{\iota,c}(q)$ by Lemmas~\ref{lem:pairing} and~\ref{lem:strips}.
