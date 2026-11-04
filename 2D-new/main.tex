@@ -529,24 +529,24 @@ Each cut increases the number of pieces by one, so we end up with one piece per 
 
 \begin{lemma}[Decomposition]\label{lem:decomposition}
 Let $R$ be a wide rectangle, let $Y$ be a tile, and let $S$ be a string with $\dom(S) = R \cap Y$.
-Let $h = \Ham(S + \phi, S) + \Ham(S+\psi, S)$.
-In $\O(\abs{\dom(S)}\log \abs{\dom(S)})$ time, $S$ can be partitioned into at most $\Delta + h$ monochromatic strings whose domains are truncated blocks of the form $R \cap B$.
+Let $\eta = \Ham(S + \phi, S) + \Ham(S+\psi, S)$.
+In $\O(\abs{\dom(S)}\log \abs{\dom(S)})$ time, $S$ can be partitioned into at most $\Delta + \eta$ monochromatic strings whose domains are truncated blocks of the form $R \cap B$.
 If $R = \Z^2$, these domains are blocks.
 \end{lemma}
 \begin{proof}
 We group $\dom(S)$ by congruence class.
 For every class $\gamma + L$ meeting $\dom(S)$, we have $\dom(S) \cap (\gamma + L) = R \cap (\gamma + I\phi + J\psi)$ for intervals $I, J$.
-We call a mismatching edge $\{u, u+\delta\}$ a \emph{$\delta$-mismatch}; there are exactly $\Ham(S+\delta, S)$ of them, for $\delta \in \{\phi,\psi\}$, and $h$ in total.
+We call a mismatching edge $\{u, u+\delta\}$ a \emph{$\delta$-mismatch}; there are exactly $\Ham(S+\delta, S)$ of them, for $\delta \in \{\phi,\psi\}$, and $\eta$ in total.
 First, for every class, we cut $I$ between $i$ and $i+1$ for every $\phi$-mismatch $\{u, u+\phi\}$ with $\lambda(u) = (i,j)$.
 This yields at most $\Delta + \Ham(S+\phi,S)$ sets $R \cap (\gamma + I'\phi + J\psi)$, none of which contains a $\phi$-mismatch.
-Then, we cut the $J$-interval of each of these sets at the $\psi$-mismatches it contains, which yields at most $\Delta + h$ truncated blocks $R \cap (\gamma + I'\phi + J'\psi)$ that contain no mismatch.
+Then, we cut the $J$-interval of each of these sets at the $\psi$-mismatches it contains, which yields at most $\Delta + \eta$ truncated blocks $R \cap (\gamma + I'\phi + J'\psi)$ that contain no mismatch.
 By Lemma~\ref{lem:connected}, each of them is connected in its lattice graph, so $S$ restricted to it is monochromatic.
 We represent each piece by its character, $R$, $\gamma$, and the endpoints of its two intervals.
 Sorting dominates the running time.
 \end{proof}
 
 Since $\abs{\x\phi} + \abs{\x\psi} \le 2\ell \le m$ (and similarly for the $y$-coordinates), the square $[m]^2$ is wide.
-We apply Lemma~\ref{lem:decomposition} to $P$ with $R = [m]^2$ and $Y = \Z^2$, with $h \le 8k$.
+We apply Lemma~\ref{lem:decomposition} to $P$ with $R = [m]^2$ and $Y = \Z^2$, with $\eta \le 8k$.
 This yields a partition of $P$ into a set $\cV$ of $\abs{\cV} \le \Delta + 8k < 16k$ monochromatic strings, whose domains are truncated blocks $[m]^2 \cap B$.
 For $c \in \Sigma$, let $\cV_c = \{V \in \cV : c(V) = c\}$.
 
@@ -555,7 +555,7 @@ For $c \in \Sigma$, let $\cV_c = \{V \in \cV : c(V) = c\}$.
 The coset of $(0,1)$ consists only of \str{b}'s and forms a single piece.
 In the coset of $(0,0)$, the only mismatch is the $\psi$-edge from $(2,2)$ to $(3,3)$.
 There is no $\phi$-mismatch, so the first phase does not cut, and the second phase cuts between lattice coordinates $j = 2$ and $j = 3$ (relative to $\gamma = (0,0)$), separating the cell $(3,3)$ from the other \str{a}'s.
-We obtain $3 \le \Delta + h = 2 + 1$ pieces.
+We obtain $3 \le \Delta + \eta = 2 + 1$ pieces.
 
 \begin{figure}[t]
   \centering
@@ -983,8 +983,8 @@ For every congruence class $\gamma + L$ meeting $W$, let $I_\gamma \times J_\gam
 For $u \in W$, we have $\abs{\kappa_1(u)} \le \abs{u}\abs{\psi} \le 5m\abs{\psi}$ and $\abs{\kappa_2(u)} \le 5m\abs{\phi}$, so
 \[ \textstyle\sum_\gamma \abs{I_\gamma}\abs{J_\gamma} \le \Delta\,(10m\abs{\psi}/\Delta + 1)(10m\abs{\phi}/\Delta + 1) = \O(m^2) \]
 by $\abs{\phi}\abs{\psi} \le 2\Delta$ and $\abs{\phi}, \abs{\psi}, \Delta^{1/2} = \O(m)$.
-For every class, we compute the suffix sums $G_\gamma(i,j) = \sum_{i' \ge i,\, j' \ge j} F(\gamma + i'\phi + j'\psi)$ over $I_\gamma \times J_\gamma$ (with $F = 0$ outside $W$) in $\O(\abs{I_\gamma}\abs{J_\gamma})$ time.
-For $-q = \gamma + i\phi + j\psi$, the desired value is $G_\gamma(i,j)$.
+For every class, we compute the suffix sums $\mathit{CS}_\gamma(i,j) = \sum_{i' \ge i,\, j' \ge j} F(\gamma + i'\phi + j'\psi)$ over $I_\gamma \times J_\gamma$ (with $F = 0$ outside $W$) in $\O(\abs{I_\gamma}\abs{J_\gamma})$ time.
+For $-q = \gamma + i\phi + j\psi$, the desired value is $\mathit{CS}_\gamma(i,j)$.
 \end{proof}
 
 \paragraph{FFT on strips.}
@@ -1059,8 +1059,8 @@ If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a), s
 Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$.
 Summing up, the series telescopes, and we obtain $\sum_i h_i \le 2n + (n/d+1)d + 2n = \O(m)$.
 
-\emph{Horizontal strips.} Symmetrically, let $G_i = F \cap (\Z \times [id, (i+1)d))$, let $\mathit{left}_i = \min\{\x u : u \in G_i\}$, let $\mathit{right}_i = \max\{\x v : v \in A,\ \y v \in [id, (i+1)d)\}$, and let $w_i = \mathit{right}_i - \mathit{left}_i + 1$.
-As above, $\sum_i w_i = \O(m)$, and the matches with $p \in Z_T$ are counted by applying Fact~\ref{fact:fft} to $T|_{G_i}$ and $P|_{[m - w_i, m-d) \times [m-d,m)}$.
+\emph{Horizontal strips.} Symmetrically, let $E_i = F \cap (\Z \times [id, (i+1)d))$, let $\mathit{left}_i = \min\{\x u : u \in E_i\}$, let $\mathit{right}_i = \max\{\x v : v \in A,\ \y v \in [id, (i+1)d)\}$, and let $w_i = \mathit{right}_i - \mathit{left}_i + 1$.
+As above, $\sum_i w_i = \O(m)$, and the matches with $p \in Z_T$ are counted by applying Fact~\ref{fact:fft} to $T|_{E_i}$ and $P|_{[m - w_i, m-d) \times [m-d,m)}$.
 
 The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
 \end{proof}
