@@ -125,7 +125,7 @@ In these notes, we show the following.
 The algorithm is deterministic, and it uses the fast Fourier transform (FFT) only through two standard subroutines: Karloff's approximation of all Hamming distances and the counting of matches of a single character.
 
 This bound is the natural two-dimensional analogue of the one-dimensional bound $\tO(N + kN/\sqrt{M})$ of Gawrychowski and Uzna\'nski for a text of length $N = n^2$ and a pattern of length $M = m^2$.
-In \autoref{sec:lower}, we show that it is optimal for combinatorial algorithms, assuming the combinatorial BMM hypothesis.
+In \autoref{sec:lower}, we show that no combinatorial algorithm can beat it by a polynomial factor, assuming the combinatorial BMM hypothesis.
 
 \paragraph{The idea in a nutshell.}
 We follow the approach that works in one dimension: filter the candidates, find an approximate period, and count mismatches on a compressed representation.
@@ -1176,7 +1176,7 @@ There are $\O(\log m)$ levels, so the total time is $\tO(m^2 + mk)$ for $n \le 3
 
 Informally, an algorithm is \emph{combinatorial} if it does not rely on algebraic techniques such as fast matrix multiplication; there is no generally accepted formal definition.
 The \emph{combinatorial BMM hypothesis} states that for every $\varepsilon > 0$, there is no combinatorial algorithm that multiplies two $N \times N$ Boolean matrices in $\O(N^{3-\varepsilon})$ time.
-We show that, under this hypothesis, the bound of Theorem~\ref{thm:main} is optimal for combinatorial algorithms, up to subpolynomial factors.
+We show that, under this hypothesis, no combinatorial algorithm can beat the bound of Theorem~\ref{thm:main} by a polynomial factor (although our algorithm itself uses FFT, see \autoref{sec:notes}).
 
 \begin{fact}\label{fact:rect}
 Assume the combinatorial BMM hypothesis, let $\xi_1, \xi_2, \xi_3 > 0$ be constants, and let $N$ be a growing parameter.
