@@ -1183,23 +1183,26 @@ Let $S_P = \{u \in [m]^2 : P(u) \ne 0\}$.
 For $X \in \{0,1\}^{N\times b}$, let $T_X$ be the string with domain $[n_0]^2$ such that $T_X(o + (i,t)) = t+1$ if $X[i][t] = 1$ and $T_X(o + (i,t)) = \bot$ otherwise, for $i \in [N]$ and $t \in [b]$, and $T_X(u) = 0$ for $u \notin G$.
 The text $T$ with domain $[n]^2$ consists of $s^2$ blocks: for $r = (r_1, r_2) \in [s]^2$, we let $T(u + n_0 r) = T_{X^{(r)}}(u)$ for $u \in [n_0]^2$ (identifying $[s]^2$ with $\{1, \dots, s^2\}$).
 
-\emph{Correctness.} Fix $X = X^{(r)}$, and for $i,j \in [N]$, let $q_{ij} = o + (i - j, -j) + n_0 r$.
+\emph{The windows.} Fix $X = X^{(r)}$, and for $i,j \in [N]$, let $q_{ij} = o + (i - j, -j) + n_0 r$.
 Then $q_{ij} - n_0r \in [1, 2N) \times [1, N]$, so $W := [m]^2 + q_{ij} \subseteq [n_0]^2 + n_0r$, and the window $W$ only sees block $r$ of the text.
-Let $G' = G + n_0 r$.
+
+\emph{Counting mismatches.} Let $G' = G + n_0 r$.
 For $u \in W$, the characters $P(u - q_{ij})$ and $T(u)$ differ if exactly one of them is $0$, they are equal if both are $0$, and otherwise $u \in (S_P + q_{ij}) \cap G'$.
 Hence
 \begin{equation}\label{eq:lb}
 \Ham(P + q_{ij}, T) = \abs{S_P} + \abs{G' \cap W} - \abs{(S_P + q_{ij}) \cap G'} - \mu_{ij},
 \end{equation}
 where $\mu_{ij}$ is the number of $u \in (S_P + q_{ij}) \cap G'$ with $P(u - q_{ij}) = T(u)$.
-The pattern position $(j', j'+t')$ is mapped to $o + (i + j' - j, t' + j' - j) + n_0r$.
+
+\emph{Counting matches.} The pattern position $(j', j'+t')$ is mapped to $o + (i + j' - j, t' + j' - j) + n_0r$.
 If this position is in $G'$, then $T$ has character $t' + j' - j + 1$ or $\bot$ there, which equals $P(j', j' + t') = t' + 1$ if and only if $j' = j$ and $X[i][t'] = 1$.
 Thus $\mu_{ij} = \sum_{t} X[i][t]Y[t][j] = (XY)[i][j]$.
-Moreover, $\Ham(P + q_{ij}, T) \le \abs{S_P} + \abs{G} \le 2Nb = k$, so the algorithm reports the exact value of $\Ham(P + q_{ij}, T)$.
+
+\emph{Recovering the product.} We have $\Ham(P + q_{ij}, T) \le \abs{S_P} + \abs{G} \le 2Nb = k$, so the algorithm reports the exact value of $\Ham(P + q_{ij}, T)$.
 The value $\abs{G' \cap W}$ is the size of the intersection of two rectangles, and $\abs{(S_P + q_{ij}) \cap G'} = \abs{S_P \cap (G' - q_{ij})}$ is the number of points of $S_P$ in a rectangle, which we obtain in constant time after computing 2D prefix sums of the indicator of $S_P$ in $\O(m^2)$ time.
 Hence, by (\ref{eq:lb}), we obtain all entries of all products $X^{(r)}Y$ in $\O(n^2)$ additional time.
 
-\emph{Parameters.} Let $b = \Theta(N^\beta)$ and $s = \Theta(N^\gamma)$.
+\emph{Parameters.} Let $b = \Theta(N^\beta)$ and $s = \Theta(N^\gamma)$; note that $b \le N$ is possible since $\beta \le 1$.
 Then $m = \Theta(N)$, $k = \Theta(m^{1+\beta})$, and $n = \Theta(m^{1+\gamma})$.
 Stacking the matrices $X^{(r)}$ yields a Boolean product of size $N_1 \times N_2 \times N_3$ with $N_1 = s^2N$, $N_2 = b$, and $N_3 = N$, where $N_1N_2N_3 = \Theta(s^2N^2b) = \Theta(kn^2/m)$.
 An $\O((kn^2/m)^{1-\varepsilon})$-time combinatorial algorithm for the problem would thus multiply these matrices in $\O((N_1N_2N_3)^{1-\varepsilon} + n^2) = \O((N_1N_2N_3)^{1-\varepsilon'})$ time for some constant $\varepsilon' > 0$ (as $n^2 = \Theta(N_1N_3) = \Theta(N_1N_2N_3/N^\beta)$ is polynomially smaller than $N_1N_2N_3$), contradicting Fact~\ref{fact:rect}.
