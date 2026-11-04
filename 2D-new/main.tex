@@ -758,6 +758,25 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
 \item Add the output of Lemma~\ref{lem:pairing} for $\Pi$ to the accumulator array. For every $q \in Q$, output $\min\{k+1, m^2 - \text{accumulator}[q]\}$, and output $k+1$ for every other position.
 \end{enumerate}
 
+\autoref{tab:steps} summarizes where the time goes.
+
+\begin{table}[ht]
+  \centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    step & time & reason \\
+    \midrule
+    filter and kangaroo jumps & $\tO(m^2 + mk)$ & Fact~\ref{fact:karloff}, Lemma~\ref{lem:kangaroo}, $\abs{Q} \le 32m + m^2/k$ \\
+    periods and pattern pieces & $\tO(m^2)$ & Lemmas~\ref{lem:two_periods} and~\ref{lem:decomposition}, $\abs{\cV} = \O(k)$ \\
+    cells and text blocks & $\tO(m^2 + mk)$ & $\O(m/D_j)$ cells with $\O(k)$ blocks each, per level \\
+    counting matches & $\tO(m^2 + mk)$ & $\O(mk)$ per level by Cauchy--Schwarz \\
+    \bottomrule
+  \end{tabular}
+  \caption{The running time of the steps of the algorithm for $n \le \frac32 m$.}
+  \label{tab:steps}
+\end{table}
+
 \paragraph{Correctness} follows from (\ref{eq:ham_match}), the partition of $A$ into the sets $A_\iota$, and Lemmas~\ref{lem:pairing} and~\ref{lem:strips}.
 
 \paragraph{Running time.} Steps 1--3 take $\tO(m^2 + mk)$ time. By Lemmas~\ref{lem:pairing} and~\ref{lem:strips}, steps 4 and 5 take time
@@ -769,12 +788,13 @@ There are $\O(\log m)$ levels, so the total time is $\tO(m^2 + mk)$ for $n \le 3
 \section{Conditional lower bound}\label{sec:lower}
 
 The \emph{combinatorial BMM hypothesis} states that for every $\varepsilon > 0$, there is no combinatorial algorithm that multiplies two $N \times N$ Boolean matrices in $\O(N^{3-\varepsilon})$ time.
+We show that, under this hypothesis, the bound of Theorem~\ref{thm:main} is optimal for combinatorial algorithms, up to subpolynomial factors.
 
 \begin{fact}\label{fact:rect}
-Assume the combinatorial BMM hypothesis, and let $\xi, \upsilon, \zeta > 0$ be constants. For every $\varepsilon > 0$, there is no combinatorial algorithm that multiplies an $X \times Y$ and a $Y \times Z$ Boolean matrix in $\O((XYZ)^{1-\varepsilon})$ time, where $X = \Theta(N^\xi)$, $Y = \Theta(N^\upsilon)$, $Z = \Theta(N^\zeta)$.
+Assume the combinatorial BMM hypothesis, and let $\xi_1, \xi_2, \xi_3 > 0$ be constants. For every $\varepsilon > 0$, there is no combinatorial algorithm that multiplies an $N_1 \times N_2$ and an $N_2 \times N_3$ Boolean matrix in $\O((N_1N_2N_3)^{1-\varepsilon})$ time, where $N_i = \Theta(N^{\xi_i})$ for $i \in \{1,2,3\}$.
 \end{fact}
 \begin{proof}
-Let $\hat N = \max\{X,Y,Z\}$. Two $\hat N \times \hat N$ matrices can be multiplied with $\O(\hat N^3/(XYZ))$ products of size $X \times Y \times Z$, plus $\O(\hat N^3/Y)$ time for combining their results. If each product takes $\O((XYZ)^{1-\varepsilon})$ time, the total time is $\O(\hat N^3/(XYZ)^{\varepsilon} + \hat N^3/Y) = \O(\hat N^{3 - \varepsilon'})$ for some $\varepsilon' > 0$, as $XYZ \ge \hat N$ and $Y = \hat N^{\Omega(1)}$.
+Let $\hat N = \max\{N_1, N_2, N_3\}$. Two $\hat N \times \hat N$ matrices can be multiplied with $\O(\hat N^3/(N_1N_2N_3))$ products of size $N_1 \times N_2 \times N_3$, plus $\O(\hat N^3/N_2)$ time for combining their results. If each product takes $\O((N_1N_2N_3)^{1-\varepsilon})$ time, the total time is $\O(\hat N^3/(N_1N_2N_3)^{\varepsilon} + \hat N^3/N_2) = \O(\hat N^{3 - \varepsilon'})$ for some $\varepsilon' > 0$, as $N_1N_2N_3 \ge \hat N$ and $N_2 = \hat N^{\Omega(1)}$.
 \end{proof}
 
 \begin{theorem}\label{thm:lower}
@@ -783,22 +803,62 @@ Assume the combinatorial BMM hypothesis, and let $0 < \beta \le 1$ and $\gamma \
 
 Together with the trivial lower bound $\Omega(n^2)$, this shows that the bound $\tO(n^2 + kn^2/m)$ of Theorem~\ref{thm:main} cannot be improved by a polynomial factor with a combinatorial algorithm.
 
-\begin{proof}
-Let $N, b, s \in \Z^+$ with $b \le N$, and let $A^{(1)}, \dots, A^{(s^2)} \in \{0,1\}^{N \times b}$ and $B \in \{0,1\}^{b \times N}$. We show how to compute all products $A^{(r)}B$ (over the integers) with a single call to an algorithm for the problem with
+\paragraph{The idea.}
+We reduce the multiplication of an $N \times b$ matrix $X$ with a $b \times N$ matrix $Y$ to a single instance with $m = \Theta(N)$ and $k = \Theta(Nb)$.
+The text contains a dense $N \times b$ rectangle $G$ that encodes $X$, with the character $t+1$ in row $t$ and column $i$ if $X[i][t] = 1$.
+The pattern contains a sparse diagonal band that encodes $Y$: the entry $Y[t][j]$ is placed at $(j, j+t)$ (\autoref{fig:lower}).
+There are $N^2$ positions that place column $j$ of the band exactly onto row $i$ of $G$, and at such a position, the number of matching characters is $(XY)[i][j]$.
+The shear of the band ensures that all other overlaps of the band with $G$ mismatch.
+Since $G$ is dense, the number of these overlaps is a simple rectangle count, so we can recover $(XY)[i][j]$ from the Hamming distance without any FFT.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[x=0.38cm, y=0.38cm]
+    % text block, n_0 = 11
+    \foreach \x in {0,...,10} \foreach \y in {0,...,10}
+      \draw[gray!35] (\x,\y) rectangle (\x+1,\y+1);
+    \fill[orange!20] (3,3) rectangle (6,5);
+    \foreach \x/\y/\c in {3/3/1, 3/4/2, 4/3/\bot, 4/4/2, 5/3/1, 5/4/\bot}
+      \node[font=\scriptsize] at (\x+0.5,\y+0.5) {$\c$};
+    \draw[orange!70!black, thick] (3,3) rectangle (6,5);
+    \node[font=\small, orange!70!black] at (2.4,5.6) {$G$};
+    \draw[violet, very thick] (4,3) rectangle (9,8);
+    \node[font=\small] at (5.5,-0.9) {text block};
+    % pattern, m = 5
+    \begin{scope}[xshift=14*0.38cm, yshift=3*0.38cm]
+      \foreach \x in {0,...,4} \foreach \y in {0,...,4}
+        \draw[gray!35] (\x,\y) rectangle (\x+1,\y+1);
+      \foreach \j in {0,1,2} \foreach \t in {0,1}
+        \fill[blue!10] (\j,\j+\t) rectangle (\j+1,\j+\t+1);
+      \foreach \x/\y/\c in {0/0/1, 2/2/1, 0/1/2, 1/2/2}
+        \node[font=\scriptsize] at (\x+0.5,\y+0.5) {$\c$};
+      \draw[violet, very thick] (0,0) rectangle (5,5);
+      \node[font=\small] at (2.5,-3.9) {pattern};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{The reduction for $N = 3$ and $b = 2$, with $X = \bigl(\begin{smallmatrix}1&1\\0&1\\1&0\end{smallmatrix}\bigr)$ and $Y = \bigl(\begin{smallmatrix}1&0&1\\1&1&0\end{smallmatrix}\bigr)$; empty cells contain the filler $0$.
+    The text block encodes $X$ in the rectangle $G$, and the pattern encodes $Y$ in a diagonal band (blue).
+    At the position $q_{10} = (4,3)$ (violet window), column $j = 0$ of the band lies on row $i = 1$ of $G$.
+    There, the pattern's \texttt{2} lies on a \texttt{2} (one match) and its \texttt{1} lies on $\bot$, so $(XY)[1][0] = 1$.}
+  \label{fig:lower}
+\end{figure}
+
+\begin{proof}[Proof of Theorem~\ref{thm:lower}]
+Let $N, b, s \in \Z^+$ with $b \le N$, and let $X^{(1)}, \dots, X^{(s^2)} \in \{0,1\}^{N \times b}$ and $Y \in \{0,1\}^{b \times N}$. We show how to compute all products $X^{(r)}Y$ (over the integers) with a single call to an algorithm for the problem with
 \[ m = N + b,\qquad n = s(3N + b), \qquad k = 2Nb, \]
 plus $\O(n^2)$ additional combinatorial time. We use the characters $0$ (filler), $1, \dots, b$, and $\bot$.
 
-\emph{Pattern.} Let $P(j, j + t) = t + 1$ for all $j \in [N]$ and $t \in [b]$ with $B[t][j] = 1$, and $P(u) = 0$ for all other $u \in [m]^2$. Let $S_P = \{u \in [m]^2 : P(u) \ne 0\}$.
+\emph{Pattern.} Let $P(j, j + t) = t + 1$ for all $j \in [N]$ and $t \in [b]$ with $Y[t][j] = 1$, and $P(u) = 0$ for all other $u \in [m]^2$. Let $S_P = \{u \in [m]^2 : P(u) \ne 0\}$.
 
-\emph{Text.} Let $n_0 = 3N + b$, $o = (N,N)$, and $R = o + ([N] \times [b])$. For $A \in \{0,1\}^{N\times b}$, let $T_A$ be the string with domain $[n_0]^2$ such that $T_A(o + (i,t)) = t+1$ if $A[i][t] = 1$ and $T_A(o + (i,t)) = \bot$ otherwise, for $i \in [N]$ and $t \in [b]$, and $T_A(u) = 0$ for $u \notin R$. The text $T$ with domain $[n]^2$ consists of $s^2$ blocks: for $r = (r_1, r_2) \in [s]^2$, we let $T(u + n_0 r) = T_{A^{(r)}}(u)$ for $u \in [n_0]^2$ (identifying $[s]^2$ with $\{1, \dots, s^2\}$).
+\emph{Text.} Let $n_0 = 3N + b$, $o = (N,N)$, and $G = o + ([N] \times [b])$. For $X \in \{0,1\}^{N\times b}$, let $T_X$ be the string with domain $[n_0]^2$ such that $T_X(o + (i,t)) = t+1$ if $X[i][t] = 1$ and $T_X(o + (i,t)) = \bot$ otherwise, for $i \in [N]$ and $t \in [b]$, and $T_X(u) = 0$ for $u \notin G$. The text $T$ with domain $[n]^2$ consists of $s^2$ blocks: for $r = (r_1, r_2) \in [s]^2$, we let $T(u + n_0 r) = T_{X^{(r)}}(u)$ for $u \in [n_0]^2$ (identifying $[s]^2$ with $\{1, \dots, s^2\}$).
 
-\emph{Correctness.} Fix $A = A^{(r)}$, and for $i,j \in [N]$, let $q_{ij} = o + (i - j, -j) + n_0 r$. Then $q_{ij} - n_0r \in [1, 2N) \times [1, N]$, so $W := [m]^2 + q_{ij} \subseteq [n_0]^2 + n_0r$, and the window $W$ only sees block $r$ of the text. Let $R' = R + n_0 r$. For $u \in W$, the characters $P(u - q_{ij})$ and $T(u)$ differ if exactly one of them is $0$, they are equal if both are $0$, and otherwise $u \in (S_P + q_{ij}) \cap R'$. Hence
+\emph{Correctness.} Fix $X = X^{(r)}$, and for $i,j \in [N]$, let $q_{ij} = o + (i - j, -j) + n_0 r$. Then $q_{ij} - n_0r \in [1, 2N) \times [1, N]$, so $W := [m]^2 + q_{ij} \subseteq [n_0]^2 + n_0r$, and the window $W$ only sees block $r$ of the text. Let $G' = G + n_0 r$. For $u \in W$, the characters $P(u - q_{ij})$ and $T(u)$ differ if exactly one of them is $0$, they are equal if both are $0$, and otherwise $u \in (S_P + q_{ij}) \cap G'$. Hence
 \begin{equation}\label{eq:lb}
-\Ham(P + q_{ij}, T) = \abs{S_P} + \abs{R' \cap W} - \abs{(S_P + q_{ij}) \cap R'} - \mu_{ij},
+\Ham(P + q_{ij}, T) = \abs{S_P} + \abs{G' \cap W} - \abs{(S_P + q_{ij}) \cap G'} - \mu_{ij},
 \end{equation}
-where $\mu_{ij}$ is the number of $u \in (S_P + q_{ij}) \cap R'$ with $P(u - q_{ij}) = T(u)$. The pattern position $(j', j'+t')$ is mapped to $o + (i + j' - j, t' + j' - j) + n_0r$. If this position is in $R'$, then $T$ has character $t' + j' - j + 1$ or $\bot$ there, which equals $P(j', j' + t') = t' + 1$ if and only if $j' = j$ and $A[i][t'] = 1$. Thus $\mu_{ij} = \sum_{t} A[i][t]B[t][j] = (AB)[i][j]$. Moreover, $\Ham(P + q_{ij}, T) \le \abs{S_P} + \abs{R} \le 2Nb = k$, so the algorithm reports the exact value of $\Ham(P + q_{ij}, T)$. The value $\abs{R' \cap W}$ is the size of the intersection of two rectangles, and $\abs{(S_P + q_{ij}) \cap R'} = \abs{S_P \cap (R' - q_{ij})}$ is the number of points of $S_P$ in a rectangle, which we obtain in constant time after computing 2D prefix sums of the indicator of $S_P$ in $\O(m^2)$ time. Hence, by (\ref{eq:lb}), we obtain all entries of all products $A^{(r)}B$ in $\O(n^2)$ additional time.
+where $\mu_{ij}$ is the number of $u \in (S_P + q_{ij}) \cap G'$ with $P(u - q_{ij}) = T(u)$. The pattern position $(j', j'+t')$ is mapped to $o + (i + j' - j, t' + j' - j) + n_0r$. If this position is in $G'$, then $T$ has character $t' + j' - j + 1$ or $\bot$ there, which equals $P(j', j' + t') = t' + 1$ if and only if $j' = j$ and $X[i][t'] = 1$. Thus $\mu_{ij} = \sum_{t} X[i][t]Y[t][j] = (XY)[i][j]$. Moreover, $\Ham(P + q_{ij}, T) \le \abs{S_P} + \abs{G} \le 2Nb = k$, so the algorithm reports the exact value of $\Ham(P + q_{ij}, T)$. The value $\abs{G' \cap W}$ is the size of the intersection of two rectangles, and $\abs{(S_P + q_{ij}) \cap G'} = \abs{S_P \cap (G' - q_{ij})}$ is the number of points of $S_P$ in a rectangle, which we obtain in constant time after computing 2D prefix sums of the indicator of $S_P$ in $\O(m^2)$ time. Hence, by (\ref{eq:lb}), we obtain all entries of all products $X^{(r)}Y$ in $\O(n^2)$ additional time.
 
-\emph{Parameters.} Let $b = \Theta(N^\beta)$ and $s = \Theta(N^\gamma)$. Then $m = \Theta(N)$, $k = \Theta(m^{1+\beta})$, and $n = \Theta(m^{1+\gamma})$. Stacking the matrices $A^{(r)}$ yields a Boolean product of size $X \times Y \times Z$ with $X = s^2N$, $Y = b$, and $Z = N$, where $XYZ = \Theta(s^2N^2b) = \Theta(kn^2/m)$. An $\O((kn^2/m)^{1-\varepsilon})$-time combinatorial algorithm for the problem would thus multiply these matrices in $\O((XYZ)^{1-\varepsilon} + n^2) = \O((XYZ)^{1-\varepsilon'})$ time for some constant $\varepsilon' > 0$ (as $n^2 = \Theta(XZ) = \Theta(XYZ/N^\beta)$ is polynomially smaller than $XYZ$), contradicting Fact~\ref{fact:rect}.
+\emph{Parameters.} Let $b = \Theta(N^\beta)$ and $s = \Theta(N^\gamma)$. Then $m = \Theta(N)$, $k = \Theta(m^{1+\beta})$, and $n = \Theta(m^{1+\gamma})$. Stacking the matrices $X^{(r)}$ yields a Boolean product of size $N_1 \times N_2 \times N_3$ with $N_1 = s^2N$, $N_2 = b$, and $N_3 = N$, where $N_1N_2N_3 = \Theta(s^2N^2b) = \Theta(kn^2/m)$. An $\O((kn^2/m)^{1-\varepsilon})$-time combinatorial algorithm for the problem would thus multiply these matrices in $\O((N_1N_2N_3)^{1-\varepsilon} + n^2) = \O((N_1N_2N_3)^{1-\varepsilon'})$ time for some constant $\varepsilon' > 0$ (as $n^2 = \Theta(N_1N_3) = \Theta(N_1N_2N_3/N^\beta)$ is polynomially smaller than $N_1N_2N_3$), contradicting Fact~\ref{fact:rect}.
 \end{proof}
 
 \end{document}
