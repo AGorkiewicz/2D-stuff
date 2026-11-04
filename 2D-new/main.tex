@@ -732,16 +732,30 @@ The points that are too close to the boundary for even the smallest cells form a
   \label{fig:whitney}
 \end{figure}
 
-Let $D_j = 16 \cdot 2^j$ for $j \in \{0, \dots, J\}$, where $J$ is the largest integer with $D_J \le m/16$. For $j \in \{0, \dots, J\}$ and $a, b \in \Z$, the \emph{level-$j$ cell} with index $(a,b)$ is the tile
-\[ \{u \in \Z^2 : \kappa_1(u) \in [a, a+1) \cdot D_j\Delta/\abs{\phi},\ \kappa_2(u) \in [b, b+1)\cdot D_j\Delta/\abs{\psi}\}. \]
-Geometrically, this is the set of integer points in a half-open rhombus with sides $D_j\phi/\abs{\phi}$ and $D_j\psi/\abs{\psi}$. We use the following properties.
+\paragraph{Cells.}
+Let $\hat\phi = \phi/\abs{\phi}$ and $\hat\psi = \psi/\abs{\psi}$ be the unit vectors in the directions of the periods.
+Let $D_j = 16 \cdot 2^j$ for $j \in \{0, \dots, J\}$, where $J$ is the largest integer with $D_J \le m/16$.
+For $j \in \{0, \dots, J\}$ and $a, b \in \Z$, the \emph{level-$j$ cell} with index $(a,b)$ is the set of integer points in the half-open rhombus
+\[ \{s\hat\phi + t\hat\psi : s \in [a, a+1) \cdot D_j,\ t \in [b, b+1) \cdot D_j\}, \]
+which has side length $D_j$ and sides parallel to $\phi$ and $\psi$.
+Since $u = (\kappa_1(u)\phi + \kappa_2(u)\psi)/\Delta$, this is the set of $u \in \Z^2$ with $\kappa_1(u)\abs{\phi}/\Delta \in [a, a+1) \cdot D_j$ and $\kappa_2(u)\abs{\psi}/\Delta \in [b, b+1) \cdot D_j$; in particular, every cell is a tile.
+We use the following properties.
 \begin{enumerate}[(C1)]
 \item The level-$j$ cells partition $\Z^2$, and each level-$(j+1)$ cell is the union of four level-$j$ cells (its \emph{children}).
 \item Any two points of a level-$j$ cell have distance at most $2D_j$.
 \item Each level-$j$ cell contains at least $D_j^2/16$ points: since the angle between $\phi$ and $\psi$ has sine at least $1/2$, the rhombus contains an open disk of radius $D_j/4$, hence an open axis-parallel square of side $D_j/(2\sqrt2) \ge D_j/4 + 1$.
 \end{enumerate}
 
-A level-$j$ cell $C$ is \emph{good} if $\depth(u) > 2D_j$ for all $u \in C$. By (C2) and Lemma~\ref{lem:coverable} (with $r = 2D_j \le m/8$), every good cell is contained in $[m]^2 + q$ for some $q \in Q$. The children of a good cell are good. A good level-$j$ cell is \emph{selected} if $j = J$ or its parent is not good. The selected cells are pairwise disjoint. For $j \in \{0, \dots, J\}$, let $A_j$ be the union of the selected level-$j$ cells, and let $A_\res = A \setminus \bigcup_j A_j$. We call $\res, 0, \dots, J$ the \emph{levels}, and we define the \emph{depth bounds} $d_\res = 4D_0$, $d_j = 8D_j$ for $j < J$, and $d_J = n$.
+\paragraph{Good and selected cells.}
+A level-$j$ cell $C$ is \emph{good} if $\depth(u) > 2D_j$ for all $u \in C$.
+By (C2) and Lemma~\ref{lem:coverable} (with $r = 2D_j \le m/8$), every good cell is contained in $[m]^2 + q$ for some $q \in Q$.
+The children of a good cell are good, since they are smaller.
+A good level-$j$ cell is \emph{selected} if $j = J$ or its parent is not good; that is, the selected cells are the maximal good cells.
+By (C1), the selected cells are pairwise disjoint.
+
+\paragraph{Levels.}
+For $j \in \{0, \dots, J\}$, let $A_j$ be the union of the selected level-$j$ cells, and let $A_\res = A \setminus \bigcup_j A_j$ be the \emph{residual} points.
+We call $\res, 0, \dots, J$ the \emph{levels}, and we define the \emph{depth bounds} $d_\res = 4D_0$, $d_j = 8D_j$ for $j < J$, and $d_J = n$.
 
 \begin{lemma}\label{lem:levels}
 For every level $\iota$, every $u \in A_\iota$ satisfies $\depth(u) \le d_\iota$. Moreover, $\abs{A_\res} = \O(m)$, and there are $\O(m/D_j)$ selected level-$j$ cells for every $j \in \{0, \dots, J\}$.
