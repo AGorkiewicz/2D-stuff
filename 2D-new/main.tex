@@ -145,6 +145,7 @@ The FFT is cheap close to the boundary: a text cell at distance $D$ from the bou
 
 \paragraph{Where the bound comes from.}
 At every distance $D$, the number of text pieces times the FFT cost is $\O(mk/D) \cdot \tO(mD) = \tO(m^2 k)$, independently of $D$.
+Neither method suffices on its own: pairing alone costs up to $\O(mk/D) \cdot \O(k) = \O(mk^2/D)$, which is too much for small $D$, and FFT alone costs $\tO(mD)$ for every character, which is too much if there are many characters.
 Choosing the cheaper method for each character, the Cauchy--Schwarz inequality bounds the total cost by $\tO(\sqrt{m^2 k \cdot k}) = \tO(mk)$ per distance.
 With $\O(\log m)$ distances and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gives \autoref{thm:main}.
 
@@ -413,6 +414,7 @@ Then $Q = \{(0,0), (2,0), (1,1), (0,2), (2,2)\}$, the five positions with Hammin
 The shortest difference is $w = (1,1)$, so the buckets are thin in the direction $(1,1)$, and the positions $(1,1)$ and $(0,2)$ share a bucket.
 We obtain $\psi = (1,1)$ and $\phi = (1,-1)$, with $\Delta = 2$.
 Indeed, moving a checkerboard by $\psi$ or by $\phi$ maps it onto itself.
+Note also that $Q$ consists of the points of $[3]^2$ in the coset $L$ of the lattice spanned by $\phi$ and $\psi$, which we study next.
 
 \section{Lattice blocks}
 \label{sec:lattice}
