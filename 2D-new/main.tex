@@ -599,6 +599,24 @@ If $d > m/8$, the bound follows from $\abs{A} \le n^2 = \O(m^2)$. Otherwise, con
 
 \section{Multiscale decomposition of the active text}
 
+By Lemma~\ref{lem:coverable}, a set of diameter $r$ whose points all have depth more than $r$ inherits the approximate periods of the pattern.
+So deep inside $A$, we can afford large cells, but close to the boundary of $A$, the cells must be small.
+We therefore use a hierarchy of cells, in which every cell has four children of half the size, and select the largest cells that are deep enough (\autoref{fig:whitney}); this is a Whitney decomposition of $A$.
+We take the cells aligned with the lattice, so that every cell is a tile and can be cut into blocks with Lemma~\ref{lem:decomposition}.
+The points that are too close to the boundary for even the smallest cells form a thin residual set, which we treat point by point.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}
+    \input{figures/whitney.tex}
+  \end{tikzpicture}
+  \caption{A Whitney decomposition of an active text $A$ (black outline) with $n = 60$, $m = 40$, $\phi = (2,-1)$, and $\psi = (1,2)$.
+    The cells are tilted squares aligned with $\phi$ and $\psi$, and their colors indicate their levels.
+    Every selected cell is as large as possible such that all its points are deep enough; the white band along the boundary is the residual set.
+    (For readability, the figure uses smaller constants than the algorithm.)}
+  \label{fig:whitney}
+\end{figure}
+
 Let $D_j = 16 \cdot 2^j$ for $j \in \{0, \dots, J\}$, where $J$ is the largest integer with $D_J \le m/16$. For $j \in \{0, \dots, J\}$ and $a, b \in \Z$, the \emph{level-$j$ cell} with index $(a,b)$ is the tile
 \[ \{u \in \Z^2 : \kappa_1(u) \in [a, a+1) \cdot D_j\Delta/\abs{\phi},\ \kappa_2(u) \in [b, b+1)\cdot D_j\Delta/\abs{\psi}\}. \]
 Geometrically, this is the set of integer points in a half-open rhombus with sides $D_j\phi/\abs{\phi}$ and $D_j\psi/\abs{\psi}$. We use the following properties.
@@ -629,7 +647,33 @@ All of this takes $\tO(m^2 + mk)$ time: the depths, cells, and selected cells ar
 
 For a level $\iota$, a character $c$, and $q \in [\ell+1]^2$, let
 \[ M_{\iota,c}(q) = \Match_c(P + q, T|_{A_\iota}) = \sum_{S \in \cS_{\iota,c}}\ \sum_{V \in \cV_c} \abs{\dom(S) \cap \dom(V+q)}. \]
-Since the sets $A_\iota$ partition $A$, (\ref{eq:ham_match}) gives $\Ham(P + q, T) = m^2 - \sum_\iota \sum_c M_{\iota,c}(q)$ for every $q \in Q$. We provide two ways of computing the values $M_{\iota,c}(q)$.
+Since the sets $A_\iota$ partition $A$, (\ref{eq:ham_match}) gives $\Ham(P + q, T) = m^2 - \sum_\iota \sum_c M_{\iota,c}(q)$ for every $q \in Q$.
+We provide two ways of computing the values $M_{\iota,c}(q)$.
+
+\paragraph{Pairing.}
+The first way enumerates all pairs of a text block $S \in \cS_{\iota,c}$ and a pattern piece $V \in \cV_c$, and adds up $\abs{\dom(S) \cap \dom(V + q)}$ for all $q$ simultaneously.
+For a single pair, this intersection count is a function of $q$ that is described by a constant number of parameters, but it is not obvious how to add up many such functions quickly.
+The trick is to write the block $S$, which is a rectangle in lattice coordinates, as a signed sum of four \emph{cones}, that is, quadrants in lattice coordinates (\autoref{fig:cones}).
+A cone has a single corner, so intersecting it with $V + q$ depends only on the difference of $V$ and the corner, and all pairs can be combined into a single function on the plane, of which we take prefix sums along the lattice.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[scale=0.42]
+    \fill[blue!10] (2,1) rectangle (8.4,6.4);
+    \fill[red!10] (5,1) rectangle (8.4,6.4);
+    \fill[red!10] (2,4) rectangle (8.4,6.4);
+    \fill[violet!15] (5,4) rectangle (8.4,6.4);
+    \foreach \i in {0,...,8} \foreach \j in {0,...,6} \fill[gray!50] (\i,\j) circle (2pt);
+    \foreach \i in {2,3,4} \foreach \j in {1,2,3} \fill[blue!70!black] (\i,\j) circle (4.5pt);
+    \foreach \p/\lab/\pos in {{(2,1)}/{w_{00}}/below left, {(5,1)}/{w_{10}}/below, {(2,4)}/{w_{01}}/left, {(5,4)}/{w_{11}}/above right}
+      \node[draw, thick, circle, inner sep=1.6pt, label={[font=\scriptsize]\pos:$\lab$}] at \p {};
+    \draw[gray, ->] (-0.6,-0.6) -- (8.6,-0.6) node[right, font=\small] {$i$};
+    \draw[gray, ->] (-0.6,-0.6) -- (-0.6,6.6) node[above, font=\small] {$j$};
+  \end{tikzpicture}
+  \caption{A block (blue points), drawn in lattice coordinates.
+    Its indicator function is $\mathbf{1}_{\cC(w_{00})} - \mathbf{1}_{\cC(w_{10})} - \mathbf{1}_{\cC(w_{01})} + \mathbf{1}_{\cC(w_{11})}$: the cone at $w_{00}$ (all shaded points) minus the cones at $w_{10}$ and $w_{01}$ (red), plus the cone at $w_{11}$ (violet), which was subtracted twice.}
+  \label{fig:cones}
+\end{figure}
 
 \begin{lemma}[Pairing]\label{lem:pairing}
 Given a set $\Pi$ of pairs $(\iota, c)$, the values $\sum_{(\iota,c) \in \Pi} M_{\iota,c}(q)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time, where $N = \sum_{(\iota,c) \in \Pi} \abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$.
@@ -645,6 +689,47 @@ For every congruence class $\gamma + L$ meeting $W$, let $I_\gamma \times J_\gam
 \[ \textstyle\sum_\gamma \abs{I_\gamma}\abs{J_\gamma} \le \Delta\,(10m\abs{\psi}/\Delta + 1)(10m\abs{\phi}/\Delta + 1) = \O(m^2) \]
 by $\abs{\phi}\abs{\psi} \le 2\Delta$ and $\abs{\phi}, \abs{\psi}, \Delta^{1/2} = \O(m)$. For every class, we compute the suffix sums $G_\gamma(i,j) = \sum_{i' \ge i,\, j' \ge j} F(\gamma + i'\phi + j'\psi)$ over $I_\gamma \times J_\gamma$ (with $F = 0$ outside $W$) in $\O(\abs{I_\gamma}\abs{J_\gamma})$ time. For $-q = \gamma + i\phi + j\psi$, the desired value is $G_\gamma(i,j)$.
 \end{proof}
+
+\paragraph{FFT on strips.}
+The second way counts the matches of one character with FFT.
+Applied to the whole text and pattern, this takes $\tO(m^2)$ time, which is too much for every level and character.
+But the text points of level $\iota$ have depth at most $d_\iota$, and a shallow text point can only lie below a point of the pattern close to its boundary: if the text point were below a point deep inside the pattern, then the occurrence of the pattern would cover the area around it.
+Moreover, we cut the shallow points into strips of width $d_\iota$, and each strip only meets a small part of this boundary region of the pattern (\autoref{fig:strips}).
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[scale=0.62]
+    \begin{scope}
+      \clip (0,0) rectangle (6.3,6.6);
+      \fill[orange!12] (0,0) -- (0,6) -- (2,6) -- (2,5.2) -- (3.5,5.2) -- (3.5,4.2) -- (4.6,4.2) -- (4.6,2.8) -- (5.6,2.8) -- (5.6,1.2) -- (6.3,1.2) -- (6.3,0) -- cycle;
+      \fill[orange!50] (0,6) -- (2,6) -- (2,5.2) -- (3.5,5.2) -- (3.5,4.2) -- (4.6,4.2) -- (4.6,2.8) -- (5.6,2.8) -- (5.6,1.2) -- (6.3,1.2) -- (6.3,0.4) -- (4.8,0.4) -- (4.8,2.0) -- (3.8,2.0) -- (3.8,3.4) -- (2.7,3.4) -- (2.7,4.4) -- (1.2,4.4) -- (1.2,5.2) -- (0,5.2) -- cycle;
+      \foreach \x in {0.8,1.6,...,6.4} \draw[gray, densely dashed] (\x,0) -- (\x,6.6);
+      \draw[thick] (0,6) -- (2,6) -- (2,5.2) -- (3.5,5.2) -- (3.5,4.2) -- (4.6,4.2) -- (4.6,2.8) -- (5.6,2.8) -- (5.6,1.2) -- (6.3,1.2);
+    \end{scope}
+    \draw[violet, very thick] (3.2,2.0) rectangle (4.0,5.2);
+    \draw[decorate, decoration={brace, amplitude=3pt}, violet] (4.1,5.2) -- node[right=2pt, font=\small] {$h_i$} (4.1,2.0);
+    \draw[decorate, decoration={brace, amplitude=3pt, mirror}] (3.2,-0.1) -- node[below=2pt, font=\small] {$d$} (4.0,-0.1);
+    \node[font=\small] at (1.2,1.2) {$A \cap K_1$};
+    % pattern
+    \begin{scope}[xshift=8.6cm, yshift=0.4cm]
+      \fill[gray!10] (0,0) rectangle (5.6,5.6);
+      \fill[orange!25] (4.8,0) rectangle (5.6,5.6);
+      \fill[orange!25] (0,4.8) rectangle (4.8,5.6);
+      \fill[violet!35] (4.8,2.4) rectangle (5.6,5.6);
+      \draw (0,0) rectangle (5.6,5.6);
+      \draw[violet, very thick] (4.8,2.4) rectangle (5.6,5.6);
+      \node[font=\small] at (2.4,2.4) {$P$};
+      \node[font=\small] at (5.2,1.2) {$Z_R$};
+      \node[font=\small] at (2.4,5.2) {$Z_T$};
+      \draw[decorate, decoration={brace, amplitude=3pt}, violet] (5.7,5.6) -- node[right=2pt, font=\small] {$h_i$} (5.7,2.4);
+    \end{scope}
+  \end{tikzpicture}
+  \caption{Left: the points of $A \cap K_1$ (light) with depth at most $d$ (dark) are cut into vertical strips of width $d$.
+    The strip $F_i$ lies in a $d \times h_i$ rectangle (violet), between the lowest shallow point of the strip and the highest point of $A$ above the strip.
+    Right: a shallow point can only lie below the strips $Z_R$ and $Z_T$ of the pattern of width $d$, and a point of $F_i$ only below the top $h_i$ rows of $Z_R$ (violet) or below $Z_T$.
+    The heights $h_i$ add up to $\O(m)$, because the boundary of $A$ is a staircase.}
+  \label{fig:strips}
+\end{figure}
 
 \begin{lemma}[Strips]\label{lem:strips}
 Given a level $\iota$ and a character $c$, one can add $M_{\iota,c}(q)$ to the entry $q$ of an array indexed by $[\ell+1]^2$, for every $q \in Q$, in $\O(m d_\iota \log m)$ time.
