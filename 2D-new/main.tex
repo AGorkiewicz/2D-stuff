@@ -89,12 +89,16 @@ For every \emph{position} $q$, that is, every placement of the pattern inside th
     \chargrid{4.0}{-0.46}{{b,a,b,c},{a,b,a,b},{b,a,b,a},{a,b,a,b}}
     \node[font=\small] at (4.0+0.69, -3.15) {pattern $P$};
     % table of distances, rows q.y = 2,1,0 from top
-    \begin{scope}[xshift=7.2cm, yshift=-0.46cm]
-      \chargrid{0}{0}{{2,15,2},{15,1,16},{1,16,2}}
-      \node[cell, fill=violet!15] at (0, -2*0.46) {1};
-      \node[cell, fill=violet!15] at (0.46, -0.46) {1};
+    \begin{scope}[xshift=7.4cm, yshift=-0.46cm]
+      \foreach \row [count=\r] in {{2,15,2},{15,1,16},{1,16,2}}
+        \foreach \v [count=\c] in \row
+          \node[cell, minimum width=0.62cm, minimum height=0.5cm] at ({(\c-1)*0.62}, {-(\r-1)*0.5}) {\v};
+      \node[cell, minimum width=0.62cm, minimum height=0.5cm, fill=violet!15] at (0, -1.0) {1};
+      \node[cell, minimum width=0.62cm, minimum height=0.5cm, fill=violet!15] at (0.62, -0.5) {1};
+      \draw[gray, ->] (-0.31,-1.45) -- (1.6,-1.45) node[right, font=\scriptsize] {$\x q$};
+      \draw[gray, ->] (-0.5,-1.25) -- (-0.5,0.4) node[above, font=\scriptsize] {$\y q$};
     \end{scope}
-    \node[font=\small, align=center] at (7.2+0.46, -3.15) {$\Ham(P+q,T)$};
+    \node[font=\small, align=center] at (7.4+0.62, -3.15) {$\Ham(P+q,T)$};
   \end{tikzpicture}
   \caption{A text $T$ with $n = 6$ and a pattern $P$ with $m = 4$, drawn with the $y$-axis pointing up, so that the cell $(0,0)$ is at the bottom left.
     The window (violet) shows the pattern at position $q = (1,1)$; it has one mismatch (red), since $P(0,3) = \str{b}$ lies on $T(1,4) = \str{a}$.
@@ -339,7 +343,7 @@ A \emph{block} is a set $\gamma + I\phi + J\psi := \{\gamma + i\phi + j\psi : i 
 \end{definition}
 
 Intuitively, the $\Delta$ cosets of $L$ color the plane with $\Delta$ colors, such that moving by $\phi$ or $\psi$ keeps the color; in the running example, they are the two colors of the checkerboard.
-Within one coset, the coefficients $(i,j)$ of $\gamma + i\phi + j\psi$ are \emph{lattice coordinates}, and a block is simply a rectangle in lattice coordinates.
+Within one coset $\gamma + L$, every point is $u = \gamma + i\phi + j\psi$ for unique $i, j \in \Z$, its \emph{lattice coordinates} $\lambda(u) = (i,j) = (\kappa(u) - \kappa(\gamma))/\Delta$ (with respect to the representative $\gamma$), and a block is simply a rectangle in lattice coordinates.
 Geometrically, a block consists of the points of one coset inside a parallelogram with sides parallel to $\phi$ and $\psi$, and a tile consists of the points of all cosets inside such a parallelogram (\autoref{fig:lattice}).
 The intersection of a tile with a congruence class is a block.
 
@@ -380,7 +384,7 @@ For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$
 The lattice graph of every truncated block is connected.
 \end{lemma}
 \begin{proof}
-Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \Z^2$ is trivial) and $B = \gamma + I\phi + J\psi$. For $u = \gamma + i\phi + j\psi$, write $\lambda(u) = (i,j)$ for its lattice coordinates. It suffices to show that for distinct $u, v \in X$, one of them has a neighbour $w \in X$ with $\abs{\lambda(w) - \lambda(z)}_1 < \abs{\lambda(u) - \lambda(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\lambda(u) - \lambda(v)}_1$ shows that $u$ and $v$ are connected. All candidates $w$ below satisfy that $\lambda(w)$ lies in the bounding box of $\lambda(u)$ and $\lambda(v)$, so $w \in B$, and only $w \in R$ needs to be checked. By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
+Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \Z^2$ is trivial) and $B = \gamma + I\phi + J\psi$. We use the lattice coordinates $\lambda$ with respect to $\gamma$. It suffices to show that for distinct $u, v \in X$, one of them has a neighbour $w \in X$ with $\abs{\lambda(w) - \lambda(z)}_1 < \abs{\lambda(u) - \lambda(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\lambda(u) - \lambda(v)}_1$ shows that $u$ and $v$ are connected. All candidates $w$ below satisfy that $\lambda(w)$ lies in the bounding box of $\lambda(u)$ and $\lambda(v)$, so $w \in B$, and only $w \in R$ needs to be checked. By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
 
 \emph{Case $\beta \ge 0$.} The $x$-coordinate does not decrease along $\phi$- and $\psi$-steps, so every $w \in \{u+\phi, u+\psi\}$ satisfies $\x u \le \x w \le \x v$. If $\beta = 0$, then $w = u + \phi$ satisfies $\y v \le \y w \le \y u$, so $w \in R$. If $\alpha = 0$, then $w = u + \psi$ satisfies $\y u \le \y w \le \y v$. If $\alpha,\beta > 0$ and $u + \phi \notin R$, then $\y u + \y\phi < y_0$, and hence $y_0 \le \y u \le \y u + \y\psi \le y_0 - 1 + \abs{\y\phi} + \abs{\y\psi} \le y_1$, so $w = u + \psi \in R$.
 
@@ -625,16 +629,22 @@ Let $[x_0, x_1]$ and $[y_0, y_1]$ be the ranges of the $x$- and $y$-coordinates 
 For the second claim, if $u - \delta, u \in X$ and $T(u-\delta) \ne T(u)$, then $T(u - \delta) \neq P(u - \delta - q)$, or $P(u-\delta-q) \neq P(u-q)$, or $P(u-q) \neq T(u)$. Thus $\Ham(T|_X + \delta, T|_X) \le \Ham(P+q,T) + \Ham(P+\delta,P) + \Ham(P+q,T) \le 8k$.
 \end{proof}
 
-Let $z = \lceil n/2 \rceil$. The \emph{quarters} are $K_1 = [z,\infty)^2$, $K_2 = (-\infty, z) \times [z, \infty)$, $K_3 = (-\infty, z)^2$, and $K_4 = [z, \infty) \times (-\infty, z)$ (intersected with $\Z^2$). We state the following for $K_1$; the statements for the other quarters are symmetric (reflect the coordinates as appropriate; for $K_3$, for instance, the condition $\ell \le \x w \le \x v$ becomes $\x v \le \x w \le m - 1$).
+Let $z = \lceil n/2 \rceil$. The \emph{quarters} are $K_1 = [z,\infty)^2$, $K_2 = (-\infty, z) \times [z, \infty)$, $K_3 = (-\infty, z)^2$, and $K_4 = [z, \infty) \times (-\infty, z)$ (intersected with $\Z^2$), with the outward directions $\sigma_1 = (1,1)$, $\sigma_2 = (-1,1)$, $\sigma_3 = (-1,-1)$, and $\sigma_4 = (1,-1)$.
+Let $C = [\ell, m-1]^2$ be the central square, which is covered by every occurrence $[m]^2 + q$ with $q \in [\ell+1]^2$.
+We say that $w$ lies \emph{between $C$ and $v$} if, in each coordinate, $w$ lies in the smallest interval that contains both $[\ell, m-1]$ and the coordinate of $v$.
 
 \begin{lemma}\label{lem:monotone}
 \begin{enumerate}[(a)]
-\item If $v \in A$ and $\ell \le \x w \le \x v$ and $\ell \le \y w \le \y v$, then $w \in A$.
-\item If $d \le m/8$, $u \in A \cap K_1$, and $\depth(u) \le d$, then $u + (d,d) \notin A$.
+\item If $v \in A$ and $w$ lies between $C$ and $v$, then $w \in A$.
+\item If $d \le m/8$, $u \in A \cap K_i$, and $\depth(u) \le d$, then $u + d\sigma_i \notin A$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
-(a) If $v \in [m]^2 + q$ with $q \in [\ell+1]^2$, then $\x q \le \ell \le \x w \le \x v \le \x q + m - 1$ and likewise for $y$, so $w \in [m]^2 + q$. (b) Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$). If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
+(a) If $v \in [m]^2 + q$ with $q \in [\ell+1]^2$, then both $\x v$ and $[\ell, m-1]$ lie in $[\x q, \x q + m - 1]$, and likewise for $y$, so $w \in [m]^2 + q$.
+(b) Consider $i = 1$; the other quarters are symmetric.
+Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $C$ and $u + (d,d)$.
+If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
+(For $i = 3$, we use $z - 1 + d \le m - 1$ instead.)
 \end{proof}
 
 \begin{lemma}[Shallow points]\label{lem:shallow}
@@ -805,7 +815,7 @@ If $d_\iota > m/8$, we apply Fact~\ref{fact:fft} to $T|_{A_\iota}$ and $P$ in $\
 
 \emph{Vertical strips.} For $i \ge 0$, let $F_i = F \cap ([id, (i+1)d) \times \Z)$, let $\mathit{bot}_i = \min\{\y u : u \in F_i\}$, let $\mathit{top}_i = \max\{\y v : v \in A,\ \x v \in [id, (i+1)d)\}$, and let $h_i = \mathit{top}_i - \mathit{bot}_i + 1$ (for non-empty $F_i$). Then $F_i$ lies in a $d \times h_i$ rectangle. Let $q \in Q$ and $u \in F_i$ with $p = u - q \in [m]^2$. Since $\x u \in [\x q, \x q + m)$, the point $(\x u, \y q + m - 1) \in [m]^2 + q$ is in $A$, so $\mathit{top}_i \ge \y q + m - 1$ and $\y p = \y u - \y q \ge \mathit{bot}_i - \mathit{top}_i + m - 1 = m - h_i$. Hence, the matches with $p \in Z_R$ are exactly those counted by applying Fact~\ref{fact:fft} to $T|_{F_i}$ and $P|_{[m-d, m) \times [m-h_i, m)}$ for all $i$, which takes $\O(dh_i \log m)$ time per $i$ (the contributions are added to the array).
 
-We show $\sum_i h_i = \O(m)$. Let $i_1 < i_2 < \cdots$ be the indices of the non-empty strips. For $t \ge 3$, let $u \in F_{i_{t-2}}$ with $\y u = \mathit{bot}_{i_{t-2}}$, and let $v \in A$ with $\x v \in [i_t d, (i_t+1)d)$ and $\y v = \mathit{top}_{i_t}$. Then $\x v \ge \x u + d$. If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a) (all coordinates of $u + (d,d)$ are at least $z \ge \ell$), a contradiction. Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$. Summing up, the series telescopes, and we obtain $\sum_i h_i \le 2n + (n/d+1)d + 2n = \O(m)$.
+We show $\sum_i h_i = \O(m)$. Let $i_1 < i_2 < \cdots$ be the indices of the non-empty strips. For $t \ge 3$, let $u \in F_{i_{t-2}}$ with $\y u = \mathit{bot}_{i_{t-2}}$, and let $v \in A$ with $\x v \in [i_t d, (i_t+1)d)$ and $\y v = \mathit{top}_{i_t}$. Then $\x v \ge \x u + d$. If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a), since $u + (d,d)$ lies between $C$ and $v$ (its coordinates are at least $z \ge \ell$ and at most those of $v$); a contradiction. Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$. Summing up, the series telescopes, and we obtain $\sum_i h_i \le 2n + (n/d+1)d + 2n = \O(m)$.
 
 \emph{Horizontal strips.} Symmetrically, let $G_i = F \cap (\Z \times [id, (i+1)d))$, let $\mathit{left}_i = \min\{\x u : u \in G_i\}$, let $\mathit{right}_i = \max\{\x v : v \in A,\ \y v \in [id, (i+1)d)\}$, and let $w_i = \mathit{right}_i - \mathit{left}_i + 1$. As above, $\sum_i w_i = \O(m)$, and the matches with $p \in Z_T$ are counted by applying Fact~\ref{fact:fft} to $T|_{G_i}$ and $P|_{[m - w_i, m-d) \times [m-d,m)}$.
 
