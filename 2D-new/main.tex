@@ -216,7 +216,7 @@ For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
     $\Delta = \det(\phi,\psi)$ & number of cosets of the lattice $L$, $\Delta < 8k$ & \autoref{sec:periods} \\
     $\kappa(u), \lambda(u)$ & coordinates of $u$ with respect to the lattice & \autoref{sec:lattice} \\
     $\cV$, $\cV_c$ & pattern pieces (with character $c$), $\abs{\cV} < 16k$ & \autoref{sec:lattice} \\
-    $A$, $C$ & active text, and the central square $[\ell, m-1]^2$ & \autoref{sec:active} \\
+    $A$, $K_0$ & active text, and the central square $[\ell, m-1]^2$ & \autoref{sec:active} \\
     $\depth(u)$ & distance from $u$ to the complement of $A$ & \autoref{sec:active} \\
     $K_i$, $\sigma_i$ & quarters of the plane and their outward directions & \autoref{sec:active} \\
     $D_j$ & side length of the level-$j$ cells & \autoref{sec:multiscale} \\
@@ -755,14 +755,14 @@ To analyze the staircases, we split the plane into four quarters around the cent
     \draw[black, thick] (1.8,-0.15) -- (1.8,3.75);
     \draw[black, thick] (-0.15,1.8) -- (3.75,1.8);
     \draw[gray!70!black, densely dashed, thick] (1.2,1.2) rectangle (2.4,2.4);
-    \node[font=\scriptsize, gray!70!black] at (1.5,2.15) {$C$};
+    \node[font=\scriptsize, gray!70!black] at (1.5,2.15) {$K_0$};
     \foreach \lab/\pos in {K_1/{(3.95,3.75)}, K_2/{(-0.35,3.75)}, K_3/{(-0.35,-0.15)}, K_4/{(3.95,-0.15)}}
       \node[font=\small] at \pos {$\lab$};
   \end{tikzpicture}
-  \caption{The active text $A$ (shaded) for $n = 12$, $m = 8$, and six candidate positions (violet dots, at the lower left corners of the occurrences); one occurrence $[m]^2 + (3,2)$ is dashed (violet), and so is the central square $C = [4,7]^2$ (gray).
+  \caption{The active text $A$ (shaded) for $n = 12$, $m = 8$, and six candidate positions (violet dots, at the lower left corners of the occurrences); one occurrence $[m]^2 + (3,2)$ is dashed (violet), and so is the central square $K_0 = [4,7]^2$ (gray).
     The shade indicates the depth: dark cells have depth $1$, medium cells depth $2$, and light cells larger depth.
     The black lines split the plane into the quarters $K_1, \dots, K_4$.
-    Moving from any point of $A$ towards $C$, coordinate by coordinate, never leaves $A$ (Lemma~\ref{lem:monotone}).}
+    Moving from any point of $A$ towards $K_0$, coordinate by coordinate, never leaves $A$ (Lemma~\ref{lem:monotone}).}
   \label{fig:active}
 \end{figure}
 
@@ -774,7 +774,7 @@ To analyze the staircases, we split the plane into four quarters around the cent
     \fill[orange!12] (3,3) rectangle (11,11);
     \draw[gray] (0,0) rectangle (12,12);
     \draw[gray, densely dashed] (4,4) rectangle (8,8);
-    \node[gray, font=\small] at (6,6) {$C$};
+    \node[gray, font=\small] at (6,6) {$K_0$};
     \draw[violet, very thick] (3,3) rectangle (11,11);
     \node[violet, font=\small, anchor=south east] at (11,3) {$[m]^2 + q$};
     \draw[densely dotted, thick] (7.15,7.35) rectangle (10.45,10.65);
@@ -788,7 +788,7 @@ To analyze the staircases, we split the plane into four quarters around the cent
   \end{tikzpicture}
   \caption{Lemma~\ref{lem:coverable}.
     All points within distance $r$ of the small set $X$ (dotted square) lie in the active text $A$ (shaded).
-    In particular, the corner $(x_1, y_1)$ of the bounding box of $X$ (dashed) lies in some occurrence $[m]^2 + q$, which then contains all of $X$, since $X$ lies between this corner and the central square $C$.}
+    In particular, the corner $(x_1, y_1)$ of the bounding box of $X$ (dashed) lies in some occurrence $[m]^2 + q$, which then contains all of $X$, since $X$ lies between this corner and the central square $K_0$.}
   \label{fig:coverable}
 \end{figure}
 
@@ -811,19 +811,19 @@ Thus $\Ham(T|_X + \delta, T|_X) \le \Ham(P+q,T) + \Ham(P+\delta,P) + \Ham(P+q,T)
 
 Let $z = \lceil n/2 \rceil$.
 The \emph{quarters} are $K_1 = [z,\infty)^2$, $K_2 = (-\infty, z) \times [z, \infty)$, $K_3 = (-\infty, z)^2$, and $K_4 = [z, \infty) \times (-\infty, z)$ (intersected with $\Z^2$), with the outward directions $\sigma_1 = (1,1)$, $\sigma_2 = (-1,1)$, $\sigma_3 = (-1,-1)$, and $\sigma_4 = (1,-1)$.
-Let $C = [\ell, m-1]^2$ be the central square, which is covered by every occurrence $[m]^2 + q$ with $q \in [\ell+1]^2$.
-We say that $w$ lies \emph{between $C$ and $v$} if, in each coordinate, $w$ lies in the smallest interval that contains both $[\ell, m-1]$ and the coordinate of $v$.
+Let $K_0 = [\ell, m-1]^2$ be the central square, which is covered by every occurrence $[m]^2 + q$ with $q \in [\ell+1]^2$.
+We say that $w$ lies \emph{between $K_0$ and $v$} if, in each coordinate, $w$ lies in the smallest interval that contains both $[\ell, m-1]$ and the coordinate of $v$.
 
 \begin{lemma}[Staircases]\label{lem:monotone}
 \begin{enumerate}[(a)]
-\item If $v \in A$ and $w$ lies between $C$ and $v$, then $w \in A$.
+\item If $v \in A$ and $w$ lies between $K_0$ and $v$, then $w \in A$.
 \item If $d \le m/8$, $u \in A \cap K_i$, and $\depth(u) \le d$, then $u + d\sigma_i \notin A$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
 (a) If $v \in [m]^2 + q$ with $q \in [\ell+1]^2$, then both $\x v$ and $[\ell, m-1]$ lie in $[\x q, \x q + m - 1]$, and likewise for $y$, so $w \in [m]^2 + q$.
 (b) Consider $i = 1$; the other quarters are symmetric.
-Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $C$ and $u + (d,d)$.
+Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $K_0$ and $u + (d,d)$.
 If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
 (For the coordinates in which $\sigma_i$ is negative, that is, the $x$-coordinate for $i \in \{2,3\}$ and the $y$-coordinate for $i \in \{3,4\}$, we use $z - 1 + d \le m - 1$ instead.)
 \end{proof}
@@ -1055,7 +1055,7 @@ We show $\sum_i h_i = \O(m)$.
 Let $i_1 < i_2 < \cdots$ be the indices of the non-empty strips.
 For $t \ge 3$, let $u \in F_{i_{t-2}}$ with $\y u = \mathit{bot}_{i_{t-2}}$, and let $v \in A$ with $\x v \in [i_t d, (i_t+1)d)$ and $\y v = \mathit{top}_{i_t}$.
 Then $\x v \ge \x u + d$.
-If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a), since $u + (d,d)$ lies between $C$ and $v$ (its coordinates are at least $z \ge \ell$ and at most those of $v$); a contradiction.
+If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a), since $u + (d,d)$ lies between $K_0$ and $v$ (its coordinates are at least $z \ge \ell$ and at most those of $v$); a contradiction.
 Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$.
 Summing up, the series telescopes, and we obtain $\sum_i h_i \le 2n + (n/d+1)d + 2n = \O(m)$.
 
