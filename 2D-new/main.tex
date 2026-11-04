@@ -416,6 +416,9 @@ Indeed, moving a checkerboard by $\psi$ or by $\phi$ maps it onto itself.
 \section{Lattice blocks}
 \label{sec:lattice}
 
+The two periods $\phi$ and $\psi$ suggest looking at the pattern along the lattice they span.
+In this section, we define the shapes that we use as pieces (blocks, possibly truncated by a rectangle), show that a piece without internal mismatches is monochromatic, and cut the pattern into $\O(k)$ such pieces.
+
 Let $L = \{i\phi + j\psi : i, j \in \Z\}$. We write $u \equiv v$ if $u - v \in L$; the congruence classes are the cosets $\gamma + L$. Let
 \[\kappa(u) = (\det(u, \psi), \det(\phi, u)) \in \Z^2 \quad\text{for } u \in \Z^2.\]
 Since $u = (\kappa_1(u)\phi + \kappa_2(u)\psi)/\Delta$ (apply $\det(\cdot,\psi)$ and $\det(\phi,\cdot)$ to both sides to check this), we have $u \equiv v$ if and only if $\kappa(u) \equiv \kappa(v) \pmod \Delta$ (componentwise), and $\kappa(\gamma + i\phi + j\psi) = \kappa(\gamma) + \Delta\cdot(i,j)$.
@@ -469,7 +472,28 @@ For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$
 \begin{lemma}\label{lem:connected}
 The lattice graph of every truncated block is connected.
 \end{lemma}
-The idea of the proof is to walk from one point to the other in lattice coordinates.
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[scale=0.45]
+    \draw[violet, thick, densely dashed] (0,0) rectangle (9,6);
+    \node[violet, font=\small, anchor=north west] at (9,6) {$R$};
+    \foreach \x in {0,...,9} \foreach \y in {-2,...,6} \fill[gray!25] (\x,\y) circle (1.6pt);
+    \coordinate (u) at (2,0);
+    \coordinate (v) at (6,3);
+    \fill (u) circle (4pt) node[below left, font=\small] {$u$};
+    \fill (v) circle (4pt) node[above right, font=\small] {$v$};
+    \draw[-{Stealth[length=5pt]}, thick, red!75!black] (u) -- (4,-1);
+    \node[red!75!black, font=\small] at (4.6,-1.4) {$u+\phi \notin R$};
+    \draw[-{Stealth[length=5pt]}, thick, blue!70!black] (u) -- (3,2);
+    \node[blue!70!black, font=\small, anchor=east, fill=white, inner sep=1pt] at (2.7,2.6) {$u+\psi \in R$};
+    \draw[gray, densely dotted, thick] (3,2) -- (5,1) -- (6,3);
+  \end{tikzpicture}
+  \caption{Lemma~\ref{lem:connected} for $\phi = (2,-1)$ and $\psi = (1,2)$: to walk from $u$ towards $v = u + \phi + 2\psi$, both a $\phi$-step and a $\psi$-step move closer to $v$.
+    The $\phi$-step leaves the rectangle $R$ at the bottom, but then the $\psi$-step, which moves up, stays inside, since $R$ is high enough.}
+  \label{fig:connected}
+\end{figure}
+
+The idea of the proof is to walk from one point to the other in lattice coordinates (\autoref{fig:connected}).
 Inside the block, every step towards the target is allowed; the only obstacle is the boundary of the rectangle.
 Since $\phi$ points to the lower right and $\psi$ to the upper right, there are always two candidate steps that move in different vertical (or horizontal) directions, and wideness guarantees that one of them stays inside the rectangle.
 \begin{proof}
@@ -514,6 +538,7 @@ First, for every class, we cut $I$ between $i$ and $i+1$ for every $\phi$-mismat
 This yields at most $\Delta + \Ham(S+\phi,S)$ sets $R \cap (\gamma + I'\phi + J\psi)$, none of which contains a $\phi$-mismatch.
 Then, we cut the $J$-interval of each of these sets at the $\psi$-mismatches it contains, which yields at most $\Delta + h$ truncated blocks $R \cap (\gamma + I'\phi + J'\psi)$ that contain no mismatch.
 By Lemma~\ref{lem:connected}, each of them is connected in its lattice graph, so $S$ restricted to it is monochromatic.
+We represent each piece by its character, $R$, $\gamma$, and the endpoints of its two intervals.
 Sorting dominates the running time.
 \end{proof}
 
