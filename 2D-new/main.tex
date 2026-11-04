@@ -936,7 +936,7 @@ the desired value for $q$ is $\sum_{v \in \cC(-q)} F(v)$, the sum of $F$ over a 
 In words: every pair contributes four shifted copies of its pattern piece, with signs, and the answer for $q$ is the sum of $F$ over the cone at $-q$.
 
 \emph{Computing $F$.}
-Every corner $w_{ab}(S)$ is within distance $\inorm{\phi} + \inorm{\psi} \le m$ of $\dom(S) \subseteq [n]^2$, so $\dom(V) - w_{ab}(S) \subseteq W := [-3m, 2m]^2$; also $-[\ell+1]^2 \subseteq W$.
+Every corner $w_{ab}(S)$ is within maximum-norm distance $\inorm{\phi} + \inorm{\psi} \le m$ of $\dom(S) \subseteq [n]^2$, so $\dom(V) - w_{ab}(S) \subseteq W := [-3m, 2m]^2$; also $-[\ell+1]^2 \subseteq W$.
 A set $\dom(V) - w$ is described by four intervals: if $\dom(V) = [m]^2 \cap B$ for a block $B$, then a point $u$ of the congruence class of $B - w$ lies in $\dom(V) - w$ if and only if $\x u$ and $\y u$ lie in the intervals that describe $[m]^2 - w$, and the two coordinates of $\kappa(u)$ lie in the intervals that describe $B - w$.
 So, for every congruence class separately, $F(u)$ is the total weight of the axis-parallel boxes in $\R^4$ that contain the point $(\x u, \y u, \kappa_1(u), \kappa_2(u))$.
 By Fact~\ref{fact:range}, we compute $F(u)$ for all $u \in W$ in $\tO(m^2 + N)$ total time.
@@ -997,12 +997,12 @@ Given a level $\iota$ and a character $c$, one can add $M_{\iota,c}(q)$ to the e
 (The entries of positions outside $Q$ may receive arbitrary values.)
 \end{lemma}
 \begin{proof}
-If $d_\iota > m/8$, we apply Fact~\ref{fact:fft} to $T|_{A_\iota}$ and $P$ in $\O(n^2\log n) = \O(md_\iota \log m)$ time.
+If $d_\iota > m/8$, we apply Fact~\ref{fact:fft} with character $c$ to $T|_{A_\iota}$ and $P$ in $\O(n^2\log n) = \O(md_\iota \log m)$ time.
 Otherwise, let $d = d_\iota \le m/8$.
 We handle the four sets $A_\iota \cap K_i$ separately; by symmetry, we describe $F := A_\iota \cap K_1$.
 By Lemma~\ref{lem:levels} and Lemma~\ref{lem:monotone}(b), $u + (d,d) \notin A$ for all $u \in F$.
 
-\emph{Only the boundary strips of $P$ matter.} Let $q \in Q$ and $u \in F$ with $p := u - q \in [m]^2$.
+\emph{Only the boundary strips of $P$ matter.} Let $q \in Q$ and $u \in F$ with $p := u - q \in [m]^2$, that is, $u$ lies on the pattern position $p$.
 As $[m]^2 + q \subseteq A$ and $u + (d,d) \notin A$, we have $p + (d,d) \notin [m]^2$.
 Hence $p \in Z_R \cup Z_T$, where $Z_R = [m-d, m) \times [0, m)$ and $Z_T = [0, m-d) \times [m-d, m)$ are disjoint.
 
@@ -1012,7 +1012,7 @@ For non-empty $F_i$, let $\mathit{bot}_i = \min\{\y u : u \in F_i\}$ be its lowe
 Then $F_i$ lies in a $d \times h_i$ rectangle.
 Let $q \in Q$ and $u \in F_i$ with $p = u - q \in [m]^2$.
 Since $\x u \in [\x q, \x q + m)$, the point $(\x u, \y q + m - 1) \in [m]^2 + q$ is in $A$, so $\mathit{top}_i \ge \y q + m - 1$ and $\y p = \y u - \y q \ge \mathit{bot}_i - \mathit{top}_i + m - 1 = m - h_i$.
-Hence, the matches with $p \in Z_R$ are exactly those counted by applying Fact~\ref{fact:fft} to $T|_{F_i}$ and $P|_{[m-d, m) \times [m-h_i, m)}$ for all $i$, which takes $\O(dh_i \log m)$ time per $i$ (the contributions are added to the array).
+Hence, the matches with character $c$ and $p \in Z_R$ are exactly those counted by applying Fact~\ref{fact:fft} with character $c$ to $T|_{F_i}$ and $P|_{[m-d, m) \times [m-h_i, m)}$ for all $i$, which takes $\O(dh_i \log m)$ time per $i$ (the contributions are added to the array).
 
 We show $\sum_i h_i = \O(m)$.
 Let $i_1 < i_2 < \cdots$ be the indices of the non-empty strips.
