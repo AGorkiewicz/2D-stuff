@@ -155,7 +155,7 @@ With $\O(\log m)$ distances and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gi
     & time & quasi-linear for \\
     \midrule
     Amir and Landau & $\O(kn^2)$ & $k = \tO(1)$ \\
-    previous version of this work & $\tO(n^2 + k^{5/4} n^2/m)$ & $k = \O(m^{4/5})$ \\
+    single threshold (\autoref{sec:notes}) & $\tO(n^2 + k^{5/4} n^2/m)$ & $k = \O(m^{4/5})$ \\
     these notes & $\tO(n^2 + kn^2/m)$ & $k = \O(m)$ \\
     lower bound (combinatorial) & $(kn^2/m)^{1-o(1)}$ & --- \\
     \bottomrule
@@ -411,6 +411,9 @@ For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$
 \begin{lemma}\label{lem:connected}
 The lattice graph of every truncated block is connected.
 \end{lemma}
+The idea of the proof is to walk from one point to the other in lattice coordinates.
+Inside the block, every step towards the target is allowed; the only obstacle is the boundary of the rectangle.
+Since $\phi$ points to the lower right and $\psi$ to the upper right, there are always two candidate steps that move in different vertical (or horizontal) directions, and wideness guarantees that one of them stays inside the rectangle.
 \begin{proof}
 Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \Z^2$ is trivial) and $B = \gamma + I\phi + J\psi$. We use the lattice coordinates $\lambda$ with respect to $\gamma$. It suffices to show that for distinct $u, v \in X$, one of them has a neighbour $w \in X$ with $\abs{\lambda(w) - \lambda(z)}_1 < \abs{\lambda(u) - \lambda(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\lambda(u) - \lambda(v)}_1$ shows that $u$ and $v$ are connected. All candidates $w$ below satisfy that $\lambda(w)$ lies in the bounding box of $\lambda(u)$ and $\lambda(v)$, so $w \in B$, and only $w \in R$ needs to be checked. By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
 
@@ -662,9 +665,10 @@ To analyze the staircases, we split the plane into four quarters around the cent
     \draw[densely dotted, thick] (7.15,7.35) rectangle (10.45,10.65);
     \draw[gray, densely dashed] (8.25,8.45) rectangle (9.35,9.55);
     \fill[blue!40, draw=blue!70!black, rotate around={30:(8.8,9.0)}] (8.4,8.6) rectangle (9.2,9.4);
-    \node[font=\small] at (8.0,9.0) {$X$};
+    \node[font=\small, anchor=east] at (8.15,8.7) {$X$};
     \fill[red!75!black] (9.35,9.55) circle (4pt);
-    \node[font=\small, text=red!75!black, anchor=south west] at (9.35,9.55) {$(x_1,y_1)$};
+    \draw[red!75!black, thin] (9.35,9.55) -- (11.6,11.3);
+    \node[font=\small, text=red!75!black, anchor=south west] at (11.6,11.3) {$(x_1,y_1)$};
     \node[font=\small] at (1.4,1.2) {$[n]^2$};
   \end{tikzpicture}
   \caption{Lemma~\ref{lem:coverable}.
