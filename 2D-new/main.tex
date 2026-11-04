@@ -183,24 +183,54 @@ For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
 
 \subsection{Tools}
 
+We use four standard tools.
+The first one counts, for one character, the matches between two strings at all relative positions at once.
+
 \begin{fact}[FFT]\label{fact:fft}
-Let $S, R$ be strings with domains contained in axis-parallel rectangles of sizes $w_S \times h_S$ and $w_R \times h_R$, respectively, and let $c \in \Sigma$. The values $\Match_c(S, R + q)$ for all $q \in \Z^2$ (all but $N = (w_S + w_R)(h_S + h_R)$ of which are zero) can be computed in $\O(N \log N)$ time.
+Let $S, R$ be strings with domains contained in axis-parallel rectangles of sizes $w_S \times h_S$ and $w_R \times h_R$, respectively, and let $c \in \Sigma$.
+The values $\Match_c(S, R + q)$ for all $q \in \Z^2$ (all but $N = (w_S + w_R)(h_S + h_R)$ of which are zero) can be computed in $\O(N \log N)$ time.
 \end{fact}
+Indeed, $\Match_c(S, R + q) = \sum_u [S(u) = c]\,[R(u-q) = c]$ is a two-dimensional cross-correlation of two $0/1$ arrays, which the two-dimensional FFT computes.
+
+The second tool approximates all Hamming distances.
+Karloff's algorithm maps the alphabet randomly to $\{0,1\}$ in $\O(\log^2 n)$ different ways, solves each binary instance with \autoref{fact:fft}, and combines the results; nothing in it is specific to one dimension.
 
 \begin{fact}[Karloff's algorithm]\label{fact:karloff}
 In $\tO(n^2)$ time, one can compute values $h(q)$ with $\Ham(P+q,T) \le h(q) \le 2\Ham(P+q,T)$ for all $q \in [n-m+1]^2$.
 \end{fact}
-(Karloff's algorithm reduces the problem to $\O(\log^2 n)$ instances over the binary alphabet, each of which is solved with Fact~\ref{fact:fft}; nothing in it is specific to one dimension.)
+
+The third tool counts, for many query points, the axis-parallel boxes that contain them; it follows from range trees, or from a divide-and-conquer over the coordinates.
 
 \begin{fact}[Offline range counting]\label{fact:range}
 Given $N$ weighted axis-parallel boxes in $\R^4$ and $M$ points in $\R^4$, the total weight of the boxes containing each point can be computed in $\O((N + M)\log^4(N+M))$ time.
 \end{fact}
 
+The fourth tool verifies a set of candidate positions.
+In one dimension, the mismatches between two strings can be enumerated with \emph{kangaroo jumps}: a longest common extension (LCE) query, which returns the length of the longest common prefix of two suffixes in constant time after linear-time preprocessing, jumps over a maximal block of matching characters.
+In two dimensions, we jump in two levels: first over equal columns, and then within a column.
+
 \begin{lemma}[Kangaroo jumps]\label{lem:kangaroo}
 Given $Q' \subseteq [n-m+1]^2$, one can compute $\min\{k+1, \Ham(P+q, T)\}$ for all $q \in Q'$ in $\O(n^2 + \abs{Q'} k)$ time.
 \end{lemma}
 \begin{proof}
-For $x \in [m]$, let $p_x$ be column $x$ of $P$, a one-dimensional string of length $m$. For $x \in [n]$ and $y \in [n-m+1]$, let $t_{x,y}$ be the length-$m$ substring of column $x$ of $T$ starting in row $y$. Then $\Ham(P+q, T) = \sum_{x \in [m]} \Ham(p_x, t_{\x{q}+x, \y{q}})$, where $\Ham$ of one-dimensional strings is defined in the natural way. Build the suffix tree of the concatenation of all columns of $P$ and $T$ (separated by unique delimiters), augmented for constant-time longest common extension (LCE) queries. This takes $\O(n^2)$ time and allows assigning integer identifiers $\iota(\cdot)$ to the strings $p_x$ and $t_{x,y}$ such that two of them are equal if and only if their identifiers are equal. For every $y$, build the LCE structure also for the one-dimensional strings $\iota(t_{0,y}) \cdots \iota(t_{n-1,y})$ and $\iota(p_0) \cdots \iota(p_{m-1})$ (total length $\O(n^2)$). Now fix $q \in Q'$. With LCE queries on the identifier strings, we enumerate the columns $x$ with $\iota(p_x) \neq \iota(t_{\x{q}+x,\y{q}})$ in $\O(1)$ time each, and for every such $x$, we enumerate the mismatches between $p_x$ and $t_{\x{q}+x,\y{q}}$ in $\O(1)$ time each. We stop after $k+1$ mismatches. Every enumerated column contains a mismatch, so this takes $\O(k + 1)$ time per $q$.
+For $x \in [m]$, let $p_x$ be column $x$ of $P$, a one-dimensional string of length $m$.
+For $x \in [n]$ and $y \in [n-m+1]$, let $t_{x,y}$ be the length-$m$ substring of column $x$ of $T$ starting in row $y$.
+Then
+\[ \Ham(P+q, T) = \textstyle\sum_{x \in [m]} \Ham(p_x, t_{\x{q}+x, \y{q}}), \]
+where $\Ham$ of one-dimensional strings of equal length is defined in the natural way.
+
+\emph{Preprocessing.}
+We build the suffix array of the concatenation of all columns of $P$ and $T$ (separated by unique delimiters), augmented for LCE queries; this takes $\O(n^2)$ time for integer alphabets.
+Two of the strings $p_x$ and $t_{x,y}$ are equal if and only if the LCE of their starting positions is at least $m$.
+So, scanning the suffix array, we assign to each of them an integer identifier $\iota(\cdot)$, such that equal strings get equal identifiers.
+Then, for every $y$, we form the one-dimensional string $\iota(t_{0,y}) \cdots \iota(t_{n-1,y})$, and we build an LCE structure for these strings together with $\iota(p_0) \cdots \iota(p_{m-1})$ (total length $\O(n^2)$).
+
+\emph{Queries.}
+Fix $q \in Q'$.
+With LCE queries on the identifier strings, we enumerate the columns $x$ with $\iota(p_x) \neq \iota(t_{\x{q}+x,\y{q}})$ in $\O(1)$ time each.
+For every such column $x$, we enumerate the mismatches between $p_x$ and $t_{\x{q}+x,\y{q}}$ with LCE queries on the columns, in $\O(1)$ time each.
+We stop as soon as we have found $k+1$ mismatches.
+Every enumerated column contains a mismatch, so this takes $\O(k + 1)$ time per $q$.
 \end{proof}
 
 \section{Filtering and two periods}
@@ -260,14 +290,30 @@ Finally, we choose the signs of the two vectors so that $\psi$ points to the upp
 Let $\ell \ge 1$ and $U \subseteq [\ell+1]^2$ with $\abs{U} \ge 32\ell$. In $\O(\abs{U}\log\abs{U})$ time, one can find $\phi, \psi \in U - U$ with $\psi \in (0, \infty) \times [0, \infty)$, $\phi \in [0, \infty) \times (-\infty, 0)$, $\det(\phi,\psi) \ge \frac12\abs{\phi}\abs{\psi}$, and $\abs{\phi}\abs{\psi} < 30\ell^2/\abs{U}$.
 \end{lemma}
 \begin{proof}
-Note that $U - U = -(U-U)$. Let $r$ be the minimum distance between two distinct points of $U$, and let $w \in U - U$ with $\abs{w} = r$ (a closest pair can be found in $\O(\abs{U}\log\abs{U})$ time).
-If $r > \ell/\sqrt 2$, then each of the four closed quarters of $[0,\ell]^2$ (of diameter $\ell/\sqrt2$) contains at most one point of $U$, contradicting $\abs{U} > 4$. Hence $r \le \ell$. The open disks of radius $r/2$ centred at the points of $U$ are disjoint and contained in $[-r/2, \ell + r/2]^2$, so $\abs{U} \pi r^2/4 \le 4\ell^2$ and $r^2 < 6\ell^2/\abs{U}$.
+Note that $U - U = -(U-U)$, so we may choose the signs of differences freely.
 
-Let $\theta \in [0^\circ, 180^\circ)$ be the angle of the line through $w$. If $\theta < 90^\circ$, let $e = (1,1)$ and $e' = (-1,1)$; otherwise, let $e = (1,-1)$ and $e' = (1,1)$. Let $a = r/4$ and $b = 28\ell^2/(r\abs{U})$; note that $b \le \ell$ because $r \ge 1$ and $\abs{U} \ge 28\ell$. We put every $u \in U$ into the bucket $(\lfloor (u \cdot e)/a \rfloor, \lfloor (u \cdot e')/b\rfloor)$. As $u \cdot e$ and $u \cdot e'$ range over intervals of length $2\ell$, there are at most $(2\ell/a + 1)(2\ell/b+1) \le (9\ell/r)(3\ell/b) = \frac{27}{28}\abs{U}$ non-empty buckets. Hence, some bucket contains two distinct points, and their difference $w' \in U - U$ satisfies $\abs{w' \cdot e} < a$, $\abs{w'\cdot e'} < b$, and $\abs{w'} \ge r$. Thus $\abs{w'}^2 = ((w' \cdot e)^2 + (w'\cdot e')^2)/2 < (a+b)^2$, and
+\emph{The first period.}
+Let $r$ be the minimum distance between two distinct points of $U$, and let $w \in U - U$ with $\abs{w} = r$ (a closest pair can be found in $\O(\abs{U}\log\abs{U})$ time).
+If $r > \ell/\sqrt 2$, then each of the four closed quarters of $[0,\ell]^2$ (of diameter $\ell/\sqrt2$) contains at most one point of $U$, contradicting $\abs{U} > 4$.
+Hence $r \le \ell$.
+The open disks of radius $r/2$ centred at the points of $U$ are disjoint and contained in $[-r/2, \ell + r/2]^2$, so $\abs{U} \pi r^2/4 \le 4\ell^2$ and $r^2 < 6\ell^2/\abs{U}$.
+
+\emph{The second period.}
+Let $\theta \in [0^\circ, 180^\circ)$ be the angle of the line through $w$.
+If $\theta < 90^\circ$, let $e = (1,1)$ and $e' = (-1,1)$; otherwise, let $e = (1,-1)$ and $e' = (1,1)$.
+Let $a = r/4$ and $b = 28\ell^2/(r\abs{U})$; note that $b \le \ell$ because $r \ge 1$ and $\abs{U} \ge 28\ell$.
+We put every $u \in U$ into the bucket $(\lfloor (u \cdot e)/a \rfloor, \lfloor (u \cdot e')/b\rfloor)$.
+As $u \cdot e$ and $u \cdot e'$ range over intervals of length $2\ell$, there are at most $(2\ell/a + 1)(2\ell/b+1) \le (9\ell/r)(3\ell/b) = \frac{27}{28}\abs{U}$ non-empty buckets.
+Hence, some bucket contains two distinct points, and their difference $w' \in U - U$ satisfies $\abs{w' \cdot e} < a$, $\abs{w'\cdot e'} < b$, and $\abs{w'} \ge r$.
+Thus $\abs{w'}^2 = ((w' \cdot e)^2 + (w'\cdot e')^2)/2 < (a+b)^2$, and
 \[\abs{w}\abs{w'} < r(a + b) = r^2/4 + 28\ell^2/\abs{U} < 30\ell^2/\abs{U}.\]
 Moreover, the angle $\beta$ between $w'$ and the line orthogonal to $e$ satisfies $\sin\beta = \abs{w'\cdot e}/(\sqrt2\abs{w'}) < a/(\sqrt 2 r) < \sin 11^\circ$.
 
-If $\theta < 90^\circ$, the line through $w'$ has angle in $(124^\circ, 146^\circ)$. We let $\psi = \pm w$ with angle in $[0^\circ, 90^\circ)$ and $\phi = \pm w'$ with angle in $(304^\circ, 326^\circ)$. If $\theta \ge 90^\circ$, the line through $w'$ has angle in $(34^\circ, 56^\circ)$, and we let $\psi = \pm w'$ with angle in $(34^\circ,56^\circ)$ and $\phi = \pm w$ with angle in $[270^\circ, 360^\circ)$. In both cases, $\psi$ and $\phi$ lie in the claimed quadrants, and the counterclockwise angle from $\phi$ to $\psi$ is in $(34^\circ, 146^\circ)$, hence $\det(\phi,\psi) = \abs{\phi}\abs{\psi}\sin(\angle(\phi,\psi)) \ge \frac12\abs{\phi}\abs{\psi}$.
+\emph{Choosing the signs.}
+If $\theta < 90^\circ$, the line through $w'$ has angle in $(124^\circ, 146^\circ)$.
+We let $\psi = \pm w$ with angle in $[0^\circ, 90^\circ)$ and $\phi = \pm w'$ with angle in $(304^\circ, 326^\circ)$.
+If $\theta \ge 90^\circ$, the line through $w'$ has angle in $(34^\circ, 56^\circ)$, and we let $\psi = \pm w'$ with angle in $(34^\circ,56^\circ)$ and $\phi = \pm w$ with angle in $[270^\circ, 360^\circ)$.
+In both cases, $\psi$ and $\phi$ lie in the claimed quadrants, and the counterclockwise angle from $\phi$ to $\psi$ is in $(34^\circ, 146^\circ)$, hence $\det(\phi,\psi) = \abs{\phi}\abs{\psi}\sin(\angle(\phi,\psi)) \ge \frac12\abs{\phi}\abs{\psi}$.
 \end{proof}
 
 We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$) and fix $\phi, \psi$ for the rest of the paper. Let $\Delta = \det(\phi,\psi) \in \Z$. We have
