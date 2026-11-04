@@ -128,6 +128,7 @@ This bound is the natural two-dimensional analogue of the one-dimensional bound 
 In \autoref{sec:lower}, we show that it is optimal for combinatorial algorithms, assuming the combinatorial BMM hypothesis.
 
 \paragraph{The idea in a nutshell.}
+We follow the approach that works in one dimension: filter the candidates, find an approximate period, and count mismatches on a compressed representation.
 It suffices to consider $n \le \frac32 m$.
 A standard filter finds a set $Q$ of candidate positions, each with at most $2k$ mismatches.
 If $Q$ is small, we check the candidates one by one.
@@ -318,7 +319,7 @@ For every $q \notin Q$, the answer is $k+1$.
 If $\abs{Q} \le 32m + m^2/k$, we finish with Lemma~\ref{lem:kangaroo} in $\O(m^2 + mk)$ time.
 From now on, we assume $\abs{Q} > 32m + m^2/k$.
 
-\begin{lemma}\label{lem:period}
+\begin{lemma}[Differences are periods]\label{lem:period}
 For all $u, v \in Q$, we have $\Ham(P + (u - v), P) \le 4k$.
 \end{lemma}
 \begin{proof}
@@ -469,7 +470,7 @@ The intersection of a tile with a congruence class is a block.
 
 For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$ and edges $\{u, u+\phi\}$ and $\{u, u+\psi\}$ for all $u$ such that both endpoints are in $X$.
 
-\begin{lemma}\label{lem:connected}
+\begin{lemma}[Connectivity]\label{lem:connected}
 The lattice graph of every truncated block is connected.
 \end{lemma}
 \begin{figure}[t]
@@ -809,7 +810,7 @@ The \emph{quarters} are $K_1 = [z,\infty)^2$, $K_2 = (-\infty, z) \times [z, \in
 Let $C = [\ell, m-1]^2$ be the central square, which is covered by every occurrence $[m]^2 + q$ with $q \in [\ell+1]^2$.
 We say that $w$ lies \emph{between $C$ and $v$} if, in each coordinate, $w$ lies in the smallest interval that contains both $[\ell, m-1]$ and the coordinate of $v$.
 
-\begin{lemma}\label{lem:monotone}
+\begin{lemma}[Staircases]\label{lem:monotone}
 \begin{enumerate}[(a)]
 \item If $v \in A$ and $w$ lies between $C$ and $v$, then $w \in A$.
 \item If $d \le m/8$, $u \in A \cap K_i$, and $\depth(u) \le d$, then $u + d\sigma_i \notin A$.
@@ -885,7 +886,7 @@ The selected cells are pairwise disjoint: by (C1), if two cells intersect, then 
 For $j \in \{0, \dots, J\}$, let $A_j$ be the union of the selected level-$j$ cells, and let $A_\res = A \setminus \bigcup_j A_j$ be the \emph{residual} points.
 We call $\res, 0, \dots, J$ the \emph{levels}, and we define the \emph{depth bounds} $d_\res = 4D_0$, $d_j = 8D_j$ for $j < J$, and $d_J = n$.
 
-\begin{lemma}\label{lem:levels}
+\begin{lemma}[Levels]\label{lem:levels}
 For every level $\iota$, every $u \in A_\iota$ satisfies $\depth(u) \le d_\iota$.
 Moreover, $\abs{A_\res} = \O(m)$, and there are $\O(m/D_j)$ selected level-$j$ cells for every $j \in \{0, \dots, J\}$.
 \end{lemma}
@@ -1248,6 +1249,11 @@ An $\O((kn^2/m)^{1-\varepsilon})$-time combinatorial algorithm for the problem w
 \paragraph{Combinatorial and algebraic algorithms.}
 The lower bound of \autoref{sec:lower} only concerns combinatorial algorithms, while our algorithm uses FFT.
 It is open whether there is a combinatorial algorithm with running time $\tO(n^2 + kn^2/m)$, and whether fast matrix multiplication can be used to beat this bound by a polynomial factor; the analogous question is also studied for one-dimensional pattern matching with mismatches.
+
+\paragraph{Comparison with one dimension.}
+In one dimension, the same filter yields an approximate period $p$ of the pattern, and the part of the text covered by candidate occurrences is the union of two overlapping occurrences, the leftmost and the rightmost one.
+Hence, it is approximately periodic as a whole, and it splits into $\O(k)$ pieces.
+In two dimensions, the candidate occurrences can form a staircase with many steps, and the text near the steps can be arbitrary; the multiscale decomposition is our way of dealing with this.
 
 \paragraph{Rectangles and higher dimensions.}
 We assumed square arrays to keep the number of parameters small.
