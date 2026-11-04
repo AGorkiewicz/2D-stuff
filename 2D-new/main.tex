@@ -378,7 +378,7 @@ Note that $U - U = -(U-U)$, so we may choose the signs of differences freely.
 Let $r$ be the minimum distance between two distinct points of $U$, and let $w \in U - U$ with $\abs{w} = r$ (a closest pair can be found in $\O(\abs{U}\log\abs{U})$ time).
 If $r > \ell/\sqrt 2$, then each of the four closed quarters of $[0,\ell]^2$ (of diameter $\ell/\sqrt2$) contains at most one point of $U$, contradicting $\abs{U} > 4$.
 Hence $r \le \ell$.
-The open disks of radius $r/2$ centred at the points of $U$ are disjoint and contained in $[-r/2, \ell + r/2]^2$, so $\abs{U} \pi r^2/4 \le 4\ell^2$ and $r^2 < 6\ell^2/\abs{U}$.
+The open disks of radius $r/2$ centered at the points of $U$ are disjoint and contained in $[-r/2, \ell + r/2]^2$, so $\abs{U} \pi r^2/4 \le 4\ell^2$ and $r^2 < 6\ell^2/\abs{U}$.
 
 \emph{The second period.}
 Let $\theta \in [0^\circ, 180^\circ)$ be the angle of the line through $w$.
@@ -502,7 +502,7 @@ Since $\phi$ points to the lower right and $\psi$ to the upper right, there are 
 \begin{proof}
 Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \Z^2$ is trivial) and $B = \gamma + I\phi + J\psi$.
 We use the lattice coordinates $\lambda$ with respect to $\gamma$.
-It suffices to show that for distinct $u, v \in X$, one of them has a neighbour $w \in X$ with $\abs{\lambda(w) - \lambda(z)}_1 < \abs{\lambda(u) - \lambda(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\lambda(u) - \lambda(v)}_1$ shows that $u$ and $v$ are connected.
+It suffices to show that for distinct $u, v \in X$, one of them has a neighbor $w \in X$ with $\abs{\lambda(w) - \lambda(z)}_1 < \abs{\lambda(u) - \lambda(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\lambda(u) - \lambda(v)}_1$ shows that $u$ and $v$ are connected.
 All candidates $w$ below satisfy that $\lambda(w)$ lies in the bounding box of $\lambda(u)$ and $\lambda(v)$, so $w \in B$, and only $w \in R$ needs to be checked.
 By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
 
@@ -599,6 +599,7 @@ Let $A = \bigcup_{q \in Q}([m]^2 + q) \subseteq [n]^2$. For $q \in Q$, we have $
 \begin{equation}\label{eq:ham_match}
 \Ham(P+q, T) = m^2 - \textstyle\sum_{c \in \Sigma} \Match_c(P + q, T|_A).
 \end{equation}
+For example, at the position $q = (1,1)$ of the running example, the pattern has $7 + 7 + 1 = 15$ matches with the characters \str{a}, \str{b}, and \str{c}, and indeed $\Ham(P + q, T) = 16 - 15 = 1$.
 For $u \in \Z^2$, let $\depth(u) = \min\{\inorm{u - v} : v \in \Z^2 \setminus A\}$; in particular, $\depth(u) = 0$ for $u \notin A$, and $\abs{\depth(u) - \depth(v)} \le \inorm{u - v}$.
 The depths of all $u \in [n]^2$ can be computed in $\O(n^2)$ time by a breadth-first search from $[-1,n]^2 \setminus A$ in the king's graph.
 
