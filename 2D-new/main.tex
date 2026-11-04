@@ -865,9 +865,11 @@ We provide two ways of computing the values $M_{\iota,c}(q)$.
 
 \paragraph{Pairing.}
 The first way enumerates all pairs of a text block $S \in \cS_{\iota,c}$ and a pattern piece $V \in \cV_c$, and adds up $\abs{\dom(S) \cap \dom(V + q)}$ for all $q$ simultaneously.
-For a single pair, this intersection count is a function of $q$ that is described by a constant number of parameters, but it is not obvious how to add up many such functions quickly.
+For a single pair, this intersection count is a function of $q$ that is determined by the constant-size descriptions of $S$ and $V$, but it is not obvious how to add up many such functions quickly.
 The trick is to write the block $S$, which is a rectangle in lattice coordinates, as a signed sum of four \emph{cones}, that is, quadrants in lattice coordinates (\autoref{fig:cones}).
 A cone has a single corner, so intersecting it with $V + q$ depends only on the difference of $V$ and the corner, and all pairs can be combined into a single function on the plane, of which we take prefix sums along the lattice.
+This is the reason why the text is cut into blocks, and not into truncated blocks: a block has only four corners, while the indicator function of a truncated block is not a signed sum of a few cones.
+On the pattern side, the truncation does no harm, since the pattern pieces enter only through the function on the plane, which we can evaluate with range counting.
 
 \begin{figure}[t]
   \centering
@@ -889,7 +891,7 @@ A cone has a single corner, so intersecting it with $V + q$ depends only on the 
 \end{figure}
 
 \begin{lemma}[Pairing]\label{lem:pairing}
-Given a set $\Pi$ of pairs $(\iota, c)$, the values $\sum_{(\iota,c) \in \Pi} M_{\iota,c}(q)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time, where $N = \sum_{(\iota,c) \in \Pi} \abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$.
+Given a set $\Pi$ of pairs $(\iota, c)$ of a level and a character, the values $\sum_{(\iota,c) \in \Pi} M_{\iota,c}(q)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time, where $N = \sum_{(\iota,c) \in \Pi} \abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$.
 \end{lemma}
 \begin{proof}
 \emph{From blocks to cones.}
