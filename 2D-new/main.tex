@@ -209,7 +209,7 @@ Karloff's algorithm maps the alphabet to $\{0,1\}$ in $\O(\log^2 n)$ different w
 In $\tO(n^2)$ time, one can compute values $h(q)$ with $\Ham(P+q,T) \le h(q) \le 2\Ham(P+q,T)$ for all $q \in [n-m+1]^2$.
 \end{fact}
 
-The third tool counts, for many query points, the axis-parallel boxes that contain them; it follows from range trees, or from a divide-and-conquer over the coordinates.
+The third tool counts, for many query points, the axis-parallel boxes that contain them. By inclusion--exclusion over the $2^4$ corners of a box, it reduces to dominance counting (how many weighted corners are coordinatewise smaller than a point), which range trees solve with a logarithmic factor per dimension.
 
 \begin{fact}[Offline range counting]\label{fact:range}
 Given $N$ weighted axis-parallel boxes in $\R^4$ and $M$ points in $\R^4$, the total weight of the boxes containing each point can be computed in $\O((N + M)\log^4(N+M))$ time.
@@ -267,6 +267,7 @@ Every enumerated column contains a mismatch, so this takes $\O(k + 1)$ time per 
 \section{Filtering and two periods}
 
 \paragraph{Assumptions.} We may assume $n \le 3m/2$: otherwise, we cover $[n-m+1]^2$ with $\O(n^2/m^2)$ translates of $[n'-m+1]^2$, where $n' = \lfloor 3m/2 \rfloor$, and solve the instance with text $T|_{[n']^2 + \delta}$ for every such translate $[n'-m+1]^2 + \delta$. We also assume that $m$ is larger than a suitable constant (otherwise, the naive algorithm takes $\O(n^2)$ time). It thus suffices to give an $\tO(m^2 + mk)$-time algorithm. Let $\ell = n - m \le m/2$, so that the set of positions is $[\ell+1]^2$.
+The assumption $n \le \frac32 m$ has two benefits: all differences of positions, and hence the periods we will find, are short compared to $m$, and all occurrences overlap in a large central square (\autoref{sec:active}).
 
 \paragraph{Filtering.} We compute the values $h(q)$ of Fact~\ref{fact:karloff} and let $Q = \{q : h(q) \le 2k\}$. Then every $q$ with $\Ham(P+q,T) \le k$ is in $Q$, and $\Ham(P+q,T) \le 2k$ for every $q \in Q$. For every $q \notin Q$, the answer is $k+1$. If $\abs{Q} \le 32m + m^2/k$, we finish with Lemma~\ref{lem:kangaroo} in $\O(m^2 + mk)$ time. From now on, we assume $\abs{Q} > 32m + m^2/k$.
 
@@ -484,6 +485,7 @@ We obtain $3 \le \Delta + h = 2 + 1$ pieces.
 \end{figure}
 
 \section{The active text}
+\label{sec:active}
 
 Let $A = \bigcup_{q \in Q}([m]^2 + q) \subseteq [n]^2$. For $q \in Q$, we have $\dom(P+q) \subseteq A$, and hence
 \begin{equation}\label{eq:ham_match}
@@ -975,6 +977,7 @@ There are $\O(\log m)$ levels, so the total time is $\tO(m^2 + mk)$ for $n \le 3
 
 \section{Conditional lower bound}\label{sec:lower}
 
+Informally, an algorithm is \emph{combinatorial} if it does not rely on algebraic techniques such as fast matrix multiplication; there is no generally accepted formal definition.
 The \emph{combinatorial BMM hypothesis} states that for every $\varepsilon > 0$, there is no combinatorial algorithm that multiplies two $N \times N$ Boolean matrices in $\O(N^{3-\varepsilon})$ time.
 We show that, under this hypothesis, the bound of Theorem~\ref{thm:main} is optimal for combinatorial algorithms, up to subpolynomial factors.
 
