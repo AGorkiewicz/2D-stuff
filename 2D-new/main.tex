@@ -998,7 +998,7 @@ Together with the trivial lower bound $\Omega(n^2)$, this shows that the bound $
 We reduce the multiplication of an $N \times b$ matrix $X$ with a $b \times N$ matrix $Y$ to a single instance with $m = \Theta(N)$ and $k = \Theta(Nb)$.
 The text contains a dense $N \times b$ rectangle $G$ that encodes $X$, with the character $t+1$ in row $t$ and column $i$ if $X[i][t] = 1$.
 The pattern contains a sparse diagonal band that encodes $Y$: the entry $Y[t][j]$ is placed at $(j, j+t)$ (\autoref{fig:lower}).
-There are $N^2$ positions that place column $j$ of the band exactly onto row $i$ of $G$, and at such a position, the number of matching characters is $(XY)[i][j]$.
+There are $N^2$ positions that place column $j$ of the band exactly onto column $i$ of $G$, and at such a position, the number of matching characters is $(XY)[i][j]$.
 The shear of the band ensures that all other overlaps of the band with $G$ mismatch.
 Since $G$ is dense, the number of these overlaps is a simple rectangle count, so we can recover $(XY)[i][j]$ from the Hamming distance without any FFT.
 
@@ -1029,7 +1029,7 @@ Since $G$ is dense, the number of these overlaps is a simple rectangle count, so
   \end{tikzpicture}
   \caption{The reduction for $N = 3$ and $b = 2$, with $X = \bigl(\begin{smallmatrix}1&1\\0&1\\1&0\end{smallmatrix}\bigr)$ and $Y = \bigl(\begin{smallmatrix}1&0&1\\1&1&0\end{smallmatrix}\bigr)$; empty cells contain the filler $0$.
     The text block encodes $X$ in the rectangle $G$, and the pattern encodes $Y$ in a diagonal band (blue).
-    At the position $q_{10} = (4,3)$ (violet window), column $j = 0$ of the band lies on row $i = 1$ of $G$.
+    At the position $q_{10} = (4,3)$ (violet window), column $j = 0$ of the band lies on column $i = 1$ of $G$.
     There, the pattern's \texttt{2} lies on a \texttt{2} (one match) and its \texttt{1} lies on $\bot$, so $(XY)[1][0] = 1$.}
   \label{fig:lower}
 \end{figure}
@@ -1058,7 +1058,7 @@ where $\mu_{ij}$ is the number of $u \in (S_P + q_{ij}) \cap G'$ with $P(u - q_{
 
 \paragraph{Combinatorial and algebraic algorithms.}
 The lower bound of \autoref{sec:lower} only concerns combinatorial algorithms, while our algorithm uses FFT.
-It is open whether there is a combinatorial algorithm with running time $\tO(n^2 + kn^2/m)$, and whether fast matrix multiplication can be used to beat this bound by a polynomial factor, as it can for related one-dimensional problems.
+It is open whether there is a combinatorial algorithm with running time $\tO(n^2 + kn^2/m)$, and whether fast matrix multiplication can be used to beat this bound by a polynomial factor; the analogous question is also studied for one-dimensional pattern matching with mismatches.
 
 \paragraph{Rectangles and higher dimensions.}
 We assumed square arrays to keep the number of parameters small.
@@ -1074,7 +1074,7 @@ Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend o
 \begin{enumerate}
   \item Show that the selected cells of all levels together number $\O(m)$, and conclude that the text blocks number $\O(mk)$.
   \item Show that Lemma~\ref{lem:shallow} is tight: for every $d \le m/8$, every active text has $\Omega(md)$ points of depth at most $d$.
-    \emph{Hint:} consider the points close to the boundary of $[n]^2$.
+    \emph{Hint:} every row of $A$ is an interval, and at least $m/2$ rows of $A$ have length at least $m$.
   \item Lemma~\ref{lem:connected} needs the rectangle to be wide in both coordinates.
     Find an example where the rectangle is wide in the $x$-coordinate but not in the $y$-coordinate, and the lattice graph of the truncated block is disconnected.
   \item Show that in Lemma~\ref{lem:two_periods}, the bound $\abs{\phi}\abs{\psi} = \O(\ell^2/\abs{U})$ is best possible up to the constant factor, by considering a set $U$ that is a lattice coset.
