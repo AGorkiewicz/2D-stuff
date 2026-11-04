@@ -1197,7 +1197,7 @@ Together with the trivial lower bound $\Omega(n^2)$, this shows that the bound $
 
 \paragraph{The idea.}
 We reduce the multiplication of an $N \times b$ matrix $X$ with a $b \times N$ matrix $Y$ to a single instance with $m = \Theta(N)$ and $k = \Theta(Nb)$.
-The text contains a dense $N \times b$ rectangle $G$ that encodes $X$, with the character $t+1$ in row $t$ and column $i$ if $X[i][t] = 1$.
+The text contains a dense $N \times b$ rectangle $G$ that encodes $X$, with the character $t+1$ in row $t$ and column $i$ if $X[i][t] = 1$, and the character $\bot$ otherwise.
 The pattern contains a sparse diagonal band that encodes $Y$: the entry $Y[t][j]$ is placed at $(j, j+t)$ (\autoref{fig:lower}).
 There are $N^2$ positions that place column $j$ of the band exactly onto column $i$ of $G$, and at such a position, the number of matching characters is $(XY)[i][j]$.
 The shear of the band ensures that all other overlaps of the band with $G$ mismatch.
@@ -1310,7 +1310,7 @@ Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend o
   \item In the reduction of \autoref{sec:lower}, the text contains $\bot$ instead of the filler $0$ at the cells of $G$ with $X[i][t] = 0$.
     What goes wrong if we use $0$ there instead?
     \emph{Hint:} the number of pattern characters that lie on non-filler text characters would no longer be the number of points in a rectangle.
-  \item Show that the analysis of the counting step is tight: for a level with $\abs{\cS_\iota} = Y$ text blocks, $\abs{\cV} = X$ pattern pieces, and FFT cost $B$ per character, find a distribution of the blocks and pieces among the characters such that $\sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c}, B\} = \Omega(\sqrt{XYB})$, provided that $B \le XY$.
+  \item Show that the analysis of the counting step is tight: for a level with $\abs{\cS_\iota} = s$ text blocks, $\abs{\cV} = v$ pattern pieces, and FFT cost $B$ per character, find a distribution of the blocks and pieces among the characters such that $\sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c}, B\} = \Omega(\sqrt{svB})$, provided that $B \le sv$.
   \item Trace the decomposition of Lemma~\ref{lem:decomposition} on the text of \autoref{fig:problem}, using the periods $\phi = (1,-1)$ and $\psi = (1,1)$ and the whole text $[6]^2$ as the wide rectangle.
     How many pieces do you get, and which mismatches cause the cuts?
 \end{enumerate}
