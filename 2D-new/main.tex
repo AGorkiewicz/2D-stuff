@@ -333,6 +333,8 @@ For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$
 \begin{lemma}\label{lem:connected}
 The lattice graph of every truncated block is connected.
 \end{lemma}
+Wideness cannot be dropped.
+For $\phi = (2,-1)$, $\psi = (1,2)$, and the narrow rectangle $R = [0,1] \times [0,9]$, the coset $L$ meets $R$ in the points $(0,0)$, $(1,2)$, $(0,5)$, and $(1,7)$; the only edges are $\{(0,0),(1,2)\}$ and $\{(0,5),(1,7)\}$ (both along $\psi$), so the lattice graph has two components.
 \begin{proof}
 Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \Z^2$ is trivial) and $B = \gamma + I\phi + J\psi$. For $u = \gamma + i\phi + j\psi$, write $c(u) = (i,j)$. It suffices to show that for distinct $u, v \in X$, one of them has a neighbour $w \in X$ with $\abs{c(w) - c(z)}_1 < \abs{c(u) - c(v)}_1$, where $z$ is the other of the two points. All candidates $w$ below satisfy that $c(w)$ lies in the bounding box of $c(u)$ and $c(v)$, so $w \in B$, and only $w \in R$ needs to be checked. By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
 
@@ -340,6 +342,13 @@ Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \
 
 \emph{Case $\beta < 0$.} If $\alpha = 0$, then $w = u - \psi$ lies between $u$ and $v$ in both coordinates. Otherwise, both $u + \phi$ and $u - \psi$ have their $y$-coordinate in $[\y v, \y u]$, as $\y\phi < 0$ and $\y\psi \ge 0$. Moreover, $\x{(u+\phi)} \ge x_0$ and $\x{(u-\psi)} \le x_1$. If neither of them is in $R$, then $\x u + \x\phi > x_1$ and $\x u - \x\psi < x_0$, so $x_1 - x_0 + 2 \le \x\phi + \x\psi$, contradicting wideness.
 \end{proof}
+
+\paragraph{Cutting into monochromatic pieces.}
+Call an edge $\{u, u+\delta\}$ of a lattice graph, $\delta \in \{\phi,\psi\}$, a \emph{mismatch} of a string $S$ if $S(u) \ne S(u+\delta)$.
+By Lemma~\ref{lem:connected}, a string whose domain is a truncated block is monochromatic as soon as it has no mismatching edge.
+So, to split a string into monochromatic pieces, it suffices to cut every mismatching edge.
+To keep the pieces in the shape of truncated blocks, we cut along entire lines of the lattice: first lines parallel to $\psi$, which separate the $\phi$-edges, and then, within each strip, lines parallel to $\phi$.
+Each cut increases the number of pieces by one, so we end up with one piece per coset plus one per mismatch.
 
 \begin{lemma}[Decomposition]\label{lem:decomposition}
 Let $R$ be a wide rectangle, let $Y$ be a tile, and let $S$ be a string with $\dom(S) = R \cap Y$. Let $h = \Ham(S + \phi, S) + \Ham(S+\psi, S)$. In $\O(\abs{\dom(S)}\log \abs{\dom(S)})$ time, $S$ can be partitioned into at most $\Delta + h$ monochromatic strings whose domains are truncated blocks of the form $R \cap B$. If $R = \Z^2$, these domains are blocks.
@@ -350,6 +359,48 @@ We group $\dom(S)$ by congruence class. For every class $\gamma + L$ meeting $\d
 
 Since $\abs{\x\phi} + \abs{\x\psi} \le 2\ell \le m$ (and similarly for the $y$-coordinates), the square $[m]^2$ is wide. We apply Lemma~\ref{lem:decomposition} to $P$ with $R = [m]^2$ and $Y = \Z^2$, with $h \le 8k$. This yields a partition of $P$ into a set $\cV$ of $\abs{\cV} \le \Delta + 8k < 16k$ monochromatic strings, whose domains are truncated blocks $[m]^2 \cap B$. For $c \in \Sigma$, let $\cV_c = \{V \in \cV : c(V) = c\}$.
 
+\paragraph{Example.}
+\autoref{fig:decomposition} shows the decomposition of the pattern of the running example, with $\phi = (1,-1)$ and $\psi = (1,1)$.
+The coset of $(0,1)$ consists only of \str{b}'s and forms a single piece.
+In the coset of $(0,0)$, the only mismatch is the $\psi$-edge from $(2,2)$ to $(3,3)$.
+There is no $\phi$-mismatch, so the first phase does not cut, and the second phase cuts between lattice coordinates $j = 2$ and $j = 3$ (relative to $\gamma = (0,0)$), separating the cell $(3,3)$ from the other \str{a}'s.
+We obtain $3 \le \Delta + h = 2 + 1$ pieces.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}
+\node[cell, minimum size=0.62cm, fill=blue!12] at (0.0,0.0) {a};
+\node[cell, minimum size=0.62cm, fill=green!22] at (0.0,0.62) {b};
+\node[cell, minimum size=0.62cm, fill=blue!12] at (0.0,1.24) {a};
+\node[cell, minimum size=0.62cm, fill=green!22] at (0.0,1.8599999999999999) {b};
+\node[cell, minimum size=0.62cm, fill=green!22] at (0.62,0.0) {b};
+\node[cell, minimum size=0.62cm, fill=blue!12] at (0.62,0.62) {a};
+\node[cell, minimum size=0.62cm, fill=green!22] at (0.62,1.24) {b};
+\node[cell, minimum size=0.62cm, fill=blue!12] at (0.62,1.8599999999999999) {a};
+\node[cell, minimum size=0.62cm, fill=blue!12] at (1.24,0.0) {a};
+\node[cell, minimum size=0.62cm, fill=green!22] at (1.24,0.62) {b};
+\node[cell, minimum size=0.62cm, fill=blue!12] at (1.24,1.24) {a};
+\node[cell, minimum size=0.62cm, fill=green!22] at (1.24,1.8599999999999999) {b};
+\node[cell, minimum size=0.62cm, fill=green!22] at (1.8599999999999999,0.0) {b};
+\node[cell, minimum size=0.62cm, fill=blue!12] at (1.8599999999999999,0.62) {a};
+\node[cell, minimum size=0.62cm, fill=green!22] at (1.8599999999999999,1.24) {b};
+\node[cell, minimum size=0.62cm, fill=red!25] at (1.8599999999999999,1.8599999999999999) {c};
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (0.62,1.8599999999999999) -- (1.24,1.24);
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (0.0,1.24) -- (0.62,0.62);
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (0.0,1.24) -- (0.62,1.8599999999999999);
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (1.24,1.24) -- (1.8599999999999999,0.62);
+\draw[red!75!black, very thick, densely dashed, shorten <=4pt, shorten >=4pt] (1.24,1.24) -- (1.8599999999999999,1.8599999999999999);
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (0.62,0.62) -- (1.24,0.0);
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (0.62,0.62) -- (1.24,1.24);
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (0.0,0.0) -- (0.62,0.62);
+\draw[blue!60!black, thick, shorten <=4pt, shorten >=4pt] (1.24,0.0) -- (1.8599999999999999,0.62);
+  \end{tikzpicture}
+  \caption{The decomposition of the pattern of the running example into three monochromatic truncated blocks (colors), for $\phi = (1,-1)$ and $\psi = (1,1)$.
+    The lines connect the cells of the coset of $(0,0)$ in its lattice graph.
+    Its only mismatch (dashed) separates the \str{c} at $(3,3)$ from the \str{a}'s.}
+  \label{fig:decomposition}
+\end{figure}
+
 \section{The active text}
 
 Let $A = \bigcup_{q \in Q}([m]^2 + q) \subseteq [n]^2$. For $q \in Q$, we have $\dom(P+q) \subseteq A$, and hence
@@ -357,6 +408,166 @@ Let $A = \bigcup_{q \in Q}([m]^2 + q) \subseteq [n]^2$. For $q \in Q$, we have $
 \Ham(P+q, T) = m^2 - \textstyle\sum_{c \in \Sigma} \Match_c(P + q, T|_A).
 \end{equation}
 For $u \in \Z^2$, let $\depth(u) = \min\{\inorm{u - v} : v \in \Z^2 \setminus A\}$; in particular, $\depth(u) = 0$ for $u \notin A$, and $\abs{\depth(u) - \depth(v)} \le \inorm{u - v}$. The depths of all $u \in [n]^2$ can be computed in $\O(n^2)$ time by a breadth-first search from $[-1,n]^2 \setminus A$ in the king's graph.
+
+\autoref{fig:active} shows an example.
+Since all candidate positions lie in the small square $[\ell+1]^2$, every occurrence $[m]^2 + q$ covers the central square $[\ell, m-1]^2$, and $A$ looks like a square whose four corners are cut off by staircases.
+Our main tool is that a small set deep inside $A$ is covered by a single candidate occurrence (Lemma~\ref{lem:coverable}); then the text restricted to it inherits the approximate periods of the pattern.
+To analyze the staircases, we split the plane into four quarters around the center of $[n]^2$ and argue about one quarter at a time.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}
+\fill[orange!55] (0.0,0.0) rectangle (0.3,0.3);
+\fill[orange!55] (0.0,0.3) rectangle (0.3,0.6);
+\fill[orange!55] (0.0,0.6) rectangle (0.3,0.8999999999999999);
+\fill[orange!55] (0.0,0.8999999999999999) rectangle (0.3,1.2);
+\fill[orange!55] (0.0,1.2) rectangle (0.3,1.5);
+\fill[orange!55] (0.0,1.5) rectangle (0.3,1.7999999999999998);
+\fill[orange!55] (0.0,1.7999999999999998) rectangle (0.3,2.1);
+\fill[orange!55] (0.0,2.1) rectangle (0.3,2.4);
+\fill[orange!55] (0.0,2.4) rectangle (0.3,2.6999999999999997);
+\fill[orange!55] (0.0,2.6999999999999997) rectangle (0.3,3.0);
+\fill[orange!55] (0.0,3.0) rectangle (0.3,3.3);
+\fill[orange!55] (0.0,3.3) rectangle (0.3,3.5999999999999996);
+\fill[orange!55] (0.3,0.0) rectangle (0.6,0.3);
+\fill[orange!30] (0.3,0.3) rectangle (0.6,0.6);
+\fill[orange!30] (0.3,0.6) rectangle (0.6,0.8999999999999999);
+\fill[orange!30] (0.3,0.8999999999999999) rectangle (0.6,1.2);
+\fill[orange!30] (0.3,1.2) rectangle (0.6,1.5);
+\fill[orange!30] (0.3,1.5) rectangle (0.6,1.7999999999999998);
+\fill[orange!30] (0.3,1.7999999999999998) rectangle (0.6,2.1);
+\fill[orange!30] (0.3,2.1) rectangle (0.6,2.4);
+\fill[orange!30] (0.3,2.4) rectangle (0.6,2.6999999999999997);
+\fill[orange!30] (0.3,2.6999999999999997) rectangle (0.6,3.0);
+\fill[orange!30] (0.3,3.0) rectangle (0.6,3.3);
+\fill[orange!55] (0.3,3.3) rectangle (0.6,3.5999999999999996);
+\fill[orange!55] (0.6,0.0) rectangle (0.8999999999999999,0.3);
+\fill[orange!30] (0.6,0.3) rectangle (0.8999999999999999,0.6);
+\fill[orange!10] (0.6,0.6) rectangle (0.8999999999999999,0.8999999999999999);
+\fill[orange!10] (0.6,0.8999999999999999) rectangle (0.8999999999999999,1.2);
+\fill[orange!10] (0.6,1.2) rectangle (0.8999999999999999,1.5);
+\fill[orange!10] (0.6,1.5) rectangle (0.8999999999999999,1.7999999999999998);
+\fill[orange!10] (0.6,1.7999999999999998) rectangle (0.8999999999999999,2.1);
+\fill[orange!10] (0.6,2.1) rectangle (0.8999999999999999,2.4);
+\fill[orange!10] (0.6,2.4) rectangle (0.8999999999999999,2.6999999999999997);
+\fill[orange!10] (0.6,2.6999999999999997) rectangle (0.8999999999999999,3.0);
+\fill[orange!30] (0.6,3.0) rectangle (0.8999999999999999,3.3);
+\fill[orange!55] (0.6,3.3) rectangle (0.8999999999999999,3.5999999999999996);
+\fill[orange!55] (0.8999999999999999,0.0) rectangle (1.2,0.3);
+\fill[orange!30] (0.8999999999999999,0.3) rectangle (1.2,0.6);
+\fill[orange!10] (0.8999999999999999,0.6) rectangle (1.2,0.8999999999999999);
+\fill[orange!10] (0.8999999999999999,0.8999999999999999) rectangle (1.2,1.2);
+\fill[orange!10] (0.8999999999999999,1.2) rectangle (1.2,1.5);
+\fill[orange!10] (0.8999999999999999,1.5) rectangle (1.2,1.7999999999999998);
+\fill[orange!10] (0.8999999999999999,1.7999999999999998) rectangle (1.2,2.1);
+\fill[orange!10] (0.8999999999999999,2.1) rectangle (1.2,2.4);
+\fill[orange!10] (0.8999999999999999,2.4) rectangle (1.2,2.6999999999999997);
+\fill[orange!10] (0.8999999999999999,2.6999999999999997) rectangle (1.2,3.0);
+\fill[orange!30] (0.8999999999999999,3.0) rectangle (1.2,3.3);
+\fill[orange!55] (0.8999999999999999,3.3) rectangle (1.2,3.5999999999999996);
+\fill[orange!55] (1.2,0.0) rectangle (1.5,0.3);
+\fill[orange!30] (1.2,0.3) rectangle (1.5,0.6);
+\fill[orange!10] (1.2,0.6) rectangle (1.5,0.8999999999999999);
+\fill[orange!10] (1.2,0.8999999999999999) rectangle (1.5,1.2);
+\fill[orange!10] (1.2,1.2) rectangle (1.5,1.5);
+\fill[orange!10] (1.2,1.5) rectangle (1.5,1.7999999999999998);
+\fill[orange!10] (1.2,1.7999999999999998) rectangle (1.5,2.1);
+\fill[orange!10] (1.2,2.1) rectangle (1.5,2.4);
+\fill[orange!10] (1.2,2.4) rectangle (1.5,2.6999999999999997);
+\fill[orange!10] (1.2,2.6999999999999997) rectangle (1.5,3.0);
+\fill[orange!30] (1.2,3.0) rectangle (1.5,3.3);
+\fill[orange!55] (1.2,3.3) rectangle (1.5,3.5999999999999996);
+\fill[orange!55] (1.5,0.0) rectangle (1.7999999999999998,0.3);
+\fill[orange!30] (1.5,0.3) rectangle (1.7999999999999998,0.6);
+\fill[orange!10] (1.5,0.6) rectangle (1.7999999999999998,0.8999999999999999);
+\fill[orange!10] (1.5,0.8999999999999999) rectangle (1.7999999999999998,1.2);
+\fill[orange!10] (1.5,1.2) rectangle (1.7999999999999998,1.5);
+\fill[orange!10] (1.5,1.5) rectangle (1.7999999999999998,1.7999999999999998);
+\fill[orange!10] (1.5,1.7999999999999998) rectangle (1.7999999999999998,2.1);
+\fill[orange!10] (1.5,2.1) rectangle (1.7999999999999998,2.4);
+\fill[orange!10] (1.5,2.4) rectangle (1.7999999999999998,2.6999999999999997);
+\fill[orange!10] (1.5,2.6999999999999997) rectangle (1.7999999999999998,3.0);
+\fill[orange!30] (1.5,3.0) rectangle (1.7999999999999998,3.3);
+\fill[orange!55] (1.5,3.3) rectangle (1.7999999999999998,3.5999999999999996);
+\fill[orange!55] (1.7999999999999998,0.0) rectangle (2.1,0.3);
+\fill[orange!30] (1.7999999999999998,0.3) rectangle (2.1,0.6);
+\fill[orange!10] (1.7999999999999998,0.6) rectangle (2.1,0.8999999999999999);
+\fill[orange!10] (1.7999999999999998,0.8999999999999999) rectangle (2.1,1.2);
+\fill[orange!10] (1.7999999999999998,1.2) rectangle (2.1,1.5);
+\fill[orange!10] (1.7999999999999998,1.5) rectangle (2.1,1.7999999999999998);
+\fill[orange!10] (1.7999999999999998,1.7999999999999998) rectangle (2.1,2.1);
+\fill[orange!10] (1.7999999999999998,2.1) rectangle (2.1,2.4);
+\fill[orange!10] (1.7999999999999998,2.4) rectangle (2.1,2.6999999999999997);
+\fill[orange!30] (1.7999999999999998,2.6999999999999997) rectangle (2.1,3.0);
+\fill[orange!30] (1.7999999999999998,3.0) rectangle (2.1,3.3);
+\fill[orange!55] (1.7999999999999998,3.3) rectangle (2.1,3.5999999999999996);
+\fill[orange!55] (2.1,0.0) rectangle (2.4,0.3);
+\fill[orange!30] (2.1,0.3) rectangle (2.4,0.6);
+\fill[orange!10] (2.1,0.6) rectangle (2.4,0.8999999999999999);
+\fill[orange!10] (2.1,0.8999999999999999) rectangle (2.4,1.2);
+\fill[orange!10] (2.1,1.2) rectangle (2.4,1.5);
+\fill[orange!10] (2.1,1.5) rectangle (2.4,1.7999999999999998);
+\fill[orange!10] (2.1,1.7999999999999998) rectangle (2.4,2.1);
+\fill[orange!10] (2.1,2.1) rectangle (2.4,2.4);
+\fill[orange!10] (2.1,2.4) rectangle (2.4,2.6999999999999997);
+\fill[orange!30] (2.1,2.6999999999999997) rectangle (2.4,3.0);
+\fill[orange!55] (2.1,3.0) rectangle (2.4,3.3);
+\fill[orange!55] (2.1,3.3) rectangle (2.4,3.5999999999999996);
+\fill[orange!55] (2.4,0.0) rectangle (2.6999999999999997,0.3);
+\fill[orange!30] (2.4,0.3) rectangle (2.6999999999999997,0.6);
+\fill[orange!10] (2.4,0.6) rectangle (2.6999999999999997,0.8999999999999999);
+\fill[orange!10] (2.4,0.8999999999999999) rectangle (2.6999999999999997,1.2);
+\fill[orange!10] (2.4,1.2) rectangle (2.6999999999999997,1.5);
+\fill[orange!10] (2.4,1.5) rectangle (2.6999999999999997,1.7999999999999998);
+\fill[orange!10] (2.4,1.7999999999999998) rectangle (2.6999999999999997,2.1);
+\fill[orange!10] (2.4,2.1) rectangle (2.6999999999999997,2.4);
+\fill[orange!30] (2.4,2.4) rectangle (2.6999999999999997,2.6999999999999997);
+\fill[orange!30] (2.4,2.6999999999999997) rectangle (2.6999999999999997,3.0);
+\fill[orange!55] (2.4,3.0) rectangle (2.6999999999999997,3.3);
+\fill[orange!55] (2.6999999999999997,0.0) rectangle (3.0,0.3);
+\fill[orange!30] (2.6999999999999997,0.3) rectangle (3.0,0.6);
+\fill[orange!10] (2.6999999999999997,0.6) rectangle (3.0,0.8999999999999999);
+\fill[orange!10] (2.6999999999999997,0.8999999999999999) rectangle (3.0,1.2);
+\fill[orange!10] (2.6999999999999997,1.2) rectangle (3.0,1.5);
+\fill[orange!10] (2.6999999999999997,1.5) rectangle (3.0,1.7999999999999998);
+\fill[orange!30] (2.6999999999999997,1.7999999999999998) rectangle (3.0,2.1);
+\fill[orange!30] (2.6999999999999997,2.1) rectangle (3.0,2.4);
+\fill[orange!30] (2.6999999999999997,2.4) rectangle (3.0,2.6999999999999997);
+\fill[orange!55] (2.6999999999999997,2.6999999999999997) rectangle (3.0,3.0);
+\fill[orange!55] (2.6999999999999997,3.0) rectangle (3.0,3.3);
+\fill[orange!55] (3.0,0.0) rectangle (3.3,0.3);
+\fill[orange!30] (3.0,0.3) rectangle (3.3,0.6);
+\fill[orange!30] (3.0,0.6) rectangle (3.3,0.8999999999999999);
+\fill[orange!30] (3.0,0.8999999999999999) rectangle (3.3,1.2);
+\fill[orange!30] (3.0,1.2) rectangle (3.3,1.5);
+\fill[orange!30] (3.0,1.5) rectangle (3.3,1.7999999999999998);
+\fill[orange!30] (3.0,1.7999999999999998) rectangle (3.3,2.1);
+\fill[orange!55] (3.0,2.1) rectangle (3.3,2.4);
+\fill[orange!55] (3.0,2.4) rectangle (3.3,2.6999999999999997);
+\fill[orange!55] (3.0,2.6999999999999997) rectangle (3.3,3.0);
+\fill[orange!55] (3.3,0.0) rectangle (3.5999999999999996,0.3);
+\fill[orange!55] (3.3,0.3) rectangle (3.5999999999999996,0.6);
+\fill[orange!55] (3.3,0.6) rectangle (3.5999999999999996,0.8999999999999999);
+\fill[orange!55] (3.3,0.8999999999999999) rectangle (3.5999999999999996,1.2);
+\fill[orange!55] (3.3,1.2) rectangle (3.5999999999999996,1.5);
+\fill[orange!55] (3.3,1.5) rectangle (3.5999999999999996,1.7999999999999998);
+\fill[orange!55] (3.3,1.7999999999999998) rectangle (3.5999999999999996,2.1);
+\fill[orange!55] (3.3,2.1) rectangle (3.5999999999999996,2.4);
+    \draw[gray!40, step=0.3] (0,0) grid (3.6,3.6);
+    \draw[gray, thick] (0,0) rectangle (3.6,3.6);
+    \draw[violet, very thick, densely dashed] (0.9,0.6) rectangle (3.3,3.0);
+    \foreach \qx/\qy in {0/4,1/1,2/3,4/0,3/2,0/0}
+      \fill[violet] (0.3*\qx+0.15, 0.3*\qy+0.15) circle (2pt);
+    \draw[black, thick] (1.8,-0.15) -- (1.8,3.75);
+    \draw[black, thick] (-0.15,1.8) -- (3.75,1.8);
+    \foreach \lab/\pos in {K_1/{(3.95,3.75)}, K_2/{(-0.35,3.75)}, K_3/{(-0.35,-0.15)}, K_4/{(3.95,-0.15)}}
+      \node[font=\small] at \pos {$\lab$};
+  \end{tikzpicture}
+  \caption{The active text $A$ (shaded) for $n = 12$, $m = 8$, and six candidate positions (violet dots, at the lower left corners of the occurrences); one occurrence $[m]^2 + (3,2)$ is dashed.
+    The shade indicates the depth: dark cells have depth $1$, medium cells depth $2$, and light cells larger depth.
+    The black lines split the plane into the quarters $K_1, \dots, K_4$.}
+  \label{fig:active}
+\end{figure}
 
 \begin{lemma}[Coverable sets]\label{lem:coverable}
 Let $X \subseteq \Z^2$ with $\inorm{u-v} \le r < m/2$ for all $u, v \in X$, and $\depth(u) > r$ for all $u \in X$. Then $X \subseteq [m]^2 + q$ for some $q \in Q$. Consequently, $\Ham(T|_X + \delta, T|_X) \le 8k$ for $\delta \in \{\phi,\psi\}$.
