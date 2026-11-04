@@ -6,6 +6,9 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
 \usepackage{flafter}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newcommand{\algorithmautorefname}{Algorithm}
 \usepackage{enumerate}
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage{tikz}
@@ -229,12 +232,12 @@ where $\Ham$ of one-dimensional strings of equal length is defined in the natura
 \emph{Preprocessing.}
 We build the suffix array of the concatenation of all columns of $P$ and $T$ (separated by unique delimiters), augmented for LCE queries; this takes $\O(n^2)$ time for integer alphabets.
 Two of the strings $p_x$ and $t_{x,y}$ are equal if and only if the LCE of their starting positions is at least $m$.
-So, scanning the suffix array, we assign to each of them an integer identifier $\iota(\cdot)$, such that equal strings get equal identifiers.
-Then, for every $y$, we form the one-dimensional string $\iota(t_{0,y}) \cdots \iota(t_{n-1,y})$, and we build an LCE structure for these strings together with $\iota(p_0) \cdots \iota(p_{m-1})$ (total length $\O(n^2)$).
+So, scanning the suffix array, we assign to each of them an integer identifier $\mathrm{id}(\cdot)$, such that equal strings get equal identifiers.
+Then, for every $y$, we form the one-dimensional string $\mathrm{id}(t_{0,y}) \cdots \mathrm{id}(t_{n-1,y})$, and we build an LCE structure for these strings together with $\mathrm{id}(p_0) \cdots \mathrm{id}(p_{m-1})$ (total length $\O(n^2)$).
 
 \emph{Queries.}
 Fix $q \in Q'$.
-With LCE queries on the identifier strings, we enumerate the columns $x$ with $\iota(p_x) \neq \iota(t_{\x{q}+x,\y{q}})$ in $\O(1)$ time each.
+With LCE queries on the identifier strings, we enumerate the columns $x$ with $\mathrm{id}(p_x) \neq \mathrm{id}(t_{\x{q}+x,\y{q}})$ in $\O(1)$ time each.
 For every such column $x$, we enumerate the mismatches between $p_x$ and $t_{\x{q}+x,\y{q}}$ with LCE queries on the columns, in $\O(1)$ time each.
 We stop as soon as we have found $k+1$ mismatches.
 Every enumerated column contains a mismatch, so this takes $\O(k + 1)$ time per $q$.
@@ -658,6 +661,7 @@ If $d > m/8$, the bound follows from $\abs{A} \le n^2 = \O(m^2)$. Otherwise, con
 \end{proof}
 
 \section{Multiscale decomposition of the active text}
+\label{sec:multiscale}
 
 By Lemma~\ref{lem:coverable}, a set of diameter $r$ whose points all have depth more than $r$ inherits the approximate periods of the pattern.
 So deep inside $A$, we can afford large cells, but close to the boundary of $A$, the cells must be small.
@@ -701,7 +705,10 @@ Now let $u \in A_\res$. If the level-$0$ cell of $u$ were good, then its highest
 \begin{equation}\label{eq:pieces}
 \abs{\cS_\iota} \cdot d_\iota = \O(mk).
 \end{equation}
-All of this takes $\tO(m^2 + mk)$ time: the depths, cells, and selected cells are computed in $\tO(n^2)$ time, every point of $A$ is processed by Lemma~\ref{lem:decomposition} at most once, and $\sum_\iota \abs{\cS_\iota} = \tO(mk)$.
+All of this takes $\tO(m^2 + mk)$ time.
+The depths take $\O(n^2)$ time.
+For every level, we compute the cell of every point of $[n]^2$ from $\kappa$, and the minimum depth in every cell, in $\O(n^2)$ time; this determines the good and the selected cells, in $\O(n^2 \log m)$ time over all levels.
+Every point of $A$ is processed by Lemma~\ref{lem:decomposition} at most once, and $\sum_\iota \abs{\cS_\iota} = \tO(mk)$.
 
 \section{Counting matches}
 
@@ -827,13 +834,30 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
 
 \section{The algorithm}
 
-\begin{enumerate}
-\item Reduce to $n \le 3m/2$. Compute $Q$. If $\abs{Q} \le 32m + m^2/k$, apply Lemma~\ref{lem:kangaroo} and stop.
-\item Compute $\phi, \psi$ (Lemma~\ref{lem:two_periods}) and the pattern pieces $\cV$ (Lemma~\ref{lem:decomposition}).
-\item Compute $A$, the depths, the selected cells, the levels, and the text blocks $\cS_\iota$.
-\item For every level $\iota$ and every character $c$ with $\cS_{\iota,c} \neq \emptyset \neq \cV_c$: if $\abs{\cS_{\iota,c}}\cdot\abs{\cV_c} \le md_\iota$, add $(\iota, c)$ to $\Pi$; otherwise, add $M_{\iota,c}$ to the accumulator array with Lemma~\ref{lem:strips}.
-\item Add the output of Lemma~\ref{lem:pairing} for $\Pi$ to the accumulator array. For every $q \in Q$, output $\min\{k+1, m^2 - \text{accumulator}[q]\}$, and output $k+1$ for every other position.
-\end{enumerate}
+\autoref{alg:main} puts the pieces together, for $n \le \frac32 m$.
+
+\begin{algorithm}[ht]
+  \caption{Two-dimensional pattern matching with $k$ mismatches, for $n \le \frac32 m$.}
+  \label{alg:main}
+  \begin{algorithmic}[1]
+    \State compute $Q = \{q : h(q) \le 2k\}$ with Karloff's algorithm \Comment{Fact~\ref{fact:karloff}}
+    \If{$\abs{Q} \le 32m + m^2/k$}
+      \State \Return the values of Lemma~\ref{lem:kangaroo} for $Q' = Q$, and $k+1$ for $q \notin Q$
+    \EndIf
+    \State compute $\phi$ and $\psi$, and the pattern pieces $\cV$ \Comment{Lemmas~\ref{lem:two_periods} and~\ref{lem:decomposition}}
+    \State compute $A$, the depths, the selected cells, and the text blocks $\cS_\iota$ \Comment{\autoref{sec:multiscale}}
+    \State $\mathit{acc}[q] \gets 0$ for all $q \in [\ell+1]^2$; \ $\Pi \gets \emptyset$
+    \For{every level $\iota$ and every character $c$ with $\cS_{\iota,c} \ne \emptyset \ne \cV_c$}
+      \If{$\abs{\cS_{\iota,c}} \cdot \abs{\cV_c} \le m d_\iota$}
+        \State $\Pi \gets \Pi \cup \{(\iota, c)\}$ \Comment{pairing is cheaper}
+      \Else
+        \State add $M_{\iota,c}$ to $\mathit{acc}$ \Comment{FFT on strips, Lemma~\ref{lem:strips}}
+      \EndIf
+    \EndFor
+    \State add $\sum_{(\iota,c) \in \Pi} M_{\iota,c}$ to $\mathit{acc}$ \Comment{pairing, Lemma~\ref{lem:pairing}}
+    \State \Return $\min\{k+1, m^2 - \mathit{acc}[q]\}$ for $q \in Q$, and $k+1$ for $q \notin Q$
+  \end{algorithmic}
+\end{algorithm}
 
 \autoref{tab:steps} summarizes where the time goes.
 
@@ -854,13 +878,13 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
   \label{tab:steps}
 \end{table}
 
-In Step~4, we choose, for every level and character, the cheaper of the two ways of counting matches: pairing costs $\abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$, and FFT on strips costs $\tO(md_\iota)$.
+In the loop of \autoref{alg:main}, we choose, for every level and character, the cheaper of the two ways of counting matches: pairing costs $\abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$, and FFT on strips costs $\tO(md_\iota)$.
 
 \paragraph{Correctness.}
 For every $q \in Q$, the accumulator ends up with $\sum_\iota \sum_c M_{\iota,c}(q)$ by Lemmas~\ref{lem:pairing} and~\ref{lem:strips}.
 Since the sets $A_\iota$ partition $A$, this is $m^2 - \Ham(P+q,T)$ by (\ref{eq:ham_match}).
 
-\paragraph{Running time.} Steps 1--3 take $\tO(m^2 + mk)$ time. By Lemmas~\ref{lem:pairing} and~\ref{lem:strips}, steps 4 and 5 take time
+\paragraph{Running time.} Everything before the loop takes $\tO(m^2 + mk)$ time (\autoref{tab:steps}). By Lemmas~\ref{lem:pairing} and~\ref{lem:strips}, the loop and the pairing take time
 \[ \tO\Bigl(m^2 + \sum_\iota \sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c},\ md_\iota\}\Bigr).\]
 For every level $\iota$, using $\min\{X,Y\} \le \sqrt{XY}$, the Cauchy--Schwarz inequality, (\ref{eq:pieces}), and $\abs{\cV} = \O(k)$, we get
 \[ \sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c},\ md_\iota\} \le \sqrt{md_\iota} \sum_c \sqrt{\abs{\cS_{\iota,c}}\abs{\cV_c}} \le \sqrt{md_\iota \abs{\cS_\iota}\abs{\cV}} = \O(\sqrt{m \cdot mk \cdot k}) = \O(mk).\]
