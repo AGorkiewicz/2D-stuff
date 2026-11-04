@@ -199,6 +199,34 @@ A string $S$ is \emph{monochromatic} with character $c(S)$ if $S(u) = c(S)$ for 
 We are given a pattern $P$ with $\dom(P) = [m]^2$, a text $T$ with $\dom(T) = [n]^2$, $m \le n$, and $k \in \Z^+$.
 For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
 
+\autoref{tab:notation} lists the notation that we introduce in the following sections.
+
+\begin{table}[ht]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    symbol & meaning & defined in \\
+    \midrule
+    $\ell = n - m$ & positions are $[\ell+1]^2$, with $\ell \le m/2$ & \autoref{sec:periods} \\
+    $Q$ & candidate positions, each with at most $2k$ mismatches & \autoref{sec:periods} \\
+    $\phi, \psi$ & the two periods, pointing to the lower and upper right & \autoref{sec:periods} \\
+    $\Delta = \det(\phi,\psi)$ & number of cosets of the lattice $L$, $\Delta < 8k$ & \autoref{sec:periods} \\
+    $\kappa(u), \lambda(u)$ & coordinates of $u$ with respect to the lattice & \autoref{sec:lattice} \\
+    $\cV$, $\cV_c$ & pattern pieces (with character $c$), $\abs{\cV} < 16k$ & \autoref{sec:lattice} \\
+    $A$, $C$ & active text, and the central square $[\ell, m-1]^2$ & \autoref{sec:active} \\
+    $\depth(u)$ & distance from $u$ to the complement of $A$ & \autoref{sec:active} \\
+    $K_i$, $\sigma_i$ & quarters of the plane and their outward directions & \autoref{sec:active} \\
+    $D_j$ & side length of the level-$j$ cells & \autoref{sec:multiscale} \\
+    $A_\iota$, $d_\iota$ & points of level $\iota$, and their depth bound & \autoref{sec:multiscale} \\
+    $\cS_\iota$, $\cS_{\iota,c}$ & text blocks of level $\iota$ (with character $c$) & \autoref{sec:multiscale} \\
+    $M_{\iota,c}(q)$ & matches with character $c$ between $P + q$ and $T|_{A_\iota}$ & \autoref{sec:counting} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Notation.}
+  \label{tab:notation}
+\end{table}
+
 \subsection{Tools}
 
 We use four standard tools.
@@ -775,7 +803,7 @@ For every $d \ge 1$, $\abs{\{u \in A : \depth(u) \le d\}} = \O(md)$.
 If $d > m/8$, the bound follows from $\abs{A} \le n^2 = \O(m^2)$.
 Otherwise, consider $K_1$ (the other quarters are symmetric) and a diagonal line $\{u_0 + t(1,1) : t \in \Z\}$.
 By Lemma~\ref{lem:monotone}(a), the points of $A \cap K_1$ on this line form a prefix (with respect to $t$) of the points of $K_1$ on this line.
-By Lemma~\ref{lem:monotone}(b), at most $d$ points $u$ of this prefix satisfy $\depth(u) \le d$.
+By Lemma~\ref{lem:monotone}(b), every point $u$ of this prefix with $\depth(u) \le d$ satisfies $u + (d,d) \notin A$, so it is among the last $d$ points of the prefix.
 At most $2n$ diagonal lines meet $[n]^2$.
 \end{proof}
 
@@ -1084,7 +1112,7 @@ The \emph{combinatorial BMM hypothesis} states that for every $\varepsilon > 0$,
 We show that, under this hypothesis, the bound of Theorem~\ref{thm:main} is optimal for combinatorial algorithms, up to subpolynomial factors.
 
 \begin{fact}\label{fact:rect}
-Assume the combinatorial BMM hypothesis, and let $\xi_1, \xi_2, \xi_3 > 0$ be constants.
+Assume the combinatorial BMM hypothesis, let $\xi_1, \xi_2, \xi_3 > 0$ be constants, and let $N$ be a growing parameter.
 For every $\varepsilon > 0$, there is no combinatorial algorithm that multiplies an $N_1 \times N_2$ and an $N_2 \times N_3$ Boolean matrix in $\O((N_1N_2N_3)^{1-\varepsilon})$ time, where $N_i = \Theta(N^{\xi_i})$ for $i \in \{1,2,3\}$.
 \end{fact}
 \begin{proof}
