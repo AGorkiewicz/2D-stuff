@@ -216,6 +216,46 @@ For all $u, v \in Q$, we have $\Ham(P + (u - v), P) \le 4k$.
 $\Ham(P+u-v, P) = \Ham(P+u, P+v) \le \Ham(P+u, T) + \Ham(T, P+v) \le 4k$, since every $w \in \dom(P+u) \cap \dom(P+v) \subseteq \dom(T)$ with $(P+u)(w) \ne (P+v)(w)$ is a mismatch between $T$ and $P+u$ or between $T$ and $P+v$.
 \end{proof}
 
+\paragraph{Finding two good periods.}
+Lemma~\ref{lem:period} turns every difference of two candidates into an approximate period.
+Since $Q$ is large and lies in the small square $[\ell+1]^2$, some differences must be short.
+We need two of them, $\phi$ and $\psi$, that are short \emph{and} point in clearly different directions, so that the parallelogram they span has small area.
+The first one is simply the shortest difference $w$.
+For the second one, we cut the square into thin parallel buckets, oriented so that two points in the same bucket must differ in a direction far from that of $w$ (\autoref{fig:periods}).
+If there are fewer buckets than points, some bucket contains two points.
+Finally, we choose the signs of the two vectors so that $\psi$ points to the upper right and $\phi$ to the lower right; this is convenient later.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[scale=0.5]
+    \draw[gray!50, thin] (0,0) rectangle (8,8);
+    \begin{scope}
+      \clip (0,0) rectangle (8,8);
+      \foreach \c in {-1,0,...,16}
+        \draw[gray!25] (\c*0.75,0) -- (0,\c*0.75);
+    \end{scope}
+    \draw[violet, thick, fill=violet!10, rotate around={-45:(2.95,6.1)}] (2.95-1.5,6.1-0.27) rectangle (2.95+1.5,6.1+0.27);
+    \foreach \p in {(4.6,1.6),(5.9,5.2),(7.5,6.0),(2.5,0.3),(1.0,4.5),(7.5,0.4),(1.2,3.3),(5.2,4.3),(3.6,5.3),(3.7,2.8),(0.4,6.4),(7.7,4.9),(3.3,0.6),(1.4,1.4),(7.4,3.2),(5.2,6.9),(2.3,6.9),(4.1,6.2)}
+      \fill \p circle (3pt);
+    \draw[-{Stealth[length=5pt]}, red!75!black, thick] (2.5,0.3) -- (3.3,0.6) node[below right=-1pt, font=\small] {$w$};
+    \draw[-{Stealth[length=5pt]}, violet, thick] (2.3,6.9) -- (3.6,5.3);
+    \node[violet, font=\small] at (4.0,5.85) {$w'$};
+    \node[font=\small, below] at (4,-0.1) {$[\ell+1]^2$};
+    % resulting periods
+    \begin{scope}[xshift=11cm, yshift=4cm]
+      \draw[gray!50, ->] (-0.5,0) -- (3.5,0);
+      \draw[gray!50, ->] (0,-2.5) -- (0,2.5);
+      \draw[-{Stealth[length=5pt]}, red!75!black, thick] (0,0) -- (0.8*1.8,0.3*1.8) node[right, font=\small] {$\psi = w$};
+      \draw[-{Stealth[length=5pt]}, violet, thick] (0,0) -- (1.3,-1.6) node[right, font=\small] {$\phi = -w'$};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{Finding two periods.
+    The shortest difference $w$ of two points of $U$ points to the upper right, so we use buckets that are thin in the direction $(1,1)$ (gray lines) and long in the direction $(-1,1)$; one bucket is shown in violet.
+    Two points in the same bucket are at distance at least $|w|$ but differ by less than $|w|/4$ in the direction $(1,1)$, so their difference $w'$ is close to the direction $(-1,1)$.
+    Right: the two periods after choosing the signs.}
+  \label{fig:periods}
+\end{figure}
+
 \begin{lemma}[Two periods]\label{lem:two_periods}
 Let $\ell \ge 1$ and $U \subseteq [\ell+1]^2$ with $\abs{U} \ge 32\ell$. In $\O(\abs{U}\log\abs{U})$ time, one can find $\phi, \psi \in U - U$ with $\psi \in (0, \infty) \times [0, \infty)$, $\phi \in [0, \infty) \times (-\infty, 0)$, $\det(\phi,\psi) \ge \frac12\abs{\phi}\abs{\psi}$, and $\abs{\phi}\abs{\psi} < 30\ell^2/\abs{U}$.
 \end{lemma}
@@ -234,6 +274,14 @@ We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$
 \[ 1 \le \Delta \le \abs{\phi}\abs{\psi} \le 2\Delta, \qquad \Delta < 30\ell^2/\abs{Q} < 30 \ell^2 k / m^2 < 8k,\qquad \inorm{\phi}, \inorm{\psi} \le \ell, \]
 and, by Lemma~\ref{lem:period}, $\Ham(P + \phi, P) \le 4k$ and $\Ham(P + \psi, P) \le 4k$. Recall that $\x\phi \ge 0 > \y\phi$ and $\x\psi > 0$, $\y\psi \ge 0$.
 
+\paragraph{Example.}
+In the running example (\autoref{fig:problem}) with $k = 1$, suppose for simplicity that the filter computes $h(q) = \Ham(P+q,T)$ exactly.
+Then $Q = \{(0,0), (2,0), (1,1), (0,2), (2,2)\}$, the five positions with Hamming distance at most $2k = 2$.
+(The example is far too small for the assumption $\abs{Q} > 32m$, but the procedure still works.)
+The shortest difference is $w = (1,1)$, so the buckets are thin in the direction $(1,1)$, and the positions $(1,1)$ and $(0,2)$ share a bucket.
+We obtain $\psi = (1,1)$ and $\phi = (1,-1)$, with $\Delta = 2$.
+Indeed, moving a checkerboard by $\psi$ or by $\phi$ maps it onto itself.
+
 \section{Lattice blocks}
 
 Let $L = \{i\phi + j\psi : i, j \in \Z\}$. We write $u \equiv v$ if $u - v \in L$; the congruence classes are the cosets $\gamma + L$. Let
@@ -244,7 +292,43 @@ Since $u = (\kappa_1(u)\phi + \kappa_2(u)\psi)/\Delta$, we have $u \equiv v$ if 
 A \emph{block} is a set $\gamma + I\phi + J\psi := \{\gamma + i\phi + j\psi : i \in I, j \in J\}$, where $\gamma \in \Z^2$ and $I, J \subseteq \Z$ are (possibly unbounded) intervals. A \emph{tile} is a set $\{u \in \Z^2 : \kappa(u) \in X\}$, where $X \subseteq \R^2$ is a (possibly unbounded) axis-parallel box. A rectangle $R = ([x_0, x_1] \times [y_0, y_1]) \cap \Z^2$ is \emph{wide} if $x_1 - x_0 + 1 \ge \abs{\x\phi} + \abs{\x\psi}$ and $y_1 - y_0 + 1 \ge \abs{\y\phi} + \abs{\y\psi}$; we also call $R = \Z^2$ wide. A \emph{truncated block} is a set $R \cap B$, where $R$ is a wide rectangle and $B$ is a block.
 \end{definition}
 
-The intersection of a tile with a congruence class is a block. For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$ and edges $\{u, u+\phi\}$ and $\{u, u+\psi\}$ for all $u$ such that both endpoints are in $X$.
+Intuitively, the $\Delta$ cosets of $L$ color the plane with $\Delta$ colors, such that moving by $\phi$ or $\psi$ keeps the color; in the running example, they are the two colors of the checkerboard.
+Within one coset, the coefficients $(i,j)$ of $\gamma + i\phi + j\psi$ are \emph{lattice coordinates}, and a block is simply a rectangle in lattice coordinates.
+Geometrically, a block consists of the points of one coset inside a parallelogram with sides parallel to $\phi$ and $\psi$, and a tile consists of the points of all cosets inside such a parallelogram (\autoref{fig:lattice}).
+The intersection of a tile with a congruence class is a block.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[scale=0.42]
+    \fill[blue!8] (0.5,2.5) -- (6.5,-0.5) -- (9.5,5.5) -- (3.5,8.5) -- cycle;
+    \foreach \x in {0,...,10} \foreach \y in {-1,...,9} \fill[gray!45] (\x,\y) circle (2pt);
+    \foreach \i in {-5,...,6} {
+      \foreach \j in {-3,...,5} {
+        \pgfmathtruncatemacro{\px}{2+2*\i+\j}
+        \pgfmathtruncatemacro{\py}{3-\i+2*\j}
+        \ifnum\px>-1 \ifnum\px<11 \ifnum\py>-2 \ifnum\py<10
+          \fill (\px,\py) circle (3.2pt);
+        \fi\fi\fi\fi
+      }
+    }
+    \draw[violet, thick, densely dashed] (0.6,0.6) rectangle (7.4,6.4);
+    \node[violet, font=\small, anchor=north east] at (7.4,0.6) {$R$};
+    \foreach \p in {(2,3),(4,2),(6,1),(3,5),(5,4),(7,3),(6,6)}
+      \fill[blue!70!black] \p circle (5.5pt);
+    \foreach \p in {(4,7),(8,5)}
+      \draw[blue!70!black, thick, fill=white] \p circle (5.5pt);
+    \draw[-{Stealth[length=5pt]}, thick] (2,3) -- (4,2) node[below, font=\small] {$\phi$};
+    \draw[-{Stealth[length=5pt]}, thick] (2,3) -- (3,5) node[left, font=\small] {$\psi$};
+    \node[font=\small, anchor=east] at (2,3) {$\gamma$\,};
+  \end{tikzpicture}
+  \caption{The lattice for $\phi = (2,-1)$ and $\psi = (1,2)$, with $\Delta = 5$.
+    Black points: the coset $\gamma + L$ of $\gamma = (2,3)$.
+    The block $\gamma + \{0,1,2\}\phi + \{0,1,2\}\psi$ consists of the nine blue points; the shaded parallelogram contains all points of the corresponding tile.
+    Intersecting the block with the wide rectangle $R$ (dashed) gives a truncated block of seven points (filled).}
+  \label{fig:lattice}
+\end{figure}
+
+For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$ and edges $\{u, u+\phi\}$ and $\{u, u+\psi\}$ for all $u$ such that both endpoints are in $X$.
 
 \begin{lemma}\label{lem:connected}
 The lattice graph of every truncated block is connected.
