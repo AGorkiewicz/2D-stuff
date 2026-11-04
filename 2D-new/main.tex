@@ -803,6 +803,7 @@ The points that are too close to the boundary for even the smallest cells form a
 \paragraph{Cells.}
 Let $\hat\phi = \phi/\abs{\phi}$ and $\hat\psi = \psi/\abs{\psi}$ be the unit vectors in the directions of the periods.
 Let $D_j = 16 \cdot 2^j$ for $j \in \{0, \dots, J\}$, where $J$ is the largest integer with $D_J \le m/16$.
+(The lower bound $D_0 = 16$ ensures that every cell contains many points, see (C3), and the upper bound $D_J \le m/16$ ensures that Lemma~\ref{lem:coverable} applies to all cells.)
 For $j \in \{0, \dots, J\}$ and $a, b \in \Z$, the \emph{level-$j$ cell} with index $(a,b)$ is the set of integer points in the half-open rhombus
 \[ \{s\hat\phi + t\hat\psi : s \in [a, a+1) \cdot D_j,\ t \in [b, b+1) \cdot D_j\}, \]
 which has side length $D_j$ and sides parallel to $\phi$ and $\psi$.
@@ -819,7 +820,7 @@ A level-$j$ cell $C$ is \emph{good} if $\depth(u) > 2D_j$ for all $u \in C$.
 By (C2) and Lemma~\ref{lem:coverable} (with $r = 2D_j \le m/8$), every good cell is contained in $[m]^2 + q$ for some $q \in Q$.
 The children of a good cell are good, since they are smaller.
 A good level-$j$ cell is \emph{selected} if $j = J$ or its parent is not good; that is, the selected cells are the maximal good cells.
-By (C1), the selected cells are pairwise disjoint.
+The selected cells are pairwise disjoint: by (C1), if two cells intersect, then one contains the other, and if the larger one is good, then the parent of the smaller one is good as well, so the smaller one is not selected.
 
 \paragraph{Levels.}
 For $j \in \{0, \dots, J\}$, let $A_j$ be the union of the selected level-$j$ cells, and let $A_\res = A \setminus \bigcup_j A_j$ be the \emph{residual} points.
@@ -891,7 +892,8 @@ On the pattern side, the truncation does no harm, since the pattern pieces enter
 \end{figure}
 
 \begin{lemma}[Pairing]\label{lem:pairing}
-Given a set $\Pi$ of pairs $(\iota, c)$ of a level and a character, the values $\sum_{(\iota,c) \in \Pi} M_{\iota,c}(q)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time, where $N = \sum_{(\iota,c) \in \Pi} \abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$.
+Let $\Pi$ be a set of pairs $(\iota, c)$ of a level and a character, and let $N = \sum_{(\iota,c) \in \Pi} \abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$.
+The values $\sum_{(\iota,c) \in \Pi} M_{\iota,c}(q)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time.
 \end{lemma}
 \begin{proof}
 \emph{From blocks to cones.}
