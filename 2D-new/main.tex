@@ -1,18 +1,28 @@
-\documentclass[11pt,a4paper]{article}
-\usepackage{fullpage}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{enumerate}
-\usepackage{hyperref}
+\documentclass[11pt]{article}
 
-\newtheorem{theorem}{Theorem}[section]
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{enumerate}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{tikz}
+\usetikzlibrary{calc, arrows.meta, decorations.pathreplacing, fit}
+\usepackage[hidelinks]{hyperref}
+\renewcommand{\sectionautorefname}{Section}
+\renewcommand{\subsectionautorefname}{Section}
+
+\newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{fact}[theorem]{Fact}
 \newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 
+% ---------------------------------------------------------------------------
+% Notation
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
@@ -30,38 +40,148 @@
 \newcommand{\inorm}[1]{\lvert #1 \rvert_\infty}
 \newcommand{\x}[1]{#1.x}
 \newcommand{\y}[1]{#1.y}
+\newcommand{\str}[1]{\texttt{#1}}
 
-\title{Two-dimensional pattern matching with $k$ mismatches\\ in $\tO(n^2 + kn^2/m)$ time}
+% ---------------------------------------------------------------------------
+% Drawing styles
+\tikzset{
+  cell/.style={draw=gray!60, minimum width=0.46cm, minimum height=0.46cm, inner sep=0pt,
+    font=\ttfamily\small, anchor=center},
+  mis/.style={fill=red!25},
+  win/.style={draw=violet, very thick, rounded corners=1pt},
+}
+% A grid of characters; rows are given from top to bottom.
+% \chargrid{x offset}{y offset}{row_top,...,row_bottom}
+\newcommand{\chargrid}[3]{%
+  \foreach \row [count=\r] in {#3} {
+    \foreach \ch [count=\c] in \row {
+      \node[cell] at ({#1+(\c-1)*0.46}, {#2-(\r-1)*0.46}) {\ch};
+    }
+  }%
+}
+
+\title{Two-Dimensional Pattern Matching with $k$ Mismatches}
 \author{}
-\date{Draft}
+\date{}
 
 \begin{document}
 \maketitle
 
-\section{Problem and result}
+\section{Introduction}
 
-For $m \in \Z^+$, let $[m] = \{0, \dots, m-1\}$. A \emph{string} is a partial function $S \colon \Z^2 \rightharpoonup \Sigma$ with finite domain $\dom(S)$. For $X \subseteq \Z^2$, $S|_X$ is the restriction of $S$ to $\dom(S) \cap X$. For $\delta \in \Z^2$, $S + \delta$ is the string with $\dom(S+\delta) = \dom(S) + \delta$ and $(S+\delta)(u) = S(u - \delta)$. For strings $S, R$ and $c \in \Sigma$, let
+Suppose we are given an image, a two-dimensional array of characters, and a smaller template, and we want to find all places where the template appears in the image.
+If the template must appear exactly, this is two-dimensional exact pattern matching, which can be solved in linear time.
+Real data is noisy, so we rather want to find all places where the template appears \emph{up to at most $k$ mismatched cells}.
+
+Formally, the \emph{text} $T$ is an $n \times n$ array and the \emph{pattern} $P$ is an $m \times m$ array, with $m \le n$.
+For every \emph{position} $q$, that is, every placement of the pattern inside the text, we want to know the number of cells in which the pattern differs from the text below it, or that this number exceeds~$k$.
+\autoref{fig:problem} shows an example, which we will use as our running example.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}
+    % text, rows from top (y=5) to bottom (y=0)
+    \chargrid{0}{0}{{b,a,b,a,b,a},{a,a,a,b,c,b},{b,a,b,a,b,a},{a,b,a,b,a,b},{b,a,b,a,b,a},{a,b,a,b,a,a}}
+    \node[cell, mis] at (1*0.46, -1*0.46) {a};
+    \node[win, fit={(0.46-0.23, -0.46+0.23) (4*0.46+0.23, -4*0.46-0.23)}, inner sep=0pt] {};
+    \node[font=\small] at (1.15, -3.15) {text $T$};
+    % pattern
+    \chargrid{4.0}{-0.46}{{b,a,b,c},{a,b,a,b},{b,a,b,a},{a,b,a,b}}
+    \node[font=\small] at (4.0+0.69, -3.15) {pattern $P$};
+    % table of distances, rows q.y = 2,1,0 from top
+    \begin{scope}[xshift=7.2cm, yshift=-0.46cm]
+      \chargrid{0}{0}{{2,15,2},{15,1,16},{1,16,2}}
+      \node[cell, fill=violet!15] at (0, -2*0.46) {1};
+      \node[cell, fill=violet!15] at (0.46, -0.46) {1};
+    \end{scope}
+    \node[font=\small, align=center] at (7.2+0.46, -3.15) {$\Ham(P+q,T)$};
+  \end{tikzpicture}
+  \caption{A text $T$ with $n = 6$ and a pattern $P$ with $m = 4$, drawn with the $y$-axis pointing up, so that the cell $(0,0)$ is at the bottom left.
+    The window (violet) shows the pattern at position $q = (1,1)$; it has one mismatch (red), since $P(0,3) = \str{b}$ lies on $T(1,4) = \str{a}$.
+    Right: the Hamming distances for all nine positions $q \in [3]^2$, again with $q = (0,0)$ at the bottom left.
+    For $k = 1$, the positions $(0,0)$ and $(1,1)$ (shaded) are reported.
+    Both $P$ and $T$ are close to the checkerboard pattern; this periodicity will be central to the algorithm.}
+  \label{fig:problem}
+\end{figure}
+
+The classical algorithm of Amir and Landau solves this problem in $\O(kn^2)$ time.
+In these notes, we show the following.
+
+\begin{theorem}\label{thm:main}
+  The problem can be solved in $\tO(n^2 + kn^2/m)$ time.
+  In particular, it can be solved in $\tO(n^2)$ time if $k = \O(m)$.
+\end{theorem}
+
+This bound is the natural two-dimensional analogue of the one-dimensional bound $\tO(N + kN/\sqrt{M})$ of Gawrychowski and Uzna\'nski for a text of length $N = n^2$ and a pattern of length $M = m^2$.
+In \autoref{sec:lower}, we show that it is optimal for combinatorial algorithms, assuming the combinatorial BMM hypothesis.
+
+\paragraph{The idea in a nutshell.}
+It suffices to consider $n \le \frac32 m$.
+A standard filter finds a set $Q$ of candidate positions, each with at most $2k$ mismatches.
+If $Q$ is small, we check the candidates one by one.
+Otherwise, two candidates are close to each other, and their difference is an \emph{approximate period} of the pattern: shifting $P$ by it creates few mismatches.
+We find two such periods $\phi$ and $\psi$, which span a lattice with $\O(k)$ cosets.
+Along these periods, the pattern changes its character only $\O(k)$ times, so it splits into $\O(k)$ monochromatic pieces of a simple shape.
+
+The text is the difficult part: only the region $A$ covered by the candidates matters, but $A$ is \emph{not} approximately periodic as a whole.
+However, a small piece of $A$ that is far from the boundary of $A$, relative to its size, lies inside a single candidate occurrence and therefore inherits the periodicity of the pattern.
+So we cut $A$ into cells whose size is proportional to their distance to the boundary.
+At distance about $D$, there are $\O(m/D)$ cells, each splits into $\O(k)$ monochromatic pieces, and the matches between text pieces and pattern pieces can be counted in two ways, for each character separately:
+by enumerating all pairs of pieces, or by FFT.
+The FFT is cheap close to the boundary: a text cell at distance $D$ from the boundary of $A$ can only lie below a strip of width $\O(D)$ along the boundary of the pattern, so the FFT takes $\tO(mD)$ time.
+
+\paragraph{Where the bound comes from.}
+At every distance $D$, the number of text pieces times the FFT cost is $\O(mk/D) \cdot \tO(mD) = \tO(m^2 k)$, independently of $D$.
+Choosing the cheaper method for each character, the Cauchy--Schwarz inequality bounds the total cost by $\tO(\sqrt{m^2 k \cdot k}) = \tO(mk)$ per distance.
+With $\O(\log m)$ distances and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gives \autoref{thm:main}.
+
+\autoref{tab:results} compares the bounds.
+
+\begin{table}[ht]
+  \centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    & time & quasi-linear for \\
+    \midrule
+    Amir and Landau & $\O(kn^2)$ & $k = \O(\log n)$ \\
+    previous version of this work & $\tO(n^2 + k^{5/4} n^2/m)$ & $k = \O(m^{4/5})$ \\
+    these notes & $\tO(n^2 + kn^2/m)$ & $k = \O(m)$ \\
+    lower bound (combinatorial) & $(kn^2/m)^{1-o(1)}$ & --- \\
+    \bottomrule
+  \end{tabular}
+  \caption{Bounds for two-dimensional pattern matching with $k$ mismatches, for an $n \times n$ text and an $m \times m$ pattern.
+    The lower bound holds for $m < k \le m^2$ and assumes the combinatorial BMM hypothesis.}
+  \label{tab:results}
+\end{table}
+
+\section{Preliminaries}
+
+We work in the word RAM model; the alphabet $\Sigma$ consists of integers polynomial in $n$, and $\tO$ hides factors polylogarithmic in $n$.
+For $m \in \Z^+$, let $[m] = \{0, \dots, m-1\}$.
+
+\paragraph{Geometry.}
+A point $u \in \Z^2$ has coordinates $u = (\x u, \y u)$, and we draw the $y$-axis pointing up.
+For $u, v \in \R^2$, let $\det(u,v) = \x{u}\,\y{v} - \y{u}\,\x{v}$; it is positive if $v$ lies counterclockwise from $u$.
+We write $\abs{u}$ for the Euclidean norm and $\inorm{u}$ for the maximum norm.
+
+\paragraph{Strings.}
+It is convenient to allow arbitrary shapes.
+A \emph{string} is a partial function $S \colon \Z^2 \rightharpoonup \Sigma$ with finite domain $\dom(S)$.
+For $X \subseteq \Z^2$, $S|_X$ is the restriction of $S$ to $\dom(S) \cap X$.
+For $\delta \in \Z^2$, $S + \delta$ is the string with $\dom(S+\delta) = \dom(S) + \delta$ and $(S+\delta)(u) = S(u - \delta)$; that is, we move $S$ by $\delta$.
+For strings $S, R$ and $c \in \Sigma$, we count mismatches and matches with character $c$ where both strings are defined:
 \begin{align*}
 \Ham(S,R) &= \abs{\{u \in \dom(S) \cap \dom(R) : S(u) \neq R(u)\}},\\
 \Match_c(S,R) &= \abs{\{u \in \dom(S) \cap \dom(R) : S(u) = R(u) = c\}}.
 \end{align*}
 A string $S$ is \emph{monochromatic} with character $c(S)$ if $S(u) = c(S)$ for all $u \in \dom(S)$.
 
-\medskip
-\noindent\textbf{Problem.} Given a pattern $P$ with $\dom(P) = [m]^2$, a text $T$ with $\dom(T) = [n]^2$, $m \le n$, and $k \in \Z^+$, compute $\min\{k+1, \Ham(P+q, T)\}$ for every $q \in [n-m+1]^2$.
+\paragraph{The problem.}
+We are given a pattern $P$ with $\dom(P) = [m]^2$, a text $T$ with $\dom(T) = [n]^2$, $m \le n$, and $k \in \Z^+$.
+For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
 
-\begin{theorem}\label{thm:main}
-The problem can be solved in $\tO(n^2 + kn^2/m)$ time. In particular, it can be solved in $\tO(n^2)$ time if $k = \O(m)$.
-\end{theorem}
-
-By Theorem~\ref{thm:lower} in Section~\ref{sec:lower}, no combinatorial algorithm is polynomially faster, assuming the combinatorial BMM hypothesis.
-
-We work in the word RAM model; $\Sigma$ consists of integers polynomial in $n$, and $\tO$ hides factors polylogarithmic in $n$. For $u, v \in \R^2$, let $\det(u,v) = \x{u}\,\y{v} - \y{u}\,\x{v}$, let $\abs{u}$ be the Euclidean norm, and let $\inorm{u}$ be the maximum norm.
-
-\paragraph{Overview.}
-After a standard filtering step, either there are few candidate occurrences, which we verify one by one, or the pattern has two short approximate periods $\phi, \psi$ spanning a lattice of determinant $\O(k)$. Then the pattern can be partitioned into $\O(k)$ monochromatic pieces of a simple shape (lattice rectangles cut by the square $[m]^2$). The text region $A$ covered by the candidate occurrences is not periodic. However, any small piece of $A$ that is far from the boundary of $A$, relative to its size, is contained in a single candidate occurrence and is thus approximately periodic as well. A Whitney-type decomposition of $A$ yields, for every scale $D$, $\O(m/D)$ cells of size $D$ at distance $\Theta(D)$ from the boundary of $A$, and each cell is partitioned into $\O(k)$ monochromatic pieces. For every scale and every character, we count the matches between the text pieces and the pattern pieces either by enumerating all pairs of pieces, or by FFT. At distance $\Theta(D)$ from the boundary, the FFT costs only $\tO(mD)$, because such text positions can only be aligned with a strip of width $\O(D)$ along the boundary of the pattern. At every scale, the number of text pieces times the FFT cost is $\O(mk/D) \cdot \tO(mD) = \tO(m^2k)$, and choosing the cheaper method per character yields $\tO(mk)$ time per scale by the Cauchy--Schwarz inequality.
-
-\section{Tools}
+\subsection{Tools}
 
 \begin{fact}[FFT]\label{fact:fft}
 Let $S, R$ be strings with domains contained in axis-parallel rectangles of sizes $w_S \times h_S$ and $w_R \times h_R$, respectively, and let $c \in \Sigma$. The values $\Match_c(S, R + q)$ for all $q \in \Z^2$ (all but $N = (w_S + w_R)(h_S + h_R)$ of which are zero) can be computed in $\O(N \log N)$ time.
