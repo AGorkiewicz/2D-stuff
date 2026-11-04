@@ -528,7 +528,7 @@ Call an edge $\{u, u+\delta\}$ of a lattice graph, $\delta \in \{\phi,\psi\}$, a
 By Lemma~\ref{lem:connected}, a string whose domain is a truncated block is monochromatic as soon as it has no mismatching edge.
 So, to split a string into monochromatic pieces, it suffices to cut every mismatching edge.
 To keep the pieces in the shape of truncated blocks, we cut along entire lines of the lattice: first lines parallel to $\psi$, which separate the $\phi$-edges, and then, within each strip, lines parallel to $\phi$.
-Each cut increases the number of pieces by one, so we end up with one piece per coset plus one per mismatch.
+Each cut increases the number of pieces by one, so we end up with at most one piece per coset plus one per mismatch.
 
 \begin{lemma}[Decomposition]\label{lem:decomposition}
 Let $R$ be a wide rectangle, let $Y$ be a tile, and let $S$ be a string with $\dom(S) = R \cap Y$.
@@ -558,7 +558,7 @@ For $c \in \Sigma$, let $\cV_c = \{V \in \cV : c(V) = c\}$.
 The coset of $(0,1)$ consists only of \str{b}'s and forms a single piece.
 In the coset of $(0,0)$, the only mismatch is the $\psi$-edge from $(2,2)$ to $(3,3)$.
 There is no $\phi$-mismatch, so the first phase does not cut, and the second phase cuts between lattice coordinates $j = 2$ and $j = 3$ (relative to $\gamma = (0,0)$), separating the cell $(3,3)$ from the other \str{a}'s.
-We obtain $3 \le \Delta + \eta = 2 + 1$ pieces.
+We obtain $\Delta + \eta = 2 + 1 = 3$ pieces, the maximum allowed by Lemma~\ref{lem:decomposition}.
 
 \begin{figure}[t]
   \centering
@@ -603,6 +603,7 @@ Let $A = \bigcup_{q \in Q}([m]^2 + q) \subseteq [n]^2$. For $q \in Q$, we have $
 \Ham(P+q, T) = m^2 - \textstyle\sum_{c \in \Sigma} \Match_c(P + q, T|_A).
 \end{equation}
 For example, at the position $q = (1,1)$ of the running example, the pattern has $7 + 7 + 1 = 15$ matches with the characters \str{a}, \str{b}, and \str{c}, and indeed $\Ham(P + q, T) = 16 - 15 = 1$.
+
 For $u \in \Z^2$, let $\depth(u) = \min\{\inorm{u - v} : v \in \Z^2 \setminus A\}$; in particular, $\depth(u) = 0$ for $u \notin A$, and $\abs{\depth(u) - \depth(v)} \le \inorm{u - v}$.
 The depths of all $u \in [n]^2$ can be computed in $\O(n^2)$ time by a breadth-first search from $[-1,n]^2 \setminus A$ in the king's graph.
 
