@@ -794,23 +794,6 @@ To analyze the staircases, we split the plane into four quarters around the cent
   \label{fig:coverable}
 \end{figure}
 
-\begin{lemma}[Coverable sets]\label{lem:coverable}
-Let $X \subseteq \Z^2$ with $\inorm{u-v} \le r < m/2$ for all $u, v \in X$, and $\depth(u) > r$ for all $u \in X$.
-Then $X \subseteq [m]^2 + q$ for some $q \in Q$.
-Consequently, $\Ham(T|_X + \delta, T|_X) \le 8k$ for $\delta \in \{\phi,\psi\}$.
-\end{lemma}
-\begin{proof}
-Let $[x_0, x_1]$ and $[y_0, y_1]$ be the ranges of the $x$- and $y$-coordinates of $X$.
-As $x_1 - x_0 \le r < m - \ell$, we have $x_0 \ge \ell$ or $x_1 \le m - 1$, and similarly for $y$.
-Assume $x_0, y_0 \ge \ell$; the other three cases are symmetric (using the corresponding corner of the bounding box).
-The corner $(x_1, y_1)$ is within distance $r$ of a point of $X$, and hence it is in $A$, that is, in $[m]^2 + q$ for some $q \in Q \subseteq [\ell+1]^2$.
-For every $u \in X$, we have $\x q \le \ell \le x_0 \le \x u \le x_1 \le \x q + m - 1$, and similarly for $y$.
-Thus $X \subseteq [m]^2 + q$.
-
-For the second claim, if $u - \delta, u \in X$ and $T(u-\delta) \ne T(u)$, then $T(u - \delta) \neq P(u - \delta - q)$, or $P(u-\delta-q) \neq P(u-q)$, or $P(u-q) \neq T(u)$.
-Thus $\Ham(T|_X + \delta, T|_X) \le \Ham(P+q,T) + \Ham(P+\delta,P) + \Ham(P+q,T) \le 8k$.
-\end{proof}
-
 Let $z = \lceil n/2 \rceil$.
 The \emph{quarters} are $K_1 = [z,\infty)^2$, $K_2 = (-\infty, z) \times [z, \infty)$, $K_3 = (-\infty, z)^2$, and $K_4 = [z, \infty) \times (-\infty, z)$ (intersected with $\Z^2$), with the outward directions $\sigma_1 = (1,1)$, $\sigma_2 = (-1,1)$, $\sigma_3 = (-1,-1)$, and $\sigma_4 = (1,-1)$.
 Let $K_0 = [\ell, m-1]^2$ be the central square, which is covered by every occurrence $[m]^2 + q$ with $q \in [\ell+1]^2$.
@@ -818,7 +801,8 @@ We say that $w$ lies \emph{between $K_0$ and $v$} if, in each coordinate, $w$ li
 
 \begin{lemma}[Staircases]\label{lem:monotone}
 \begin{enumerate}[(a)]
-\item If $v \in A$ and $w$ lies between $K_0$ and $v$, then $w \in A$.
+\item If $v \in [m]^2 + q$ for some $q \in [\ell+1]^2$, and $w$ lies between $K_0$ and $v$, then $w \in [m]^2 + q$.
+In particular, if $v \in A$ and $w$ lies between $K_0$ and $v$, then $w \in A$.
 \item If $d \le m/8$, $u \in A \cap K_i$, and $\depth(u) \le d$, then $u + d\sigma_i \notin A$.
 \end{enumerate}
 \end{lemma}
@@ -828,6 +812,22 @@ We say that $w$ lies \emph{between $K_0$ and $v$} if, in each coordinate, $w$ li
 Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $K_0$ and $u + (d,d)$.
 If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
 (For the coordinates in which $\sigma_i$ is negative, that is, the $x$-coordinate for $i \in \{2,3\}$ and the $y$-coordinate for $i \in \{3,4\}$, we use $z - 1 + d \le m - 1$ instead.)
+\end{proof}
+
+\begin{lemma}[Coverable sets]\label{lem:coverable}
+Let $X \subseteq \Z^2$ with $\inorm{u-v} \le r < m/2$ for all $u, v \in X$, and $\depth(u) > r$ for all $u \in X$.
+Then $X \subseteq [m]^2 + q$ for some $q \in Q$.
+Consequently, $\Ham(T|_X + \delta, T|_X) \le 8k$ for $\delta \in \{\phi,\psi\}$.
+\end{lemma}
+\begin{proof}
+Let $[x_0, x_1]$ and $[y_0, y_1]$ be the ranges of the $x$- and $y$-coordinates of $X$.
+As $x_1 - x_0 \le r < m - \ell$, we have $x_0 \ge \ell$ or $x_1 \le m - 1$; let $x^\ast = x_1$ in the first case and $x^\ast = x_0$ otherwise, and define $y^\ast$ likewise.
+Then every point of $X$ lies between $K_0$ and the corner $c = (x^\ast, y^\ast)$ of the bounding box of $X$.
+The corner $c$ is within distance $r$ of a point of $X$, so $c \in A$, that is, $c \in [m]^2 + q$ for some $q \in Q$.
+By Lemma~\ref{lem:monotone}(a), $X \subseteq [m]^2 + q$.
+
+For the second claim, if $u - \delta, u \in X$ and $T(u-\delta) \ne T(u)$, then $T(u - \delta) \neq P(u - \delta - q)$, or $P(u-\delta-q) \neq P(u-q)$, or $P(u-q) \neq T(u)$.
+Thus $\Ham(T|_X + \delta, T|_X) \le \Ham(P+q,T) + \Ham(P+\delta,P) + \Ham(P+q,T) \le 8k$.
 \end{proof}
 
 \begin{lemma}[Shallow points]\label{lem:shallow}
