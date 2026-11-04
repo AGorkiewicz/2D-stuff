@@ -600,7 +600,7 @@ Let $A = \bigcup_{q \in Q}([m]^2 + q) \subseteq [n]^2$. For $q \in Q$, we have $
 For $u \in \Z^2$, let $\depth(u) = \min\{\inorm{u - v} : v \in \Z^2 \setminus A\}$; in particular, $\depth(u) = 0$ for $u \notin A$, and $\abs{\depth(u) - \depth(v)} \le \inorm{u - v}$.
 The depths of all $u \in [n]^2$ can be computed in $\O(n^2)$ time by a breadth-first search from $[-1,n]^2 \setminus A$ in the king's graph.
 
-\autoref{fig:active} shows an example.
+In the running example, the candidates $(0,0)$, $(2,0)$, $(0,2)$, and $(2,2)$ cover the whole text, so $A = [6]^2$; this example is too small to show the structure of $A$, so \autoref{fig:active} shows a larger one.
 Since all candidate positions lie in the small square $[\ell+1]^2$, every occurrence $[m]^2 + q$ covers the central square $[\ell, m-1]^2$, and $A$ looks like a square whose four corners are cut off by staircases.
 Our main tool is that a small set deep inside $A$ is covered by a single candidate occurrence (Lemma~\ref{lem:coverable} and \autoref{fig:coverable}); then the text restricted to it inherits the approximate periods of the pattern.
 To analyze the staircases, we split the plane into four quarters around the center of $[n]^2$ and argue about one quarter at a time.
@@ -758,7 +758,8 @@ To analyze the staircases, we split the plane into four quarters around the cent
   \end{tikzpicture}
   \caption{The active text $A$ (shaded) for $n = 12$, $m = 8$, and six candidate positions (violet dots, at the lower left corners of the occurrences); one occurrence $[m]^2 + (3,2)$ is dashed (violet), and so is the central square $C = [4,7]^2$ (gray).
     The shade indicates the depth: dark cells have depth $1$, medium cells depth $2$, and light cells larger depth.
-    The black lines split the plane into the quarters $K_1, \dots, K_4$.}
+    The black lines split the plane into the quarters $K_1, \dots, K_4$.
+    Moving from any point of $A$ towards $C$, coordinate by coordinate, never leaves $A$ (Lemma~\ref{lem:monotone}).}
   \label{fig:active}
 \end{figure}
 
@@ -821,7 +822,7 @@ We say that $w$ lies \emph{between $C$ and $v$} if, in each coordinate, $w$ lies
 (b) Consider $i = 1$; the other quarters are symmetric.
 Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $C$ and $u + (d,d)$.
 If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
-(For $i = 3$, we use $z - 1 + d \le m - 1$ instead.)
+(For the coordinates in which $\sigma_i$ is negative, that is, the $x$-coordinate for $i \in \{2,3\}$ and the $y$-coordinate for $i \in \{3,4\}$, we use $z - 1 + d \le m - 1$ instead.)
 \end{proof}
 
 \begin{lemma}[Shallow points]\label{lem:shallow}
