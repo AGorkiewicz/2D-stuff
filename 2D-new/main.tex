@@ -317,8 +317,9 @@ The assumption $n \le \frac32 m$ has two benefits: all differences of positions,
 \paragraph{Filtering.} We compute the values $h(q)$ of Fact~\ref{fact:karloff} and let $Q = \{q : h(q) \le 2k\}$.
 Then every $q$ with $\Ham(P+q,T) \le k$ is in $Q$, and $\Ham(P+q,T) \le 2k$ for every $q \in Q$.
 For every $q \notin Q$, the answer is $k+1$.
-If $\abs{Q} \le 32m + m^2/k$, we finish with Lemma~\ref{lem:kangaroo} in $\O(m^2 + mk)$ time.
+If $\abs{Q} \le 32m + m^2/k$, we finish with Lemma~\ref{lem:kangaroo} in $\O(m^2 + \abs{Q}k) = \O(m^2 + mk)$ time.
 From now on, we assume $\abs{Q} > 32m + m^2/k$.
+The two terms of this threshold have different purposes: $\abs{Q} > 32m$ guarantees that $Q$ contains two close points (Lemma~\ref{lem:two_periods} below), and $\abs{Q} > m^2/k$ guarantees that the two periods span a parallelogram of area $\O(k)$.
 
 \begin{lemma}[Differences are periods]\label{lem:period}
 For all $u, v \in Q$, we have $\Ham(P + (u - v), P) \le 4k$.
@@ -426,6 +427,7 @@ Let $L = \{i\phi + j\psi : i, j \in \Z\}$. We write $u \equiv v$ if $u - v \in L
 \[\kappa(u) = (\det(u, \psi), \det(\phi, u)) \in \Z^2 \quad\text{for } u \in \Z^2.\]
 Since $u = (\kappa_1(u)\phi + \kappa_2(u)\psi)/\Delta$ (apply $\det(\cdot,\psi)$ and $\det(\phi,\cdot)$ to both sides to check this), we have $u \equiv v$ if and only if $\kappa(u) \equiv \kappa(v) \pmod \Delta$ (componentwise), and $\kappa(\gamma + i\phi + j\psi) = \kappa(\gamma) + \Delta\cdot(i,j)$.
 In particular, congruence classes can be computed in constant time per point.
+There are exactly $\Delta$ congruence classes: the half-open parallelogram $\{s\phi + t\psi : s, t \in [0,1)\}$ has area $\Delta$ and contains exactly one point of every class.
 
 \begin{definition}
 A \emph{block} is a set $\gamma + I\phi + J\psi := \{\gamma + i\phi + j\psi : i \in I, j \in J\}$, where $\gamma \in \Z^2$ and $I, J \subseteq \Z$ are (possibly unbounded) intervals.
