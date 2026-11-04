@@ -898,7 +898,7 @@ Moreover, $\abs{A_\res} = \O(m)$, and there are $\O(m/D_j)$ selected level-$j$ c
 Let $j < J$, and let $u$ be in a selected level-$j$ cell with parent $C'$.
 As $C'$ is not good, some $u' \in C'$ has $\depth(u') \le 2D_{j+1}$, and $\inorm{u - u'} \le 2D_{j+1}$ by (C2), so $\depth(u) \le 4D_{j+1} = 8D_j$.
 The selected level-$j$ cells are disjoint, contain at least $D_j^2/16$ points each by (C3), and these points have depth at most $8D_j$; by Lemma~\ref{lem:shallow}, there are $\O(mD_j)/(D_j^2/16) = \O(m/D_j)$ such cells.
-For $j = J$, the bound $d_J = n$ is trivial, and there are at most $16n^2/D_J^2 = \O(1)$ selected level-$J$ cells.
+For $j = J$, the bound $d_J = n$ is trivial, and since $D_J > m/32$ by the choice of $J$, there are at most $16n^2/D_J^2 = \O(1)$ selected level-$J$ cells.
 
 Now let $u \in A_\res$.
 If the level-$0$ cell of $u$ were good, then its highest good ancestor (of level at most $J$) would be selected and would contain $u$.
@@ -1068,7 +1068,31 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
 \section{The algorithm}
 \label{sec:algorithm}
 
-\autoref{alg:main} puts the pieces together, for $n \le \frac32 m$.
+\autoref{alg:main} puts the pieces together, for $n \le \frac32 m$, and \autoref{fig:flow} shows how the parts of the algorithm depend on each other.
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[
+      box/.style={draw=gray!70, rounded corners=3pt, fill=white, align=center, font=\small, inner sep=4pt, minimum height=1.0cm},
+      arr/.style={-{Stealth[length=5pt]}, gray!70!black, thick}]
+    \node[box] (filter) at (0,0) {filter $Q$\\(Fact~\ref{fact:karloff})};
+    \node[box] (kang) at (0,-1.9) {few candidates:\\kangaroo jumps};
+    \node[box] (per) at (3.3,0) {periods $\phi, \psi$\\(Lemma~\ref{lem:two_periods})};
+    \node[box] (pat) at (6.6,0.95) {pattern pieces $\cV$\\(Lemma~\ref{lem:decomposition})};
+    \node[box] (act) at (6.6,-0.95) {active text $A$,\\cells, text blocks $\cS_\iota$};
+    \node[box] (cnt) at (10.2,0) {per level and character:\\pairing or FFT\\(Lemmas~\ref{lem:pairing},~\ref{lem:strips})};
+    \node[box] (out) at (10.2,-1.9) {$\Ham(P+q,T)$\\for $q \in Q$};
+    \draw[arr] (filter) -- (kang);
+    \draw[arr] (filter) -- (per);
+    \draw[arr] (per) -- (pat);
+    \draw[arr] (per) -- (act);
+    \draw[arr] (pat) -- (cnt);
+    \draw[arr] (act) -- (cnt);
+    \draw[arr] (cnt) -- (out);
+  \end{tikzpicture}
+  \caption{The parts of the algorithm and how they depend on each other.}
+  \label{fig:flow}
+\end{figure}
 
 \begin{algorithm}[ht]
   \caption{Two-dimensional pattern matching with $k$ mismatches, for $n \le \frac32 m$.}
