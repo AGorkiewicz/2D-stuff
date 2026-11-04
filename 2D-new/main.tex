@@ -942,4 +942,37 @@ where $\mu_{ij}$ is the number of $u \in (S_P + q_{ij}) \cap G'$ with $P(u - q_{
 \emph{Parameters.} Let $b = \Theta(N^\beta)$ and $s = \Theta(N^\gamma)$. Then $m = \Theta(N)$, $k = \Theta(m^{1+\beta})$, and $n = \Theta(m^{1+\gamma})$. Stacking the matrices $X^{(r)}$ yields a Boolean product of size $N_1 \times N_2 \times N_3$ with $N_1 = s^2N$, $N_2 = b$, and $N_3 = N$, where $N_1N_2N_3 = \Theta(s^2N^2b) = \Theta(kn^2/m)$. An $\O((kn^2/m)^{1-\varepsilon})$-time combinatorial algorithm for the problem would thus multiply these matrices in $\O((N_1N_2N_3)^{1-\varepsilon} + n^2) = \O((N_1N_2N_3)^{1-\varepsilon'})$ time for some constant $\varepsilon' > 0$ (as $n^2 = \Theta(N_1N_3) = \Theta(N_1N_2N_3/N^\beta)$ is polynomially smaller than $N_1N_2N_3$), contradicting Fact~\ref{fact:rect}.
 \end{proof}
 
+
+\section{Notes}
+\label{sec:notes}
+
+\paragraph{Combinatorial and algebraic algorithms.}
+The lower bound of \autoref{sec:lower} only concerns combinatorial algorithms, while our algorithm uses FFT.
+It is open whether there is a combinatorial algorithm with running time $\tO(n^2 + kn^2/m)$, and whether fast matrix multiplication can be used to beat this bound by a polynomial factor, as it can for related one-dimensional problems.
+
+\paragraph{Rectangles and higher dimensions.}
+We assumed square arrays to keep the number of parameters small.
+The approach should extend to rectangular patterns and texts, and the lattice and the Whitney decomposition generalize to higher dimensions; we have not worked out the resulting bounds.
+
+\paragraph{Where the old bound came from.}
+A previous version of this algorithm used a single threshold $d$ instead of a hierarchy of levels: text points at depth more than $d$ were always paired with the pattern pieces, and those at depth at most $d$ were always handled by FFT, with a fixed split of the characters into frequent and infrequent ones.
+Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend on both the level and the character is what removes the extra factor $k^{1/4}$.
+
+\section{Exercises}
+\label{sec:exercises}
+
+\begin{enumerate}
+  \item Show that the selected cells of all levels together number $\O(m)$, and conclude that the text blocks number $\O(mk)$.
+  \item Show that Lemma~\ref{lem:shallow} is tight: for every $d \le m/8$, every active text has $\Omega(md)$ points of depth at most $d$.
+    \emph{Hint:} consider the points close to the boundary of $[n]^2$.
+  \item Lemma~\ref{lem:connected} needs the rectangle to be wide in both coordinates.
+    Find an example where the rectangle is wide in the $x$-coordinate but not in the $y$-coordinate, and the lattice graph of the truncated block is disconnected.
+  \item Show that in Lemma~\ref{lem:two_periods}, the bound $\abs{\phi}\abs{\psi} = \O(\ell^2/\abs{U})$ is best possible up to the constant factor, by considering a set $U$ that is a lattice coset.
+  \item In the reduction of \autoref{sec:lower}, the text contains $\bot$ instead of the filler $0$ at the cells of $G$ with $X[i][t] = 0$.
+    What goes wrong if we use $0$ there instead?
+    \emph{Hint:} the number of pattern characters that lie on non-filler text characters would no longer be the number of points in a rectangle.
+  \item Trace the decomposition of Lemma~\ref{lem:decomposition} on the text of \autoref{fig:problem}, using the periods $\phi = (1,-1)$ and $\psi = (1,1)$ and the whole text $[6]^2$ as the wide rectangle.
+    How many pieces do you get, and which mismatches cause the cuts?
+\end{enumerate}
+
 \end{document}
