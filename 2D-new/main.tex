@@ -211,6 +211,7 @@ For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
     symbol & meaning & defined in \\
     \midrule
     $\ell = n - m$ & positions are $[\ell+1]^2$, with $\ell \le m/2$ & \autoref{sec:periods} \\
+    $h(q)$ & approximation of $\Ham(P+q,T)$ within a factor of $2$ & \autoref{sec:periods} \\
     $Q$ & candidate positions, each with at most $2k$ mismatches & \autoref{sec:periods} \\
     $\phi, \psi$ & the two periods, pointing to the lower and upper right & \autoref{sec:periods} \\
     $\Delta = \det(\phi,\psi)$ & number of cosets of the lattice $L$, $\Delta < 8k$ & \autoref{sec:periods} \\
@@ -293,7 +294,7 @@ where $\Ham$ of one-dimensional strings of equal length is defined in the natura
 We build the suffix array of the concatenation of all columns of $P$ and $T$ (separated by unique delimiters), augmented for LCE queries; this takes $\O(n^2)$ time for integer alphabets.
 Two of the strings $p_x$ and $t_{x,y}$ are equal if and only if the LCE of their starting positions is at least $m$.
 So, scanning the suffix array, we assign to each of them an integer identifier $\mathrm{id}(\cdot)$, such that equal strings get equal identifiers.
-Then, for every $y$, we form the one-dimensional string $\mathrm{id}(t_{0,y}) \cdots \mathrm{id}(t_{n-1,y})$, and we build an LCE structure for these strings together with $\mathrm{id}(p_0) \cdots \mathrm{id}(p_{m-1})$ (total length $\O(n^2)$).
+Then, for every $y$, we form the one-dimensional string $\mathrm{id}(t_{0,y}) \cdots \mathrm{id}(t_{n-1,y})$, and we build an LCE structure for the concatenation of these strings and the string $\mathrm{id}(p_0) \cdots \mathrm{id}(p_{m-1})$ (total length $\O(n^2)$).
 
 \emph{Queries.}
 Fix $q \in Q'$.
