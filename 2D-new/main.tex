@@ -217,7 +217,28 @@ Given $N$ weighted axis-parallel boxes in $\R^4$ and $M$ points in $\R^4$, the t
 
 The fourth tool verifies a set of candidate positions.
 In one dimension, the mismatches between two strings can be enumerated with \emph{kangaroo jumps}: a longest common extension (LCE) query, which returns the length of the longest common prefix of two suffixes in constant time after linear-time preprocessing, jumps over a maximal block of matching characters.
-In two dimensions, we jump in two levels: first over equal columns, and then within a column.
+In two dimensions, we jump in two levels: first over equal columns, and then within a column (\autoref{fig:kangaroo}).
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}
+    \fill[red!8] (-0.23,0.23) rectangle (0.23,-1.61);
+    \chargrid{0}{0}{{b,a,b,c},{a,b,a,b},{b,a,b,a},{a,b,a,b}}
+    \node[cell, mis] at (0,0) {b};
+    \foreach \c/\l in {0/\ne, 1/=, 2/=, 3/=}
+      \node[font=\small] at (\c*0.46, 0.55) {$\l$};
+    \node[font=\small] at (0.69,-2.05) {pattern $P$};
+    \begin{scope}[xshift=3.2cm]
+      \fill[red!8] (-0.23,0.23) rectangle (0.23,-1.61);
+      \chargrid{0}{0}{{a,a,b,c},{a,b,a,b},{b,a,b,a},{a,b,a,b}}
+      \node[cell, mis] at (0,0) {a};
+      \node[font=\small] at (0.69,-2.05) {text window at $q = (1,1)$};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{Kangaroo jumps in two levels, for the running example at $q = (1,1)$.
+    Comparing column identifiers skips the three equal columns at once; only the first column differs, and within it, a jump along the column finds the single mismatch.}
+  \label{fig:kangaroo}
+\end{figure}
 
 \begin{lemma}[Kangaroo jumps]\label{lem:kangaroo}
 Given $Q' \subseteq [n-m+1]^2$, one can compute $\min\{k+1, \Ham(P+q, T)\}$ for all $q \in Q'$ in $\O(n^2 + \abs{Q'} k)$ time.
@@ -469,7 +490,7 @@ For $u \in \Z^2$, let $\depth(u) = \min\{\inorm{u - v} : v \in \Z^2 \setminus A\
 
 \autoref{fig:active} shows an example.
 Since all candidate positions lie in the small square $[\ell+1]^2$, every occurrence $[m]^2 + q$ covers the central square $[\ell, m-1]^2$, and $A$ looks like a square whose four corners are cut off by staircases.
-Our main tool is that a small set deep inside $A$ is covered by a single candidate occurrence (Lemma~\ref{lem:coverable}); then the text restricted to it inherits the approximate periods of the pattern.
+Our main tool is that a small set deep inside $A$ is covered by a single candidate occurrence (Lemma~\ref{lem:coverable} and \autoref{fig:coverable}); then the text restricted to it inherits the approximate periods of the pattern.
 To analyze the staircases, we split the plane into four quarters around the center of $[n]^2$ and argue about one quarter at a time.
 
 \begin{figure}[t]
@@ -625,6 +646,31 @@ To analyze the staircases, we split the plane into four quarters around the cent
     The shade indicates the depth: dark cells have depth $1$, medium cells depth $2$, and light cells larger depth.
     The black lines split the plane into the quarters $K_1, \dots, K_4$.}
   \label{fig:active}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[scale=0.42]
+    \fill[orange!12] (0,4) rectangle (8,12);
+    \fill[orange!12] (4,0) rectangle (12,8);
+    \fill[orange!12] (3,3) rectangle (11,11);
+    \draw[gray] (0,0) rectangle (12,12);
+    \draw[gray, densely dashed] (4,4) rectangle (8,8);
+    \node[gray, font=\small] at (6,6) {$C$};
+    \draw[violet, very thick] (3,3) rectangle (11,11);
+    \node[violet, font=\small, anchor=south west] at (3,3) {$[m]^2 + q$};
+    \draw[densely dotted, thick] (7.15,7.35) rectangle (10.45,10.65);
+    \draw[gray, densely dashed] (8.25,8.45) rectangle (9.35,9.55);
+    \fill[blue!40, draw=blue!70!black, rotate around={30:(8.8,9.0)}] (8.4,8.6) rectangle (9.2,9.4);
+    \node[font=\small] at (8.0,9.0) {$X$};
+    \fill[red!75!black] (9.35,9.55) circle (4pt);
+    \node[font=\small, text=red!75!black, anchor=south west] at (9.35,9.55) {$(x_1,y_1)$};
+    \node[font=\small] at (1.4,1.2) {$[n]^2$};
+  \end{tikzpicture}
+  \caption{Lemma~\ref{lem:coverable}.
+    All points within distance $r$ of the small set $X$ (dotted square) lie in the active text $A$ (shaded).
+    In particular, the corner $(x_1, y_1)$ of the bounding box of $X$ (dashed) lies in some occurrence $[m]^2 + q$, which then contains all of $X$, since $X$ lies between this corner and the central square $C$.}
+  \label{fig:coverable}
 \end{figure}
 
 \begin{lemma}[Coverable sets]\label{lem:coverable}
