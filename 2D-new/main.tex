@@ -115,7 +115,7 @@ For every \emph{position} $q$, that is, every placement of the pattern inside th
 \end{figure}
 
 The classical algorithm of Amir and Landau solves this problem in $\O(kn^2)$ time.
-In these notes, we show the following.
+In this paper, we show the following.
 
 \begin{theorem}\label{thm:main}
   The problem can be solved in $\tO(n^2 + kn^2/m)$ time.
@@ -167,8 +167,8 @@ Sections~\ref{sec:active} and~\ref{sec:multiscale} study the region $A$ and cut 
     & time & quasi-linear for \\
     \midrule
     Amir and Landau & $\O(kn^2)$ & $k = \tO(1)$ \\
-    single threshold (\autoref{sec:notes}) & $\tO(n^2 + k^{5/4} n^2/m)$ & $k = \O(m^{4/5})$ \\
-    these notes & $\tO(n^2 + kn^2/m)$ & $k = \O(m)$ \\
+    single threshold (\autoref{sec:remarks}) & $\tO(n^2 + k^{5/4} n^2/m)$ & $k = \O(m^{4/5})$ \\
+    this paper & $\tO(n^2 + kn^2/m)$ & $k = \O(m)$ \\
     lower bound (combinatorial) & $(kn^2/m)^{1-o(1)}$ & --- \\
     \bottomrule
   \end{tabular}
@@ -404,7 +404,7 @@ If $\theta \ge 90^\circ$, the line through $w'$ has angle in $(34^\circ, 56^\cir
 In both cases, $\psi$ and $\phi$ lie in the claimed quadrants, and the counterclockwise angle from $\phi$ to $\psi$ is in $(34^\circ, 146^\circ)$, hence $\det(\phi,\psi) = \abs{\phi}\abs{\psi}\sin(\angle(\phi,\psi)) \ge \frac12\abs{\phi}\abs{\psi}$.
 \end{proof}
 
-We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$) and fix $\phi, \psi$ for the rest of these notes.
+We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$) and fix $\phi, \psi$ for the rest of the paper.
 Let $\Delta = \det(\phi,\psi) \in \Z$.
 We have
 \[ 1 \le \Delta \le \abs{\phi}\abs{\psi} \le 2\Delta, \qquad \Delta < 30\ell^2/\abs{Q} < 30 \ell^2 k / m^2 < 8k,\qquad \inorm{\phi}, \inorm{\psi} \le \ell, \]
@@ -1164,7 +1164,7 @@ With the reduction to $n \le 3m/2$, this proves Theorem~\ref{thm:main}: $\O(n^2/
 
 Informally, an algorithm is \emph{combinatorial} if it does not rely on algebraic techniques such as fast matrix multiplication; there is no generally accepted formal definition.
 The \emph{combinatorial BMM hypothesis} states that for every $\varepsilon > 0$, there is no combinatorial algorithm that multiplies two $N \times N$ Boolean matrices in $\O(N^{3-\varepsilon})$ time.
-We show that, under this hypothesis, no combinatorial algorithm can beat the bound of Theorem~\ref{thm:main} by a polynomial factor (although our algorithm itself uses FFT, see \autoref{sec:notes}).
+We show that, under this hypothesis, no combinatorial algorithm can beat the bound of Theorem~\ref{thm:main} by a polynomial factor (although our algorithm itself uses FFT, see \autoref{sec:remarks}).
 
 \begin{fact}\label{fact:rect}
 Assume the combinatorial BMM hypothesis, let $\xi_1, \xi_2, \xi_3 > 0$ be constants, and let $N$ be a growing parameter.
@@ -1264,8 +1264,8 @@ An $\O((kn^2/m)^{1-\varepsilon})$-time combinatorial algorithm for the problem w
 \end{proof}
 
 
-\section{Notes}
-\label{sec:notes}
+\section{Concluding remarks}
+\label{sec:remarks}
 
 \paragraph{Combinatorial and algebraic algorithms.}
 The lower bound of \autoref{sec:lower} only concerns combinatorial algorithms, while our algorithm uses FFT.
@@ -1280,29 +1280,8 @@ In two dimensions, the candidate occurrences can form a staircase with many step
 We assumed square arrays to keep the number of parameters small.
 The approach should extend to rectangular patterns and texts, and the lattice and the Whitney decomposition generalize to higher dimensions; we have not worked out the resulting bounds.
 
-\paragraph{A simpler but slower variant.}
-A previous version of this algorithm used a single threshold $d$ instead of a hierarchy of levels: text points at depth more than $d$ were always paired with the pattern pieces, and those at depth at most $d$ were always handled by FFT, with a fixed split of the characters into frequent and infrequent ones.
+\paragraph{Comparison with the previous bound.}
+The previous algorithm for the problem used a single threshold $d$ instead of a hierarchy of levels: text points at depth more than $d$ were always paired with the pattern pieces, and those at depth at most $d$ were always handled by FFT, with a fixed split of the characters into frequent and infrequent ones.
 Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the depth threshold depend on the character, namely on its number of pattern pieces, is what removes the extra factor $k^{1/4}$.
-
-\section{Exercises}
-\label{sec:exercises}
-
-\begin{enumerate}
-  \item Show that the selected cells of all levels together number $\O(m)$, and conclude that the text blocks number $\O(mk)$.
-    \emph{Hint:} use Lemma~\ref{lem:levels} and sum a geometric series.
-  \item Show that Lemma~\ref{lem:shallow} is tight: for every $d \le m/8$, every active text has $\Omega(md)$ points of depth at most $d$.
-    \emph{Hint:} every row of $A$ is an interval, and at least $m/2$ rows of $A$ have length at least $m$.
-  \item Lemma~\ref{lem:connected} needs the rectangle to be wide in both coordinates.
-    Find an example where the rectangle is wide in the $x$-coordinate but not in the $y$-coordinate, and the lattice graph of the truncated block is disconnected.
-  \item Show that in Lemma~\ref{lem:two_periods}, the bound $\abs{\phi}\abs{\psi} = \O(\ell^2/\abs{U})$ is best possible up to the constant factor, by considering a set $U$ that is a lattice coset.
-  \item In the reduction of \autoref{sec:lower}, the text contains $\bot$ instead of the filler $0$ at the cells of $G$ with $X[i][t] = 0$.
-    What goes wrong if we use $0$ there instead?
-    \emph{Hint:} the number of pattern characters that lie on non-filler text characters would no longer be the number of points in a rectangle.
-  \item \autoref{alg:main} chooses between pairing and FFT by comparing $\abs{\cV_c}$ with $d_\iota$.
-    Show that the rule that chooses, for every level and character, the cheaper of the two methods (with costs $\abs{\cS_{\iota,c}}\abs{\cV_c}$ and $md_\iota$) also yields $\tO(m^2 + mk)$ time.
-    \emph{Hint:} use $\min\{x,y\} \le \sqrt{xy}$ and the Cauchy--Schwarz inequality for every level.
-  \item Trace the decomposition of Lemma~\ref{lem:decomposition} on the text of \autoref{fig:problem}, using the periods $\phi = (1,-1)$ and $\psi = (1,1)$ and the whole text $[6]^2$ as the wide rectangle.
-    How many pieces do you get, and which mismatches cause the cuts?
-\end{enumerate}
 
 \end{document}
