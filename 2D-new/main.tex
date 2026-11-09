@@ -39,7 +39,6 @@
 \newcommand{\cS}{\mathcal{S}}
 \newcommand{\cV}{\mathcal{V}}
 \newcommand{\cC}{\mathcal{C}}
-\newcommand{\res}{\mathrm{res}}
 \newcommand{\abs}[1]{\lvert #1 \rvert}
 \newcommand{\inorm}[1]{\lvert #1 \rvert_\infty}
 \newcommand{\x}[1]{#1.x}
@@ -147,7 +146,7 @@ The FFT is cheap close to the boundary: a text cell at distance $D$ from the bou
 For a character $c$, let $r_c$ be the number of pattern pieces with character $c$; these numbers add up to $\O(k)$.
 For every character $c$, we pair its text pieces at depth at least $r_c$ with its pattern pieces, and we use FFT closer to the boundary.
 At depth about $D$, there are $\O(mk/D)$ text pieces, and each of them is paired with at most $D$ pattern pieces, so pairing costs $\O(mk)$ per depth.
-For a character $c$, the FFT runs at the depths $D < r_c$, which grow geometrically, so it costs $\sum_{D < r_c} \tO(mD) = \tO(mr_c)$, and $\tO(mk)$ over all characters.
+For a character $c$, a single FFT handles all its text points at depth less than about $r_c$ and costs $\tO(mr_c)$, so $\tO(mk)$ over all characters.
 Neither method suffices on its own: pairing alone costs up to $\O(mk/D) \cdot \O(k) = \O(mk^2/D)$, which is too much for small $D$, and FFT alone costs $\tO(mD)$ for every character, which is too much if there are many characters.
 With $\O(\log m)$ depths and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gives \autoref{thm:main}.
 
@@ -223,9 +222,9 @@ For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
     $\depth(u)$ & distance from $u$ to the complement of $A$ & \autoref{sec:active} \\
     $K_i$, $\sigma_i$ & quarters of the plane and their outward directions & \autoref{sec:active} \\
     $D_j$ & side length of the level-$j$ cells & \autoref{sec:multiscale} \\
-    $A_\iota$, $d_\iota$ & points of level $\iota$, and their depth bound & \autoref{sec:multiscale} \\
-    $\cS_\iota$, $\cS_{\iota,c}$ & text blocks of level $\iota$ (with character $c$) & \autoref{sec:multiscale} \\
-    $M_{\iota,c}(q)$ & matches with character $c$ between $P + q$ and $T|_{A_\iota}$ & \autoref{sec:counting} \\
+    $\cS_j$ & text blocks of the selected level-$j$ cells & \autoref{sec:multiscale} \\
+    $r_c$ & number of pattern pieces with character $c$ & \autoref{sec:counting} \\
+    $F_c$, $d_c$ & points with character $c$ outside deep blocks, and their depth bound & \autoref{sec:counting} \\
     \bottomrule
   \end{tabular}
   \caption{Notation.}
@@ -892,50 +891,59 @@ The children of a good cell are good, since they are smaller.
 A good level-$j$ cell is \emph{selected} if $j = J$ or its parent is not good; that is, the selected cells are the maximal good cells.
 The selected cells are pairwise disjoint: by (C1), if two cells intersect, then one contains the other, and if the larger one is good, then the parent of the smaller one is good as well, so the smaller one is not selected.
 
-\paragraph{Levels.}
-For $j \in \{0, \dots, J\}$, let $A_j$ be the union of the selected level-$j$ cells, and let $A_\res = A \setminus \bigcup_j A_j$ be the \emph{residual} points.
-We call $\res, 0, \dots, J$ the \emph{levels}, and we define the \emph{depth bounds} $d_\res = 4D_0$, $d_j = 8D_j$ for $j < J$, and $d_J = n$.
-
-\begin{lemma}[Levels]\label{lem:levels}
-For every level $\iota$, every $u \in A_\iota$ satisfies $\depth(u) \le d_\iota$.
-Moreover, $\abs{A_\res} = \O(m)$, and there are $\O(m/D_j)$ selected level-$j$ cells for every $j \in \{0, \dots, J\}$.
+\begin{lemma}[Selected cells]\label{lem:levels}
+Every point of a selected level-$j$ cell has depth more than $2D_j$, and at most $8D_j$ if $j < J$.
+There are $\O(m/D_j)$ selected level-$j$ cells, for every $j \in \{0, \dots, J\}$.
+Every point of $A$ that lies in no selected cell has depth at most $4D_0$.
 \end{lemma}
 \begin{proof}
+The lower bound holds since selected cells are good.
 Let $j < J$, and let $u$ be in a selected level-$j$ cell with parent $C'$.
 As $C'$ is not good, some $u' \in C'$ has $\depth(u') \le 2D_{j+1}$, and $\inorm{u - u'} \le 2D_{j+1}$ by (C2), so $\depth(u) \le 4D_{j+1} = 8D_j$.
 The selected level-$j$ cells are disjoint, contain at least $D_j^2/16$ points each by (C3), and these points have depth at most $8D_j$; by Lemma~\ref{lem:shallow}, there are $\O(mD_j)/(D_j^2/16) = \O(m/D_j)$ such cells.
-For $j = J$, the bound $d_J = n$ is trivial, and since $D_J > m/32$ by the choice of $J$, there are at most $16n^2/D_J^2 = \O(1)$ selected level-$J$ cells.
+For $j = J$, since $D_J > m/32$ by the choice of $J$, there are at most $16n^2/D_J^2 = \O(1)$ selected level-$J$ cells.
 
-Now let $u \in A_\res$.
+Now let $u \in A$ lie in no selected cell.
 If the level-$0$ cell of $u$ were good, then its highest good ancestor (of level at most $J$) would be selected and would contain $u$.
 Hence some $u'$ in the level-$0$ cell of $u$ has $\depth(u') \le 2D_0$, and thus $\depth(u) \le 4D_0$.
-By Lemma~\ref{lem:shallow}, $\abs{A_\res} = \O(m)$.
 \end{proof}
 
 \paragraph{Text blocks.} For every selected cell $C$, the string $T|_C$ has domain $C$, a tile, and by Lemma~\ref{lem:coverable}, $\Ham(T|_C + \delta, T|_C) \le 8k$ for $\delta \in \{\phi,\psi\}$.
-By Lemma~\ref{lem:decomposition} (with $R = \Z^2$), $T|_C$ can be partitioned into at most $\Delta + 16k < 24k$ monochromatic strings whose domains are blocks.
-For $j \in \{0,\dots,J\}$, let $\cS_j$ be the set of all such strings obtained from the selected level-$j$ cells, and let $\cS_\res = \{T|_{\{u\}} : u \in A_\res\}$ (a singleton is a block).
-For every level $\iota$ and $c \in \Sigma$, let $\cS_{\iota,c} = \{S \in \cS_\iota : c(S) = c\}$.
-By Lemma~\ref{lem:levels}, for every level $\iota$,
+By Lemma~\ref{lem:decomposition} (with $R = \Z^2$), $T|_C$ can be partitioned into at most $\Delta + 16k < 24k$ monochromatic strings whose domains are blocks, the \emph{text blocks} of $C$.
+For $j \in \{0,\dots,J\}$, let $\cS_j$ be the set of the text blocks of all selected level-$j$ cells.
+By Lemma~\ref{lem:levels},
 \begin{equation}\label{eq:pieces}
-\abs{\cS_\iota} \cdot d_\iota = \O(mk).
+\abs{\cS_j} = \O(mk/D_j).
 \end{equation}
 All of this takes $\tO(m^2 + mk)$ time.
 The depths take $\O(n^2)$ time.
 For every level, we compute the cell of every point of $[n]^2$ from $\kappa$, and the minimum depth in every cell, in $\O(n^2)$ time; this determines the good and the selected cells, in $\O(n^2 \log m)$ time over all levels.
-Every point of $A$ is processed by Lemma~\ref{lem:decomposition} at most once, and $\sum_\iota \abs{\cS_\iota} = \tO(mk)$.
+Every point of $A$ is processed by Lemma~\ref{lem:decomposition} at most once, and $\sum_j \abs{\cS_j} = \O(mk)$.
 
 \section{Counting matches}
 \label{sec:counting}
 
-For a level $\iota$, a character $c$, and $q \in [\ell+1]^2$, let
-\[ M_{\iota,c}(q) = \Match_c(P + q, T|_{A_\iota}) = \sum_{S \in \cS_{\iota,c}}\ \sum_{V \in \cV_c} \abs{\dom(S) \cap \dom(V+q)}, \]
-where the second equality holds because the strings in $\cS_{\iota,c}$ partition the points of $A_\iota$ with character $c$, and the strings $V + q$ with $V \in \cV_c$ partition the points of $P + q$ with character $c$.
-Since the sets $A_\iota$ partition $A$, (\ref{eq:ham_match}) gives $\Ham(P + q, T) = m^2 - \sum_\iota \sum_c M_{\iota,c}(q)$ for every $q \in Q$.
-We provide two ways of computing the values $M_{\iota,c}(q)$.
+By (\ref{eq:ham_match}), it suffices to count the matches between $P + q$ and $T|_A$, for every $q \in Q$.
+We split the points of $A$ into two parts, and count the matches in each part in a different way.
+For a character $c$, let $r_c = \abs{\cV_c}$ be its number of pattern pieces.
+A text block $S \in \cS_j$ is \emph{deep} if $r_{c(S)} \le 2D_j$, that is, if its character has few pattern pieces compared to the depth of the block.
+The matches in the deep text blocks are counted by pairing them with the pattern pieces.
+For every character $c$, let $F_c$ be the set of points of $A$ with character $c$ that lie in no deep text block; the matches in $F_c$ are counted by FFT.
+
+\begin{lemma}[Shallow remainder]\label{lem:remainder}
+Let $d_c = 4r_c + 4D_0$.
+If $d_c \le m/8$, then every point of $F_c$ has depth at most $d_c$.
+\end{lemma}
+\begin{proof}
+Let $u \in F_c$.
+If $u$ lies in no selected cell, then $\depth(u) \le 4D_0 \le d_c$ by Lemma~\ref{lem:levels}.
+Otherwise, $u$ lies in a text block $S \in \cS_j$ that is not deep, so $2D_j < r_c$.
+If $j < J$, then $\depth(u) \le 8D_j < 4r_c \le d_c$ by Lemma~\ref{lem:levels}.
+If $j = J$, then $r_c > 2D_J > m/16$, so $d_c > m/8$.
+\end{proof}
 
 \paragraph{Pairing.}
-The first way enumerates all pairs of a text block $S \in \cS_{\iota,c}$ and a pattern piece $V \in \cV_c$, and adds up $\abs{\dom(S) \cap \dom(V + q)}$ for all $q$ simultaneously.
+For the deep text blocks, we enumerate all pairs of a text block $S$ and a pattern piece $V$ with the same character, and adds up $\abs{\dom(S) \cap \dom(V + q)}$ for all $q$ simultaneously.
 For a single pair, this intersection count is a function of $q$ that is determined by the constant-size descriptions of $S$ and $V$, but it is not obvious how to add up many such functions quickly.
 The trick is to write the block $S$, which is a rectangle in lattice coordinates, as a signed sum of four \emph{cones}, that is, quadrants in lattice coordinates (\autoref{fig:cones}).
 A cone has a single corner, so intersecting it with $V + q$ depends only on the difference of $V$ and the corner, and all pairs can be combined into a single function on the plane, of which we take cone sums, that is, suffix sums in lattice coordinates.
@@ -962,10 +970,12 @@ On the pattern side, the truncation does no harm, since the pattern pieces enter
 \end{figure}
 
 \begin{lemma}[Pairing]\label{lem:pairing}
-Let $\Pi$ be a set of pairs $(\iota, c)$ of a level and a character, and let $N = \sum_{(\iota,c) \in \Pi} \abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$.
-The values $\sum_{(\iota,c) \in \Pi} M_{\iota,c}(q)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time.
+Let $\cS'$ be a set of text blocks, and let $N = \sum_{S \in \cS'} r_{c(S)}$.
+The values $\sum_{S \in \cS'} \Match_{c(S)}(P + q, S)$ for all $q \in [\ell+1]^2$ can be computed in $\tO(m^2 + N)$ time.
 \end{lemma}
 \begin{proof}
+Since $S$ is monochromatic and the pattern pieces partition $P$, we have $\Match_{c(S)}(P + q, S) = \sum_{V \in \cV_{c(S)}} \abs{\dom(S) \cap \dom(V+q)}$.
+
 \emph{From blocks to cones.}
 For $p \in \Z^2$, let $\cC(p) = \{p + i\phi + j\psi : i,j \ge 0\}$ be the \emph{cone} at $p$.
 Write the domain of every text block $S$ as $\gamma + [i_0, i_1)\phi + [j_0, j_1)\psi$ and let $w_{ab}(S) = \gamma + i_a\phi + j_b\psi$ for $a,b \in \{0,1\}$.
@@ -973,7 +983,7 @@ Then, by inclusion--exclusion (\autoref{fig:cones}),
 \[ \mathbf{1}_{\dom(S)} = \textstyle\sum_{a,b \in \{0,1\}} (-1)^{a+b}\,\mathbf 1_{\cC(w_{ab}(S))}. \]
 Moreover, for every $V$, $w$, and $q$, the map $u \mapsto u - q - w$ shows $\abs{\cC(w) \cap \dom(V+q)} = \abs{\cC(-q) \cap (\dom(V) - w)}$.
 Hence, defining $f \colon \Z^2 \to \Z$ by
-\[ f = \sum_{(\iota,c) \in \Pi}\ \sum_{S \in \cS_{\iota,c}}\ \sum_{V \in \cV_c}\ \sum_{a,b \in \{0,1\}} (-1)^{a+b}\,\mathbf{1}_{\dom(V) - w_{ab}(S)}, \]
+\[ f = \sum_{S \in \cS'}\ \sum_{V \in \cV_{c(S)}}\ \sum_{a,b \in \{0,1\}} (-1)^{a+b}\,\mathbf{1}_{\dom(V) - w_{ab}(S)}, \]
 the desired value for $q$ is $\sum_{v \in \cC(-q)} f(v)$, the sum of $f$ over a single cone.
 In words: every pair contributes four shifted copies of its pattern piece, with signs, and the answer for $q$ is the sum of $f$ over the cone at $-q$.
 
@@ -996,8 +1006,8 @@ For $-q = \gamma + i\phi + j\psi$, the desired value is $\mathit{CS}_\gamma(i,j)
 \paragraph{FFT on strips.}
 The second way counts the matches of one character with FFT.
 Applied to the whole text and pattern, this takes $\tO(m^2)$ time, which is too much for every level and character.
-But the text points of level $\iota$ have depth at most $d_\iota$, and a shallow text point can only lie below a point of the pattern close to its boundary: if the text point were below a point deep inside the pattern, then the occurrence of the pattern would cover the area around it.
-Moreover, we cut the shallow points into strips of width $d_\iota$, and each strip only meets a small part of this boundary region of the pattern (\autoref{fig:strips}).
+But the points of $F_c$ have small depth, and a shallow text point can only lie below a point of the pattern close to its boundary: if the text point were below a point deep inside the pattern, then the occurrence of the pattern would cover the area around it.
+Moreover, if the depth is at most $d$, we cut the shallow points into strips of width $d$, and each strip only meets a small part of this boundary region of the pattern (\autoref{fig:strips}).
 
 \begin{figure}[t]
   \centering
@@ -1036,15 +1046,16 @@ Moreover, we cut the shallow points into strips of width $d_\iota$, and each str
 \end{figure}
 
 \begin{lemma}[Strips]\label{lem:strips}
-Given a level $\iota$ and a character $c$, one can add $M_{\iota,c}(q)$ to the entry $q$ of an accumulator array $\mathit{acc}$ indexed by $[\ell+1]^2$, for every $q \in Q$, in $\O(m d_\iota \log m)$ time.
+Let $c \in \Sigma$, let $d \ge 1$, and let $F \subseteq A$ be a set such that $d > m/8$ or every point of $F$ has depth at most $d$.
+One can add $\Match_c(P + q, T|_F)$ to the entry $q$ of an accumulator array $\mathit{acc}$ indexed by $[\ell+1]^2$, for every $q \in Q$, in $\O(m d \log m)$ time.
 (The entries of positions outside $Q$ may receive arbitrary values.)
 \end{lemma}
 \begin{proof}
-If $d_\iota > m/8$, we apply Fact~\ref{fact:fft} with character $c$ to $T|_{A_\iota}$ and $P$ in $\O(n^2\log n) = \O(md_\iota \log m)$ time.
-Otherwise, let $d = d_\iota \le m/8$.
-We handle the four sets $A_\iota \cap K_i$ separately; by symmetry, we describe $F := A_\iota \cap K_1$.
+If $d > m/8$, we apply Fact~\ref{fact:fft} with character $c$ to $T|_F$ and $P$ in $\O(n^2\log n) = \O(md \log m)$ time.
+Otherwise, $d \le m/8$.
+We handle the four sets $F \cap K_i$ separately; by symmetry, we describe $F \cap K_1$, and we assume $F \subseteq K_1$.
 (For $K_i$, the relevant strips of the pattern lie along the two sides of $[m]^2$ in the directions of the two coordinates of $\sigma_i$.)
-By Lemma~\ref{lem:levels} and Lemma~\ref{lem:monotone}(b), $u + (d,d) \notin A$ for all $u \in F$.
+By Lemma~\ref{lem:monotone}(b), $u + (d,d) \notin A$ for all $u \in F$.
 
 \emph{Only the boundary strips of $P$ matter.} Let $q \in Q$ and $u \in F$ with $p := u - q \in [m]^2$, that is, $u$ lies on the pattern position $p$.
 As $[m]^2 + q \subseteq A$ and $u + (d,d) \notin A$, we have $p + (d,d) \notin [m]^2$.
@@ -1086,8 +1097,8 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
     \node[box] (kang) at (0,-1.9) {few candidates:\\kangaroo jumps};
     \node[box] (per) at (3.3,0) {periods $\phi, \psi$\\(Lemma~\ref{lem:two_periods})};
     \node[box] (pat) at (6.6,0.95) {pattern pieces $\cV$\\(Lemma~\ref{lem:decomposition})};
-    \node[box] (act) at (6.6,-0.95) {active text $A$,\\cells, text blocks $\cS_\iota$};
-    \node[box] (cnt) at (10.2,0) {per level and character:\\pairing or FFT\\(Lemmas~\ref{lem:pairing},~\ref{lem:strips})};
+    \node[box] (act) at (6.6,-0.95) {active text $A$,\\cells, text blocks $\cS_j$};
+    \node[box] (cnt) at (10.2,0) {deep blocks: pairing,\\shallow points: FFT\\(Lemmas~\ref{lem:pairing},~\ref{lem:strips})};
     \node[box] (out) at (10.2,-1.9) {$\Ham(P+q,T)$\\for $q \in Q$};
     \draw[arr] (filter) -- (kang);
     \draw[arr] (filter) -- (per);
@@ -1110,16 +1121,12 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
       \State \Return the values of Lemma~\ref{lem:kangaroo} for $Q' = Q$, and $k+1$ for $q \notin Q$
     \EndIf
     \State compute $\phi$ and $\psi$, and the pattern pieces $\cV$ \Comment{Lemmas~\ref{lem:two_periods} and~\ref{lem:decomposition}}
-    \State compute $A$, the depths, the selected cells, and the text blocks $\cS_\iota$ \Comment{\autoref{sec:multiscale}}
-    \State $\mathit{acc}[q] \gets 0$ for all $q \in [\ell+1]^2$; \ $\Pi \gets \emptyset$
-    \For{every level $\iota$ and every character $c$ with $\cS_{\iota,c} \ne \emptyset \ne \cV_c$}
-      \If{$\abs{\cV_c} \le d_\iota$}
-        \State $\Pi \gets \Pi \cup \{(\iota, c)\}$ \Comment{few pattern pieces: pairing}
-      \Else
-        \State add $M_{\iota,c}$ to $\mathit{acc}$ \Comment{FFT on strips, Lemma~\ref{lem:strips}}
-      \EndIf
+    \State compute $A$, the depths, the selected cells, and the text blocks $\cS_j$ \Comment{\autoref{sec:multiscale}}
+    \State $\mathit{acc}[q] \gets 0$ for all $q \in [\ell+1]^2$
+    \State add $\sum_{S \text{ deep}} \Match_{c(S)}(P + q, S)$ to $\mathit{acc}[q]$ \Comment{pairing, Lemma~\ref{lem:pairing}}
+    \For{every character $c$ with $r_c > 0$}
+      \State add $\Match_c(P + q, T|_{F_c})$ to $\mathit{acc}[q]$, with $d = d_c$ \Comment{FFT on strips, Lemma~\ref{lem:strips}}
     \EndFor
-    \State add $\sum_{(\iota,c) \in \Pi} M_{\iota,c}$ to $\mathit{acc}$ \Comment{pairing, Lemma~\ref{lem:pairing}}
     \State \Return $\min\{k+1, m^2 - \mathit{acc}[q]\}$ for $q \in Q$, and $k+1$ for $q \notin Q$
   \end{algorithmic}
 \end{algorithm}
@@ -1134,29 +1141,25 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
     filter and kangaroo jumps & $\tO(m^2 + mk)$ & Fact~\ref{fact:karloff}, Lemma~\ref{lem:kangaroo}, $\abs{Q} \le 32m + m^2/k$ \\
     periods and pattern pieces & $\tO(m^2)$ & Lemmas~\ref{lem:two_periods} and~\ref{lem:decomposition}, $\abs{\cV} = \O(k)$ \\
     cells and text blocks & $\tO(m^2 + mk)$ & $\O(m/D_j)$ cells with $\O(k)$ blocks each, per level \\
-    counting matches & $\tO(m^2 + mk)$ & $\sum_\iota \abs{\cS_\iota} d_\iota = \tO(mk)$ and $\sum_c \abs{\cV_c} = \O(k)$ \\
+    counting matches & $\tO(m^2 + mk)$ & $\sum_j D_j \abs{\cS_j} = \tO(mk)$ and $\sum_c r_c = \O(k)$ \\
     \bottomrule
   \end{tabular}
   \caption{The running time of the steps of the algorithm for $n \le \frac32 m$.}
   \label{tab:steps}
 \end{table}
 
-In the loop of \autoref{alg:main}, the choice between the two ways of counting matches depends only on the number $\abs{\cV_c}$ of pattern pieces with character $c$: we pair at the levels whose depth bound is at least $\abs{\cV_c}$, and we use FFT on strips at the shallower levels.
-Pairing a text block costs $\abs{\cV_c}$, which is then at most the depth bound, and FFT costs $\tO(md_\iota)$, which is then less than $m\abs{\cV_c}$.
-To run the loop, we group the text blocks and the pattern pieces by level and character by sorting, in $\tO(mk)$ time.
+Text points whose character does not occur in the pattern have no matches, so they can be ignored.
 \autoref{tab:steps} summarizes where the time goes.
 
 \paragraph{Correctness.}
-For every $q \in Q$, the accumulator ends up with $\sum_\iota \sum_c M_{\iota,c}(q)$ by Lemmas~\ref{lem:pairing} and~\ref{lem:strips}.
-Since the sets $A_\iota$ partition $A$, this is $m^2 - \Ham(P+q,T)$ by (\ref{eq:ham_match}).
+Every point of $A$ whose character $c$ occurs in the pattern lies either in a deep text block or in $F_c$, but not in both.
+Hence, by Lemmas~\ref{lem:pairing}, \ref{lem:remainder}, and~\ref{lem:strips}, the accumulator ends up with the number of matches between $P + q$ and $T|_A$, for every $q \in Q$, which is $m^2 - \Ham(P+q,T)$ by (\ref{eq:ham_match}).
 
-\paragraph{Running time.} Everything before the loop takes $\tO(m^2 + mk)$ time (\autoref{tab:steps}).
-By Lemma~\ref{lem:pairing}, the pairing takes time
-\[ \tO\Bigl(m^2 + \sum_\iota \sum_{c : \abs{\cV_c} \le d_\iota} \abs{\cS_{\iota,c}} \abs{\cV_c}\Bigr) = \tO\Bigl(m^2 + \sum_\iota d_\iota \abs{\cS_\iota}\Bigr) = \tO(m^2 + mk), \]
-by (\ref{eq:pieces}) and since there are $\O(\log m)$ levels.
-By Lemma~\ref{lem:strips}, the FFT on strips for a character $c$ takes $\tO(m \sum_{\iota : d_\iota < \abs{\cV_c}} d_\iota)$ time.
-The depth bounds $d_\res, d_0, \dots, d_{J-1}$ double from one level to the next, and $d_J = n$, so the sum is at most $3\abs{\cV_c}$.
-Summing over all characters, the FFT takes $\tO(m \abs{\cV}) = \tO(mk)$ time.
+\paragraph{Running time.} Everything before the counting takes $\tO(m^2 + mk)$ time (\autoref{tab:steps}).
+A deep text block $S \in \cS_j$ satisfies $r_{c(S)} \le 2D_j$, so by Lemma~\ref{lem:pairing} and (\ref{eq:pieces}), the pairing takes time
+\[ \tO\Bigl(m^2 + \sum_{j=0}^{J} 2D_j \abs{\cS_j}\Bigr) = \tO(m^2 + mk). \]
+By Lemma~\ref{lem:strips}, the FFT for a character $c$ takes $\tO(md_c) = \tO(m(r_c + 1))$ time.
+There are at most $\abs{\cV}$ characters with $r_c > 0$, and $\sum_c r_c = \abs{\cV} = \O(k)$, so the FFT takes $\tO(mk)$ time in total.
 Hence, the total time is $\tO(m^2 + mk)$ for $n \le 3m/2$.
 With the reduction to $n \le 3m/2$, this proves Theorem~\ref{thm:main}: $\O(n^2/m^2) \cdot \tO(m^2 + mk) = \tO(n^2 + kn^2/m)$.
 
