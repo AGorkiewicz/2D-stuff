@@ -896,16 +896,16 @@ A good level-$j$ cell is \emph{selected} if $j = J$ or its parent is not good; t
 The selected cells are pairwise disjoint: by (C1), if two cells intersect, then one contains the other, and if the larger one is good, then the parent of the smaller one is good as well, so the smaller one is not selected.
 
 \begin{lemma}[Selected cells]\label{lem:levels}
-Every point of a selected level-$j$ cell has depth more than $2D_j$, and at most $8D_j$ if $j < J$.
+Every point of a selected level-$j$ cell has depth more than $2D_j$ and at most $48D_j$.
 There are $\O(m/D_j)$ selected level-$j$ cells, for every $j \in \{0, \dots, J\}$.
 Every point of $A$ that lies in no selected cell has depth at most $4D_0$.
 \end{lemma}
 \begin{proof}
 The lower bound holds since selected cells are good.
-Let $j < J$, and let $u$ be in a selected level-$j$ cell with parent $C'$.
+For $j = J$, the upper bound holds since depths are at most $n \le \frac32 m$ and $D_J > m/32$ by the choice of $J$.
+For $j < J$, let $u$ be in a selected level-$j$ cell with parent $C'$.
 As $C'$ is not good, some $u' \in C'$ has $\depth(u') \le 2D_{j+1}$, and $\inorm{u - u'} \le 2D_{j+1}$ by (C2), so $\depth(u) \le 4D_{j+1} = 8D_j$.
-The selected level-$j$ cells are disjoint, contain at least $D_j^2/16$ points each by (C3), and these points have depth at most $8D_j$; by Lemma~\ref{lem:shallow}, there are $\O(mD_j)/(D_j^2/16) = \O(m/D_j)$ such cells.
-For $j = J$, since $D_J > m/32$ by the choice of $J$, there are at most $16n^2/D_J^2 = \O(1)$ selected level-$J$ cells.
+The selected level-$j$ cells are disjoint, contain at least $D_j^2/16$ points each by (C3), and these points have depth at most $48D_j$; by Lemma~\ref{lem:shallow}, there are $\O(mD_j)/(D_j^2/16) = \O(m/D_j)$ such cells.
 
 Now let $u \in A$ lie in no selected cell.
 If the level-$0$ cell of $u$ were good, then its highest good ancestor (of level at most $J$) would be selected and would contain $u$.
@@ -940,9 +940,7 @@ Every point of $F_c$ has depth at most $d_c := 24r_c + 4D_0$.
 \begin{proof}
 Let $u \in F_c$.
 If $u$ lies in no selected cell, then $\depth(u) \le 4D_0 \le d_c$ by Lemma~\ref{lem:levels}.
-Otherwise, $u$ lies in a text block $S \in \cS_j$ that is not deep, so $2D_j < r_c$.
-If $j < J$, then $\depth(u) \le 8D_j < 4r_c \le d_c$ by Lemma~\ref{lem:levels}.
-If $j = J$, then $r_c > 2D_J > m/16$ by the choice of $J$, so $\depth(u) \le n \le \frac32 m < 24r_c \le d_c$.
+Otherwise, $u$ lies in a text block $S \in \cS_j$ that is not deep, so $2D_j < r_c$, and $\depth(u) \le 48D_j < 24r_c \le d_c$ by Lemma~\ref{lem:levels}.
 \end{proof}
 
 \paragraph{Pairing.}
