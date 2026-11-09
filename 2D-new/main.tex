@@ -1131,31 +1131,15 @@ The total time is $\O(\sum_i dh_i \log m) = \O(md\log m)$ for the vertical strip
   \end{algorithmic}
 \end{algorithm}
 
-\begin{table}[ht]
-  \centering
-  \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    step & time & reason \\
-    \midrule
-    filter and kangaroo jumps & $\tO(m^2 + mk)$ & Fact~\ref{fact:karloff}, Lemma~\ref{lem:kangaroo}, $\abs{Q} \le 32m + m^2/k$ \\
-    periods and pattern pieces & $\tO(m^2)$ & Lemmas~\ref{lem:two_periods} and~\ref{lem:decomposition}, $\abs{\cV} = \O(k)$ \\
-    cells and text blocks & $\tO(m^2 + mk)$ & $\O(m/D_j)$ cells with $\O(k)$ blocks each, per level \\
-    counting matches & $\tO(m^2 + mk)$ & $\sum_j D_j \abs{\cS_j} = \tO(mk)$ and $\sum_c r_c = \O(k)$ \\
-    \bottomrule
-  \end{tabular}
-  \caption{The running time of the steps of the algorithm for $n \le \frac32 m$.}
-  \label{tab:steps}
-\end{table}
+
 
 Text points whose character does not occur in the pattern have no matches, so they can be ignored.
-\autoref{tab:steps} summarizes where the time goes.
 
 \paragraph{Correctness.}
 Every point of $A$ whose character $c$ occurs in the pattern lies either in a deep text block or in $F_c$, but not in both.
 Hence, by Lemmas~\ref{lem:pairing}, \ref{lem:remainder}, and~\ref{lem:strips}, the accumulator ends up with the number of matches between $P + q$ and $T|_A$, for every $q \in Q$, which is $m^2 - \Ham(P+q,T)$ by (\ref{eq:ham_match}).
 
-\paragraph{Running time.} Everything before the counting takes $\tO(m^2 + mk)$ time (\autoref{tab:steps}).
+\paragraph{Running time.} Everything before the counting takes $\tO(m^2 + mk)$ time: the filter and the kangaroo jumps by Fact~\ref{fact:karloff} and Lemma~\ref{lem:kangaroo}, the periods and the pattern pieces by Lemmas~\ref{lem:two_periods} and~\ref{lem:decomposition}, and the cells and the text blocks by \autoref{sec:multiscale}.
 A deep text block $S \in \cS_j$ satisfies $r_{c(S)} \le 2D_j$, so by Lemma~\ref{lem:pairing} and (\ref{eq:pieces}), the pairing takes time
 \[ \tO\Bigl(m^2 + \sum_{j=0}^{J} 2D_j \abs{\cS_j}\Bigr) = \tO(m^2 + mk). \]
 By Lemma~\ref{lem:strips}, the FFT for a character $c$ takes $\tO(md_c) = \tO(m(r_c + 1))$ time.
