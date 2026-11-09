@@ -216,7 +216,7 @@ For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
     $Q$ & candidate positions, each with at most $2k$ mismatches & \autoref{sec:periods} \\
     $\phi, \psi$ & the two periods, pointing to the lower and upper right & \autoref{sec:periods} \\
     $\Delta = \det(\phi,\psi)$ & number of cosets of the lattice $L$, $\Delta < 8k$ & \autoref{sec:periods} \\
-    $\kappa(u), \lambda(u)$ & coordinates of $u$ with respect to the lattice & \autoref{sec:lattice} \\
+    $\omega(u)$ & lattice coordinates of $u$, that is, $u = s\phi + t\psi$ for $\omega(u) = (s,t)$ & \autoref{sec:lattice} \\
     $\cV$, $\cV_c$ & pattern pieces (with character $c$), $\abs{\cV} < 16k$ & \autoref{sec:lattice} \\
     $A$, $K_0$ & active text, and the central square $[\ell, m-1]^2$ & \autoref{sec:active} \\
     $\depth(u)$ & distance from $u$ to the complement of $A$ & \autoref{sec:active} \\
@@ -425,21 +425,21 @@ Note also that $Q$ consists of the points of $[3]^2$ in the coset $L$ of the lat
 The two periods $\phi$ and $\psi$ suggest looking at the pattern along the lattice they span.
 In this section, we define the shapes that we use as pieces (blocks, possibly truncated by a rectangle), show that a piece without internal mismatches is monochromatic, and cut the pattern into $\O(k)$ such pieces.
 
-Let $L = \{i\phi + j\psi : i, j \in \Z\}$. We write $u \equiv v$ if $u - v \in L$; the congruence classes are the cosets $\gamma + L$. Let
-\[\kappa(u) = (\det(u, \psi), \det(\phi, u)) \in \Z^2 \quad\text{for } u \in \Z^2.\]
-Since $u = (\kappa_1(u)\phi + \kappa_2(u)\psi)/\Delta$ (apply $\det(\cdot,\psi)$ and $\det(\phi,\cdot)$ to both sides to check this), we have $u \equiv v$ if and only if $\kappa(u) \equiv \kappa(v) \pmod \Delta$ (componentwise), and $\kappa(\gamma + i\phi + j\psi) = \kappa(\gamma) + \Delta\cdot(i,j)$.
-In particular, congruence classes can be computed in constant time per point.
+Let $L = \{i\phi + j\psi : i, j \in \Z\}$. We write $u \equiv v$ if $u - v \in L$; the congruence classes are the cosets $\gamma + L$.
+Every $u \in \R^2$ can be written uniquely as $u = s\phi + t\psi$, and we call $\omega(u) = (s,t)$ the \emph{lattice coordinates} of $u$.
+By Cramer's rule, $\omega(u) = (\det(u,\psi), \det(\phi,u))/\Delta$, so lattice coordinates can be computed in constant time, and $\omega(u) \in \frac{1}{\Delta}\Z^2$ for $u \in \Z^2$.
+As $\omega$ is linear, we have $u \equiv v$ if and only if $\omega(u) - \omega(v) \in \Z^2$, and $\omega(\gamma + i\phi + j\psi) = \omega(\gamma) + (i,j)$.
 There are exactly $\Delta$ congruence classes: the half-open parallelogram $\{s\phi + t\psi : s, t \in [0,1)\}$ has area $\Delta$ and contains exactly one point of every class.
 
 \begin{definition}
 A \emph{block} is a set $\gamma + I\phi + J\psi := \{\gamma + i\phi + j\psi : i \in I, j \in J\}$, where $\gamma \in \Z^2$ and $I, J \subseteq \Z$ are (possibly unbounded) intervals.
-A \emph{tile} is a set $\{u \in \Z^2 : \kappa(u) \in X\}$, where $X \subseteq \R^2$ is a (possibly unbounded) axis-parallel box.
+A \emph{tile} is a set $\{u \in \Z^2 : \omega(u) \in X\}$, where $X \subseteq \R^2$ is a (possibly unbounded) axis-parallel box.
 A rectangle $R = ([x_0, x_1] \times [y_0, y_1]) \cap \Z^2$ is \emph{wide} if $x_1 - x_0 + 1 \ge \abs{\x\phi} + \abs{\x\psi}$ and $y_1 - y_0 + 1 \ge \abs{\y\phi} + \abs{\y\psi}$; we also call $R = \Z^2$ wide.
 A \emph{truncated block} is a set $R \cap B$, where $R$ is a wide rectangle and $B$ is a block.
 \end{definition}
 
 Intuitively, the $\Delta$ cosets of $L$ color the plane with $\Delta$ colors, such that moving by $\phi$ or $\psi$ keeps the color; in the running example, they are the two colors of the checkerboard.
-Within one coset $\gamma + L$, every point is $u = \gamma + i\phi + j\psi$ for unique $i, j \in \Z$, its \emph{lattice coordinates} $\lambda(u) = (i,j) = (\kappa(u) - \kappa(\gamma))/\Delta$ (with respect to the representative $\gamma$), and a block is simply a rectangle in lattice coordinates.
+Within one coset $\gamma + L$, the lattice coordinates of the points are $\omega(\gamma)$ plus integer vectors, and a block is simply a rectangle in lattice coordinates.
 Geometrically, a block consists of the points of one coset inside a parallelogram with sides parallel to $\phi$ and $\psi$, and a tile consists of the points of all cosets inside such a parallelogram (\autoref{fig:lattice}).
 The intersection of a tile with a congruence class is a block.
 
@@ -505,9 +505,8 @@ Inside the block, every step towards the target is allowed; the only obstacle is
 Since $\phi$ points to the lower right and $\psi$ to the upper right, there are always two candidate steps that move in different vertical (or horizontal) directions, and wideness guarantees that one of them stays inside the rectangle.
 \begin{proof}
 Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \Z^2$ is trivial) and $B = \gamma + I\phi + J\psi$.
-We use the lattice coordinates $\lambda$ with respect to $\gamma$.
-It suffices to show that for distinct $u, v \in X$, one of them has a neighbor $w \in X$ with $\abs{\lambda(w) - \lambda(z)}_1 < \abs{\lambda(u) - \lambda(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\lambda(u) - \lambda(v)}_1$ shows that $u$ and $v$ are connected.
-All candidates $w$ below satisfy that $\lambda(w)$ lies in the bounding box of $\lambda(u)$ and $\lambda(v)$, so $w \in B$, and only $w \in R$ needs to be checked.
+It suffices to show that for distinct $u, v \in X$, one of them has a neighbor $w \in X$ with $\abs{\omega(w) - \omega(z)}_1 < \abs{\omega(u) - \omega(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\omega(u) - \omega(v)}_1$ shows that $u$ and $v$ are connected.
+All candidates $w$ below satisfy that $\omega(w)$ lies in the bounding box of $\omega(u)$ and $\omega(v)$, so $w \in B$, and only $w \in R$ needs to be checked.
 By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
 
 \emph{Case $\beta \ge 0$.} The $x$-coordinate does not decrease along $\phi$- and $\psi$-steps, so every $w \in \{u+\phi, u+\psi\}$ satisfies $\x u \le \x w \le \x v$.
@@ -541,7 +540,7 @@ If $R = \Z^2$, these domains are blocks.
 We group $\dom(S)$ by congruence class.
 For every class $\gamma + L$ meeting $\dom(S)$, we have $\dom(S) \cap (\gamma + L) = R \cap (\gamma + I\phi + J\psi)$ for intervals $I, J$.
 We call a mismatching edge $\{u, u+\delta\}$ a \emph{$\delta$-mismatch}; there are exactly $\Ham(S+\delta, S)$ of them, for $\delta \in \{\phi,\psi\}$, and $\eta$ in total.
-First, for every class, we cut $I$ between $i$ and $i+1$ for every $\phi$-mismatch $\{u, u+\phi\}$ with $\lambda(u) = (i,j)$.
+First, for every class, we cut $I$ between $i$ and $i+1$ for every $\phi$-mismatch $\{u, u+\phi\}$ with $\omega(u) = \omega(\gamma) + (i,j)$.
 This yields at most $\Delta + \Ham(S+\phi,S)$ sets $R \cap (\gamma + I'\phi + J\psi)$, none of which contains a $\phi$-mismatch.
 Then, we cut the $J$-interval of each of these sets at the $\psi$-mismatches it contains, which yields at most $\Delta + \eta$ truncated blocks $R \cap (\gamma + I'\phi + J'\psi)$ that contain no mismatch.
 By Lemma~\ref{lem:connected}, each of them is connected in its lattice graph, so $S$ restricted to it is monochromatic.
@@ -876,7 +875,7 @@ Let $D_j = 16 \cdot 2^j$ for $j \in \{0, \dots, J\}$, where $J$ is the largest i
 For $j \in \{0, \dots, J\}$ and $a, b \in \Z$, the \emph{level-$j$ cell} with index $(a,b)$ is the set of integer points in the half-open rhombus
 \[ \{s\hat\phi + t\hat\psi : s \in [a, a+1) \cdot D_j,\ t \in [b, b+1) \cdot D_j\}, \]
 which has side length $D_j$ and sides parallel to $\phi$ and $\psi$.
-Since $u = (\kappa_1(u)\phi + \kappa_2(u)\psi)/\Delta$, this is the set of $u \in \Z^2$ with $\kappa_1(u)\abs{\phi}/\Delta \in [a, a+1) \cdot D_j$ and $\kappa_2(u)\abs{\psi}/\Delta \in [b, b+1) \cdot D_j$; in particular, every cell is a tile.
+In lattice coordinates $\omega(u) = (s,t)$, this is the set of $u \in \Z^2$ with $s\abs{\phi} \in [a, a+1) \cdot D_j$ and $t\abs{\psi} \in [b, b+1) \cdot D_j$; in particular, every cell is a tile.
 We use the following properties.
 \begin{enumerate}[(C1)]
 \item The level-$j$ cells partition $\Z^2$, and each level-$(j+1)$ cell is the union of four level-$j$ cells (its \emph{children}).
@@ -917,7 +916,7 @@ By Lemma~\ref{lem:levels},
 \end{equation}
 All of this takes $\tO(m^2 + mk)$ time.
 The depths take $\O(n^2)$ time.
-For every level, we compute the cell of every point of $[n]^2$ from $\kappa$, and the minimum depth in every cell, in $\O(n^2)$ time; this determines the good and the selected cells, in $\O(n^2 \log m)$ time over all levels.
+For every level, we compute the cell of every point of $[n]^2$ from its lattice coordinates, and the minimum depth in every cell, in $\O(n^2)$ time; this determines the good and the selected cells, in $\O(n^2 \log m)$ time over all levels.
 Every point of $A$ is processed by Lemma~\ref{lem:decomposition} at most once, and $\sum_j \abs{\cS_j} = \O(mk)$.
 
 \section{Counting matches}
@@ -989,18 +988,18 @@ In words: every pair contributes four shifted copies of its pattern piece, with 
 
 \emph{Computing $f$.}
 Every corner $w_{ab}(S)$ is within maximum-norm distance $\inorm{\phi} + \inorm{\psi} \le m$ of $\dom(S) \subseteq [n]^2$, so $\dom(V) - w_{ab}(S) \subseteq W := [-3m, 2m]^2$; also $-[\ell+1]^2 \subseteq W$.
-A set $\dom(V) - w$ is described by four intervals: if $\dom(V) = [m]^2 \cap B$ for a block $B$, then a point $u$ of the congruence class of $B - w$ lies in $\dom(V) - w$ if and only if $\x u$ and $\y u$ lie in the intervals that describe $[m]^2 - w$, and the two coordinates of $\kappa(u)$ lie in the intervals that describe $B - w$.
-So, for every congruence class separately, $f(u)$ is the total weight of the axis-parallel boxes in $\R^4$ that contain the point $(\x u, \y u, \kappa_1(u), \kappa_2(u))$.
+A set $\dom(V) - w$ is described by four intervals: if $\dom(V) = [m]^2 \cap B$ for a block $B$, then a point $u$ of the congruence class of $B - w$ lies in $\dom(V) - w$ if and only if $\x u$ and $\y u$ lie in the intervals that describe $[m]^2 - w$, and the two lattice coordinates $\omega(u)$ lie in the intervals that describe $B - w$.
+So, for every congruence class separately, $f(u)$ is the total weight of the axis-parallel boxes in $\R^4$ that contain the point $(u, \omega(u))$.
 By Fact~\ref{fact:range}, we compute $f(u)$ for all $u \in W$ in $\tO(m^2 + N)$ total time.
 
 \emph{Cone sums.}
 In lattice coordinates, a cone is a quadrant, so cone sums are suffix sums.
-For every congruence class $\gamma + L$ meeting $W$, let $I_\gamma \times J_\gamma$ be the smallest box of integers with $W \cap (\gamma + L) \subseteq \gamma + I_\gamma\phi + J_\gamma\psi$.
-For $u \in W$, we have $\abs{\kappa_1(u)} \le \abs{u}\abs{\psi} \le 5m\abs{\psi}$ and $\abs{\kappa_2(u)} \le 5m\abs{\phi}$, so
-\[ \textstyle\sum_\gamma \abs{I_\gamma}\abs{J_\gamma} \le \Delta\,(10m\abs{\psi}/\Delta + 1)(10m\abs{\phi}/\Delta + 1) = \O(m^2) \]
-by $\abs{\phi}\abs{\psi} \le 2\Delta$ and $\abs{\phi}, \abs{\psi}, \Delta^{1/2} = \O(m)$.
-For every class, we compute the suffix sums $\mathit{CS}_\gamma(i,j) = \sum_{i' \ge i,\, j' \ge j} f(\gamma + i'\phi + j'\psi)$ over $I_\gamma \times J_\gamma$ (with $f = 0$ outside $W$) in $\O(\abs{I_\gamma}\abs{J_\gamma})$ time.
-For $-q = \gamma + i\phi + j\psi$, the desired value is $\mathit{CS}_\gamma(i,j)$.
+Let $W'$ be the tile of the points $u$ with $\abs{s} \le 5m\abs{\psi}/\Delta$ and $\abs{t} \le 5m\abs{\phi}/\Delta$, where $\omega(u) = (s,t)$.
+It contains $W$, since $\abs{\det(u,\psi)} \le \abs{u}\abs{\psi} \le 5m\abs{\psi}$ for $u \in W$, and likewise for $t$.
+It is a parallelogram of area $100m^2\abs{\phi}\abs{\psi}/\Delta \le 200m^2$ with angles between $30^\circ$ and $150^\circ$, so it contains $\O(m^2)$ points.
+Within every congruence class, $W'$ is a block, that is, a rectangle in lattice coordinates.
+On each of these rectangles, we compute the suffix sums $\mathit{CS}(u) = \sum_{i, j \ge 0} f(u + i\phi + j\psi)$ (with $f = 0$ outside $W$) in time linear in its size.
+The desired value for $q$ is $\mathit{CS}(-q)$.
 \end{proof}
 
 \paragraph{FFT on strips.}
