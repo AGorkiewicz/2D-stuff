@@ -144,10 +144,12 @@ by enumerating all pairs of pieces, or by FFT.
 The FFT is cheap close to the boundary: a text cell at distance $D$ from the boundary of $A$ can only lie below a strip of width $\O(D)$ along the boundary of the pattern, so the FFT takes $\tO(mD)$ time.
 
 \paragraph{Where the bound comes from.}
-At every distance $D$, the number of text pieces times the FFT cost is $\O(mk/D) \cdot \tO(mD) = \tO(m^2 k)$, independently of $D$.
+For a character $c$, let $r_c$ be the number of pattern pieces with character $c$; these numbers add up to $\O(k)$.
+For every character $c$, we pair its text pieces at depth at least $r_c$ with its pattern pieces, and we use FFT closer to the boundary.
+At depth about $D$, there are $\O(mk/D)$ text pieces, and each of them is paired with at most $D$ pattern pieces, so pairing costs $\O(mk)$ per depth.
+For a character $c$, the FFT runs at the depths $D < r_c$, which grow geometrically, so it costs $\sum_{D < r_c} \tO(mD) = \tO(mr_c)$, and $\tO(mk)$ over all characters.
 Neither method suffices on its own: pairing alone costs up to $\O(mk/D) \cdot \O(k) = \O(mk^2/D)$, which is too much for small $D$, and FFT alone costs $\tO(mD)$ for every character, which is too much if there are many characters.
-Choosing the cheaper method for each character, the Cauchy--Schwarz inequality bounds the total cost by $\tO(\sqrt{m^2 k \cdot k}) = \tO(mk)$ per distance.
-With $\O(\log m)$ distances and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gives \autoref{thm:main}.
+With $\O(\log m)$ depths and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gives \autoref{thm:main}.
 
 \paragraph{Roadmap.}
 \autoref{sec:periods} filters the candidate positions and finds the two periods.
@@ -1111,8 +1113,8 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
     \State compute $A$, the depths, the selected cells, and the text blocks $\cS_\iota$ \Comment{\autoref{sec:multiscale}}
     \State $\mathit{acc}[q] \gets 0$ for all $q \in [\ell+1]^2$; \ $\Pi \gets \emptyset$
     \For{every level $\iota$ and every character $c$ with $\cS_{\iota,c} \ne \emptyset \ne \cV_c$}
-      \If{$\abs{\cS_{\iota,c}} \cdot \abs{\cV_c} \le m d_\iota$}
-        \State $\Pi \gets \Pi \cup \{(\iota, c)\}$ \Comment{pairing is cheaper}
+      \If{$\abs{\cV_c} \le d_\iota$}
+        \State $\Pi \gets \Pi \cup \{(\iota, c)\}$ \Comment{few pattern pieces: pairing}
       \Else
         \State add $M_{\iota,c}$ to $\mathit{acc}$ \Comment{FFT on strips, Lemma~\ref{lem:strips}}
       \EndIf
@@ -1132,15 +1134,15 @@ The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
     filter and kangaroo jumps & $\tO(m^2 + mk)$ & Fact~\ref{fact:karloff}, Lemma~\ref{lem:kangaroo}, $\abs{Q} \le 32m + m^2/k$ \\
     periods and pattern pieces & $\tO(m^2)$ & Lemmas~\ref{lem:two_periods} and~\ref{lem:decomposition}, $\abs{\cV} = \O(k)$ \\
     cells and text blocks & $\tO(m^2 + mk)$ & $\O(m/D_j)$ cells with $\O(k)$ blocks each, per level \\
-    counting matches & $\tO(m^2 + mk)$ & $\O(mk)$ per level by Cauchy--Schwarz \\
+    counting matches & $\tO(m^2 + mk)$ & $\sum_\iota \abs{\cS_\iota} d_\iota = \tO(mk)$ and $\sum_c \abs{\cV_c} = \O(k)$ \\
     \bottomrule
   \end{tabular}
   \caption{The running time of the steps of the algorithm for $n \le \frac32 m$.}
   \label{tab:steps}
 \end{table}
 
-In the loop of \autoref{alg:main}, we choose, for every level and character, the cheaper of the two ways of counting matches: pairing costs $\abs{\cS_{\iota,c}}\cdot\abs{\cV_c}$, and FFT on strips costs $\tO(md_\iota)$.
-The exact threshold does not matter: comparing with $md_\iota$ instead of the true costs loses only the polylogarithmic factors hidden in $\tO$.
+In the loop of \autoref{alg:main}, the choice between the two ways of counting matches depends only on the number $\abs{\cV_c}$ of pattern pieces with character $c$: we pair at the levels whose depth bound is at least $\abs{\cV_c}$, and we use FFT on strips at the shallower levels.
+Pairing a text block costs $\abs{\cV_c}$, which is then at most the depth bound, and FFT costs $\tO(md_\iota)$, which is then less than $m\abs{\cV_c}$.
 To run the loop, we group the text blocks and the pattern pieces by level and character by sorting, in $\tO(mk)$ time.
 \autoref{tab:steps} summarizes where the time goes.
 
@@ -1149,28 +1151,14 @@ For every $q \in Q$, the accumulator ends up with $\sum_\iota \sum_c M_{\iota,c}
 Since the sets $A_\iota$ partition $A$, this is $m^2 - \Ham(P+q,T)$ by (\ref{eq:ham_match}).
 
 \paragraph{Running time.} Everything before the loop takes $\tO(m^2 + mk)$ time (\autoref{tab:steps}).
-By Lemmas~\ref{lem:pairing} and~\ref{lem:strips}, the loop and the pairing take time
-\[ \tO\Bigl(m^2 + \sum_\iota \sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c},\ md_\iota\}\Bigr).\]
-For every level $\iota$, using $\min\{X,Y\} \le \sqrt{XY}$, the Cauchy--Schwarz inequality, (\ref{eq:pieces}), and $\abs{\cV} = \O(k)$, we get
-\[ \sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c},\ md_\iota\} \le \sqrt{md_\iota} \sum_c \sqrt{\abs{\cS_{\iota,c}}\abs{\cV_c}} \le \sqrt{md_\iota \abs{\cS_\iota}\abs{\cV}} = \O(\sqrt{m \cdot mk \cdot k}) = \O(mk).\]
-There are $\O(\log m)$ levels, so the total time is $\tO(m^2 + mk)$ for $n \le 3m/2$.
-\autoref{tab:levels} shows the balance at a single level: deeper levels have fewer text blocks, but more expensive FFTs, and the product of the two does not depend on the level.
-
-\begin{table}[ht]
-  \centering
-  \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{@{}lllll@{}}
-    \toprule
-    level & depth & text blocks $\abs{\cS_\iota}$ & FFT per character & blocks $\times$ FFT \\
-    \midrule
-    $\res$ & $\O(1)$ & $\O(m)$ & $\tO(m)$ & $\tO(m^2)$ \\
-    $j < J$ & $\Theta(D_j)$ & $\O(mk/D_j)$ & $\tO(mD_j)$ & $\tO(m^2k)$ \\
-    $J$ & $\O(m)$ & $\O(k)$ & $\tO(m^2)$ & $\tO(m^2k)$ \\
-    \bottomrule
-  \end{tabular}
-  \caption{The trade-off at each level. With $\abs{\cV} = \O(k)$ pattern pieces, the Cauchy--Schwarz bound $\sqrt{(\text{blocks} \times \text{FFT}) \cdot \abs{\cV}}$ is $\tO(mk)$ for every level.}
-  \label{tab:levels}
-\end{table} With the reduction to $n \le 3m/2$, this proves Theorem~\ref{thm:main}: $\O(n^2/m^2) \cdot \tO(m^2 + mk) = \tO(n^2 + kn^2/m)$.
+By Lemma~\ref{lem:pairing}, the pairing takes time
+\[ \tO\Bigl(m^2 + \sum_\iota \sum_{c : \abs{\cV_c} \le d_\iota} \abs{\cS_{\iota,c}} \abs{\cV_c}\Bigr) = \tO\Bigl(m^2 + \sum_\iota d_\iota \abs{\cS_\iota}\Bigr) = \tO(m^2 + mk), \]
+by (\ref{eq:pieces}) and since there are $\O(\log m)$ levels.
+By Lemma~\ref{lem:strips}, the FFT on strips for a character $c$ takes $\tO(m \sum_{\iota : d_\iota < \abs{\cV_c}} d_\iota)$ time.
+The depth bounds $d_\res, d_0, \dots, d_{J-1}$ double from one level to the next, and $d_J = n$, so the sum is at most $3\abs{\cV_c}$.
+Summing over all characters, the FFT takes $\tO(m \abs{\cV}) = \tO(mk)$ time.
+Hence, the total time is $\tO(m^2 + mk)$ for $n \le 3m/2$.
+With the reduction to $n \le 3m/2$, this proves Theorem~\ref{thm:main}: $\O(n^2/m^2) \cdot \tO(m^2 + mk) = \tO(n^2 + kn^2/m)$.
 
 \section{Conditional lower bound}\label{sec:lower}
 
@@ -1294,7 +1282,7 @@ The approach should extend to rectangular patterns and texts, and the lattice an
 
 \paragraph{A simpler but slower variant.}
 A previous version of this algorithm used a single threshold $d$ instead of a hierarchy of levels: text points at depth more than $d$ were always paired with the pattern pieces, and those at depth at most $d$ were always handled by FFT, with a fixed split of the characters into frequent and infrequent ones.
-Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend on both the level and the character is what removes the extra factor $k^{1/4}$.
+Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the depth threshold depend on the character, namely on its number of pattern pieces, is what removes the extra factor $k^{1/4}$.
 
 \section{Exercises}
 \label{sec:exercises}
@@ -1310,7 +1298,9 @@ Balancing the two parts gives $\tO(m^2 + mk^{5/4})$; letting the choice depend o
   \item In the reduction of \autoref{sec:lower}, the text contains $\bot$ instead of the filler $0$ at the cells of $G$ with $X[i][t] = 0$.
     What goes wrong if we use $0$ there instead?
     \emph{Hint:} the number of pattern characters that lie on non-filler text characters would no longer be the number of points in a rectangle.
-  \item Show that the analysis of the counting step is tight: for a level with $\abs{\cS_\iota} = s$ text blocks, $\abs{\cV} = v$ pattern pieces, and FFT cost $B$ per character, find a distribution of the blocks and pieces among the characters such that $\sum_c \min\{\abs{\cS_{\iota,c}}\abs{\cV_c}, B\} = \Omega(\sqrt{svB})$, provided that $B \le sv$.
+  \item \autoref{alg:main} chooses between pairing and FFT by comparing $\abs{\cV_c}$ with $d_\iota$.
+    Show that the rule that chooses, for every level and character, the cheaper of the two methods (with costs $\abs{\cS_{\iota,c}}\abs{\cV_c}$ and $md_\iota$) also yields $\tO(m^2 + mk)$ time.
+    \emph{Hint:} use $\min\{x,y\} \le \sqrt{xy}$ and the Cauchy--Schwarz inequality for every level.
   \item Trace the decomposition of Lemma~\ref{lem:decomposition} on the text of \autoref{fig:problem}, using the periods $\phi = (1,-1)$ and $\psi = (1,1)$ and the whole text $[6]^2$ as the wide rectangle.
     How many pieces do you get, and which mismatches cause the cuts?
 \end{enumerate}
