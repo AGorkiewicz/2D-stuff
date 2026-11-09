@@ -197,6 +197,11 @@ For strings $S, R$ and $c \in \Sigma$, we count mismatches and matches with char
 \Match_c(S,R) &= \abs{\{u \in \dom(S) \cap \dom(R) : S(u) = R(u) = c\}}.
 \end{align*}
 A string $S$ is \emph{monochromatic} with character $c(S)$ if $S(u) = c(S)$ for all $u \in \dom(S)$.
+The Hamming distance satisfies a triangle inequality: if $\dom(S) \cap \dom(R) \subseteq \dom(U)$, then
+\begin{equation}\label{eq:triangle}
+\Ham(S, R) \le \Ham(S, U) + \Ham(U, R),
+\end{equation}
+since every mismatch between $S$ and $R$ is a mismatch between $S$ and $U$ or between $U$ and $R$.
 
 \paragraph{The problem.}
 We are given a pattern $P$ with $\dom(P) = [m]^2$, a text $T$ with $\dom(T) = [n]^2$, $m \le n$, and $k \in \Z^+$.
@@ -323,11 +328,15 @@ If $\abs{Q} \le 32m + m^2/k$, we finish with Lemma~\ref{lem:kangaroo} in $\O(m^2
 From now on, we assume $\abs{Q} > 32m + m^2/k$.
 The two terms of this threshold have different purposes: $\abs{Q} > 32m$ guarantees that $Q$ contains two close points (Lemma~\ref{lem:two_periods} below), and $\abs{Q} > m^2/k$ guarantees that the two periods span a parallelogram of area $\O(k)$.
 
-\begin{lemma}[Differences are periods]\label{lem:period}
-For all $u, v \in Q$, we have $\Ham(P + (u - v), P) \le 4k$.
+\begin{lemma}[Periods]\label{lem:period}
+\begin{enumerate}[(a)]
+\item For all $u, v \in Q$, we have $\Ham(P + (u - v), P) \le 4k$.
+\item If $X \subseteq [m]^2 + q$ for some $q \in Q$, then $\Ham(T|_X + \delta, T|_X) \le \Ham(P + \delta, P) + 4k$ for every $\delta \in \Z^2$.
+\end{enumerate}
 \end{lemma}
 \begin{proof}
-$\Ham(P+u-v, P) = \Ham(P+u, P+v) \le \Ham(P+u, T) + \Ham(T, P+v) \le 4k$, since every $w \in \dom(P+u) \cap \dom(P+v) \subseteq \dom(T)$ with $(P+u)(w) \ne (P+v)(w)$ is a mismatch between $T$ and $P+u$ or between $T$ and $P+v$.
+(a) By (\ref{eq:triangle}), $\Ham(P+u-v, P) = \Ham(P+u, P+v) \le \Ham(P+u, T) + \Ham(T, P+v) \le 4k$.
+(b) Applying (\ref{eq:triangle}) twice, $\Ham(T|_X + \delta, T|_X)$ is at most $\Ham(T|_X + \delta, P + q + \delta) + \Ham(P + q + \delta, P + q) + \Ham(P + q, T|_X) \le 2k + \Ham(P + \delta, P) + 2k$.
 \end{proof}
 
 \paragraph{Finding two good periods.}
@@ -407,7 +416,7 @@ We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$
 Let $\Delta = \det(\phi,\psi) \in \Z$.
 We have
 \[ 1 \le \Delta \le \abs{\phi}\abs{\psi} \le 2\Delta, \qquad \Delta < 30\ell^2/\abs{Q} < 30 \ell^2 k / m^2 < 8k,\qquad \inorm{\phi}, \inorm{\psi} \le \ell, \]
-and, by Lemma~\ref{lem:period}, $\Ham(P + \phi, P) \le 4k$ and $\Ham(P + \psi, P) \le 4k$.
+and, by Lemma~\ref{lem:period}(a), $\Ham(P + \phi, P) \le 4k$ and $\Ham(P + \psi, P) \le 4k$.
 Recall that $\x\phi \ge 0 > \y\phi$ and $\x\psi > 0$, $\y\psi \ge 0$.
 
 \paragraph{Example.}
@@ -819,7 +828,6 @@ If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\dept
 \begin{lemma}[Coverable sets]\label{lem:coverable}
 Let $X \subseteq \Z^2$ with $\inorm{u-v} \le r < m/2$ for all $u, v \in X$, and $\depth(u) > r$ for all $u \in X$.
 Then $X \subseteq [m]^2 + q$ for some $q \in Q$.
-Consequently, $\Ham(T|_X + \delta, T|_X) \le 8k$ for $\delta \in \{\phi,\psi\}$.
 \end{lemma}
 \begin{proof}
 Let $[x_0, x_1]$ and $[y_0, y_1]$ be the ranges of the $x$- and $y$-coordinates of $X$.
@@ -827,9 +835,6 @@ As $x_1 - x_0 \le r < m - \ell$, we have $x_0 \ge \ell$ or $x_1 \le m - 1$; let 
 Then every point of $X$ lies between $K_0$ and the corner $c = (x^\ast, y^\ast)$ of the bounding box of $X$.
 The corner $c$ is within distance $r$ of a point of $X$, so $c \in A$, that is, $c \in [m]^2 + q$ for some $q \in Q$.
 By Lemma~\ref{lem:monotone}(a), $X \subseteq [m]^2 + q$.
-
-For the second claim, if $u - \delta, u \in X$ and $T(u-\delta) \ne T(u)$, then $T(u - \delta) \neq P(u - \delta - q)$, or $P(u-\delta-q) \neq P(u-q)$, or $P(u-q) \neq T(u)$.
-Thus $\Ham(T|_X + \delta, T|_X) \le \Ham(P+q,T) + \Ham(P+\delta,P) + \Ham(P+q,T) \le 8k$.
 \end{proof}
 
 \begin{lemma}[Shallow points]\label{lem:shallow}
@@ -846,7 +851,7 @@ At most $2n$ diagonal lines meet $[n]^2$.
 \section{Multiscale decomposition of the active text}
 \label{sec:multiscale}
 
-By Lemma~\ref{lem:coverable}, a set of diameter $r$ whose points all have depth more than $r$ inherits the approximate periods of the pattern.
+By Lemmas~\ref{lem:coverable} and~\ref{lem:period}(b), a set of diameter $r$ whose points all have depth more than $r$ inherits the approximate periods of the pattern.
 So deep inside $A$, we can afford large cells, but close to the boundary of $A$, the cells must be small.
 We therefore use a hierarchy of cells, in which every cell has four children of half the size, and select the largest cells that are deep enough (\autoref{fig:whitney}); this is a Whitney decomposition of $A$.
 We take the cells aligned with the lattice, so that every cell is a tile and can be cut into blocks with Lemma~\ref{lem:decomposition}.
@@ -907,7 +912,7 @@ If the level-$0$ cell of $u$ were good, then its highest good ancestor (of level
 Hence some $u'$ in the level-$0$ cell of $u$ has $\depth(u') \le 2D_0$, and thus $\depth(u) \le 4D_0$.
 \end{proof}
 
-\paragraph{Text blocks.} For every selected cell $C$, the string $T|_C$ has domain $C$, a tile, and by Lemma~\ref{lem:coverable}, $\Ham(T|_C + \delta, T|_C) \le 8k$ for $\delta \in \{\phi,\psi\}$.
+\paragraph{Text blocks.} For every selected cell $C$, the string $T|_C$ has domain $C$, a tile, and by Lemmas~\ref{lem:coverable} and~\ref{lem:period}(b), $\Ham(T|_C + \delta, T|_C) \le 8k$ for $\delta \in \{\phi,\psi\}$.
 By Lemma~\ref{lem:decomposition} (with $R = \Z^2$), $T|_C$ can be partitioned into at most $\Delta + 16k < 24k$ monochromatic strings whose domains are blocks, the \emph{text blocks} of $C$.
 For $j \in \{0,\dots,J\}$, let $\cS_j$ be the set of the text blocks of all selected level-$j$ cells.
 By Lemma~\ref{lem:levels},
