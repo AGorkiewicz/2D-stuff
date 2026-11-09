@@ -540,13 +540,12 @@ To keep the pieces in the shape of truncated blocks, we cut along entire lines o
 Each cut increases the number of pieces by one, so we end up with at most one piece per coset plus one per mismatch.
 
 \begin{lemma}[Decomposition]\label{lem:decomposition}
-Let $R$ be $[m]^2$ or $\Z^2$, let $Y$ be a tile, and let $S$ be a string with $\dom(S) = R \cap Y$.
-Let $\eta = \Ham(S + \phi, S) + \Ham(S+\psi, S)$.
-In $\O(\abs{\dom(S)}\log \abs{\dom(S)})$ time, $S$ can be partitioned into at most $\Delta + \eta$ monochromatic strings whose domains are truncated blocks of the form $R \cap B$.
-If $R = \Z^2$, these domains are blocks.
+Let $S$ be a string whose domain is $[m]^2$ or a tile, and let $\eta = \Ham(S + \phi, S) + \Ham(S+\psi, S)$.
+In $\O(\abs{\dom(S)}\log \abs{\dom(S)})$ time, $S$ can be partitioned into at most $\Delta + \eta$ monochromatic strings whose domains are truncated blocks, or blocks if $\dom(S)$ is a tile.
 \end{lemma}
 \begin{proof}
 We group $\dom(S)$ by congruence class.
+Let $R = [m]^2$ in the first case and $R = \Z^2$ in the second.
 For every class $\gamma + L$ meeting $\dom(S)$, we have $\dom(S) \cap (\gamma + L) = R \cap (\gamma + I\phi + J\psi)$ for intervals $I, J$.
 We call a mismatching edge $\{u, u+\delta\}$ a \emph{$\delta$-mismatch}; there are exactly $\Ham(S+\delta, S)$ of them, for $\delta \in \{\phi,\psi\}$, and $\eta$ in total.
 First, for every class, we cut $I$ between $i$ and $i+1$ for every $\phi$-mismatch $\{u, u+\phi\}$ with $\omega(u) = \omega(\gamma) + (i,j)$.
@@ -557,7 +556,7 @@ We represent each piece by its character, $R$, $\gamma$, and the endpoints of it
 Sorting dominates the running time.
 \end{proof}
 
-We apply Lemma~\ref{lem:decomposition} to $P$ with $R = [m]^2$ and $Y = \Z^2$, with $\eta \le 8k$.
+We apply Lemma~\ref{lem:decomposition} to $P$, with $\eta \le 8k$.
 This yields a partition of $P$ into a set $\cV$ of $\abs{\cV} \le \Delta + 8k < 16k$ monochromatic strings, whose domains are truncated blocks $[m]^2 \cap B$.
 For $c \in \Sigma$, let $\cV_c = \{V \in \cV : c(V) = c\}$.
 
@@ -855,7 +854,7 @@ By Lemmas~\ref{lem:coverable} and~\ref{lem:period}(b), a set of diameter $r$ who
 So deep inside $A$, we can afford large cells, but close to the boundary of $A$, the cells must be small.
 We therefore use a hierarchy of cells, in which every cell has four children of half the size, and select the largest cells that are deep enough (\autoref{fig:whitney}); this is a Whitney decomposition of $A$.
 We take the cells aligned with the lattice, so that every cell is a tile and can be cut into blocks with Lemma~\ref{lem:decomposition}.
-The points that are too close to the boundary for even the smallest cells form a thin residual set, which we treat point by point.
+The points that are too close to the boundary for even the smallest cells form a thin residual set; they will be handled by FFT, like all shallow points.
 
 \begin{figure}[t]
   \centering
@@ -913,7 +912,7 @@ Hence some $u'$ in the level-$0$ cell of $u$ has $\depth(u') \le 2D_0$, and thus
 \end{proof}
 
 \paragraph{Text blocks.} For every selected cell $C$, the string $T|_C$ has domain $C$, a tile, and by Lemmas~\ref{lem:coverable} and~\ref{lem:period}(b), $\Ham(T|_C + \delta, T|_C) \le 8k$ for $\delta \in \{\phi,\psi\}$.
-By Lemma~\ref{lem:decomposition} (with $R = \Z^2$), $T|_C$ can be partitioned into at most $\Delta + 16k < 24k$ monochromatic strings whose domains are blocks, the \emph{text blocks} of $C$.
+By Lemma~\ref{lem:decomposition}, $T|_C$ can be partitioned into at most $\Delta + 16k < 24k$ monochromatic strings whose domains are blocks, the \emph{text blocks} of $C$.
 For $j \in \{0,\dots,J\}$, let $\cS_j$ be the set of the text blocks of all selected level-$j$ cells.
 By Lemma~\ref{lem:levels},
 \begin{equation}\label{eq:pieces}
