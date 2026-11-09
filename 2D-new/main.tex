@@ -946,12 +946,10 @@ If $j = J$, then $r_c > 2D_J > m/16$ by the choice of $J$, so $\depth(u) \le n \
 \end{proof}
 
 \paragraph{Pairing.}
-For the deep text blocks, we enumerate all pairs of a text block $S$ and a pattern piece $V$ with the same character, and adds up $\abs{\dom(S) \cap \dom(V + q)}$ for all $q$ simultaneously.
-For a single pair, this intersection count is a function of $q$ that is determined by the constant-size descriptions of $S$ and $V$, but it is not obvious how to add up many such functions quickly.
-The trick is to write the block $S$, which is a rectangle in lattice coordinates, as a signed sum of four \emph{cones}, that is, quadrants in lattice coordinates (\autoref{fig:cones}).
-A cone has a single corner, so intersecting it with $V + q$ depends only on the difference of $V$ and the corner, and all pairs can be combined into a single function on the plane, of which we take cone sums, that is, suffix sums in lattice coordinates.
-This is the reason why the text is cut into blocks, and not into truncated blocks: a block has only four corners, while the indicator function of a truncated block is not a signed sum of a few cones.
-On the pattern side, the truncation does no harm, since the pattern pieces enter only through the function on the plane, which we can evaluate with range counting.
+For the deep text blocks, we enumerate all pairs of a text block $S$ and a pattern piece $V$ with the same character, and add up $\abs{\dom(S) \cap \dom(V + q)}$ for all $q$ simultaneously.
+The trick is to write the block $S$, a rectangle in lattice coordinates, as a signed sum of four \emph{cones}, that is, quadrants in lattice coordinates (\autoref{fig:cones}).
+Intersecting a cone with $V + q$ depends only on $q$ and on the difference of $V$ and the corner of the cone, so all pairs combine into a single function on the plane, of which we then take cone sums.
+This is why the text is cut into blocks rather than truncated blocks; the truncation of the pattern pieces does no harm.
 
 \begin{figure}[t]
   \centering
