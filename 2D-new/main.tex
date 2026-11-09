@@ -434,8 +434,7 @@ There are exactly $\Delta$ congruence classes: the half-open parallelogram $\{s\
 \begin{definition}
 A \emph{block} is a set $\gamma + I\phi + J\psi := \{\gamma + i\phi + j\psi : i \in I, j \in J\}$, where $\gamma \in \Z^2$ and $I, J \subseteq \Z$ are (possibly unbounded) intervals.
 A \emph{tile} is a set $\{u \in \Z^2 : \omega(u) \in X\}$, where $X \subseteq \R^2$ is a (possibly unbounded) axis-parallel box.
-A rectangle $R = ([x_0, x_1] \times [y_0, y_1]) \cap \Z^2$ is \emph{wide} if $x_1 - x_0 + 1 \ge \abs{\x\phi} + \abs{\x\psi}$ and $y_1 - y_0 + 1 \ge \abs{\y\phi} + \abs{\y\psi}$; we also call $R = \Z^2$ wide.
-A \emph{truncated block} is a set $R \cap B$, where $R$ is a wide rectangle and $B$ is a block.
+A \emph{truncated block} is a set $[m]^2 \cap B$, where $B$ is a block.
 \end{definition}
 
 Intuitively, the $\Delta$ cosets of $L$ color the plane with $\Delta$ colors, such that moving by $\phi$ or $\psi$ keeps the color; in the running example, they are the two colors of the checkerboard.
@@ -470,14 +469,14 @@ The intersection of a tile with a congruence class is a block.
   \caption{The lattice for $\phi = (2,-1)$ and $\psi = (1,2)$, with $\Delta = 5$.
     Black points: the coset $\gamma + L$ of $\gamma = (2,3)$.
     The block $\gamma + \{0,1,2\}\phi + \{0,1,2\}\psi$ consists of the nine blue points; the shaded parallelogram contains all points of the corresponding tile.
-    Intersecting the block with the wide rectangle $R$ (dashed) gives a truncated block of seven points (filled).}
+    Intersecting the block with a square (dashed) gives a truncated block of seven points (filled).}
   \label{fig:lattice}
 \end{figure}
 
 For a set $X \subseteq \Z^2$, the \emph{lattice graph} of $X$ has vertex set $X$ and edges $\{u, u+\phi\}$ and $\{u, u+\psi\}$ for all $u$ such that both endpoints are in $X$.
 
 \begin{lemma}[Connectivity]\label{lem:connected}
-The lattice graph of every truncated block is connected.
+The lattice graph of every block and of every truncated block is connected.
 \end{lemma}
 \begin{figure}[t]
   \centering
@@ -502,9 +501,11 @@ The lattice graph of every truncated block is connected.
 
 The idea of the proof is to walk from one point to the other in lattice coordinates (\autoref{fig:connected}).
 Inside the block, every step towards the target is allowed; the only obstacle is the boundary of the rectangle.
-Since $\phi$ points to the lower right and $\psi$ to the upper right, there are always two candidate steps that move in different vertical (or horizontal) directions, and wideness guarantees that one of them stays inside the rectangle.
+Since $\phi$ points to the lower right and $\psi$ to the upper right, there are always two candidate steps that move in different vertical (or horizontal) directions, and since $\phi$ and $\psi$ are short compared to $m$, one of them stays inside $[m]^2$.
 \begin{proof}
-Let $X = R \cap B$ with $R = [x_0, x_1] \times [y_0, y_1]$ wide (the case $R = \Z^2$ is trivial) and $B = \gamma + I\phi + J\psi$.
+For a block, this is clear, since a block is a rectangle in lattice coordinates.
+So let $X = R \cap B$ with $R = [m]^2$ and $B = \gamma + I\phi + J\psi$.
+Recall that $\abs{\x\phi} + \abs{\x\psi} \le 2\ell \le m$ and $\abs{\y\phi} + \abs{\y\psi} \le m$.
 It suffices to show that for distinct $u, v \in X$, one of them has a neighbor $w \in X$ with $\abs{\omega(w) - \omega(z)}_1 < \abs{\omega(u) - \omega(v)}_1$, where $z$ is the other of the two points; then induction on $\abs{\omega(u) - \omega(v)}_1$ shows that $u$ and $v$ are connected.
 All candidates $w$ below satisfy that $\omega(w)$ lies in the bounding box of $\omega(u)$ and $\omega(v)$, so $w \in B$, and only $w \in R$ needs to be checked.
 By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
@@ -512,15 +513,15 @@ By symmetry, assume $v = u + \alpha\phi + \beta\psi$ with $\alpha \ge 0$.
 \emph{Case $\beta \ge 0$.} The $x$-coordinate does not decrease along $\phi$- and $\psi$-steps, so every $w \in \{u+\phi, u+\psi\}$ satisfies $\x u \le \x w \le \x v$.
 If $\beta = 0$, then $w = u + \phi$ satisfies $\y v \le \y w \le \y u$, so $w \in R$.
 If $\alpha = 0$, then $w = u + \psi$ satisfies $\y u \le \y w \le \y v$.
-If $\alpha,\beta > 0$ and $u + \phi \notin R$, then $\y u + \y\phi < y_0$, and hence $y_0 \le \y u \le \y u + \y\psi \le y_0 - 1 + \abs{\y\phi} + \abs{\y\psi} \le y_1$, so $w = u + \psi \in R$.
+If $\alpha,\beta > 0$ and $u + \phi \notin R$, then $\y u + \y\phi < 0$, and hence $0 \le \y u \le \y u + \y\psi \le -1 + \abs{\y\phi} + \abs{\y\psi} \le m - 1$, so $w = u + \psi \in R$.
 
 \emph{Case $\beta < 0$.} If $\alpha = 0$, then $w = u - \psi$ lies between $u$ and $v$ in both coordinates.
 Otherwise, both $u + \phi$ and $u - \psi$ have their $y$-coordinate in $[\y v, \y u]$, as $\y\phi < 0$ and $\y\psi \ge 0$.
-Moreover, $\x{(u+\phi)} \ge x_0$ and $\x{(u-\psi)} \le x_1$.
-If neither of them is in $R$, then $\x u + \x\phi > x_1$ and $\x u - \x\psi < x_0$, so $x_1 - x_0 + 2 \le \x\phi + \x\psi$, contradicting wideness.
+Moreover, $\x{(u+\phi)} \ge 0$ and $\x{(u-\psi)} \le m - 1$.
+If neither of them is in $R$, then $\x u + \x\phi > m - 1$ and $\x u - \x\psi < 0$, so $m + 1 \le \x\phi + \x\psi$, a contradiction.
 \end{proof}
 
-Wideness cannot be dropped, as the following example shows.
+The lemma needs that the square is large compared to $\phi$ and $\psi$, as the following example for a narrow rectangle shows.
 For $\phi = (2,-1)$, $\psi = (1,2)$, and the narrow rectangle $R = [0,1] \times [0,9]$, the coset $L$ meets $R$ in the points $(0,0)$, $(1,2)$, $(0,5)$, and $(1,7)$; the only edges are $\{(0,0),(1,2)\}$ and $\{(0,5),(1,7)\}$ (both along $\psi$), so the lattice graph has two components.
 
 \paragraph{Cutting into monochromatic pieces.}
@@ -531,7 +532,7 @@ To keep the pieces in the shape of truncated blocks, we cut along entire lines o
 Each cut increases the number of pieces by one, so we end up with at most one piece per coset plus one per mismatch.
 
 \begin{lemma}[Decomposition]\label{lem:decomposition}
-Let $R$ be a wide rectangle, let $Y$ be a tile, and let $S$ be a string with $\dom(S) = R \cap Y$.
+Let $R$ be $[m]^2$ or $\Z^2$, let $Y$ be a tile, and let $S$ be a string with $\dom(S) = R \cap Y$.
 Let $\eta = \Ham(S + \phi, S) + \Ham(S+\psi, S)$.
 In $\O(\abs{\dom(S)}\log \abs{\dom(S)})$ time, $S$ can be partitioned into at most $\Delta + \eta$ monochromatic strings whose domains are truncated blocks of the form $R \cap B$.
 If $R = \Z^2$, these domains are blocks.
@@ -548,7 +549,6 @@ We represent each piece by its character, $R$, $\gamma$, and the endpoints of it
 Sorting dominates the running time.
 \end{proof}
 
-Since $\abs{\x\phi} + \abs{\x\psi} \le 2\ell \le m$ (and similarly for the $y$-coordinates), the square $[m]^2$ is wide.
 We apply Lemma~\ref{lem:decomposition} to $P$ with $R = [m]^2$ and $Y = \Z^2$, with $\eta \le 8k$.
 This yields a partition of $P$ into a set $\cV$ of $\abs{\cV} \le \Delta + 8k < 16k$ monochromatic strings, whose domains are truncated blocks $[m]^2 \cap B$.
 For $c \in \Sigma$, let $\cV_c = \{V \in \cV : c(V) = c\}$.
