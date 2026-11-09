@@ -387,9 +387,9 @@ Note that $U - U = -(U-U)$, so we may choose the signs of differences freely.
 
 \emph{The first period.}
 Let $r$ be the minimum distance between two distinct points of $U$, and let $w \in U - U$ with $\abs{w} = r$ (a closest pair can be found in $\O(\abs{U}\log\abs{U})$ time).
-If $r > \ell/\sqrt 2$, then each of the four closed quarters of $[0,\ell]^2$ (of diameter $\ell/\sqrt2$) contains at most one point of $U$, contradicting $\abs{U} > 4$.
-Hence $r \le \ell$.
-The open disks of radius $r/2$ centered at the points of $U$ are disjoint and contained in $[-r/2, \ell + r/2]^2$, so $\abs{U} \pi r^2/4 \le 4\ell^2$ and $r^2 < 6\ell^2/\abs{U}$.
+Let $t = \lceil \sqrt{\abs{U}}\, \rceil - 1$, so that $t^2 < \abs{U}$ and $t \ge \sqrt{\abs{U}}/2$.
+Cover $[0,\ell]^2$ with $t^2$ closed squares of side $\ell/t \le 2\ell/\sqrt{\abs{U}}$.
+Two points of $U$ share a square, so $r \le 2\sqrt2\,\ell/\sqrt{\abs{U}}$, that is, $r^2 \le 8\ell^2/\abs{U}$; in particular, $r \le \ell$.
 
 \emph{The second period.}
 Choose the sign of $w$ such that $\x w > 0$, or $\x w = 0$ and $\y w < 0$.
@@ -399,7 +399,7 @@ We put every $u \in U$ into the bucket $(\lfloor (u \cdot e)/a \rfloor, \lfloor 
 As $u \cdot e$ and $u \cdot e'$ range over intervals of length $2\ell$, there are at most $(2\ell/a + 1)(2\ell/b+1) \le (9\ell/r)(3\ell/b) = \frac{27}{28}\abs{U}$ non-empty buckets.
 Hence, some bucket contains two distinct points, and their difference $w' \in U - U$ satisfies $\abs{w' \cdot e} < a$, $\abs{w'\cdot e'} < b$, and $\abs{w'} \ge r$.
 Thus $\abs{w'}^2 = ((w' \cdot e)^2 + (w'\cdot e')^2)/2 < (a+b)^2$, and
-\[\abs{w}\abs{w'} < r(a + b) = r^2/4 + 28\ell^2/\abs{U} < 30\ell^2/\abs{U}.\]
+\[\abs{w}\abs{w'} < r(a + b) = r^2/4 + 28\ell^2/\abs{U} \le 30\ell^2/\abs{U}.\]
 (The bucketing needs no real arithmetic: it suffices to sort the values $u \cdot e$ and to group them greedily into intervals of length less than $a$, which creates at most $2\ell/a + 1$ groups; whether two integers differ by less than $a = r/4$ is decided by comparing their squared difference with $r^2/16$. The same works for $b$.)
 
 \emph{Choosing the signs.}
