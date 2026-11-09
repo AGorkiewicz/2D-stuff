@@ -1000,7 +1000,7 @@ The desired value for $q$ is $\mathit{CS}(-q)$.
 
 \paragraph{FFT on strips.}
 The second way counts the matches of one character with FFT.
-Applied to the whole text and pattern, this takes $\tO(m^2)$ time, which is too much for every level and character.
+Applied to the whole text and pattern, this takes $\tO(m^2)$ time, which is too much for every character.
 But the points of $F_c$ have small depth, and a shallow text point can only lie below a point of the pattern close to its boundary: if the text point were below a point deep inside the pattern, then the occurrence of the pattern would cover the area around it.
 Moreover, if the depth is at most $d$, we cut the shallow points into strips of width $d$, and each strip only meets a small part of this boundary region of the pattern (\autoref{fig:strips}).
 
@@ -1071,31 +1071,9 @@ The total time is $\O(\sum_i dh_i \log m) = \O(md\log m)$ for the vertical strip
 \section{The algorithm}
 \label{sec:algorithm}
 
-\autoref{alg:main} puts the pieces together, for $n \le \frac32 m$, and \autoref{fig:flow} shows how the parts of the algorithm depend on each other.
+\autoref{alg:main} puts the pieces together, for $n \le \frac32 m$.
 
-\begin{figure}[ht]
-  \centering
-  \begin{tikzpicture}[
-      box/.style={draw=gray!70, rounded corners=3pt, fill=white, align=center, font=\small, inner sep=4pt, minimum height=1.0cm},
-      arr/.style={-{Stealth[length=5pt]}, gray!70!black, thick}]
-    \node[box] (filter) at (0,0) {filter $Q$\\(Fact~\ref{fact:karloff})};
-    \node[box] (kang) at (0,-1.9) {few candidates:\\kangaroo jumps};
-    \node[box] (per) at (3.3,0) {periods $\phi, \psi$\\(Lemma~\ref{lem:two_periods})};
-    \node[box] (pat) at (6.6,0.95) {pattern pieces $\cV$\\(Lemma~\ref{lem:decomposition})};
-    \node[box] (act) at (6.6,-0.95) {active text $A$,\\cells, text blocks $\cS_j$};
-    \node[box] (cnt) at (10.2,0) {deep blocks: pairing,\\shallow points: FFT\\(Lemmas~\ref{lem:pairing},~\ref{lem:strips})};
-    \node[box] (out) at (10.2,-1.9) {$\Ham(P+q,T)$\\for $q \in Q$};
-    \draw[arr] (filter) -- (kang);
-    \draw[arr] (filter) -- (per);
-    \draw[arr] (per) -- (pat);
-    \draw[arr] (per) -- (act);
-    \draw[arr] (pat) -- (cnt);
-    \draw[arr] (act) -- (cnt);
-    \draw[arr] (cnt) -- (out);
-  \end{tikzpicture}
-  \caption{The parts of the algorithm and how they depend on each other.}
-  \label{fig:flow}
-\end{figure}
+
 
 \begin{algorithm}[ht]
   \caption{Two-dimensional pattern matching with $k$ mismatches, for $n \le \frac32 m$.}
