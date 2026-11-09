@@ -1075,10 +1075,9 @@ If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a), s
 Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$.
 Summing up, the series telescopes: the first two non-empty strips contribute at most $2n$, the differences $\mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t}$ add up to at most $2n$, and the terms $d$ add up to at most $(n/d+1)d$, so $\sum_i h_i \le 2n + 2n + (n/d+1)d = \O(m)$.
 
-\emph{Horizontal strips.} Symmetrically, let $E_i = F \cap (\Z \times [id, (i+1)d))$, let $\mathit{left}_i = \min\{\x u : u \in E_i\}$, let $\mathit{right}_i = \max\{\x v : v \in A,\ \y v \in [id, (i+1)d)\}$, and let $w_i = \mathit{right}_i - \mathit{left}_i + 1$.
-As above, $\sum_i w_i = \O(m)$, and the matches with character $c$ and $p \in Z_T$ are counted by applying Fact~\ref{fact:fft} with character $c$ to $T|_{E_i}$ and $P|_{[m - w_i, m-d) \times [m-d,m)}$.
+\emph{Horizontal strips.} The matches with $p \in Z_T$ are counted in the same way after exchanging the roles of the $x$- and $y$-coordinates, that is, with horizontal strips of height $d$; this exchange maps $K_1$ to itself and $Z_T$ into $Z_R$.
 
-The total time is $\O(\sum_i d(h_i + w_i)\log m) = \O(md\log m)$.
+The total time is $\O(\sum_i dh_i \log m) = \O(md\log m)$ for the vertical strips, and the same for the horizontal strips.
 \end{proof}
 
 \section{The algorithm}
