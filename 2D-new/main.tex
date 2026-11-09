@@ -138,16 +138,15 @@ Along these periods, the pattern changes its character only $\O(k)$ times, so it
 The text is the difficult part: only the region $A$ covered by the candidates matters, but $A$ is \emph{not} approximately periodic as a whole.
 However, a small piece of $A$ that is far from the boundary of $A$, relative to its size, lies inside a single candidate occurrence and therefore inherits the periodicity of the pattern.
 So we cut $A$ into cells whose size is proportional to their distance to the boundary.
-At distance about $D$, there are $\O(m/D)$ cells, each splits into $\O(k)$ monochromatic pieces, and the matches between text pieces and pattern pieces can be counted in two ways, for each character separately:
-by enumerating all pairs of pieces, or by FFT.
-The FFT is cheap close to the boundary: a text cell at distance $D$ from the boundary of $A$ can only lie below a strip of width $\O(D)$ along the boundary of the pattern, so the FFT takes $\tO(mD)$ time.
+At distance about $D$ from the boundary, there are $\O(m/D)$ cells, and each of them splits into $\O(k)$ monochromatic pieces.
 
 \paragraph{Where the bound comes from.}
-For a character $c$, let $r_c$ be the number of pattern pieces with character $c$; these numbers add up to $\O(k)$.
-For every character $c$, we pair its text pieces at depth at least $r_c$ with its pattern pieces, and we use FFT closer to the boundary.
-At depth about $D$, there are $\O(mk/D)$ text pieces, and each of them is paired with at most $D$ pattern pieces, so pairing costs $\O(mk)$ per depth.
-For a character $c$, a single FFT handles all its text points at depth less than about $r_c$ and costs $\tO(mr_c)$, so $\tO(mk)$ over all characters.
-Neither method suffices on its own: pairing alone costs up to $\O(mk/D) \cdot \O(k) = \O(mk^2/D)$, which is too much for small $D$, and FFT alone costs $\tO(mD)$ for every character, which is too much if there are many characters.
+We count matches for each character $c$ separately.
+Let $r_c$ be the number of pattern pieces with character $c$; these numbers add up to $\O(k)$.
+Far from the boundary, at depth $D \ge r_c$, we enumerate all pairs of a text piece and a pattern piece with character $c$.
+Each of the $\O(mk/D)$ text pieces at depth about $D$ meets at most $D$ pattern pieces in this way, so this costs $\O(mk)$ per depth.
+Close to the boundary, at depth less than $r_c$, we use FFT instead.
+A text point at depth $d$ can only lie below a strip of width $d$ along the boundary of the pattern, so the FFT for character $c$ costs only $\tO(mr_c)$, and $\tO(mk)$ for all characters together.
 With $\O(\log m)$ depths and $\O(n^2/m^2)$ texts of size $\frac32 m$, this gives \autoref{thm:main}.
 
 \paragraph{Roadmap.}
