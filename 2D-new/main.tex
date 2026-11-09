@@ -982,19 +982,20 @@ Hence, defining $f \colon \Z^2 \to \Z$ by
 the desired value for $q$ is $\sum_{v \in \cC(-q)} f(v)$, the sum of $f$ over a single cone.
 In words: every pair contributes four shifted copies of its pattern piece, with signs, and the answer for $q$ is the sum of $f$ over the cone at $-q$.
 
+\emph{The window.}
+Every corner $w_{ab}(S)$ is within maximum-norm distance $\inorm{\phi} + \inorm{\psi} \le m$ of $\dom(S) \subseteq [n]^2$, so all sets $\dom(V) - w_{ab}(S)$, and all points $-q$ with $q \in [\ell+1]^2$, lie in the square $[-3m, 2m]^2$.
+Let $W$ be the tile of the points $u$ with $\abs{s} \le 5m\abs{\psi}/\Delta$ and $\abs{t} \le 5m\abs{\phi}/\Delta$, where $\omega(u) = (s,t)$.
+It contains the square, since $\abs{\det(u,\psi)} \le \abs{u}\abs{\psi} \le 5m\abs{\psi}$ for $u$ in the square, and likewise for $t$.
+It is a parallelogram of area $100m^2\abs{\phi}\abs{\psi}/\Delta \le 200m^2$ with angles between $30^\circ$ and $150^\circ$, so it contains $\O(m^2)$ points, and within every congruence class, it is a rectangle in lattice coordinates.
+
 \emph{Computing $f$.}
-Every corner $w_{ab}(S)$ is within maximum-norm distance $\inorm{\phi} + \inorm{\psi} \le m$ of $\dom(S) \subseteq [n]^2$, so $\dom(V) - w_{ab}(S) \subseteq W := [-3m, 2m]^2$; also $-[\ell+1]^2 \subseteq W$.
 A set $\dom(V) - w$ is described by four intervals: if $\dom(V) = [m]^2 \cap B$ for a block $B$, then a point $u$ of the congruence class of $B - w$ lies in $\dom(V) - w$ if and only if $\x u$ and $\y u$ lie in the intervals that describe $[m]^2 - w$, and the two lattice coordinates $\omega(u)$ lie in the intervals that describe $B - w$.
 So, for every congruence class separately, $f(u)$ is the total weight of the axis-parallel boxes in $\R^4$ that contain the point $(u, \omega(u))$.
 By Fact~\ref{fact:range}, we compute $f(u)$ for all $u \in W$ in $\tO(m^2 + N)$ total time.
 
 \emph{Cone sums.}
 In lattice coordinates, a cone is a quadrant, so cone sums are suffix sums.
-Let $W'$ be the tile of the points $u$ with $\abs{s} \le 5m\abs{\psi}/\Delta$ and $\abs{t} \le 5m\abs{\phi}/\Delta$, where $\omega(u) = (s,t)$.
-It contains $W$, since $\abs{\det(u,\psi)} \le \abs{u}\abs{\psi} \le 5m\abs{\psi}$ for $u \in W$, and likewise for $t$.
-It is a parallelogram of area $100m^2\abs{\phi}\abs{\psi}/\Delta \le 200m^2$ with angles between $30^\circ$ and $150^\circ$, so it contains $\O(m^2)$ points.
-Within every congruence class, $W'$ is a block, that is, a rectangle in lattice coordinates.
-On each of these rectangles, we compute the suffix sums $\mathit{CS}(u) = \sum_{i, j \ge 0} f(u + i\phi + j\psi)$ (with $f = 0$ outside $W$) in time linear in its size.
+On each of the rectangles that form $W$, we compute the suffix sums $\mathit{CS}(u) = \sum_{i, j \ge 0} f(u + i\phi + j\psi)$ in time linear in its size; $f$ vanishes outside $W$.
 The desired value for $q$ is $\mathit{CS}(-q)$.
 \end{proof}
 
