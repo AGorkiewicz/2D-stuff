@@ -930,15 +930,14 @@ The matches in the deep text blocks are counted by pairing them with the pattern
 For every character $c$, let $F_c$ be the set of points of $A$ with character $c$ that lie in no deep text block; the matches in $F_c$ are counted by FFT.
 
 \begin{lemma}[Shallow remainder]\label{lem:remainder}
-Let $d_c = 4r_c + 4D_0$.
-If $d_c \le m/8$, then every point of $F_c$ has depth at most $d_c$.
+Every point of $F_c$ has depth at most $d_c := 24r_c + 4D_0$.
 \end{lemma}
 \begin{proof}
 Let $u \in F_c$.
 If $u$ lies in no selected cell, then $\depth(u) \le 4D_0 \le d_c$ by Lemma~\ref{lem:levels}.
 Otherwise, $u$ lies in a text block $S \in \cS_j$ that is not deep, so $2D_j < r_c$.
 If $j < J$, then $\depth(u) \le 8D_j < 4r_c \le d_c$ by Lemma~\ref{lem:levels}.
-If $j = J$, then $r_c > 2D_J > m/16$, so $d_c > m/8$.
+If $j = J$, then $r_c > 2D_J > m/16$ by the choice of $J$, so $\depth(u) \le n \le \frac32 m < 24r_c \le d_c$.
 \end{proof}
 
 \paragraph{Pairing.}
@@ -1045,7 +1044,7 @@ Moreover, if the depth is at most $d$, we cut the shallow points into strips of 
 \end{figure}
 
 \begin{lemma}[Strips]\label{lem:strips}
-Let $c \in \Sigma$, let $d \ge 1$, and let $F \subseteq A$ be a set such that $d > m/8$ or every point of $F$ has depth at most $d$.
+Let $c \in \Sigma$, let $d \ge 1$, and let $F \subseteq A$ be a set of points of depth at most $d$.
 One can add $\Match_c(P + q, T|_F)$ to the entry $q$ of an accumulator array $\mathit{acc}$ indexed by $[\ell+1]^2$, for every $q \in Q$, in $\O(m d \log m)$ time.
 (The entries of positions outside $Q$ may receive arbitrary values.)
 \end{lemma}
