@@ -225,7 +225,7 @@ For every position $q \in [n-m+1]^2$, we compute $\min\{k+1, \Ham(P+q, T)\}$.
     $\cV$, $\cV_c$ & pattern pieces (with character $c$), $\abs{\cV} < 16k$ & \autoref{sec:lattice} \\
     $A$, $K_0$ & active text, and the central square $[\ell, m-1]^2$ & \autoref{sec:active} \\
     $\depth(u)$ & distance from $u$ to the complement of $A$ & \autoref{sec:active} \\
-    $K_i$, $\sigma_i$ & quarters of the plane and their outward directions & \autoref{sec:active} \\
+    $K_1, \dots, K_4$ & quarters of the plane around the center of $[n]^2$ & \autoref{sec:active} \\
     $D_j$ & side length of the level-$j$ cells & \autoref{sec:multiscale} \\
     $\cS_j$ & text blocks of the selected level-$j$ cells & \autoref{sec:multiscale} \\
     $r_c$ & number of pattern pieces with character $c$ & \autoref{sec:counting} \\
@@ -806,7 +806,8 @@ To analyze the staircases, we split the plane into four quarters around the cent
 \end{figure}
 
 Let $z = \lceil n/2 \rceil$.
-The \emph{quarters} are $K_1 = [z,\infty)^2$, $K_2 = (-\infty, z) \times [z, \infty)$, $K_3 = (-\infty, z)^2$, and $K_4 = [z, \infty) \times (-\infty, z)$ (intersected with $\Z^2$), with the outward directions $\sigma_1 = (1,1)$, $\sigma_2 = (-1,1)$, $\sigma_3 = (-1,-1)$, and $\sigma_4 = (1,-1)$.
+The \emph{quarters} are $K_1 = [z,\infty)^2$, $K_2 = (-\infty, z) \times [z, \infty)$, $K_3 = (-\infty, z)^2$, and $K_4 = [z, \infty) \times (-\infty, z)$ (intersected with $\Z^2$).
+We state the following lemmas for $K_1$; the other three quarters are symmetric, with the inequality $z - 1 + d \le m - 1$ in place of $z - d \ge \ell$ for the coordinates in which the quarter extends to $-\infty$.
 Let $K_0 = [\ell, m-1]^2$ be the central square, which is covered by every occurrence $[m]^2 + q$ with $q \in [\ell+1]^2$.
 We say that $w$ lies \emph{between $K_0$ and $v$} if, in each coordinate, $w$ lies in the smallest interval that contains both $[\ell, m-1]$ and the coordinate of $v$.
 
@@ -814,15 +815,13 @@ We say that $w$ lies \emph{between $K_0$ and $v$} if, in each coordinate, $w$ li
 \begin{enumerate}[(a)]
 \item If $v \in [m]^2 + q$ for some $q \in [\ell+1]^2$, and $w$ lies between $K_0$ and $v$, then $w \in [m]^2 + q$.
 In particular, if $v \in A$ and $w$ lies between $K_0$ and $v$, then $w \in A$.
-\item If $d \le m/8$, $u \in A \cap K_i$, and $\depth(u) \le d$, then $u + d\sigma_i \notin A$.
+\item If $d \le m/8$, $u \in A \cap K_1$, and $\depth(u) \le d$, then $u + (d,d) \notin A$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
 (a) If $v \in [m]^2 + q$ with $q \in [\ell+1]^2$, then both $\x v$ and $[\ell, m-1]$ lie in $[\x q, \x q + m - 1]$, and likewise for $y$, so $w \in [m]^2 + q$.
-(b) Consider $i = 1$; the other quarters are symmetric.
-Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $K_0$ and $u + (d,d)$.
+(b) Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $K_0$ and $u + (d,d)$.
 If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
-(For the coordinates in which $\sigma_i$ is negative, that is, the $x$-coordinate for $i \in \{2,3\}$ and the $y$-coordinate for $i \in \{3,4\}$, we use $z - 1 + d \le m - 1$ instead.)
 \end{proof}
 
 \begin{lemma}[Coverable sets]\label{lem:coverable}
@@ -842,7 +841,7 @@ For every $d \ge 1$, $\abs{\{u \in A : \depth(u) \le d\}} = \O(md)$.
 \end{lemma}
 \begin{proof}
 If $d > m/8$, the bound follows from $\abs{A} \le n^2 = \O(m^2)$.
-Otherwise, consider $K_1$ (for the other quarters $K_i$, replace $(1,1)$ by $\sigma_i$) and a diagonal line $\{u_0 + t(1,1) : t \in \Z\}$.
+Otherwise, consider $K_1$ and a diagonal line $\{u_0 + t(1,1) : t \in \Z\}$.
 By Lemma~\ref{lem:monotone}(a), the points of $A \cap K_1$ on this line form a prefix (with respect to $t$) of the points of $K_1$ on this line.
 By Lemma~\ref{lem:monotone}(b), every point $u$ of this prefix with $\depth(u) \le d$ satisfies $u + (d,d) \notin A$, so it is among the last $d$ points of the prefix.
 At most $2n$ diagonal lines meet $[n]^2$.
@@ -1057,7 +1056,6 @@ One can add $\Match_c(P + q, T|_F)$ to the entry $q$ of an accumulator array $\m
 If $d > m/8$, we apply Fact~\ref{fact:fft} with character $c$ to $T|_F$ and $P$ in $\O(n^2\log n) = \O(md \log m)$ time.
 Otherwise, $d \le m/8$.
 We handle the four sets $F \cap K_i$ separately; by symmetry, we describe $F \cap K_1$, and we assume $F \subseteq K_1$.
-(For $K_i$, the relevant strips of the pattern lie along the two sides of $[m]^2$ in the directions of the two coordinates of $\sigma_i$.)
 By Lemma~\ref{lem:monotone}(b), $u + (d,d) \notin A$ for all $u \in F$.
 
 \emph{Only the boundary strips of $P$ matter.} Let $q \in Q$ and $u \in F$ with $p := u - q \in [m]^2$, that is, $u$ lies on the pattern position $p$.
