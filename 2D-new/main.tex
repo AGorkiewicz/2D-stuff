@@ -815,6 +815,7 @@ We say that $w$ lies \emph{between $K_0$ and $v$} if, in each coordinate, $w$ li
 In particular, if $v \in A$ and $w$ lies between $K_0$ and $v$, then $w \in A$.
 \item For a column $x \ge z$, let $\mathit{top}(x)$ be the highest row of $A$ in column $x$, or $z - 1$ if there is none. Then $\mathit{top}$ is non-increasing.
 \item If $d \le m/8$, $u \in A \cap K_1$, and $\depth(u) \le d$, then $u + (d,d) \notin A$, and hence $\y u > \mathit{top}(\x u + d) - d$.
+\item For every $d \ge 1$, there are $\O(md)$ points $u \in A$ with $\depth(u) \le d$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -823,6 +824,10 @@ In particular, if $v \in A$ and $w$ lies between $K_0$ and $v$, then $w \in A$.
 (c) Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $K_0$ and $u + (d,d)$.
 If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
 Finally, if $\y u + d \le \mathit{top}(\x u + d)$, then $u + (d,d)$ would lie between $K_0$ and $(\x u + d, \mathit{top}(\x u + d)) \in A$, and hence in $A$.
+(d) If $d > m/8$, the bound follows from $\abs{A} \le n^2 = \O(m^2)$.
+Otherwise, consider $K_1$.
+By (c), the points of $A \cap K_1$ in column $x$ with depth at most $d$ lie in the rows from $\mathit{top}(x + d) - d + 1$ to $\mathit{top}(x)$, so there are at most $\mathit{top}(x) - \mathit{top}(x+d) + d$ of them.
+Summed over the columns $x \in [z, n)$, the differences telescope to at most $dn$, so there are at most $2dn$ such points.
 \end{proof}
 
 \begin{lemma}[Coverable sets]\label{lem:coverable}
@@ -837,15 +842,7 @@ The corner $c$ is within distance $r$ of a point of $X$, so $c \in A$, that is, 
 By Lemma~\ref{lem:monotone}(a), $X \subseteq [m]^2 + q$.
 \end{proof}
 
-\begin{lemma}[Shallow points]\label{lem:shallow}
-For every $d \ge 1$, $\abs{\{u \in A : \depth(u) \le d\}} = \O(md)$.
-\end{lemma}
-\begin{proof}
-If $d > m/8$, the bound follows from $\abs{A} \le n^2 = \O(m^2)$.
-Otherwise, consider $K_1$.
-By Lemma~\ref{lem:monotone}(c), the points of $A \cap K_1$ in column $x$ with depth at most $d$ lie in the rows from $\mathit{top}(x + d) - d + 1$ to $\mathit{top}(x)$, so there are at most $\mathit{top}(x) - \mathit{top}(x+d) + d$ of them.
-Summed over the columns $x \in [z, n)$, the differences telescope to at most $dn$, so there are at most $2dn$ such points.
-\end{proof}
+
 
 \section{Multiscale decomposition of the active text}
 \label{sec:multiscale}
@@ -904,7 +901,7 @@ The lower bound holds since selected cells are good.
 For $j = J$, the upper bound holds since depths are at most $n \le \frac32 m$ and $D_J > m/32$ by the choice of $J$.
 For $j < J$, let $u$ be in a selected level-$j$ cell with parent $C'$.
 As $C'$ is not good, some $u' \in C'$ has $\depth(u') \le 2D_{j+1}$, and $\inorm{u - u'} \le 2D_{j+1}$ by (C2), so $\depth(u) \le 4D_{j+1} = 8D_j$.
-The selected level-$j$ cells are disjoint, contain at least $D_j^2/16$ points each by (C3), and these points have depth at most $48D_j$; by Lemma~\ref{lem:shallow}, there are $\O(mD_j)/(D_j^2/16) = \O(m/D_j)$ such cells.
+The selected level-$j$ cells are disjoint, contain at least $D_j^2/16$ points each by (C3), and these points have depth at most $48D_j$; by Lemma~\ref{lem:monotone}(d), there are $\O(mD_j)/(D_j^2/16) = \O(m/D_j)$ such cells.
 
 Now let $u \in A$ lie in no selected cell.
 If the level-$0$ cell of $u$ were good, then its highest good ancestor (of level at most $J$) would be selected and would contain $u$.
