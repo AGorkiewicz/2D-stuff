@@ -815,13 +815,16 @@ We say that $w$ lies \emph{between $K_0$ and $v$} if, in each coordinate, $w$ li
 \begin{enumerate}[(a)]
 \item If $v \in [m]^2 + q$ for some $q \in [\ell+1]^2$, and $w$ lies between $K_0$ and $v$, then $w \in [m]^2 + q$.
 In particular, if $v \in A$ and $w$ lies between $K_0$ and $v$, then $w \in A$.
-\item If $d \le m/8$, $u \in A \cap K_1$, and $\depth(u) \le d$, then $u + (d,d) \notin A$.
+\item For a column $x \ge z$, let $\mathit{top}(x)$ be the highest row of $A$ in column $x$, or $z - 1$ if there is none. Then $\mathit{top}$ is non-increasing.
+\item If $d \le m/8$, $u \in A \cap K_1$, and $\depth(u) \le d$, then $u + (d,d) \notin A$, and hence $\y u > \mathit{top}(\x u + d) - d$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
 (a) If $v \in [m]^2 + q$ with $q \in [\ell+1]^2$, then both $\x v$ and $[\ell, m-1]$ lie in $[\x q, \x q + m - 1]$, and likewise for $y$, so $w \in [m]^2 + q$.
-(b) Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $K_0$ and $u + (d,d)$.
+(b) If $x < x'$ and column $x'$ contains a point of $A$, then $(x, \mathit{top}(x'))$ lies between $K_0$ and $(x', \mathit{top}(x')) \in A$, so $\mathit{top}(x) \ge \mathit{top}(x')$ by (a).
+(c) Every $w \in u + [-d,d]^2$ has coordinates at least $z - d \ge n/2 - m/8 \ge n - m = \ell$ (using $n \le 3m/2$) and at most those of $u + (d,d)$, so it lies between $K_0$ and $u + (d,d)$.
 If $u + (d,d) \in A$, then (a) gives $u + [-d,d]^2 \subseteq A$, that is, $\depth(u) > d$.
+Finally, if $\y u + d \le \mathit{top}(\x u + d)$, then $u + (d,d)$ would lie between $K_0$ and $(\x u + d, \mathit{top}(\x u + d)) \in A$, and hence in $A$.
 \end{proof}
 
 \begin{lemma}[Coverable sets]\label{lem:coverable}
@@ -841,10 +844,9 @@ For every $d \ge 1$, $\abs{\{u \in A : \depth(u) \le d\}} = \O(md)$.
 \end{lemma}
 \begin{proof}
 If $d > m/8$, the bound follows from $\abs{A} \le n^2 = \O(m^2)$.
-Otherwise, consider $K_1$ and a diagonal line $\{u_0 + t(1,1) : t \in \Z\}$.
-By Lemma~\ref{lem:monotone}(a), the points of $A \cap K_1$ on this line form a prefix (with respect to $t$) of the points of $K_1$ on this line.
-By Lemma~\ref{lem:monotone}(b), every point $u$ of this prefix with $\depth(u) \le d$ satisfies $u + (d,d) \notin A$, so it is among the last $d$ points of the prefix.
-At most $2n$ diagonal lines meet $[n]^2$.
+Otherwise, consider $K_1$.
+By Lemma~\ref{lem:monotone}(c), the points of $A \cap K_1$ in column $x$ with depth at most $d$ lie in the rows from $\mathit{top}(x + d) - d + 1$ to $\mathit{top}(x)$, so there are at most $\mathit{top}(x) - \mathit{top}(x+d) + d$ of them.
+Summed over the columns $x \in [z, n)$, the differences telescope to at most $dn$, so there are at most $2dn$ such points.
 \end{proof}
 
 \section{Multiscale decomposition of the active text}
@@ -1056,17 +1058,14 @@ One can add $\Match_c(P + q, T|_F)$ to the entry $q$ of an accumulator array $\m
 If $d > m/8$, we apply Fact~\ref{fact:fft} with character $c$ to $T|_F$ and $P$ in $\O(n^2\log n) = \O(md \log m)$ time.
 Otherwise, $d \le m/8$.
 We handle the four sets $F \cap K_i$ separately; by symmetry, we describe $F \cap K_1$, and we assume $F \subseteq K_1$.
-By Lemma~\ref{lem:monotone}(b), $u + (d,d) \notin A$ for all $u \in F$.
+By Lemma~\ref{lem:monotone}(c), $u + (d,d) \notin A$ for all $u \in F$.
 
 \emph{Only the boundary strips of $P$ matter.} Let $q \in Q$ and $u \in F$ with $p := u - q \in [m]^2$, that is, $u$ lies on the pattern position $p$.
 As $[m]^2 + q \subseteq A$ and $u + (d,d) \notin A$, we have $p + (d,d) \notin [m]^2$.
 Hence $p \in Z_R \cup Z_T$, where $Z_R = [m-d, m) \times [0, m)$ and $Z_T = [0, m-d) \times [m-d, m)$ are disjoint.
 
-\emph{Vertical strips.} For every column $x \ge z$, let $\mathit{top}(x)$ be the highest row of $A$ in column $x$, or $z - 1$ if column $x$ contains no point of $A$; we compute these values in $\O(n^2)$ time.
-By Lemma~\ref{lem:monotone}(a), $\mathit{top}$ is non-increasing: if $x < x'$ and column $x'$ contains a point of $A$, then $(x, \mathit{top}(x'))$ lies between $K_0$ and $(x', \mathit{top}(x')) \in A$.
-For $i \ge 0$, let $F_i = F \cap ([z + id, z + (i+1)d) \times \Z)$ be the $i$-th vertical strip of $F$.
-Every $u \in F_i$ satisfies $\y u + d > \mathit{top}(\x u + d)$, since otherwise $u + (d,d)$ would lie between $K_0$ and $(\x u + d, \mathit{top}(\x u + d)) \in A$.
-Hence, $F_i$ lies in the rows from $\mathit{top}(z + (i+2)d) - d + 1$ to $\mathit{top}(z + id)$, a range of $h_i = \mathit{top}(z + id) - \mathit{top}(z + (i+2)d) + d$ rows.
+\emph{Vertical strips.} We compute the values $\mathit{top}(x)$ of Lemma~\ref{lem:monotone}(b) in $\O(n^2)$ time. For $i \ge 0$, let $F_i = F \cap ([z + id, z + (i+1)d) \times \Z)$ be the $i$-th vertical strip of $F$.
+By Lemma~\ref{lem:monotone}(b) and (c), every $u \in F_i$ satisfies $\mathit{top}(z + (i+2)d) - d < \y u \le \mathit{top}(z + id)$, so $F_i$ lies in the rows from $\mathit{top}(z + (i+2)d) - d + 1$ to $\mathit{top}(z + id)$, a range of $h_i = \mathit{top}(z + id) - \mathit{top}(z + (i+2)d) + d$ rows.
 The series $\sum_i h_i$ telescopes to at most $2n + (n/d + 1)d = \O(m)$.
 
 Let $q \in Q$ and $u \in F_i$ with $p = u - q \in [m]^2$.
