@@ -1062,21 +1062,16 @@ By Lemma~\ref{lem:monotone}(b), $u + (d,d) \notin A$ for all $u \in F$.
 As $[m]^2 + q \subseteq A$ and $u + (d,d) \notin A$, we have $p + (d,d) \notin [m]^2$.
 Hence $p \in Z_R \cup Z_T$, where $Z_R = [m-d, m) \times [0, m)$ and $Z_T = [0, m-d) \times [m-d, m)$ are disjoint.
 
-\emph{Vertical strips.} For $i \ge 0$, let $F_i = F \cap ([id, (i+1)d) \times \Z)$ be the $i$-th vertical strip of $F$.
-For non-empty $F_i$, let $\mathit{bot}_i = \min\{\y u : u \in F_i\}$ be its lowest row, let $\mathit{top}_i = \max\{\y v : v \in A,\ \x v \in [id, (i+1)d)\}$ be the highest row of $A$ above it, and let $h_i = \mathit{top}_i - \mathit{bot}_i + 1$.
-(We obtain all values $\mathit{top}_i$ from the highest point of $A$ in every column, which we compute in $\O(n^2)$ time.)
-Then $F_i$ lies in a $d \times h_i$ rectangle.
-Let $q \in Q$ and $u \in F_i$ with $p = u - q \in [m]^2$.
-Since $\x u \in [\x q, \x q + m)$, the point $(\x u, \y q + m - 1) \in [m]^2 + q$ is in $A$, so $\mathit{top}_i \ge \y q + m - 1$ and $\y p = \y u - \y q \ge \mathit{bot}_i - \mathit{top}_i + m - 1 = m - h_i$.
-Hence, the matches with character $c$ and $p \in Z_R$ are exactly those counted by applying Fact~\ref{fact:fft} with character $c$ to $T|_{F_i}$ and $P|_{[m-d, m) \times [m-h_i, m)}$ for all $i$, which takes $\O(dh_i \log m)$ time per $i$ (the contributions are added to the array).
+\emph{Vertical strips.} For every column $x \ge z$, let $\mathit{top}(x)$ be the highest row of $A$ in column $x$, or $z - 1$ if column $x$ contains no point of $A$; we compute these values in $\O(n^2)$ time.
+By Lemma~\ref{lem:monotone}(a), $\mathit{top}$ is non-increasing: if $x < x'$ and column $x'$ contains a point of $A$, then $(x, \mathit{top}(x'))$ lies between $K_0$ and $(x', \mathit{top}(x')) \in A$.
+For $i \ge 0$, let $F_i = F \cap ([z + id, z + (i+1)d) \times \Z)$ be the $i$-th vertical strip of $F$.
+Every $u \in F_i$ satisfies $\y u + d > \mathit{top}(\x u + d)$, since otherwise $u + (d,d)$ would lie between $K_0$ and $(\x u + d, \mathit{top}(\x u + d)) \in A$.
+Hence, $F_i$ lies in the rows from $\mathit{top}(z + (i+2)d) - d + 1$ to $\mathit{top}(z + id)$, a range of $h_i = \mathit{top}(z + id) - \mathit{top}(z + (i+2)d) + d$ rows.
+The series $\sum_i h_i$ telescopes to at most $2n + (n/d + 1)d = \O(m)$.
 
-We show $\sum_i h_i = \O(m)$.
-Let $i_1 < i_2 < \cdots$ be the indices of the non-empty strips.
-For $t \ge 3$, let $u \in F_{i_{t-2}}$ with $\y u = \mathit{bot}_{i_{t-2}}$, and let $v \in A$ with $\x v \in [i_t d, (i_t+1)d)$ and $\y v = \mathit{top}_{i_t}$.
-Then $\x v \ge \x u + d$.
-If $\y v \ge \y u + d$, then $u + (d,d) \in A$ by Lemma~\ref{lem:monotone}(a), since $u + (d,d)$ lies between $K_0$ and $v$ (its coordinates are at least $z \ge \ell$ and at most those of $v$); a contradiction.
-Thus $\mathit{top}_{i_t} < \mathit{bot}_{i_{t-2}} + d$, and $h_{i_t} \le \mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t} + d$.
-Summing up, the series telescopes: the first two non-empty strips contribute at most $2n$, the differences $\mathit{bot}_{i_{t-2}} - \mathit{bot}_{i_t}$ add up to at most $2n$, and the terms $d$ add up to at most $(n/d+1)d$, so $\sum_i h_i \le 2n + 2n + (n/d+1)d = \O(m)$.
+Let $q \in Q$ and $u \in F_i$ with $p = u - q \in [m]^2$.
+Since $\x u \in [\x q, \x q + m)$, the point $(\x u, \y q + m - 1) \in [m]^2 + q$ is in $A$, so $\mathit{top}(z + id) \ge \mathit{top}(\x u) \ge \y q + m - 1$, and $\y p = \y u - \y q \ge m - h_i$.
+Hence, the matches with character $c$ and $p \in Z_R$ are exactly those counted by applying Fact~\ref{fact:fft} with character $c$ to $T|_{F_i}$ and $P|_{[m-d, m) \times [m-h_i, m)}$ for all $i$, which takes $\O(dh_i \log m)$ time per $i$ (the contributions are added to the array).
 
 \emph{Horizontal strips.} The matches with $p \in Z_T$ are counted in the same way after exchanging the roles of the $x$- and $y$-coordinates, that is, with horizontal strips of height $d$; this exchange maps $K_1$ to itself and $Z_T$ into $Z_R$.
 
