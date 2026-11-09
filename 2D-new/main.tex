@@ -393,23 +393,23 @@ Hence $r \le \ell$.
 The open disks of radius $r/2$ centered at the points of $U$ are disjoint and contained in $[-r/2, \ell + r/2]^2$, so $\abs{U} \pi r^2/4 \le 4\ell^2$ and $r^2 < 6\ell^2/\abs{U}$.
 
 \emph{The second period.}
-Let $\theta \in [0^\circ, 180^\circ)$ be the angle of the line through $w$.
-If $\theta < 90^\circ$, let $e = (1,1)$ and $e' = (-1,1)$; otherwise, let $e = (1,-1)$ and $e' = (1,1)$.
+Choose the sign of $w$ such that $\x w > 0$, or $\x w = 0$ and $\y w < 0$.
+If $\y w \ge 0$, let $e = (1,1)$ and $e' = (-1,1)$; otherwise, let $e = (1,-1)$ and $e' = (1,1)$.
 Let $a = r/4$ and $b = 28\ell^2/(r\abs{U})$; note that $b \le \ell$ because $r \ge 1$ and $\abs{U} \ge 28\ell$.
 We put every $u \in U$ into the bucket $(\lfloor (u \cdot e)/a \rfloor, \lfloor (u \cdot e')/b\rfloor)$.
 As $u \cdot e$ and $u \cdot e'$ range over intervals of length $2\ell$, there are at most $(2\ell/a + 1)(2\ell/b+1) \le (9\ell/r)(3\ell/b) = \frac{27}{28}\abs{U}$ non-empty buckets.
 Hence, some bucket contains two distinct points, and their difference $w' \in U - U$ satisfies $\abs{w' \cdot e} < a$, $\abs{w'\cdot e'} < b$, and $\abs{w'} \ge r$.
 Thus $\abs{w'}^2 = ((w' \cdot e)^2 + (w'\cdot e')^2)/2 < (a+b)^2$, and
 \[\abs{w}\abs{w'} < r(a + b) = r^2/4 + 28\ell^2/\abs{U} < 30\ell^2/\abs{U}.\]
-Moreover, the angle $\beta$ between $w'$ and the line orthogonal to $e$ satisfies $\sin\beta = \abs{w'\cdot e}/(\sqrt2\abs{w'}) < a/(\sqrt 2 r) < \sin 11^\circ$.
-(The bucketing needs no real arithmetic: it suffices to sort the values $u \cdot e$ and to group them greedily into intervals of length less than $a$, which creates at most $2\ell/a + 1$ groups; whether two integers differ by less than $a = r/4$ is decided by comparing their squared difference with $r^2/16$.
-The same works for $b$.)
+(The bucketing needs no real arithmetic: it suffices to sort the values $u \cdot e$ and to group them greedily into intervals of length less than $a$, which creates at most $2\ell/a + 1$ groups; whether two integers differ by less than $a = r/4$ is decided by comparing their squared difference with $r^2/16$. The same works for $b$.)
 
 \emph{Choosing the signs.}
-If $\theta < 90^\circ$, the line through $w'$ has angle in $(124^\circ, 146^\circ)$.
-We let $\psi = \pm w$ with angle in $[0^\circ, 90^\circ)$ and $\phi = \pm w'$ with angle in $(304^\circ, 326^\circ)$.
-If $\theta \ge 90^\circ$, the line through $w'$ has angle in $(34^\circ, 56^\circ)$, and we let $\psi = \pm w'$ with angle in $(34^\circ,56^\circ)$ and $\phi = \pm w$ with angle in $[270^\circ, 360^\circ)$.
-In both cases, $\psi$ and $\phi$ lie in the claimed quadrants, and the counterclockwise angle from $\phi$ to $\psi$ is in $(34^\circ, 146^\circ)$, hence $\det(\phi,\psi) = \abs{\phi}\abs{\psi}\sin(\angle(\phi,\psi)) \ge \frac12\abs{\phi}\abs{\psi}$.
+Write $w' = (\alpha, \beta)$.
+Since $\abs{w' \cdot e} < a \le \abs{w'}/4$, the absolute values $\abs{\alpha}$ and $\abs{\beta}$ differ by less than $\abs{w'}/4$; together with $\alpha^2 + \beta^2 = \abs{w'}^2$, this gives $\abs\alpha, \abs\beta > \abs{w'}/2$.
+If $\y w \ge 0$, then $w$ has $\x w > 0$ and $e = (1,1)$, so $\alpha$ and $\beta$ have opposite signs; we let $\psi = w$ and $\phi = \pm w'$ with $\x\phi > 0 > \y\phi$.
+Otherwise, $\x w \ge 0 > \y w$ and $e = (1,-1)$, so $\alpha$ and $\beta$ have the same sign; we let $\phi = w$ and $\psi = \pm w'$ with $\x\psi, \y\psi > 0$.
+In both cases, $\psi$ and $\phi$ lie in the claimed quadrants, so $\det(\phi,\psi) = \x\phi\,\y\psi + \abs{\y\phi}\,\x\psi$ is a sum of two non-negative terms.
+The vector $w'$ contributes a factor larger than $\abs{w'}/2$ to both terms, so $\det(\phi,\psi) > \frac12\abs{w'}(\abs{\x w} + \abs{\y w}) \ge \frac12\abs{\phi}\abs{\psi}$.
 \end{proof}
 
 We apply Lemma~\ref{lem:two_periods} to $U = Q$ (note $\abs{Q} > 32m \ge 64\ell$) and fix $\phi, \psi$ for the rest of the paper.
